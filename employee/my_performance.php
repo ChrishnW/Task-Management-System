@@ -24,6 +24,14 @@
 					</div>
 				</div>
 				<div class="row">
+					<div class='form-group col-lg-2'>
+						<label>From:</label><br>
+						<input type='date' class='form-control' name='val_from' id='val_from' onchange='selectfrom(this)'>
+					</div>
+					<div class='form-group col-lg-2'>
+						<label>To:</label><br>
+							<input type='date' class='form-control' name='val_to' id='val_to' onchange='selectto(this)'>
+					</div>
 					<div class="col-lg-12">
 						<div class="panel panel-primary">
 							<div class="panel-heading">
@@ -35,7 +43,7 @@
 										<thead>
 											<tr>
 												<th class="col-lg-2"> <center /> Completed </th>
-												<th class="col-lg-2"> <center /> Remaining </th>
+												<th class="col-lg-2"> <center /> Total Tasks </th>
 												<th class="col-lg-2"> <center /> Average </th>
 												<th class="col-lg-2"> <center /> Records </th>
 											</tr>
@@ -50,7 +58,6 @@
 												$resdone = 0;
 												$remtask = 0;
 												$ftask = 0;
-												$ontasks = 0;
 												$three = 0;
 												$two = 0;
 												$one = 0;
@@ -67,31 +74,29 @@
 												    $datec = $row['date_created'];
 												    $achievement = $row['achievement'];
 												    
-														if ($row['status'] == 'NOT YET STARTED') {
-												        $remtask += 1; 
-												    }
-												    if ($row['status'] == 'IN PROGRESS') {
-												        $ontasks += 1;
+														if (($row['status'] == 'NOT YET STARTED') || ($row['status'] == 'IN PROGRESS')) {
+															$remtask += 1; 
 												    }
 												    if ($row['status'] == 'FINISHED') {
-												        $donetotal += 1;
+															$donetotal += 1;
 												    }
+														
 												    if ($achievement == 3) {
-												        $three += 1;
+															$three += 1;
 												    }
-												    elseif ($achievement == 2) {
-												        $two += 1;
-												    }
-												    elseif ($achievement == 1) {
-												        $one += 1;
-												    }
+														elseif ($achievement == 2) {
+															$two += 1;
+														}
+														elseif ($achievement == 1) {
+															$one += 1;
+														}
+														elseif ($achievement == 0){
+															$zero += 1;
+														}
 													}
 												}
-												$three = $three * 3;
-												$two = $two * 2;
-												$one = $one * 1;
-												$donesum = $three + $two + $one;
-												$tasktotal = $ontasks + $remtask + $donetotal;
+												$donesum = ($three * 3) + ($two * 2) + ($one * 1) + ($zero * 0);
+												$tasktotal = $remtask + $donetotal;
 												if ($donesum != 0){
 													$totavg = $donesum / $tasktotal;   
 												}
@@ -135,4 +140,57 @@
 			</div>
 		</div>
 	</div>
+<script>
+	$(document).ready(function() {
+			$('#table_task').DataTable({
+					responsive: true
+			});
+	});
+
+	function selectto(element) {
+		let valto = $(element).val();
+		let valfrom = $('#val_from').val();
+		let username = <?php echo json_encode($username) ?>;
+		$('#table_task').DataTable().destroy();
+		$('#tbody').empty();
+		if (valto) {
+			$.ajax({
+				type: "post",
+				url: "performance_to.php",
+				data: {
+					"valfrom": valfrom,
+					"valto": valto,
+					"username": username
+				},
+				success: function (response) {
+					$('#tbody').append(response);
+					$('#table_task').DataTable();
+				}
+			});
+		}
+	}
+
+	function selectfrom(element) {
+		let valfrom = $(element).val();
+		let valto = $('#val_to').val();
+		let username = <?php echo json_encode($username) ?>;
+		$('#table_task').DataTable().destroy();
+		$('#tbody').empty();
+		if (valfrom) {
+			$.ajax({
+				type: "post",
+				url: "performance_from.php",
+				data: {
+					"valfrom": valfrom,
+					"valto": valto,
+					"username": username
+				},
+				success: function (response) {
+					$('#tbody').append(response);
+					$('#table_task').DataTable();
+				}
+			});
+		}
+	}
+</script>
 </html>

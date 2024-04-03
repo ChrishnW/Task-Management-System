@@ -722,31 +722,6 @@
 			}
 		}
 
-		function selectto(element) {
-			let valto = $(element).val();
-			let status = <?php echo json_encode($status) ?>;
-			let valfrom = $('#val_from').val();
-			let username = <?php echo json_encode($username) ?>;
-			$('#table_task').DataTable().destroy();
-			$('#show_task').empty();
-			if (valto) {
-				$.ajax({
-					type: "post",
-					url: "ajax_valto.php",
-					data: {
-						"valfrom": valfrom,
-						"status": status,
-						"valto": valto,
-						"username": username
-					},
-					success: function (response) {
-						$('#show_task').append(response);
-						$('#table_task').DataTable();
-					}
-				});
-			}
-		}
-
 		function goBackAndReload() {
 			window.history.back();
 			location.reload();

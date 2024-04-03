@@ -1,9 +1,8 @@
 <?php 
 	include('../include/header_employee.php');
 	include('../include/connect.php');
-	$today = date("Y-m-d");
-	$month = date('m');
-	$year = date('Y');
+  $val_from = date('Y-m-d 00:00:00', strtotime($_GET['from']));
+  $val_to = date('Y-m-d 23:00:00', strtotime($_GET['to']));
 ?>
 <html>
 	<link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
@@ -68,14 +67,14 @@
 												$remtask = 0;
 												$ftask = 0;
 												
-												$result = mysqli_query($con,"SELECT tasks_details.task_code, tasks_details.task_name, task_class.task_class, tasks_details.date_created, tasks_details.due_date, tasks_details.date_accomplished, tasks_details.achievement FROM tasks_details LEFT JOIN task_list ON tasks_details.task_name = task_list.task_name LEFT JOIN task_class ON task_list.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND task_status!=0 AND MONTH(tasks_details.date_accomplished)='$month' AND YEAR(tasks_details.date_accomplished)='$year' AND tasks_details.date_accomplished IS NOT NULL AND approval_status=0");
+												$result = mysqli_query($con,"SELECT tasks_details.task_code, tasks_details.task_name, task_class.task_class, tasks_details.date_created, tasks_details.due_date, tasks_details.date_accomplished, tasks_details.achievement FROM tasks_details LEFT JOIN task_list ON tasks_details.task_name = task_list.task_name LEFT JOIN task_class ON task_list.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND task_status!=0 AND tasks_details.date_accomplished>='$val_from' AND tasks_details.date_accomplished<='$val_to' AND tasks_details.date_accomplished IS NOT NULL AND approval_status=0");
 												if (mysqli_num_rows($result)>0) { 
 												while ($row = $result->fetch_assoc()) { 
 												$taskcode = $row['task_code'];
 												$taskname = $row['task_name'];
 												$taskclass = $row['task_class'];
-												$dateaccom = date('d-m-Y h:m A', strtotime($row['date_accomplished']));
-												$datedue = date('d-m-Y h:m A', strtotime($row['due_date']));
+												$dateaccom = $row['date_accomplished'];
+												$datedue = $row['due_date'];
 												$datec = $row['date_created'];
 												$achievement = $row['achievement'];
 												
