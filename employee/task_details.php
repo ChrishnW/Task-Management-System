@@ -753,8 +753,7 @@
 		}
 	</script>
 
-	<div class="modal fade" id="start" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
-		aria-hidden="true">
+	<div class="modal fade" id="start" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content panel-success">
 				<div class="modal-header panel-heading">
@@ -775,17 +774,14 @@
 					<a href="task_details.php?status=NOT YET STARTED"><button type="button" name="submit" class="btn btn-danger pull-right"><i class='fa fa-times fa-1x'></i> Cancel</button></a>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 
-	<div class="modal fade" id="finish_1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
-		aria-hidden="true">
-		<div class="modal-dialog modal-lg">
+	<div class="modal fade" id="finish_1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
+		<div class="modal-dialog modal-lg"
 			<div class="modal-content panel-success">
 				<div class="modal-header panel-heading">
-					<a href="task_details.php?status=IN PROGRESS"><button type="button" class="close" aria-hidden="true">&times;</button></a>
+					<button type="button" class="close" aria-hidden="true" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title" id="myModalLabel">Finish Task</h4>
 				</div>
 				<div class="modal-body panel-body">
@@ -804,20 +800,17 @@
 				</div>
 				<div class="modal-footer">
 					<button disabled id='okButton_1' class='btn btn-success pull-left' onclick='okButtonClick_1()'><i class='fa fa-paper-plane fa-1x'></i> Submit</button>
-					<a href="task_details.php?status=IN PROGRESS"><button type="button" name="submit" class="btn btn-danger pull-right"><i class='fa fa-times fa-1x'></i> Cancel</button></a>
+					<button type="button" name="submit" class="btn btn-danger pull-right" data-dismiss="modal"><i class='fa fa-times fa-1x'></i> Cancel</button>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 
-	<div class="modal fade" id="finish_2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
-		aria-hidden="true">
+	<div class="modal fade" id="finish_2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content panel-success">
 				<div class="modal-header panel-heading">
-					<a href="task_details.php?status=IN PROGRESS"><button type="button" class="close" aria-hidden="true">&times;</button></a>
+					<button type="button" class="close" aria-hidden="true" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title" id="myModalLabel">Finish Task</h4>
 				</div>
 				<div class="modal-body panel-body">
@@ -831,16 +824,13 @@
 				</div>
 				<div class="modal-footer">
 					<button disabled id='okButton_2' class='btn btn-success pull-left' onclick='okButtonClick_2()'><i class='fa fa-paper-plane fa-1x'></i> Submit</button>
-					<a href="task_details.php?status=IN PROGRESS"><button type="button" name="submit" class="btn btn-danger pull-right"><i class='fa fa-times fa-1x'></i> Cancel</button></a>
+					<button type="button" name="submit" class="btn btn-danger pull-right" data-dismiss="modal"><i class='fa fa-times fa-1x'></i> Cancel</button>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 
-	<div class="modal fade" id="reschedule" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
-		aria-hidden="true">
+	<div class="modal fade" id="reschedule" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content panel-success">
 				<div class="modal-header panel-heading">
@@ -865,13 +855,10 @@
 					<a href="task_details.php?status=NOT YET STARTED"><button type="button" name="submit" class="btn btn-danger pull-right"><i class='fa fa-times fa-1x'></i> Cancel</button></a>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 
-	<div class="modal fade" id="success1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
-		aria-hidden="true">
+	<div class="modal fade" id="success1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content panel-success">
 				<div class="modal-header panel-heading">
@@ -889,9 +876,7 @@
 					<a href="task_details.php?status=NOT YET STARTED"><button type="button" name="submit" class="btn btn-danger pull-right"><i class='fa fa-times fa-1x'></i> Close</button></a>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 
 	<div class="modal fade" id="success2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
@@ -933,9 +918,7 @@
 					<a href="task_details.php?status=NOT YET STARTED"><button type="button" name="submit" class="btn btn-success pull-right">OK</button></a>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 
 	<div class="modal fade" id="success4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
@@ -956,9 +939,7 @@
 					<button type="button" name="submit" class="btn btn-success pull-right" onclick='goBackAndReload()'>OK</button>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 
 	<div class="modal fade" id="view1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
@@ -1071,8 +1052,7 @@
 		</div>
 	</div>
 
-	<div class="modal fade" id="edit_1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
-		aria-hidden="true">
+	<div class="modal fade" id="edit_1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content panel-success">
 				<div class="modal-header panel-heading">
@@ -1093,9 +1073,7 @@
 					<a href="#" onclick="goBackAndReload()"><button type="button" class="btn btn-danger pull-right"><span class="fa fa-times"></span> Close</button></a>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 
 </html>
