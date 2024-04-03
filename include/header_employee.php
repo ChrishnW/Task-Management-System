@@ -133,9 +133,7 @@
 				</li>
 			</ul>
 			<div class="footer">
-				<p>
-					System Kaizen &copy;<script>document.write(new Date().getFullYear());</script> <br></a>
-				</p>
+				<p>version 3.00a</p>
 			</div>
 		</div>
 	</nav>
