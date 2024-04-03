@@ -4,7 +4,6 @@ include('auth.php'); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -39,35 +38,39 @@ include('auth.php'); ?>
     <link href="../assets/css/bootstrap-toggle.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/bootstrap-select.css">
     <link href="../assets/css/darkmode.css" rel="stylesheet">
-
     <style>
         #page-wrapper {
             position: inherit;
             margin: 0 0 0 0px;
-            padding: 0 30px;
-            border-left: 1px solid #e7e7e7;
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-        body {
-            overflow: hidden;
         }
         .zoom:hover {
             transform: scale(1.05);
             transition: transform .5s;
         }
+        #loader {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: url('../assets/img/loader.gif') 50% 50% no-repeat rgb(0, 0, 0);
+        }
+        .well {
+            background-image: url('../assets/img/system.jpg');
+            background-size: cover;
+        }
     </style>
-
 <script src="../vendor/jquery/jquery-1.9.1.min.js"></script>
-<script type="text/javascript">
-$(window).load(function() {
-    $(".loader").fadeOut("slow");
-})
+<script>
+    $(window).on('load', function() {
+    $('#loader').fadeOut('slow');
+    });
 </script>
 </head>
 
 <body>
-<div class="loader"></div>
+<div id="loader"></div>
 
 <div id="wrapper">
     <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -80,21 +83,6 @@ $(window).load(function() {
             </button>
             <a class="navbar-brand" href=""><p class="text-primary"><img src="../assets/img/gloryicon.png"> GLORY (PHILIPPINES), INC. | <font color="red">GLORY TASK MANAGEMENT SYSTEM</font></p></a>
         </div>
-        <ul class="nav navbar-top-links navbar-right">
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fas fa-user fa-fw"></i> <?php echo strtoupper($username)?> <i class="fas fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li>
-                        <a href="user_profile.php?username=<?php echo $username; ?>"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                    </li>
-                    <li>
-                        <a href="logout.php"><i class="fas fa-door-open fa-fw"></i> Logout</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
     </nav>
 
     <div id="page-wrapper">
@@ -121,7 +109,7 @@ $(window).load(function() {
                                 <div class="col-lg-4">
                                     <div class="panel panel-default">
                                         <div class="panel-body">
-                                            <i class="fas fa-folder fa-5x"></i></br>
+                                            <i class="fas fa-server	fa-5x"></i></br>
                                             <font color="#a6a4a4"><b><?php echo $row['system_name']; ?></b> </font>
                                         </div>
                                     </div>
@@ -141,7 +129,7 @@ $(window).load(function() {
                                 <div class="row">
                                     <div class="panel panel-primary">
                                         <div class="panel-heading">
-                                            <b>ACCOUNT INFORMATION</b>
+                                            <b>ACCOUNT INFORMATION</b> <a href="../include/logout.php" class="pull-right"><i class="glyphicon glyphicon-log-out"></i> Logout</a>
                                         </div>
                                         <div class="panel-body">
                                         <form class="form">

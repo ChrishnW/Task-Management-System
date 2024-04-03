@@ -53,7 +53,7 @@ else {
         (UPPER('$fname')),
         (UPPER('$lname')),
         (LOWER('$email')),
-        (('2')),
+        (('$access')),
         (UPPER('$section')),
         (('1'))
         )";

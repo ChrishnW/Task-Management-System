@@ -87,6 +87,9 @@ include('../include/auth.php');
                         <li>
                             <a href="account_list.php"><i class="fa fa-users fa-fw"></i> Accounts</a>
                         </li>
+                        <li>
+                            <a href="attendancelog.php"><i class="fa fa-id-card"></i> Attendance Logs </a>
+                        </li>
                         <!--
                         <li>
                             <a href="dayoff.php" ><i class="fa fa-calendar fa-fw"></i> Day off</a>

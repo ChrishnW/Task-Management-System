@@ -54,7 +54,7 @@ body {
             <div class="row">
                 <div class="col-lg-12">
                     <!-- Dashboard <br>  -->
-                    <h2 class="page-header">Welcome <font color="#4287f5"><?php echo $username;?></font>!
+                    <h2 class="page-header">Welcome, <font color="#4287f5"><?php echo $username;?></font>!
                     </h2>
                 </div>
             </div>

@@ -2,6 +2,8 @@
 <?php 
 include('../include/header.php');
 include('../include/connect.php');
+include('../include/bubbles.php');
+$date_today = date("Y-m-d");
 $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.'); 
 ?>
 <html>
@@ -19,11 +21,13 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
         <div id="page-wrapper">
         <br>
         <h1 class="page-header"><?php echo $status ?> Tasks
-        <a href="tasks_xls.php?status=<?php echo $status ?>"> <button class="btn btn-success pull-right"><span class="fa fa-download"></span> Download</button></a></h1>
+        <a href="tasks_xls.php?status=<?php echo $status ?>" id="btn1"> <button class="btn btn-success pull-right"><span class="fa fa-download"></span> Download</button></a>
+        </h1>
+            <form method="POST" action="sortdl.php?status=<?php echo $status ?>">
             <div class="row">
                 <div class="form-group col-lg-2">
                     <label>From:</label><br>
-                    <input type="date" class="form-control" name="val_from" id="val_from"
+                    <input type="date" class="form-control" name="val_from" id="val_from" value="<?php echo $date_today; ?>"
                         onchange="selectfrom(this)">
                 </div>
                 <div class="form-group col-lg-2">
@@ -31,8 +35,9 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                     <input type="date" class="form-control" name="val_to" id="val_to"
                         onchange="selectto(this)">
                 </div>
+                <input type="submit" id="submit" value="Download" class="btn btn-success pull-left" style="margin-top: 25px; display: none;">
             </div>
-
+            </form>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-primary">
@@ -211,6 +216,22 @@ function selectto(element) {
     }
 }
 </script>
+
+<script>
+$(document).ready(function(){
+    $('input[type="date"]').change(function(){
+        if($('#val_from').val() !='' && $('#val_to').val() !=''){
+            $('#submit').show();
+            $('#btn1').hide();
+        }
+        else{
+            $('#submit').hide();
+            $('#btn1').show();
+        }
+    });
+});
+</script>
+
 <style>
     .red {
         color: red;

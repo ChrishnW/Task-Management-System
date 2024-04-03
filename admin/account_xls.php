@@ -34,6 +34,7 @@ include('../include/connect.php');
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Card Number</th>
                     <th>Username</th>
                     <th>E-mail</th>
                     <th>Section</th>
@@ -47,7 +48,7 @@ include('../include/connect.php');
             
 
             $con->next_result();
-            $result = mysqli_query($con,"SELECT accounts.fname, accounts.lname, accounts.username, accounts.email, section.sec_name, access.access, accounts.status, accounts.id FROM accounts LEFT JOIN section ON accounts.sec_id=section.sec_id LEFT JOIN access on accounts.access=access.id");
+            $result = mysqli_query($con,"SELECT accounts.fname, accounts.lname, accounts.username, accounts.email, section.sec_name, access.access, accounts.status, accounts.id, accounts.card FROM accounts LEFT JOIN section ON accounts.sec_id=section.sec_id LEFT JOIN access on accounts.access=access.id");
           
             while($row = mysqli_fetch_array($result))
             {
@@ -60,6 +61,7 @@ include('../include/connect.php');
                 echo "
                 <tr>
                 <td> " . $row["fname"] . " ". $row["lname"] . "</td> 
+                <td>" . $row["card"] . "</td> 
                 <td>" . $row["username"] . "</td> 
                 <td>" . $row["email"] . "</td> 
                 <td>" . $row["sec_name"] . "</td>

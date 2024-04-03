@@ -2,12 +2,10 @@
 <?php
 include('../include/connect.php');
 include('../include/auth.php');
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,8 +36,26 @@ include('../include/auth.php');
     <link href="../assets/css/dataTables.bootstrap.css" rel="stylesheet">
     
     <link rel="stylesheet" href="../assets/css/bootstrap-select.css">
+    <style>
+        #loader {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: url('../assets/img/loader.gif') 50% 50% no-repeat rgb(0, 0, 0);
+        }
+    </style>
+    <script src="../vendor/jquery/jquery-1.9.1.min.js"></script>
+    <script>
+        $(window).on('load', function() {
+        $('#loader').fadeOut('slow');
+        });
+    </script>
 </head>
 <body>
+<div id="loader"></div>
     <div id="wrapper">
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
@@ -51,51 +67,69 @@ include('../include/auth.php');
                 </button>
                 <a class="navbar-brand" href="index.php"><p class="text-primary"><img src="../assets/img/gloryicon.png"> GLORY (PHILIPPINES), INC. | <font color="red"> TASK MANAGEMENT SYSTEM</font></p></a>
             </div>
-            <ul class="nav navbar-top-links navbar-right">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-user fa-fw"></i> <?php if(isset($username)) echo strtoupper($username)?> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="../include/user_profile.php?modal=hide"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                        </li>
-                        <li><a href="../include/logout.php"><i class="fa fa-door-open fa-fw"></i> Logout</a>
-                    </ul>
-                </li>
-            </ul>
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li class="sidebar-search">
-                            <form data-toggle="validator"  action="" enctype="multipart/form-data" method="POST">
-                            <div class="input-group custom-search-form">
-                                <input type="text" class="form-control" name="search" placeholder="Search " required>
-                                <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit" name="id" value="Search">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                                </span>
-                            </div>
-                            </form>
-                        </li>
+                        <br>
                         <li>
                             <a href="../include/home.php"><i class="fa fa-home fa-fw"></i> Home</a>
                         </li>
                         <li>
-                            <a href="index.php"><i class="fa fa-search fa-fw"></i> Dashboard</a>
+                            <a href="index.php"><i class="fas fa-th fa-fw"></i> Dashboard</a>
                         </li>
-                 
+
                         <li>
-                            <a href="#"><i class="fa fa-id-badge fa-fw"></i> Task Details<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-archive fa-fw"></i> Task Details<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                <a href="task_details.php?section=MIS"><i class="fa fa-tasks fa-fw"></i> Management Information System</a>
+                                <a href="task_details.php?section=MIS"><i class="fa fa-folder fa-fw"></i> Management Information System</a>
                                 </li>
                                 <li>
-                                <a href="task_details.php?section=SK"><i class="fa fa-tasks fa-fw"></i> System Kaizen</a>
+                                <a href="task_details.php?section=SK"><i class="fa fa-folder fa-fw"></i> System Kaizen</a>
                                 </li>
                                 <li>
-                                <a href="task_details.php?section=FEM"><i class="fa fa-tasks fa-fw"></i> Facility and Equipment Maintenace</a>
+                                <a href="task_details.php?section=FEM"><i class="fa fa-folder fa-fw"></i> Facility and Equipment Maintenace</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="#"><i class="fas fa-user-cog fa-fw"></i> Task Management<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                <a href="regtask.php"><i class="fas fa-pen fa-fw"></i> Create New Task</a>
+                                </li>
+                                <li>
+                                <a href="assigntask.php"><i class="fa fa-calendar-plus-o fa-fw"></i> Assign Tasks</a>
+                                </li>
+                                <li>
+                                <a href="deploytask.php"><i class="fa fa-rocket fa-fw"></i> Deploy Task</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="#"><i class="fas fa-trophy fa-fw"></i> Staff Performance<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                <a href="performance.php?section=MIS"><i class="fa fa-group fa-fw"></i> Management Information System</a>
+                                </li>
+                                <li>
+                                <a href="performance.php?section=SK"><i class="fa fa-group fa-fw"></i> System Kaizen</a>
+                                </li>
+                                <li>
+                                <a href="performance.php?section=FEM"><i class="fa fa-group fa-fw"></i> Facility and Equipment Maintenace</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-user-circle fa-fw"></i> <?php echo $username?><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="../include/user_profile.php?modal=hide" style="margin-top: 0"><i class="fa fa-cog fa-spin fa-fw"></i> Configuration</a>
+                                </li>
+                                <li>
+                                    <a href="../include/logout.php"><i class="glyphicon glyphicon-log-out fa-fw"></i> Logout</a>
                                 </li>
                             </ul>
                         </li>
@@ -103,7 +137,6 @@ include('../include/auth.php');
                 </div>
             </div>
         </nav>
-
 <script src="../vendor/jquery/jquery.min.js"></script>
     <!-- Autocomplete Jquery-->
 <script src="../vendor/jquery/jquery-ui.min.js"></script>
@@ -147,6 +180,4 @@ $('#admin-table').DataTable({
         pageLength: 10
     });
 });
-
-
 </script>

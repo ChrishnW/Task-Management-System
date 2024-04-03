@@ -42,7 +42,9 @@ include('auth.php'); ?>
             position: inherit;
             margin: 0 0 0 0px;
             padding: 0 30px;
-            border-left: 1px solid #e7e7e7;
+        }
+        label {
+            color: black;
         }
     </style>
 </head>
@@ -58,21 +60,6 @@ include('auth.php'); ?>
             </button>
             <a class="navbar-brand" href="home.php"><p class="text-primary"><img src="../assets/img/gloryicon.png"> GLORY (PHILIPPINES), INC. | <font color="red">GLORY TASK MANAGEMENT SYSTEM</font></p></a>
         </div>
-        <ul class="nav navbar-top-links navbar-right">
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fas fa-users fa-fw"></i> <?php echo strtoupper($username)?> <i class="fas fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li>
-                        <a href="user_profile.php?id=<?php echo $emp_id; ?>"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                    </li>
-                    <li>
-                        <a href="logout.php"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
     </nav>
 
     <div id="page-wrapper">

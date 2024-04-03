@@ -3,6 +3,7 @@
 include('../include/header_head.php');
 include('../include/connect.php');
 include('../include/bubbles.php');
+$date_today = date('Y-m-d');
 $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.'); 
 
 ?>
@@ -19,13 +20,12 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
 <body>
     <div id="wrapper">
         <div id="page-wrapper">
-        <br>
         <h1 class="page-header"><?php echo $status ?> Tasks
         <a href="task_approval_xls.php?status=<?php echo $status ?>"> <button class="btn btn-success pull-right"><span class="fa fa-download"></span> Download</button></a></h1>
             <div class="row">
                 <div class="form-group col-lg-2">
                     <label>From:</label><br>
-                    <input type="date" class="form-control" name="val_from" id="val_from"
+                    <input type="date" class="form-control" name="val_from" id="val_from" value="<?php echo $date_today; ?>"
                         onchange="selectfrom(this)">
                 </div>
                 <div class="form-group col-lg-2">
@@ -43,8 +43,7 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                         </div>
                         <div class="panel-body">
                             <div class="table-responsive">
-                                <table width="100%" class="table table-striped table-bordered table-hover"
-                                    id="table_task">
+                                <table width="100%" class="table table-striped table-hover" id="table_task">
 
                                     <thead>
                                         <tr>
@@ -109,8 +108,7 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                                                     <td>" . $row["due_date"] . "</td> 
                                                     <td>" . $row["fname"].' '.$row["lname"] . "</td>
                                                     <td><center><button id='task_id' value='".$row['id']."' data-reason = '".$row['resched_reason']."' data-date = '".$row['due_date']."' class='btn btn-primary' onclick='view(this)'> View </button></center></td>
-                                                </tr>";   
-                                              
+                                                </tr>";
                                              }
                                         } 
                                         if ($con->connect_error) {
@@ -144,8 +142,9 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                 
             </div>
             <div class="modal-footer">
-              <button id='okButton' class='btn btn-success pull-right' onclick='okButtonClick()'>Approve</button>
-              <!-- <a href="task_approval.php?status=RESCHEDULE"><button type="button" name="submit" class="btn btn-danger pull-left">Cancel</button></a> -->
+              <button id='okButton' class='btn btn-success pull-left' onclick='okButtonClick()'>Approve</button>
+              <button id='declineButton' class="btn btn-danger pull-right" onclick='declineButton()'>Decline</button>
+              <!-- <a href="../include/404.php"><button type="button" name="submit" class="btn btn-danger pull-right">Decline</button></a> -->
             </div>
         </div> <!-- /.modal-content -->
     </div> <!-- /.modal-dialog -->
@@ -171,19 +170,39 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
         </div> <!-- /.modal-content -->
     </div> <!-- /.modal-dialog -->
 </div>
+<div class="modal fade" id="declined" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content panel-success">
+            <div class="modal-header panel-heading">
+                <a href="task_approval.php?status=RESCHEDULE"><button type="button" class="close" aria-hidden="true">&times;</button></a>
+                <h4 class="modal-title" id="myModalLabel">Notice</h4>
+            </div>
+            <div class="modal-body panel-body">
+                <center>
+                    <i style="color:#e13232; font-size:80px;" class="fa fa-fa-check"></i>
+                    <br><br>
+                    <p>Reschedule Request has been Decline.</p>
+                </center>
+            </div>
+            <div class="modal-footer">
+              <a href="task_approval.php?status=RESCHEDULE"><button type="button" name="submit" class="btn btn-success pull-right">OK</button></a>
+            </div>
+        </div> <!-- /.modal-content -->
+    </div> <!-- /.modal-dialog -->
+</div>
 <script>
 $(document).ready(function() {
    
     let table = $('#table_task');
     
     $('#table_task').DataTable({
-        "order":[[3,"asc"]],
+        "order":[[4,"asc"]],
         responsive: true,
         lengthMenu: [[10,15,20,50],[10,15,20,50]],
         pageLength: 10
 
     });
-
 
 });
 </script>
@@ -255,7 +274,7 @@ function view(element) {
 
     currentDate = year+'-'+month+'-'+day;
     
-    if (date < currentDate )
+    if (date > currentDate )
     {
         var expired = 'red';
     }
@@ -285,6 +304,22 @@ function okButtonClick() {
     }).done(function(response) {
         $('#view').modal('hide'); 
         $('#success').modal('show'); 
+    
+        //  window.location.reload();
+    }).fail(function(xhr, status, error) {
+        alert("An error occurred: " + status + "\nError: " + error);
+    });
+}
+
+function declineButton() {
+    var taskID = document.getElementById('hidden_task_id').value;
+    $.ajax({
+        type: "POST",
+        url: "task_decline_submit.php",
+        data: { id: taskID}
+    }).done(function(response) {
+        $('#view').modal('hide'); 
+        $('#declined').modal('show'); 
     
         //  window.location.reload();
     }).fail(function(xhr, status, error) {

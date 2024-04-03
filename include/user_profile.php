@@ -46,9 +46,11 @@ include('auth.php');
             position: inherit;
             margin: 0 0 0 0px;
             padding: 0 30px;
-            border-left: 1px solid #e7e7e7;
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
+        }
+        label {
+            color: black;
         }
     </style>
 </head>
@@ -64,28 +66,13 @@ include('auth.php');
             </button>
             <a class="navbar-brand" href="home.php"><p class="text-primary"><img src="../assets/img/gloryicon.png"> GLORY (PHILIPPINES), INC. | <font color="red">GLORY TASK MANAGEMENT SYSTEM</font></p></a>
         </div>
-        <ul class="nav navbar-top-links navbar-right">
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fas fa-user fa-fw"></i> <?php ?> <i class="fas fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li>
-                        <a href="user_profile.php?username=<?php echo $username; ?>"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                    </li>
-                    <li>
-                        <a href="logout.php"><i class="fas fa-door-open fa-fw"></i> Logout</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
     </nav>
 
     <div id="page-wrapper">
 
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">User Profile</h1>
+                <h1 class="page-header">Account Information</h1>
             </div>
         </div>
 
@@ -169,6 +156,7 @@ include('auth.php');
                                     <!-- <button type="button" id="submit-btn" name="submit" value="submit" class="btn btn-success pull-right" data-toggle="modal" data-target="#submitModal" disabled>
                                     Update Account</button> -->
                                     <a href="change_password.php?username=<?php echo $username; ?>"><button type="button" id="submit-btn" class="btn btn-primary pull-left">Change Password</button></a>
+                                    <a href="../include/home.php"><button type="button" class="btn btn-danger pull-right"><i class="fa fa-arrow-left"></i> Return to Dashboard</button></a>
                                 </div>
                             </div>
                             <?php }  $con-> close(); ?>
@@ -198,8 +186,6 @@ include('auth.php');
                             </div>                        
                         </form>
                     </div>
-                    <br>
-                    <a href="home.php"> <button class='btn btn-danger pull-left'><i class="fa fa-arrow-left"></i> Return to Homepage</button></a>
                 </div>
             </div>
         </div>
