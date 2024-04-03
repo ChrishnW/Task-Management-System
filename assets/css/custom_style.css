@@ -1,0 +1,45 @@
+.lot {
+    min-width: 100px;   /* indirect lot,type,block minimum width */
+}
+
+.type {
+    min-width: 150px;  
+}
+
+.block {
+    min-width: 150px;   
+}
+
+.d-none {
+    display: none !important;
+  }
+
+  .label-red
+{
+    color: red;
+}
+.label-black
+{
+    background-color: #333;
+}
+
+.modal 
+{
+    overflow-y: auto;
+}
+
+.modal-open 
+{
+    overflow: auto;
+}
+
+.modal-open[style] 
+{
+    padding-right: 0px !important;
+}
+
+
+.label-white
+{
+    color: white;
+}
