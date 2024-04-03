@@ -38,6 +38,7 @@ include('auth.php'); ?>
     <link href="../assets/css/dataTables.bootstrap.css" rel="stylesheet">    
     <link href="../assets/css/bootstrap-toggle.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/bootstrap-select.css">
+    <link href="../assets/css/darkmode.css" rel="stylesheet">
 
     <style>
         #page-wrapper {
@@ -45,6 +46,15 @@ include('auth.php'); ?>
             margin: 0 0 0 0px;
             padding: 0 30px;
             border-left: 1px solid #e7e7e7;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        body {
+            overflow: hidden;
+        }
+        .zoom:hover {
+            transform: scale(1.05);
+            transition: transform .5s;
         }
     </style>
 
@@ -73,14 +83,14 @@ $(window).load(function() {
         <ul class="nav navbar-top-links navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fas fa-users fa-fw"></i> <?php echo strtoupper($username)?> <i class="fas fa-caret-down"></i>
+                    <i class="fas fa-user fa-fw"></i> <?php echo strtoupper($username)?> <i class="fas fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
                     <li>
                         <a href="user_profile.php?username=<?php echo $username; ?>"><i class="fa fa-user fa-fw"></i> User Profile</a>
                     </li>
                     <li>
-                        <a href="logout.php"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</a>
+                        <a href="logout.php"><i class="fas fa-door-open fa-fw"></i> Logout</a>
                     </li>
                 </ul>
             </li>
@@ -106,23 +116,25 @@ $(window).load(function() {
                         $result = mysqli_query($con,"SELECT * FROM accounts INNER JOIN access ON access.id=accounts.access WHERE username = '$username'");
                         while($row = mysqli_fetch_array($result)){ ?>
                             <center>
+                            <div class="zoom">
                             <a href="<?php echo $row['link'];  ?>">
                                 <div class="col-lg-4">
                                     <div class="panel panel-default">
                                         <div class="panel-body">
-                                            <i class="fas fa-tasks fa-5x"></i></br>
-                                            <font color="black"><b><?php echo $row['system_name']; ?></b> </font>
+                                            <i class="fas fa-folder fa-5x"></i></br>
+                                            <font color="#a6a4a4"><b><?php echo $row['system_name']; ?></b> </font>
                                         </div>
                                     </div>
                                 </div>
                             </a>
+                            </div>
                             </center>
                         <?php
                         } ?>
                         </div>
                         <?php
                         $con->next_result();
-                        $result = mysqli_query($con,"SELECT accounts.username, accounts.fname, accounts.lname, section.sec_name, accounts.email, access.access FROM accounts INNER JOIN section on section.sec_id=accounts.sec_id INNER JOIN access ON access.id=accounts.access WHERE username = '$username'");
+                        $result = mysqli_query($con,"SELECT accounts.username, accounts.card, accounts.fname, accounts.lname, section.sec_name, accounts.email, access.access FROM accounts INNER JOIN section on section.sec_id=accounts.sec_id INNER JOIN access ON access.id=accounts.access WHERE username = '$username'");
                         while($row = mysqli_fetch_array($result)){ ?>
                         <div class="col-lg-5 pull-right">
                             <div class="col-lg-12 ">
@@ -143,6 +155,12 @@ $(window).load(function() {
                                                 <label class="control-label col-sm-4">Employee Name:</label>
                                                 <div class="col-sm-8">
                                                     <input class="form-control" value="<?php echo $row['fname']; ?> <?php echo $row['lname']; ?>" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-4">Card Number:</label>
+                                                <div class="col-sm-8">
+                                                    <input class="form-control" value="<?php echo $row['card'] ?>" disabled>
                                                 </div>
                                             </div>
                                             <div class="form-group">

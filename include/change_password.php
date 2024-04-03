@@ -36,7 +36,7 @@ include('auth.php'); ?>
 
     <link href="../assets/css/jquery-ui.min.css" rel="stylesheet">
     <link href="../assets/css/dataTables.bootstrap.css" rel="stylesheet">  
-
+    <link href="../assets/css/darkmode.css" rel="stylesheet">
     <style>
         #page-wrapper {
             position: inherit;
@@ -117,7 +117,7 @@ include('auth.php'); ?>
                             <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm">
                                     <div class="modal-content panel-info">
-                                        <div class="modal-header panel-heading">
+                                        <div class="modal-header panel-heading" style="background-color: rgb(27, 29, 30); border-color: transparent">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                                 <h4 class="modal-title" id="myModalLabel">Confirmation</h4>
                                         </div>

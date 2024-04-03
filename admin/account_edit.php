@@ -3,9 +3,10 @@
 include('../include/header.php');
 
 $id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.'); 
-$result = mysqli_query($con,"SELECT accounts.fname, accounts.lname, accounts.username, accounts.email, section.sec_name, access.access, accounts.status, accounts.sec_id, accounts.id FROM accounts LEFT JOIN section ON accounts.sec_id=section.sec_id LEFT JOIN access on accounts.access=access.id WHERE accounts.id=$id");       
+$result = mysqli_query($con,"SELECT accounts.card, accounts.fname, accounts.lname, accounts.username, accounts.email, section.sec_name, access.access, accounts.status, accounts.sec_id, accounts.id FROM accounts LEFT JOIN section ON accounts.sec_id=section.sec_id LEFT JOIN access on accounts.access=access.id WHERE accounts.id=$id");       
 $row= mysqli_fetch_assoc($result);
 
+$card = $row['card'];
 $username = $row['username'];
 $fname = $row['fname'];
 $lname = $row['lname'];
@@ -22,6 +23,7 @@ $id = $row['id'];
 <link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
+<link href="../assets/css/darkmode.css" rel="stylesheet">
 <style>
 .form-group.required label {
     font-weight: bold;
@@ -90,6 +92,15 @@ $id = $row['id'];
                                                     data-error="Invalid input!" value="<?php echo $lname; ?>">
                                             </div>
 
+                                            <!-- Added Card Number -->
+                                            <div data-toggle="validator" class="form-group required">
+                                                <label>Card Number:</label><span
+                                                    class="pull-right help-block with-errors"
+                                                    style="margin: 0px; font-size: 11px;"></span>
+                                                <input type="text" placeholder="Enter Card Number" class="form-control"
+                                                    name="card" id="card" value="<?php echo $card; ?>">
+                                            </div>
+
                                             <div data-toggle="validator" class="form-group required">
                                                 <label>E-mail:</label><span
                                                     class="pull-right help-block with-errors"
@@ -97,7 +108,7 @@ $id = $row['id'];
                                                 <input type="text" placeholder="Enter E-mail" class="form-control"
                                                     name="email" id="email" value="<?php echo $email; ?>">
                                             </div>
-
+                                            
                                             <div data-toggle="validator" class="form-group required">
                                                 <label>Access:</label><span
                                                     class="pull-right help-block with-errors"
@@ -139,7 +150,7 @@ $id = $row['id'];
                                             <div class="form-group required">
                                                 <label>Status:</label><span class="pull-right help-block with-errors"
                                                     style="margin: 0px; font-size: 11px;"></span>
-                                                <select name="status" id="status" class="form-control">
+                                                <select name="status" id="status" class="form-control selectpicker show-menu-arrow" data-live-search="true">
                                                     <?php
                                                         if ($status=="1") {
                                                             echo "<option selected value='1'>".'ACTIVE'."</option>

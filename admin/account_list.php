@@ -1,19 +1,23 @@
 <?php 
 include('../include/header.php');
 include('../include/connect.php');
+include('../include/bubbles.php');
 ?>
 <html>
 <head>
 <link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
+<link href="../assets/css/darkmode.css" rel="stylesheet">
 
     <title>List of Registered Accounts</title>
 </head>
-
+<style> 
+</style>
 <body>
     <div id="wrapper">
         <div id="page-wrapper">
+        <br>
         <h1 class="page-header">List of Registered Accounts
         <a href="account_xls.php"> <button class="btn btn-success pull-right"><span class="fa fa-download"></span> Download</button></a></h1>
             <div class="row">
@@ -94,7 +98,7 @@ include('../include/connect.php');
                             </div>
                         </div>
                     </div>
-                    <a href="./index.php"> <button class='btn btn-danger pull-left'><i class="fa fa-arrow-left"></i> Return to Dashboard</button></a>
+                    <a href="./index.php"> <button class='btn btn-danger pull-left' id="back"><i class="fa fa-arrow-left"></i> Return to Dashboard</button></a>
                 </div>
             </div>
         </div>

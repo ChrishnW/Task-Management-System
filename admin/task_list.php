@@ -1,12 +1,14 @@
 <?php 
 include('../include/header.php');
 include('../include/connect.php');
+include('../include/bubbles.php');
 ?>
 <html>
 <head>
 <link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
+<link href="../assets/css/darkmode.css" rel="stylesheet">
 
     <title>List of Tasks</title>
 </head>
@@ -14,8 +16,9 @@ include('../include/connect.php');
 <body>
     <div id="wrapper">
         <div id="page-wrapper">
-        <h1 class="page-header">List of Tasks
-        <a href="task_xls.php"> <button class="btn btn-success pull-right"><span class="fa fa-download"></span> Download</button></a></h1>
+        <br>
+        <h1 class="page-header">List of Tasks </h1>
+        <h1><a href="task_xls.php"> <button class="btn btn-success pull-right"><span class="fa fa-download"></span> Download</button></a></h1>
             <div class="row">
                 <div class="col-lg-4">
                 <label>Status:</label><br>

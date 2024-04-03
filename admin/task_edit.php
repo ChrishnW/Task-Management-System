@@ -21,6 +21,7 @@ $id = $row['id'];
 <link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
+<link href="../assets/css/darkmode.css" rel="stylesheet">
 <style>
 .form-group.required label {
     font-weight: bold;

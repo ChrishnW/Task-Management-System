@@ -1,5 +1,6 @@
 <?php
 include('../include/header.php');
+include('../include/bubbles.php');
 date_default_timezone_set("Asia/Manila");
 $dates = date('Y-m-d');
 ?>
@@ -10,6 +11,7 @@ $dates = date('Y-m-d');
     <link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
     <link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
     <link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
+    <link href="../assets/css/darkmode.css" rel="stylesheet">
 </head>
 <style>
 .panel>.panel-gray> {
@@ -40,6 +42,9 @@ $dates = date('Y-m-d');
     transform: scale(1.05);
     transition: transform .5s;
 }
+body {
+    overflow: hidden;
+}
 </style>
 
 <body>
@@ -49,7 +54,7 @@ $dates = date('Y-m-d');
             <div class="row">
                 <div class="col-lg-12">
                     <!-- Dashboard <br>  -->
-                    <h2 class="page-header">Welcome <font color="blue"><?php echo $username;?></font>!
+                    <h2 class="page-header">Welcome <font color="#4287f5"><?php echo $username;?></font>!
                     </h2>
                 </div>
             </div>
@@ -62,7 +67,7 @@ $dates = date('Y-m-d');
                         <div class="panel-heading"><a href="account_list.php">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <i class="fas fa-user fa-5x"></i>
+                                        <i class="fas fa-users fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge">
@@ -91,12 +96,12 @@ $dates = date('Y-m-d');
                 <div class="panel-heading"><a href="tasks.php?status=NOT YET STARTED">
                         <div class="row">
                             <div class="col-xs-3">
-                                <i class="fa fa-hourglass-start fa-5x"></i>
+                                <i class="fa fa-sticky-note fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
                                 <div class="huge">
                                     <?php
-                                    $result = mysqli_query($con,"SELECT COUNT(id) as not_yet_started_task FROM tasks_details WHERE status='NOT YET STARTED' AND task_status IS TRUE");
+                                    $result = mysqli_query($con,"SELECT COUNT(id) as not_yet_started_task FROM tasks_details WHERE status='NOT YET STARTED' AND task_status IS TRUE AND approval_status IS TRUE  AND (reschedule = '0' OR reschedule = '2' AND approval_status=1)");
                                     $row = $result->fetch_assoc();
                                     echo $row['not_yet_started_task']; ?>
                                 </div>
@@ -120,7 +125,7 @@ $dates = date('Y-m-d');
                 <div class="panel-heading"><a href="tasks.php?status=IN PROGRESS">
                         <div class="row">
                             <div class="col-xs-3">
-                                <i class="fa fa-tasks fa-5x"></i>
+                                <i class="fa fa-hourglass-start fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
                                 <div class="huge">
@@ -149,7 +154,7 @@ $dates = date('Y-m-d');
                 <div class="panel-heading"><a href="tasks.php?status=FINISHED">
                         <div class="row">
                             <div class="col-xs-3">
-                                <i class="fas fa-list fa-5x"></i>
+                                <i class="fas fa-tasks fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
                                 <div class="huge">

@@ -1,8 +1,9 @@
 
 <?php 
-include('../include/header.php');
+include('../include/header_head.php');
 include('../include/connect.php');
-$status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.'); 
+include('../include/bubbles.php');
+$section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not found.'); 
 ?>
 <html>
 <head>
@@ -11,25 +12,40 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
 <link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
 <link href="../assets/css/darkmode.css" rel="stylesheet">
 
-    <title>Tasks</title>
+    <title>Task Details</title>
 </head>
 
 <body>
     <div id="wrapper">
         <div id="page-wrapper">
         <br>
-        <h1 class="page-header"><?php echo $status ?> Tasks
-        <a href="tasks_xls.php?status=<?php echo $status ?>"> <button class="btn btn-success pull-right"><span class="fa fa-download"></span> Download</button></a></h1>
+        <h1 class="page-header"><?php echo $section ?> Task Details
+        <a href="task_details_xls.php?section=<?php echo $section ?>"> <button class="btn btn-success pull-right"><span class="fa fa-download"></span> Download</button></a></h1>
             <div class="row">
-                <div class="form-group col-lg-2">
-                    <label>From:</label><br>
-                    <input type="date" class="form-control" name="val_from" id="val_from"
-                        onchange="selectfrom(this)">
+                <div class="col-lg-4">
+                <label>Status:</label><br>
+                    <select name="show_status" id="show_status" class="form-control selectpicker show-menu-arrow "
+                        placeholder="" onchange="selectstatus(this)">
+                        <option disabled selected value="">--Filter by Status--</option>
+                        <option selected value="ALL">ALL</option>
+                        <option value="NOT YET STARTED">NOT YET STARTED</option>
+                        <option value="IN PROGRESS">IN PROGRESS</option>
+                        <option value="FINISHED">FINISHED</option>
+                    </select>
+                    <br>
+                    <br>
                 </div>
-                <div class="form-group col-lg-2">
-                    <label>To:</label><br>
-                    <input type="date" class="form-control" name="val_to" id="val_to"
-                        onchange="selectto(this)">
+                <div class="col-lg-4">
+                <label>Task Status:</label><br>
+                    <select name="show_status" id="show_status" class="form-control selectpicker show-menu-arrow "
+                        placeholder="" onchange="selecttaskstatus(this)">
+                        <option disabled selected value="">--Filter by Task Status--</option>
+                        <option selected value="ALL">ALL</option>
+                        <option value="1">ACTIVE</option>
+                        <option value="0">INACTIVE</option>
+                    </select>
+                    <br>
+                    <br>
                 </div>
             </div>
 
@@ -37,10 +53,11 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                 <div class="col-lg-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                        <?php echo $status ?> Task
+                        <?php echo $section ?> Task Details
                         </div>
                         <div class="panel-body">
                             <div class="table-responsive">
+                           
                                 <table width="100%" class="table table-striped table-bordered table-hover "
                                     id="table_task">
 
@@ -76,6 +93,7 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                                             <th class="col-lg-1">
                                                 Achievement
                                             </th>
+                                          
                                         </tr>
                                     </thead>
 
@@ -83,7 +101,7 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                                         <?php
                                         /* and access!='1' */
                                         $con->next_result();
-                                        $result = mysqli_query($con,"SELECT tasks_details.task_code, task_list.task_name, task_list.task_details, task_class.task_class, task_list.task_for, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, accounts.fname, accounts.lname, tasks_details.remarks, tasks_details.reschedule FROM tasks_details LEFT JOIN task_list ON task_list.task_code=tasks_details.task_code  LEFT JOIN task_class ON task_list.task_class=task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE tasks_details.task_status IS TRUE AND tasks_details.status='$status' AND tasks_details.approval_status IS TRUE  AND (tasks_details.reschedule = '0' OR tasks_details.reschedule = '2' AND tasks_details.approval_status=1)  ORDER BY tasks_details.due_date ASC");               
+                                        $result = mysqli_query($con,"SELECT tasks_details.task_code, task_list.task_name, task_list.task_details, task_class.task_class, task_list.task_for, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, accounts.fname, accounts.lname, tasks_details.remarks, tasks_details.reschedule  FROM tasks_details LEFT JOIN task_list ON task_list.task_code=tasks_details.task_code  LEFT JOIN task_class ON task_list.task_class=task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE task_list.task_for='$section' AND tasks_details.task_status IS TRUE ORDER BY tasks_details.due_date ASC");               
                                         if (mysqli_num_rows($result)>0) { 
                                             while ($row = $result->fetch_assoc()) {
 
@@ -125,8 +143,8 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                                                     $class_label = "danger";
                                                     $status = "NOT YET STARTED";
                                                 }
-                                                echo "<tr>  
-                                                    <td class='".$class."'> " . $row["task_name"] . " </td>   
+                                                echo "<tr>   
+                                                    <td class='".$class."'> " . $row["task_name"] . " </td>
                                                     <td class='".$class."'>" . $row["task_class"] . "</td> 
                                                     <td class='".$class."'>" . $row["task_for"] . "</td> 
                                                     <td class='".$class."'>" . $row["date_created"] . "</td> 
@@ -134,8 +152,9 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                                                     <td class='".$class."'>" . $row["fname"].' '.$row["lname"] . "</td>
                                                     <td><center/><p class='label label-".$class_label."' style='font-size:100%;'>".$status."</p></td>
                                                     <td class='".$class."'>" . $row["date_accomplished"] . "</td>
-                                                    <td class='".$class."'>" . $row["remarks"] . "</td>
+                                                    <td class='".$class."'>" . $row["remarks"] . "</td> 
                                                     <td class='".$class."'>" . $achievement . "</td>
+                                                 
                                                 </tr>";   
                                             }
                                         } 
@@ -163,20 +182,18 @@ $(document).ready(function() {
 </script>
 
 <script>
-function selectfrom(element) {
-    let valfrom = $(element).val();
-    let status = <?php echo json_encode($status) ?>;
-    let valto = $('#val_to').val();
+function selectstatus(element) {
+    let sid = $(element).val();
+    let section = <?php echo json_encode($section) ?>;
     $('#table_task').DataTable().destroy();
     $('#show_task').empty();
-    if (valfrom) {
+    if (sid) {
         $.ajax({
             type: "post",
-            url: "ajax_valfrom.php",
+            url: "task_details_ajax.php",
             data: {
-                "valfrom": valfrom,
-                "status": status,
-                "valto": valto
+                "sid": sid,
+                "section": section
             },
             success: function(response) {
                 $('#show_task').append(response);
@@ -185,23 +202,19 @@ function selectfrom(element) {
         });
     }
 }
-</script>
 
-<script>
-function selectto(element) {
-    let valto = $(element).val();
-    let status = <?php echo json_encode($status) ?>;
-    let valfrom = $('#val_from').val();
+function selecttaskstatus(element) {
+    let sid = $(element).val();
+    let section = <?php echo json_encode($section) ?>;
     $('#table_task').DataTable().destroy();
     $('#show_task').empty();
-    if (valto) {
+    if (sid) {
         $.ajax({
             type: "post",
-            url: "ajax_valto.php",
+            url: "task_details_status_ajax.php",
             data: {
-                "valfrom": valfrom,
-                "status": status,
-                "valto": valto
+                "sid": sid,
+                "section": section
             },
             success: function(response) {
                 $('#show_task').append(response);

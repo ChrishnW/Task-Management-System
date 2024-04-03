@@ -84,8 +84,20 @@ include('../include/auth.php');
                         <li>
                             <a href="index.php"><i class="fa fa-search fa-fw"></i> Dashboard</a>
                         </li>
+                 
                         <li>
-                            <a href="my_tasks.php?username=<?php echo $username?>"><i class="fa fa-tasks fa-fw"></i> My Tasks</a>
+                            <a href="#"><i class="fa fa-id-badge fa-fw"></i> Task Details<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                <a href="task_details.php?section=MIS"><i class="fa fa-tasks fa-fw"></i> Management Information System</a>
+                                </li>
+                                <li>
+                                <a href="task_details.php?section=SK"><i class="fa fa-tasks fa-fw"></i> System Kaizen</a>
+                                </li>
+                                <li>
+                                <a href="task_details.php?section=FEM"><i class="fa fa-tasks fa-fw"></i> Facility and Equipment Maintenace</a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </div>

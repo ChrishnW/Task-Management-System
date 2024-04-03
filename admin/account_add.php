@@ -6,6 +6,7 @@ include('../include/header.php');
 <link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
+<link href="../assets/css/darkmode.css" rel="stylesheet">
 <style>
 .form-group.required label {
     font-weight: bold;
@@ -79,6 +80,14 @@ include('../include/header.php');
                                                     name="email" id="email">
                                             </div>
 
+                                            <!-- Added Employee Card Number -->
+                                            <div class="form-group" required>
+                                                <label>Card Number:</label><span class="pull-right help-block with-errors"
+                                                    style="margin: 0px; font-size: 11px;"></span>
+                                                <input type="text" placeholder="ENTER CARD NUMBER" class="form-control"
+                                                    name="card" id="card" required>
+                                            </div>
+
                                             <div class="form-group required">
                                                 <label>Access:</label>
                                                 <select name="access" id="access" required
@@ -126,7 +135,6 @@ include('../include/header.php');
                                                         </span> Cancel</button></a>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </form>
                                     

@@ -11,7 +11,7 @@
                 <center>
                     <i style="color:#e13232; font-size:80px;" class="fa fa-times-circle "></i>
                     <br><br>
-                    Account already exists!
+                    Username or the Card Number is already exists!
                 </center>
             </div>
             <div class="modal-footer">
@@ -26,6 +26,7 @@
 include('../include/link.php');
 include('../include/connect.php');
 
+$card = $_POST['card'];
 $username = $_POST['username'];
 $fname = $_POST['fname'];
 $lname = $_POST['lname'];
@@ -34,7 +35,7 @@ $access = $_POST['access'];
 $section = $_POST['section'];
 
 $con->next_result();
-$check=mysqli_query($con,"SELECT * FROM accounts WHERE username='$username'");
+$check=mysqli_query($con,"SELECT * FROM accounts WHERE username='$username' OR card='$card'");
 $checkrows=mysqli_num_rows($check);
 
     
@@ -44,8 +45,9 @@ if($checkrows>0) {
 }
 else {
     $con->next_result();   
-    $query = "INSERT INTO accounts (username,password,fname,lname,email,access,sec_id,status)
+    $query = "INSERT INTO accounts (card,username,password,fname,lname,email,access,sec_id,status)
         VALUES(
+        (('$card')),
         (UPPER('$username')),
         (('12345')),
         (UPPER('$fname')),
@@ -56,6 +58,6 @@ else {
         (('1'))
         )";
         $result = mysqli_query($con, $query) or die('Error querying database.');                        
-    header('location: account_list.php'); 
+    header('location: account_list.php');
 }
 ?>

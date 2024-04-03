@@ -1,4 +1,5 @@
  /*--
+ /*--
 Author: W3Layouts
 Author URL: http://w3layouts.com
 License: Creative Commons Attribution 3.0 Unported
@@ -177,7 +178,6 @@ input[type="Password"] {
 }
 
 
-
 .w3_info img{
     width: 100px;
     height: 100px;
@@ -192,6 +192,7 @@ input[type="Password"] {
 }
 .w3_info span{    
 color: #5379fa !important;
+margin: auto;
 }
 .w3_info h6 {
     text-align: center;
@@ -267,7 +268,7 @@ h3.agileits {
 .container {
     width: 64%;
     margin: 0 auto;
-    background-color:#fff;
+    background-color: rgb(24, 26, 27);
 }
 i.fa.fa-user {
    font-size: 20px;
@@ -441,4 +442,4 @@ h5{
 } 
 /** /Responsive **/
 
-
+}

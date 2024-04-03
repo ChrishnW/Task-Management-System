@@ -32,6 +32,7 @@ $task_class = $_POST['task_class'];
 $task_for = $_POST['task_for'];
 $status = $_POST['status'];
 $id= $_POST["id"];
+$approval_status = $_POST['approval_status'];
 
 $con->next_result();
 $check=mysqli_query($con,"SELECT * FROM task_list WHERE task_class='$task_class' AND task_for='$task_for' AND id=$id");
@@ -82,13 +83,14 @@ if($checkrows>0) {
     
     $task_code = $task_for.'-'.$prefix . '-' . str_pad($numeric_portion, 6, '0', STR_PAD_LEFT);
 
-    $sql = "INSERT INTO task_list (task_code, task_name, task_details, task_class, task_for, status) VALUES (:task_code, :task_name, :task_details, :task_class, :task_for, 1)";
+    $sql = "INSERT INTO task_list (task_code, task_name, task_details, task_class, task_for, status, approval_status) VALUES (:task_code, :task_name, :task_details, :task_class, :task_for, 1, 1)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':task_code', $task_code);
     $stmt->bindParam(':task_name', $task_name);
     $stmt->bindParam(':task_details', $task_details);
     $stmt->bindParam(':task_class', $task_class);
     $stmt->bindParam(':task_for', $task_for);
+    $stmt->bindParam(':approval_status', $approval_status);
     $stmt->execute();
     header('location: task_list.php');
 }

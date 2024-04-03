@@ -5760,9 +5760,9 @@ button.list-group-item-danger.active:focus {
   border-color: #d6e9c6;
 }
 .panel-success > .panel-heading {
-  color: #3c763d;
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
+  color: #3c763d; 
+  background-color: rgb(30, 32, 33);
+  border-color: transparent;
 }
 .panel-success > .panel-heading + .panel-collapse > .panel-body {
   border-top-color: #d6e9c6;
@@ -5899,10 +5899,7 @@ button.list-group-item-danger.active:focus {
   font-size: 21px;
   font-weight: bold;
   line-height: 1;
-  color: #000;
-  text-shadow: 0 1px 0 #fff;
-  filter: alpha(opacity=20);
-  opacity: .2;
+  color: white;
 }
 .close:hover,
 .close:focus {

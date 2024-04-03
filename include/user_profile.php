@@ -39,6 +39,7 @@ include('auth.php');
     <link href="../assets/css/dataTables.bootstrap.css" rel="stylesheet">    
     <link href="../assets/css/bootstrap-toggle.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/bootstrap-select.css">
+    <link href="../assets/css/darkmode.css" rel="stylesheet">
 
     <style>
         #page-wrapper {
@@ -46,6 +47,8 @@ include('auth.php');
             margin: 0 0 0 0px;
             padding: 0 30px;
             border-left: 1px solid #e7e7e7;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
         }
     </style>
 </head>
@@ -64,14 +67,14 @@ include('auth.php');
         <ul class="nav navbar-top-links navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fas fa-users fa-fw"></i> <?php ?> <i class="fas fa-caret-down"></i>
+                    <i class="fas fa-user fa-fw"></i> <?php ?> <i class="fas fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
                     <li>
                         <a href="user_profile.php?username=<?php echo $username; ?>"><i class="fa fa-user fa-fw"></i> User Profile</a>
                     </li>
                     <li>
-                        <a href="logout.php"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</a>
+                        <a href="logout.php"><i class="fas fa-door-open fa-fw"></i> Logout</a>
                     </li>
                 </ul>
             </li>
@@ -102,31 +105,31 @@ include('auth.php');
                             <div class="col-lg-12">
                                 <div class="form-group">
                                 <label>User Name:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
-                                <input class="form-control" placeholder="Enter Username" name="username"   value="<?php echo $row['username']; ?>"  onkeyup="keypress();" required pattern="[a-zA-Z0-9]+" data-error="Invalid input!">
+                                <input class="form-control" placeholder="Enter Username" name="username" disabled value="<?php echo $row['username']; ?>"  onkeyup="keypress();" required pattern="[a-zA-Z0-9]+" data-error="Invalid input!">
                                 </div>
                             </div>
                             <div class="col-lg-12">
                                 <div class="form-group">
                                 <label>First Name:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
-                                <input class="form-control" placeholder="Enter First Name" name="fname"  value="<?php echo $row['fname']; ?>"  onkeyup="keypress();" pattern="[a-zA-Z\s]+" data-error="Invalid input!">
+                                <input class="form-control" placeholder="Enter First Name" name="fname" disabled value="<?php echo $row['fname']; ?>"  onkeyup="keypress();" pattern="[a-zA-Z\s]+" data-error="Invalid input!">
                                 </div>
                             </div>
                             <div class="col-lg-12">
                                 <div class="form-group">
                                 <label>Last Name:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
-                                <input class="form-control" placeholder="Enter Last Name" name="lname" value="<?php echo $row['lname']; ?>"  onkeyup="keypress();" pattern="[a-zA-Z\s]+" data-error="Invalid input!">
+                                <input class="form-control" placeholder="Enter Last Name" name="lname" disabled value="<?php echo $row['lname']; ?>"  onkeyup="keypress();" pattern="[a-zA-Z\s]+" data-error="Invalid input!">
                                 </div>
                             </div>
                             <div class="col-lg-12">
                                 <div class="form-group">
-                                <label>Email Account:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
-                                <input class="form-control" placeholder="Enter E-mail" name="email" value="<?php echo $row['email']; ?>"  onkeyup="keypress();" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" data-error="Invalid input!">
+                                <label>Email Account:</label><span class="pull-right help-block with-errors" disabled style="margin: 0px; font-size: 11px;"></span>
+                                <input class="form-control" placeholder="Enter E-mail" name="email" disabled value="<?php echo $row['email']; ?>"  onkeyup="keypress();" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" data-error="Invalid input!">
                                 </div>
                             </div>
                             <div class="col-lg-12">
                                 <div class="form-group">
                                 <label>Section:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
-                                <select name="section" id="section" class="form-control selectpicker show-menu-arrow" data-live-search="true">
+                                <select name="section" id="section" disabled class="form-control selectpicker show-menu-arrow" data-live-search="true">
                                 <option selected value="<?php echo $row['sec_id']; ?>"><?php echo $row['sec_name']; ?></option>
                                 <?php
                                     $sql = mysqli_query($con,"SELECT * FROM section WHERE status='1' AND sec_id != '$sec_id'"); 
@@ -145,7 +148,7 @@ include('auth.php');
                             <div class="col-lg-12">
                                 <div class="form-group">
                                 <label>Access:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
-                                <select name="access" id="access" class="form-control selectpicker show-menu-arrow" data-live-search="true">
+                                <select name="access" id="access" disabled class="form-control selectpicker show-menu-arrow" data-live-search="true">
                                 <option selected value="<?php echo $row['access_code']; ?>"><?php echo strtoupper($row['access']); ?></option>
                                 <?php
                                     $sql = mysqli_query($con,"SELECT * FROM access WHERE id !='$access_code'"); 
@@ -163,8 +166,8 @@ include('auth.php');
 
                             <div class="col-lg-12 ">
                                 <div class="form-group">
-                                    <button type="button" id="submit-btn" name="submit" value="submit" class="btn btn-success pull-right" data-toggle="modal" data-target="#submitModal" disabled>
-                                    Update Account</button>
+                                    <!-- <button type="button" id="submit-btn" name="submit" value="submit" class="btn btn-success pull-right" data-toggle="modal" data-target="#submitModal" disabled>
+                                    Update Account</button> -->
                                     <a href="change_password.php?username=<?php echo $username; ?>"><button type="button" id="submit-btn" class="btn btn-primary pull-left">Change Password</button></a>
                                 </div>
                             </div>
@@ -195,10 +198,11 @@ include('auth.php');
                             </div>                        
                         </form>
                     </div>
+                    <br>
+                    <a href="home.php"> <button class='btn btn-danger pull-left'><i class="fa fa-arrow-left"></i> Return to Homepage</button></a>
                 </div>
             </div>
         </div>
-        <a href="home.php"> <button class='btn btn-danger pull-left'><i class="fa fa-arrow-left"></i> Return to Homepage</button></a>
     </div>
 </div>
 

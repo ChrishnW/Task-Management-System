@@ -59,7 +59,7 @@ include('../include/auth.php');
                     <ul class="dropdown-menu dropdown-user">
                         <li><a href="../include/user_profile.php?modal=hide"><i class="fa fa-user fa-fw"></i> User Profile</a>
                         </li>
-                        <li><a href="../include/logout.php"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li><a href="../include/logout.php"><i class="fa fa-door-open fa-fw"></i> Logout</a>
                     </ul>
                 </li>
             </ul>

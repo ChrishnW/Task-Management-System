@@ -2,6 +2,7 @@
 <?php 
 include('../include/header.php');
 include('../include/connect.php');
+include('../include/bubbles.php');
 $section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not found.'); 
 ?>
 <html>
@@ -9,6 +10,7 @@ $section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not fou
 <link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
+<link href="../assets/css/darkmode.css" rel="stylesheet">
 
     <title>Task Details</title>
 </head>
@@ -16,6 +18,7 @@ $section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not fou
 <body>
     <div id="wrapper">
         <div id="page-wrapper">
+        <br>
         <h1 class="page-header"><?php echo $section ?> Task Details
         <a href="task_details_xls.php?section=<?php echo $section ?>"> <button class="btn btn-success pull-right"><span class="fa fa-download"></span> Download</button></a></h1>
             <div class="row">
@@ -100,7 +103,7 @@ $section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not fou
                                         <?php
                                         /* and access!='1' */
                                         $con->next_result();
-                                        $result = mysqli_query($con,"SELECT tasks_details.task_code, task_list.task_name, task_list.task_details, task_class.task_class, task_list.task_for, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, accounts.fname, accounts.lname, tasks_details.remarks FROM tasks_details LEFT JOIN task_list ON task_list.task_code=tasks_details.task_code  LEFT JOIN task_class ON task_list.task_class=task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE task_list.task_for='$section' AND tasks_details.task_status IS TRUE ORDER BY tasks_details.due_date ASC");               
+                                        $result = mysqli_query($con,"SELECT tasks_details.task_code, task_list.task_name, task_list.task_details, task_class.task_class, task_list.task_for, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, accounts.fname, accounts.lname, tasks_details.remarks, tasks_details.reschedule  FROM tasks_details LEFT JOIN task_list ON task_list.task_code=tasks_details.task_code  LEFT JOIN task_class ON task_list.task_class=task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE task_list.task_for='$section' AND tasks_details.task_status IS TRUE ORDER BY tasks_details.due_date ASC");               
                                         if (mysqli_num_rows($result)>0) { 
                                             while ($row = $result->fetch_assoc()) {
 
@@ -110,12 +113,14 @@ $section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not fou
                                                     $due_date = date_create($row['due_date']);
                                                     $int = date_diff($due_date, $date_accomplished);
                                                     $interval = $int->format("%R%a");
-                                                    if ($interval<=0) {
+                                                    $resched = $row['reschedule'];
+                                                    if ($interval<=0 && $resched == 0 ) {
                                                       $achievement = '3';
-                                                    } else if ($interval>0 && $interval<=7) {
+                                                    } 
+                                                        else if ($interval<=0 && $resched == 2 ) {
                                                         $achievement = '2';
-                                                    } else if ($interval>7) {
-                                                      $achievement = '1';
+                                                    } else if ($interval>0) {
+                                                        $achievement = '1';
                                                     } else {
                                                         $achievement = '0';
                                                     }

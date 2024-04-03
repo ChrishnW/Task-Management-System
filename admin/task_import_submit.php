@@ -89,7 +89,7 @@ if(isset($_POST['save_excel_data']))
                   $pdo = new PDO( "mysql:host=localhost;dbname=gtms", "gtms", "p@55w0rd$$$" );
                   $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION ); 
 
-                  $sql = "INSERT INTO tasks_details (task_code, date_created, due_date, in_charge, status, task_status) VALUES (:task_code, :date_created, :due_date, :in_charge, :status, 1)";
+                  $sql = "INSERT INTO tasks_details (task_code, date_created, due_date, in_charge, status, task_status, approval_status, reschedule) VALUES (:task_code, :date_created, :due_date, :in_charge, :status, 1, 1, 0)";
                   $stmt = $pdo->prepare($sql);
                   $stmt->bindParam(':task_code', $task_code);
                   $stmt->bindParam(':date_created', $date_created);

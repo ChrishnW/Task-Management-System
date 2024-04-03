@@ -6,7 +6,7 @@ if(isset($_POST['sid'])){
     $ID = $_POST['sid'];
     if ($ID=='ALL') {
         $con->next_result();
-        $result = mysqli_query($con,"SELECT tasks_details.task_code, task_list.task_name, task_list.task_details, task_class.task_class, task_list.task_for, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, accounts.fname, accounts.lname FROM tasks_details LEFT JOIN task_list ON task_list.task_code=tasks_details.task_code  LEFT JOIN task_class ON task_list.task_class=task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE tasks_details.status='$task_status'");    
+        $result = mysqli_query($con,"SELECT tasks_details.task_code, task_list.task_name, task_list.task_details, task_class.task_class, task_list.task_for, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, accounts.fname, accounts.lname, tasks_details.reschedule FROM tasks_details LEFT JOIN task_list ON task_list.task_code=tasks_details.task_code  LEFT JOIN task_class ON task_list.task_class=task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE tasks_details.status='$task_status'");    
             
         if (mysqli_num_rows($result)>0) { 
             while ($row = mysqli_fetch_array($result)) {   
@@ -16,7 +16,11 @@ if(isset($_POST['sid'])){
                             $due_date = date_create($row['due_date']);
                             $int = date_diff($due_date, $date_accomplished);
                             $interval = $int->format("%R%a");
-                            if ($interval<=0) {
+                            $resched = $row['reschedule'];
+                            if ($interval<=0 && $resched == 0 ) {
+                              $achievement = '3';
+                            } 
+                              else if ($interval<=0 && $resched == 2 ) {
                                 $achievement = '2';
                             } else if ($interval>0) {
                                 $achievement = '1';
@@ -54,7 +58,7 @@ if(isset($_POST['sid'])){
         } 
     } else {
         $con->next_result();
-        $result = mysqli_query($con,"SELECT tasks_details.task_code, task_list.task_name, task_list.task_details, task_class.task_class, task_list.task_for, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, accounts.fname, accounts.lname FROM tasks_details LEFT JOIN task_list ON task_list.task_code=tasks_details.task_code  LEFT JOIN task_class ON task_list.task_class=task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE task_list.task_class='$ID' AND tasks_details.status='$task_status'");    
+        $result = mysqli_query($con,"SELECT tasks_details.task_code, task_list.task_name, task_list.task_details, task_class.task_class, task_list.task_for, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, accounts.fname, accounts.lname, tasks_details.reschedule FROM tasks_details LEFT JOIN task_list ON task_list.task_code=tasks_details.task_code  LEFT JOIN task_class ON task_list.task_class=task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE task_list.task_class='$ID' AND tasks_details.status='$task_status'");    
                
         if (mysqli_num_rows($result)>0) { 
             while ($row = mysqli_fetch_array($result)) {    
@@ -64,7 +68,11 @@ if(isset($_POST['sid'])){
                             $due_date = date_create($row['due_date']);
                             $int = date_diff($due_date, $date_accomplished);
                             $interval = $int->format("%R%a");
-                            if ($interval<=0) {
+                            $resched = $row['reschedule'];
+                            if ($interval<=0 && $resched == 0 ) {
+                              $achievement = '3';
+                            } 
+                              else if ($interval<=0 && $resched == 2 ) {
                                 $achievement = '2';
                             } else if ($interval>0) {
                                 $achievement = '1';
