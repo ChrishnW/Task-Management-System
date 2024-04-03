@@ -1,6 +1,7 @@
 <?php
 include('connect.php');
-include('auth.php'); ?>
+include('auth.php'); 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,7 +75,7 @@ include('auth.php'); ?>
             <div class="col-lg-7">
                 <div class="well">
                     <div class="row">
-                        <form data-toggle="validator" action="change_password_submit.php?username=<?php echo $_GET['username']; ?>" enctype="multipart/form-data" method="post">
+                        <form data-toggle="validator" action="change_password_submit.php" enctype="multipart/form-data" method="post">
                             <div class="col-lg-12">
                                 <div class="form-group">
                                 <label>Old Password:</label><span class="pull-right help-block with-errors" id="divCheckOldPassword" style="margin: 0px; font-size: 11px;"></span>

@@ -10,19 +10,26 @@ if(isset($_POST['sid'])){
         while ($row = $result->fetch_assoc()) {                                                
             $emp_name=$row['fname'].' '.$row['lname'];
             $username=$row["username"];
+            $id = $row['card'];
             $label='Task/(s)';
             $emp_avg = 0;
+            if (empty($row["file_name"])) {
+                // Use a default image URL
+                $imageURL = '../assets/img/user-profiles/nologo.png';
+            } else {
+                // Use the image URL from the database
+                $imageURL = '../assets/img/user-profiles/'.$row["file_name"];
+            }  
             $formatted_number = number_format($emp_avg, 2);
-            $count_task = mysqli_query($con,"SELECT COUNT(tasks_details.task_code) as total_task FROM tasks_details WHERE tasks_details.in_charge = '$username' AND MONTH(tasks_details.due_date) = '$ID' AND tasks_details.reschedule != '1'");
+            $count_task = mysqli_query($con,"SELECT COUNT(tasks_details.task_code) as total_task FROM tasks_details WHERE tasks_details.in_charge = '$username' AND MONTH(tasks_details.due_date) = '$ID' AND tasks_details.reschedule != '1' AND tasks_details.task_status IS TRUE");
             $count_task_row = $count_task->fetch_assoc();
             $total_task=$count_task_row['total_task'];
             if ($total_task=='0') {
                 $total_task='No';
-                $rate = '☆☆☆☆☆';
+                $rate = '<span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span>';
                 echo 
-                "<tr>                                                
-                <td><center /<>" . $username . "</td>                  
-                <td><center /> " . $emp_name . "</td>
+                "<tr>                                                               
+                <td style='text-align: justify'> <img src=".$imageURL." title=".$username." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>
                 <td><center />" . $formatted_number . '<br>' . $rate . "</td>
                 <td><center /> " . $total_task .' '.$label. "</td>
                 </tr>";
@@ -43,7 +50,7 @@ if(isset($_POST['sid'])){
                 $two = 0;
                 $one = 0;
                 $zero = 0;
-                $avg_task = mysqli_query($con,"SELECT tasks_details.date_created, tasks_details.achievement, tasks_details.due_date, tasks_details.date_accomplished, tasks_details.in_charge, accounts.username, accounts.sec_id, tasks_details.task_code, tasks_details.resched_reason, task_list.task_name, task_list.task_class, tasks_details.reschedule, tasks_details.remarks, tasks_details.status FROM tasks_details LEFT JOIN accounts ON tasks_details.in_charge = accounts.username LEFT JOIN task_list ON tasks_details.task_code = task_list.task_code WHERE MONTH(tasks_details.due_date) = '$ID' AND accounts.username = '$username' AND tasks_details.reschedule != '1'");
+                $avg_task = mysqli_query($con,"SELECT tasks_details.date_created, tasks_details.achievement, tasks_details.due_date, tasks_details.date_accomplished, tasks_details.in_charge, accounts.username, accounts.sec_id, tasks_details.task_code, tasks_details.resched_reason, task_list.task_name, task_list.task_class, tasks_details.reschedule, tasks_details.remarks, tasks_details.status FROM tasks_details LEFT JOIN accounts ON tasks_details.in_charge = accounts.username LEFT JOIN task_list ON tasks_details.task_code = task_list.task_code WHERE MONTH(tasks_details.due_date) = '$ID' AND accounts.username = '$username' AND tasks_details.reschedule != '1' AND tasks_details.task_status IS TRUE");
                 if (mysqli_num_rows($avg_task)>0) { 
                     while ($rows = $avg_task->fetch_assoc()) { 
                     $taskcode = $rows['task_code'];
@@ -87,29 +94,28 @@ if(isset($_POST['sid'])){
                 // Rating
                 // $formatted_number = 1.6; (FOR CHECKING)
                 if ($formatted_number >= 3) {
-                    $rate = '<span style="color: yellow">★★★★★</span>';
+                    $rate = '<span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star" style="color: yellow"></span>';
                 }
                 elseif ($formatted_number >= 2.6){
-                    $rate = '<span style="color: yellow">★★★★</span>☆';
+                    $rate = '<span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star"></span>';
                 }
                 elseif ($formatted_number >= 2) {
-                    $rate = '<span style="color: yellow">★★★</span>☆☆';
+                    $rate = '<span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star"></span><span class="fa fa-star"></span>';
                 }
                 elseif ($formatted_number >= 1.6) {
-                    $rate = '<span style="color: yellow">★★</span>☆☆☆';
+                    $rate = '<span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span>';
                 }
                 elseif ($formatted_number >= 0.5) {
-                    $rate = '<span style="color: yellow">★</span>☆☆☆☆';
+                    $rate = '<span class="fa fa-star" style="color: yellow"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span>';
                 }
                 else {
-                    $rate = '☆☆☆☆☆';
+                    $rate = '<span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span>';
                 }
                 echo 
-                "<tr>
-                <td><center /<>" . $username . "</td>
-                <td><center /> " . $emp_name . "</td>
+                "<tr>               
+                <td style='text-align: justify'> <img src=".$imageURL." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>
                 <td><center />" . $formatted_number . '<br>' . $rate . "</td>
-                <td><center /> ". $tasktotal .' '.$label."<a href='performance_list_ajax.php?id=".$username."&month=".$ID."'> <button class='btn btn-sm btn-success pull-right'><i class='fas fa-eye'></i> View</button></a>"."</td>
+                <td><center /> ". $tasktotal .' '.$label."<a href='performance_list.php?id=".$username."'> <button class='btn btn-sm btn-success pull-right'><i class='fas fa-eye'></i> View</button></a>"."</td>
                 </tr>";
             }
         }

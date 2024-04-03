@@ -2,9 +2,9 @@
 	include('include/login.php'); 
 	
 	if(isset($_SESSION['SESS_MEMBER_ID'])){    
-	header('location: include/home.php');
+		header('location: include/home.php');
 	}
-	?>
+?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -24,24 +24,29 @@
 		<title>G-TMS</title>
 		<style>
 			.container {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100vh;
-			margin-left: auto;
-			margin-right: auto;
-			position: relative;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				margin-left: auto;
+				margin-right: auto;
+				position: relative;
+			}
+			body {
+				background-image: url(assets/img/gtms.png);
+				background-position: bottom -100px right -100px;
+				background-size: 500px;
+				background-repeat: no-repeat;
 			}
 		</style>
 	</head>
 	<body>
-		<div id="particles-js"></div>
 		<div class="container">
 			<div class="w3_info">
 				<center> 
 					<a href="index.php"><img src="assets/img/logo.jpg"></a>
 				</center>
-				<h2>GLORY TASK MANAGEMENT
+				<h2>TASK MANAGEMENT
 				<br>
 				<span>SYSTEM</span></h2>
 				<label style="color:red;"><?php echo $error; ?></label>
@@ -53,7 +58,7 @@
 					</div>
 					<div class="input-group">
 						<span><i aria-hidden="true" class="fas fa-unlock"></i></span>
-						<input type="password" class="form-control" id="password" name="password" placeholder="Password">
+						<input type="password" class="form-control" id="password" name="password" placeholder="PASSWORD">
 						<span title="Show Password" style="cursor: pointer;"><i id="togglePassword" class="fa fa-eye" aria-hidden="true"></i></span>
 					</div>
 					<small class="form-text text-danger d-none" id="password-caps-warning">Warning: Caps lock enabled</small> <button class="btn btn-danger btn-block" name="submit" type="submit" value="submit">Sign In</button><br>
@@ -66,11 +71,10 @@
 						echo $fromyear . (($fromyear != $thisyear) ? '-' .$thisyear : '');
 						?>  GLORY (PHILIPPINES), INC. 
 				</h6>
+				<h6>version 3.00a</h6>
 			</div>
 		</div>
 	</body>
-	<script src="assets/js/particles.js"></script>
-	<script src="assets/js/app.js"></script>
 	<script src="assets/js/validator.js"></script>
 	<script type="text/javascript">
 		(function() {

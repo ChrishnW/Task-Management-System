@@ -1,14 +1,24 @@
 <?php
 include('../include/header.php');
+include('../include/connect.php');
 
 @$from=$_GET['from'];
 @$to=$_GET['to'];  $from = date('Y-m-d', strtotime($from.' -1 days'));?>
 
+<html>
+<link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
+<link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
+<link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
+<link href="../assets/css/darkmode.css" rel="stylesheet">
+
+<head>
+<title>Dayoff Calendar</title>
+</head>
+<div id="content" class="p-4 p-md-5 pt-5">
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Add Day off
-            <a href="javascript:history.back()"><button type="button" class="btn btn-danger pull-right"><span class="fas fa-reply"> </span> Back</button></a></h1>
+            <h1 class="page-header">Select Date Range</h1>
         </div>
     </div>
     <div class="row">
@@ -23,22 +33,22 @@ include('../include/header.php');
                 <input type="date" name="to" class="form-control" value="<?php echo $_GET['to']; ?>" required>
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary"><span class="fas fa-check"> </span> Submit</button>
+                <button type="submit" class="btn btn-primary"><span class="fa fa-search"> </span> Generate Dates</button>
             </div>
             </form>
         </div>
     </div>
     <br>
     <div class="row">
-        <div class="col-lg-10">
+        <div class="col-lg-9">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                   <strong>Add Day off</strong>
+                   <strong>Select the day/(s) off</strong>
                 </div>
                 <div class="panel-body">
                     <form class="form-horizontal" data-toggle="validator" action="dayoff_add_submit.php" enctype="multipart/form-data" method="post">
                         <div class="form-group">
-                            <label class="control-label col-sm-3">Select Day off: <font color="red">*</font></label>
+                            <label class="control-label col-sm-3">Select: <font color="red">*</font></label>
                             <div class="col-sm-9">  
                                 <select class="selectpicker show-menu-arrow  form-control" id="setdate"  name="setdate[]" data-live-search="true" multiple required>
                                    <?php
@@ -70,7 +80,7 @@ include('../include/header.php');
 
                         <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"  aria-hidden="true">
                             <div class="modal-dialog modal-sm">
-                                <div class="modal-content panel-info">
+                                <div class="modal-content panel-success">
                                     <div class="modal-header panel-heading">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                             <h4 class="modal-title" id="myModalLabel">Confirmation</h4>
@@ -92,7 +102,7 @@ include('../include/header.php');
                         </div>            
                         <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" aria-hidden="true">
                             <div class="modal-dialog modal-sm">
-                                <div class="modal-content panel-info">
+                                <div class="modal-content panel-success">
                                     <div class="modal-header panel-heading">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                         <h4 class="modal-title" id="myModalLabel">Confirmation</h4>
@@ -114,8 +124,10 @@ include('../include/header.php');
                     </form>
                 </div>
             </div>
+            <a href='#' onclick="history.back()"> <button class='btn btn-danger pull-left'><i class='fa fa-arrow-left'></i> Return to Day off</button></a>
         </div>
     </div>
+</div>
 </div>
 </div>
 </body>

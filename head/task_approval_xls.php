@@ -34,9 +34,9 @@ include('../include/connect.php');
             <thead>
                 <tr>
                     <th>Task Name</th>
+                    <th>Task Name</th>
                     <th>Task Class</th>
                     <th>Task For</th>
-                    <th>Date Created</th>
                     <th>Old Due Date</th>
                     <th>New Due Date</th>
                     <th>In-Charge</th>
@@ -64,11 +64,11 @@ include('../include/connect.php');
                     $class = "red";
                 }
                 echo "
-                <tr class='".$class."'> 
+                <tr> 
+                <td>" . $row["task_code"] . "</td>   
                 <td>" . $row["task_name"] . "</td>   
                 <td>" . $row["task_class"] . "</td> 
                 <td>" . $row["task_for"] . "</td> 
-                <td>" . $row["date_created"] . "</td> 
                 <td>" . $row['expired_due_date'] . "</td> 
                 <td>" . $row["due_date"] . "</td> 
                 <td>" . $row["fname"].' '.$row["lname"] . "</td>

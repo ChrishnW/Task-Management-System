@@ -10,39 +10,35 @@ $section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not fou
 <link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
 <link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
-<link href="../assets/css/darkmode.css" rel="stylesheet">
-
-    <title>Task Details</title>
+<title>Task Details</title>
 </head>
 
-<body>
+<div id="content" class="p-4 p-md-5 pt-5">
     <div id="wrapper">
         <div id="page-wrapper">
         <br>
         <h1 class="page-header"><?php echo $section ?> Task Details
-        <a href="task_details_xls.php?section=<?php echo $section ?>"> <button class="btn btn-success pull-right"><span class="fa fa-download"></span> Download</button></a></h1>
+        <a href="task_details_xls.php?section=<?php echo $section ?>"> <button class="btn btn-success pull-right" style="margin-top: 95px;"><span class="fa fa-download fa-fw"></span> Download</button></a></h1>
             <div class="row">
-                <div class="col-lg-4">
+                <div class="col-lg-2">
                 <label>Status:</label><br>
-                    <select name="show_status" id="show_status" class="form-control selectpicker show-menu-arrow "
-                        placeholder="" onchange="selectstatus(this)">
+                    <select name="show_status" id="show_status" class="form-control selectpicker show-menu-arrow" placeholder="" onchange="selectstatus(this)">
                         <option disabled selected value="">--Filter by Status--</option>
-                        <option selected value="ALL">ALL</option>
-                        <option value="NOT YET STARTED">NOT YET STARTED</option>
-                        <option value="IN PROGRESS">IN PROGRESS</option>
-                        <option value="FINISHED">FINISHED</option>
+                        <option value="ALL">All</option>
+                        <option value="NOT YET STARTED">Not Yet Started</option>
+                        <option value="IN PROGRESS">In Progress</option>
+                        <option value="FINISHED">Finished</option>
                     </select>
                     <br>
                     <br>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-2">
                 <label>Task Status:</label><br>
-                    <select name="show_status" id="show_status" class="form-control selectpicker show-menu-arrow "
-                        placeholder="" onchange="selecttaskstatus(this)">
+                    <select name="show_status" id="show_status" class="form-control selectpicker show-menu-arrow " placeholder="" onchange="selecttaskstatus(this)">
                         <option disabled selected value="">--Filter by Task Status--</option>
-                        <option selected value="ALL">ALL</option>
-                        <option value="1">ACTIVE</option>
-                        <option value="0">INACTIVE</option>
+                        <option value="ALL">All</option>
+                        <option value="1">Deployed</option>
+                        <option value="0">Not deployed</option>
                     </select>
                     <br>
                     <br>
@@ -57,44 +53,40 @@ $section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not fou
                         </div>
                         <div class="panel-body">
                             <div class="table-responsive">
-                            <a href="assign_task.php?section=<?php echo $section ?>"> <button class='btn btn-success  pull-right'><i class="fa fa-plus"></i> Add</button></a><br><br><br>
-                                <table width="100%" class="table table-striped table-bordered table-hover "
-                                    id="table_task">
+                            <a href="assign_task.php?section=<?php echo $section ?>"> <button class='btn btn-success  pull-right'><i class="fa fa-plus fa-fw"></i> Assign New Task</button></a><br><br><br>
+                                <table width="100%" class="table table-striped table-hover " id="table_task">
 
                                     <thead>
                                         <tr>
-                                            <th class="col-lg-2">
+                                            <th scope="col">
+                                                Action
+                                            </th>
+                                            <th scope="col">
+                                                Task Code
+                                            </th>
+                                            <th scope="col" title="Legend">
+                                                <i class='fa fa-asterisk' />
+                                            </th>
+                                            <th scope="col">
                                                 Task Name
                                             </th>
-                                            <th class="col-lg-2">
+                                            <th scope="col">
                                                 Task Classification
                                             </th>
-                                            <th class="col-lg-2">
-                                                Task For
-                                            </th>
-                                            <th class="col-lg-1">
+                                            <th scope="col">
                                                 Date Created
                                             </th>
-                                            <th class="col-lg-1">
+                                            <th scope="col">
                                                 Due Date
                                             </th>
-                                            <th class="col-lg-1">
+                                            <th scope="col">
                                                 In-charge
                                             </th>
-                                            <th class="col-lg-1">
+                                            <th scope="col">
+                                                Stage
+                                            </th>
+                                            <th scope="col">
                                                 Status
-                                            </th>
-                                            <th class="col-lg-1">
-                                                Date Accomplished
-                                            </th>
-                                            <th class="col-lg-1">
-                                                Remarks
-                                            </th>
-                                            <th class="col-lg-1">
-                                                Achievement
-                                            </th>
-                                            <th class="col-lg-1">
-                                                Action
                                             </th>
                                         </tr>
                                     </thead>
@@ -103,83 +95,83 @@ $section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not fou
                                         <?php
                                         /* and access!='1' */
                                         $con->next_result();
-                                        $result = mysqli_query($con,"SELECT tasks_details.task_code, task_list.task_name, task_list.task_details, task_class.task_class, task_list.task_for, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, accounts.fname, accounts.lname, tasks_details.remarks, tasks_details.reschedule  FROM tasks_details LEFT JOIN task_list ON task_list.task_code=tasks_details.task_code  LEFT JOIN task_class ON task_list.task_class=task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE task_list.task_for='$section' AND tasks_details.task_status IS TRUE ORDER BY tasks_details.due_date ASC");               
+                                        $result = mysqli_query($con,"SELECT *, (tasks_details.status) FROM tasks_details JOIN accounts ON accounts.username = tasks_details.in_charge JOIN task_class ON tasks_details.task_class = task_class.id WHERE task_status = 1 AND task_for = '$section'");
                                         if (mysqli_num_rows($result)>0) { 
                                             while ($row = $result->fetch_assoc()) {
+                                                $task_class = $row['task_class'];
+                                                $emp_name=$row['fname'].' '.$row['lname'];
 
-                                                if ($row['date_accomplished']!='') {
-                                                    $class = "";
-                                                    $date_accomplished = date_create($row['date_accomplished']);
-                                                    $due_date = date_create($row['due_date']);
-                                                    $int = date_diff($due_date, $date_accomplished);
-                                                    $interval = $int->format("%R%a");
-                                                    $resched = $row['reschedule'];
-                                                    if ($interval<=0 && $resched == 0 ) {
-                                                      $achievement = '3';
-                                                    } 
-                                                        else if ($interval<=0 && $resched == 2 ) {
-                                                        $achievement = '2';
-                                                    } else if ($interval>0) {
-                                                        $achievement = '1';
-                                                    } else {
-                                                        $achievement = '0';
-                                                    }
+                                                if (empty($row["file_name"])) {
+                                                    // Use a default image URL
+                                                    $imageURL = '../assets/img/user-profiles/nologo.png';
                                                 } else {
-                                                    $achievement = '0';
-                                                    $today = date("Y-m-d");
-                                                    $due_date = $row["due_date"];
-                                                    $class = "";
-                                                    if ($today > $due_date) {
-                                                        $class = "red";
+                                                    // Use the image URL from the database
+                                                    $imageURL = '../assets/img/user-profiles/'.$row["file_name"];
+                                                }
+                                                if ($row['task_status'] == '1') {
+                                                        $class_label = "success";
+                                                        $sign = "Deployed";
                                                     }
+                                                else {
+                                                    $class_label = "danger";
+                                                    $sign = "Not deployed";
+                                                }
+
+                                                if ($row['status'] == 'NOT YET STARTED') {
+                                                    $class_label_status = "info";
+                                                    $status = "To Do";
+                                                }
+                                                elseif ($row['status'] == 'IN PROGRESS') {
+                                                    $class_label_status = "warning";
+                                                    $status = "In Progress";
+                                                }
+                                                elseif ($row['status'] == 'FINISHED') {
+                                                    $class_label_status = "primary";
+                                                    $status = "Complete";
                                                 }
                                                 
-
-                                                if ($row['status'] == 'FINISHED') {
-                                                    $class_label = "success";
-                                                    $status = "FINISHED";
-                                                } else if ($row['status'] == 'IN PROGRESS') {
-                                                    $class_label = "info";
-                                                    $status = "IN PROGRESS";
-                                                } else {
-                                                    $class_label = "danger";
-                                                    $status = "NOT YET STARTED";
-                                                }
-                                                echo "<tr>   
-                                                    <td class='".$class."'> " . $row["task_name"] . " </td>
-                                                    <td class='".$class."'>" . $row["task_class"] . "</td> 
-                                                    <td class='".$class."'>" . $row["task_for"] . "</td> 
-                                                    <td class='".$class."'>" . $row["date_created"] . "</td> 
-                                                    <td class='".$class."'>" . $row["due_date"] . "</td> 
-                                                    <td class='".$class."'>" . $row["fname"].' '.$row["lname"] . "</td>
-                                                    <td><center/><p class='label label-".$class_label."' style='font-size:100%;'>".$status."</p></td>
-                                                    <td class='".$class."'>" . $row["date_accomplished"] . "</td>
-                                                    <td class='".$class."'>" . $row["remarks"] . "</td> 
-                                                    <td class='".$class."'>" . $achievement . "</td>
-                                                    <td> <center /><a href='task_details_edit.php?id=".$row['id']."&&section=".$section."'<button class='btn btn-primary' ><i class='fa fa-edit fa-1x'></i> Edit</button></a>
+                                                echo "<tr>
+                                                    <td> <center /><a href='task_details_edit.php?id=".$row['task_code']."&&section=".$section."'<button class='btn btn-primary' ><i class='fa fa-edit fa-1x'></i> Edit</button></a>
+                                                    <td> " . $row["task_code"] . " </td>"; ?>
+                                                    <?php
+                                                    if ($row['requirement_status'] == 1){
+                                                        echo "<td> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";
+                                                    }
+                                                    else {
+                                                        echo "<td> </td>";
+                                                    }
+                                                    echo"
+                                                    <td id='normalwrap'> " . $row["task_name"] . " </td>
+                                                    <td>" . $row["task_class"] . "</td>
+                                                    <td>" . $row["date_created"] . "</td> 
+                                                    <td>" . $row["due_date"] . "</td> 
+                                                    <td style='text-align: justify'> <img src=".$imageURL." title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
                                                     </td>
+                                                    <td><p class='label label-".$class_label_status."' style='font-size:100%;'>" . $status . "</p></td>
+                                                    <td><p class='label label-".$class_label."' style='font-size:100%;'>".$sign."</p></td>
                                                 </tr>";   
                                             }
                                         } 
                                         if ($con->connect_error) {
-                                            die("Connection Failed".$con->connect_error); }; ?>
+                                            die("Connection Failed".$con->connect_error); 
+                                            }; 
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                    <a href="./index.php"> <button class='btn btn-danger pull-left'><i class="fa fa-arrow-left"></i> Return to Dashboard</button></a>
                 </div>
             </div>
         </div>
     </div>
-</body>
+</div>
 
 <script>
 $(document).ready(function() {
     $('#table_task').DataTable({
         responsive: true,
-        "order": [[ 4, "asc" ]]
+        "order": [[ 6, "desc"], [ 8, "asc"]]
     });
 });
 </script>
@@ -227,9 +219,4 @@ function selecttaskstatus(element) {
     }
 }
 </script>
-<style>
-    .red {
-        color: red;
-    }
-</style>
 </html>

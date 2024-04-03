@@ -1,9 +1,10 @@
 <?php 
 include('../include/header_head.php');
 include('../include/connect.php');
-include('../include/bubbles.php');
 $today = date("Y-m-d"); 
-$month = date('m'); //Number of Month
+$month = date('m');
+$year = date('Y');
+$monthname = date('F');
 $id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.'); 
 ?>
 
@@ -16,7 +17,7 @@ $id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
 <head>
     <title>Employees Assigned Tasks</title>
 </head>
-<body>
+<div id="content" class="p-4 p-md-5 pt-5">
     <div id="wrapper">
         <div id="page-wrapper">
             <div class="row">
@@ -35,7 +36,7 @@ $id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
 
                         <div class="panel-body">
                             <div class="table-responsive">
-                                <table width="100%" class="table table-striped table-bordered table-hover "
+                                <table width="100%" class="table table-striped table-hover "
                                     id="table_task">
 
                                     <thead>
@@ -58,14 +59,14 @@ $id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
                                             <th class="col-lg-2">
                                                 <center />Score
                                             </th>
-                                            <th class="col-lg-2">
-                                                Activity
-                                            </th>
+                                            <!-- <th class="col-lg-2">
+                                                Details
+                                            </th> -->
                                         </tr>
                                     </thead>
                                     <tbody id="tbody">
                                     <?php
-                                    $result = mysqli_query($con,"SELECT tasks_details.date_created, tasks_details.achievement, tasks_details.due_date, tasks_details.date_accomplished, tasks_details.in_charge, accounts.username, accounts.sec_id, tasks_details.task_code, tasks_details.resched_reason, task_list.task_name, task_list.task_class, tasks_details.reschedule, tasks_details.remarks FROM tasks_details LEFT JOIN accounts ON tasks_details.in_charge = accounts.username LEFT JOIN task_list ON tasks_details.task_code = task_list.task_code WHERE MONTH(tasks_details.due_date) = '$month' AND accounts.username = '$id' AND tasks_details.reschedule != '1'");
+                                    $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id	 JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$id' AND task_status=1 AND approval_status=0 AND MONTH(tasks_details.date_accomplished)='$month' AND YEAR(tasks_details.date_accomplished)='$year' AND tasks_details.date_accomplished IS NOT NULL");
                                     if (mysqli_num_rows($result)>0) { 
                                     while ($row = $result->fetch_assoc()) { 
                                     $taskcode = $row['task_code'];
@@ -73,35 +74,16 @@ $id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
                                     $taskclass = $row['task_class'];
                                     $dateaccom = $row['date_accomplished'];
                                     $datedue = $row['due_date'];
-                                    $remarks = $row['remarks'];
                                     $datec = $row['date_created'];
                                     $achievement = $row['achievement'];
-                                    if ($taskclass == "1"){
-                                        $taskclass = 'Daily Routine';
-                                    }
-                                    elseif ($taskclass == '2'){
-                                        $taskclass = 'Weekly Routine';
-                                    }
-                                    elseif ($taskclass == '3'){
-                                        $taskclass = 'Monthly Routine';
-                                    }
-                                    elseif ($taskclass == '4'){
-                                        $taskclass = 'Additional Task';
-                                    }
-                                    elseif ($taskclass == '5'){
-                                        $taskclass = 'Project';
-                                    }
-                                    else {
-                                        $taskclass = 'Unidentified';
-                                    }
+
                                     echo "<tr>                                                       
                                     <td><center />" . $taskcode . "</td>
-                                    <td>" . $taskname . "</td>
+                                    <td id='normalwrap'>" . $taskname . "</td>
                                     <td><center />" . $taskclass . "</td>
                                     <td><center />" . $datedue . "</td>
                                     <td><center />" . $dateaccom . "</td>
                                     <td><center />" . $achievement . "</td>
-                                    <td>" . $remarks . "</td>
                                     </tr>";
                                     }
                                     }
@@ -116,7 +98,7 @@ $id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
             </div>
         </div>
     </div>
-</body>
+</div>
 <script>
 $(document).ready(function() {
     $('#table_task').DataTable({

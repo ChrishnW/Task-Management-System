@@ -2,10 +2,7 @@
 <?php 
 include('../include/header_head.php');
 include('../include/connect.php');
-include('../include/bubbles.php');
 $date_today = date('Y-m-d');
-$status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.'); 
-
 ?>
 <html>
 <head>
@@ -17,61 +14,42 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
     <title>Tasks</title>
 </head>
 
-<body>
+<div id="content" class="p-4 p-md-5 pt-5">
     <div id="wrapper">
         <div id="page-wrapper">
-        <h1 class="page-header"><?php echo $status ?> Tasks
-        <a href="task_approval_xls.php?status=<?php echo $status ?>"> <button class="btn btn-success pull-right"><span class="fa fa-download"></span> Download</button></a></h1>
-            <div class="row">
-                <div class="form-group col-lg-2">
-                    <label>From:</label><br>
-                    <input type="date" class="form-control" name="val_from" id="val_from" value="<?php echo $date_today; ?>"
-                        onchange="selectfrom(this)">
-                </div>
-                <div class="form-group col-lg-2">
-                    <label>To:</label><br>
-                    <input type="date" class="form-control" name="val_to" id="val_to"
-                        onchange="selectto(this)">
-                </div>
-            </div>
-
+        <h1 class="page-header"> Request List for Re-Scheduling </h1>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                        <?php echo $status ?> Task
+                        Request for Task Rescheduling
                         </div>
                         <div class="panel-body">
                             <div class="table-responsive">
                                 <table width="100%" class="table table-striped table-hover" id="table_task">
-
                                     <thead>
                                         <tr>
+                                            <th class="col-lg-2">
+                                                Task Code
+                                            </th>
                                             <th class="col-lg-2">
                                                 Task Name
                                             </th>
                                             <th class="col-lg-2">
                                                 Task Classification
                                             </th>
-                                            <th class="col-lg-2">
-                                                Task For
-                                            </th>
                                             <th class="col-lg-1">
-                                                Date Created
-                                            </th>
-                                            <th class="col-lg-1">
-                                                Old Due Date
+                                                Expired Due Date
                                             </th>
                                             <th class="col-lg-1">
                                                 New Due Date
                                             </th>
                                             <th class="col-lg-1">
-                                                In-charge
+                                                Assignee
                                             </th>
                                             <th class="col-lg-1">
                                                 Action
                                             </th>
-
                                         </tr>
                                     </thead>
 
@@ -79,35 +57,32 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                                         <?php
                                         /* and access!='1' */
                                         $con->next_result();
-                                        $result = mysqli_query($con,"SELECT tasks_details.task_code, task_list.task_name, task_class.task_class, task_list.task_for, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.id, accounts.fname, accounts.lname, tasks_details.reschedule, tasks_details.approval_status, tasks_details.resched_reason
-                                        FROM tasks_details 
-                                        LEFT JOIN task_list ON task_list.task_code=tasks_details.task_code  
-                                        LEFT JOIN task_class ON task_list.task_class=task_class.id 
-                                        LEFT JOIN accounts ON tasks_details.in_charge=accounts.username 
-                                        WHERE tasks_details.task_status IS TRUE AND tasks_details.status='NOT YET STARTED' AND tasks_details.approval_status = 0  AND tasks_details.reschedule = 2 ORDER BY  tasks_details.date_created ASC");               
+                                        $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge=accounts.username JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.status='NOT YET STARTED' AND tasks_details.reschedule>0 AND section.dept_id='$dept_id'");           
                                         if (mysqli_num_rows($result)>0) { 
                                             while ($row = $result->fetch_assoc()) {
-                                               
-                                                $taskcode = $row['task_code'];
-                                                $query = mysqli_query($con,"SELECT due_date AS old_due_date FROM tasks_details WHERE status='NOT YET STARTED' AND approval_status = 1 AND  task_code = '$taskcode' AND reschedule = 1");
-                                                $row1= $query->fetch_assoc();
-
                                                 $today = date("Y-m-d");
                                                 $due_date = $row["due_date"];
+                                                $old_due = $row['old_due'];
+                                                $due = date('m / d / Y', strtotime($row['due_date']));
+                                                $date = date('m / d / Y', strtotime($row['old_due']));
                                                 $class = "";
-                                                if ($today > $due_date) {
-                                                    $class = "red";
-                                                }
+                                                $emp_name=$row['fname'].' '.$row['lname'];
+                                                if (empty($row["file_name"])) {
+                                                    // Use a default image URL
+                                                    $imageURL = '../assets/img/user-profiles/nologo.png';
+                                                } else {
+                                                    // Use the image URL from the database
+                                                    $imageURL = '../assets/img/user-profiles/'.$row["file_name"];
+                                                } 
 
-                                                echo "<tr class='".$class."'>  
-                                                    <td> " . $row["task_name"] . " </td>   
-                                                    <td>" . $row["task_class"] . "</td> 
-                                                    <td>" . $row["task_for"] . "</td> 
-                                                    <td>" . $row["date_created"] . "</td> 
-                                                    <td>" . $row1['old_due_date'] . "</td> 
-                                                    <td>" . $row["due_date"] . "</td> 
-                                                    <td>" . $row["fname"].' '.$row["lname"] . "</td>
-                                                    <td><center><button id='task_id' value='".$row['id']."' data-reason = '".$row['resched_reason']."' data-date = '".$row['due_date']."' class='btn btn-primary' onclick='view(this)'> View </button></center></td>
+                                                echo "<tr>
+                                                    <td> " . $row["task_code"] . " </td>  
+                                                    <td id='normalwrap'> " . $row["task_name"] . " </td>   
+                                                    <td>" . $row["task_class"] . "</td>
+                                                    <td>" . $date . "</td> 
+                                                    <td>" . $due . "</td> 
+                                                    <td style='text-align: justify'> <img src=".$imageURL." title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
+                                                    <td><center><button id='task_id' value='".$row['task_code']."' data-reason = '".$row['resched_reason']."' data-date = '".$row['due_date']."' data-case='".$row['reschedule']."' class='btn btn-primary' onclick='view(this)'> View </button></center></td>
                                                 </tr>";
                                              }
                                         } 
@@ -123,38 +98,45 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
             </div>
         </div>
     </div>
-</body>
+</div>
+
 <div class="modal fade" id="view" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
     aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
         <div class="modal-content panel-success">
             <div class="modal-header panel-heading">
-                <a href="task_approval.php?status=RESCHEDULE"><button type="button" class="close" aria-hidden="true">&times;</button></a>
+                <a href="task_approval.php"><button type="button" class="close" aria-hidden="true">&times;</button></a>
                 <h4 class="modal-title" id="myModalLabel">Approve Request</h4>
             </div>
             <div class="modal-body panel-body">
-            
+                    <input type="hidden" id="hidden_case_id" name="hidden_case_id">
                     <input type="hidden" id="hidden_task_id" name="hidden_task_id">
-                    <label>Request Due Date:</label>
+                    <div class="form-group col-lg-3" requred>
+                        <label>Request Due Date:</label>
                         <input type="date" class="form-control" type="request_date" name="request_date"  id="request_date"><br>
-                    <label>Reason for reschedule:</label>
+                    </div>
+                    <p style="color: yellow">Note: You can change the requestor's given due date.</p>
+                    <p style="color: yellow">Remember that the requested due date might be behind the actual date today.</p>
+                    <div class="form-group col-lg-12" requred>
+                        <label>Reason for reschedule:</label>
                         <textarea readonly name="resched_reason" id="resched_reason" class="form-control"></textarea>
-                
+                    </div>
             </div>
             <div class="modal-footer">
               <button id='okButton' class='btn btn-success pull-left' onclick='okButtonClick()'>Approve</button>
-              <button id='declineButton' class="btn btn-danger pull-right" onclick='declineButton()'>Decline</button>
-              <!-- <a href="../include/404.php"><button type="button" name="submit" class="btn btn-danger pull-right">Decline</button></a> -->
+              <!-- <button id='declineButton' class="btn btn-danger pull-right" onclick='declineButton()'>Decline</button> -->
+              <a href="task_approval.php"><button type="button" name="submit" class="btn btn-danger pull-right">Back</button></a>
             </div>
         </div> <!-- /.modal-content -->
     </div> <!-- /.modal-dialog -->
 </div>
+
 <div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
     aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content panel-success">
             <div class="modal-header panel-heading">
-                <a href="task_approval.php?status=RESCHEDULE"><button type="button" class="close" aria-hidden="true">&times;</button></a>
+                <a href="task_approval.php"><button type="button" class="close" aria-hidden="true">&times;</button></a>
                 <h4 class="modal-title" id="myModalLabel">Notice</h4>
             </div>
             <div class="modal-body panel-body">
@@ -165,17 +147,18 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                 </center>
             </div>
             <div class="modal-footer">
-              <a href="task_approval.php?status=RESCHEDULE"><button type="button" name="submit" class="btn btn-success pull-right">OK</button></a>
+              <a href="task_approval.php"><button type="button" name="submit" class="btn btn-success pull-right">OK</button></a>
             </div>
         </div> <!-- /.modal-content -->
     </div> <!-- /.modal-dialog -->
 </div>
+
 <div class="modal fade" id="declined" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
     aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content panel-success">
             <div class="modal-header panel-heading">
-                <a href="task_approval.php?status=RESCHEDULE"><button type="button" class="close" aria-hidden="true">&times;</button></a>
+                <a href="task_approval.php"><button type="button" class="close" aria-hidden="true">&times;</button></a>
                 <h4 class="modal-title" id="myModalLabel">Notice</h4>
             </div>
             <div class="modal-body panel-body">
@@ -186,11 +169,12 @@ $status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record not found.
                 </center>
             </div>
             <div class="modal-footer">
-              <a href="task_approval.php?status=RESCHEDULE"><button type="button" name="submit" class="btn btn-success pull-right">OK</button></a>
+              <a href="task_approval.php"><button type="button" name="submit" class="btn btn-success pull-right">OK</button></a>
             </div>
         </div> <!-- /.modal-content -->
     </div> <!-- /.modal-dialog -->
 </div>
+
 <script>
 $(document).ready(function() {
    
@@ -205,103 +189,39 @@ $(document).ready(function() {
     });
 
 });
-</script>
-
-<script>
-function selectfrom(element) {
-   
-    let valfrom = $(element).val();
-    let status = <?php echo json_encode($status) ?>;
-    let valto = $('#val_to').val();
-    $('#table_task').DataTable().destroy();
-    $('#show_task').empty();
-    if (valfrom) {
-        $.ajax({
-            type: "post",
-            url: "ajax_valfrom1.php",
-            data: {
-                "valfrom": valfrom,
-                "status": status,
-                "valto": valto
-            },
-            success: function(response) {
-                $('#show_task').append(response);
-                $('#table_task').DataTable();
-            }
-        });
-    }
-}
-</script>
-
-<script>
-function selectto(element) {
-    let valto = $(element).val();
-    let status = <?php echo json_encode($status) ?>;
-    let valfrom = $('#val_from').val();
-    $('#table_task').DataTable().destroy();
-    $('#show_task').empty();
-    if (valto) {
-        $.ajax({
-            type: "post",
-            url: "ajax_valto1.php",
-            data: {
-                "valfrom": valfrom,
-                "status": status,
-                "valto": valto
-            },
-            success: function(response) {
-                $('#show_task').append(response);
-                $('#table_task').DataTable();
-            }
-        });
-    }
-}
-</script>
-<style>
-    .red {
-        color: red;
-    }
-</style>
-<script>   
+  
 function view(element) {
     var taskID = element.value;
     var reason = element.getAttribute("data-reason");
     var date = element.getAttribute("data-date");
+    var caseid = element.getAttribute("data-case");
     var currentDate = new Date();
     var day = currentDate.getDate();
-    var month = currentDate.getMonth() + 1;
+    var month = currentDate.getMonth();
     var year = currentDate.getFullYear();
+    currentDate = year + '-' + month + '-' + day;
 
-    currentDate = year+'-'+month+'-'+day;
-    
-    if (date > currentDate )
-    {
-        var expired = 'red';
-    }
-    else {
-        var expired = '';
-    }
-    $(document).ready(function() { 
-        $('#view').modal('show'); 
-        document.getElementById('hidden_task_id').
-        value = taskID; 
-        document.getElementById('resched_reason').
-        value = reason;   
-        document.getElementById('request_date').
-        value = date;   
-        document.getElementById("request_date").style.color = expired;
+    $(document).ready(function() {
+        $('#view').modal('show');
+        document.getElementById('hidden_case_id').value = caseid;
+        document.getElementById('hidden_task_id').value = taskID;
+        document.getElementById('resched_reason').value = reason;
+        document.getElementById('request_date').value = date;
     });
 }
 
 function okButtonClick() {
     var taskID = document.getElementById('hidden_task_id').value;
+    var casetrack = document.getElementById('hidden_case_id').value;
     var reason = document.getElementById('resched_reason').value;
     var date = document.getElementById('request_date').value;
     $.ajax({
         type: "POST",
         url: "task_approval_submit.php",
-        data: { id: taskID, reason: reason, date: date}
+        data: { id: taskID, date: date, case: casetrack }
     }).done(function(response) {
+        console.log("Casetrack value:", casetrack);
+        
         $('#view').modal('hide'); 
         $('#success').modal('show'); 
     
@@ -326,7 +246,6 @@ function declineButton() {
         alert("An error occurred: " + status + "\nError: " + error);
     });
 }
-
-
 </script>
+
 </html>

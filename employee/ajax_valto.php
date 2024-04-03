@@ -1,226 +1,261 @@
 <?php 
 include ('../include/connect.php');
 
-if(isset($_POST['valfrom'])){
-    $val_from = $_POST['valfrom'];
-    $val_to = $_POST['valto'];
-    $status_input = $_POST['status'];
-    $username = $_POST['username'];
+if(isset($_POST['valto'])){
+  $val_from = $_POST['valfrom'];
+  $val_to = $_POST['valto'];
+  $status = $_POST['status'];
+  $username = $_POST['username'];
 
-    if ($status_input=='FINISHED') {
-        $hide_td="display:none;";
-    } 
-    else {
-        $hide_td="";
+  if($val_from != 0){
+    $con->next_result();
+    if ($status == "NOT YET STARTED") {
+      $result = mysqli_query($con, "SELECT *, (SELECT DISTINCT date FROM attendance WHERE card=accounts.card and date = tasks_details.due_date) AS loggedin FROM tasks_details JOIN accounts ON tasks_details.in_charge=accounts.username JOIN task_class on task_class.id=tasks_details.task_class WHERE tasks_details.in_charge='$username' AND tasks_details.task_status=1 AND tasks_details.reschedule=0 AND tasks_details.status='$status' AND tasks_details.due_date>='$val_from' AND tasks_details.due_date<='$val_to'");
+      if (mysqli_num_rows($result) > 0) {
+        while ($row = $result->fetch_assoc()) {
+          $today      = date("Y-m-d");
+          $due_date   = $row["due_date"];
+          $due        = date('m / d / Y', strtotime($row['due_date']));
+          $nextDate   = date('Y-m-d', strtotime($due_date . ' + ' . 1 . ' days'));
+          $yesterday  = date('Y-m-d', strtotime($today . ' -' . 1 . ' days'));
+          $twodago    = date('Y-m-d', strtotime($due_date . ' +' . 2 . ' days'));
+          $task_class = $row['task_class'];
+          $class      = "";
+          $sign       = "";
+          $emp_name   = $row['fname'] . ' ' . $row['lname'];
+          
+          if (empty($row["file_name"])) {
+            // Use a default image URL
+            $imageURL = '../assets/img/user-profiles/nologo.png';
+          }
+          else {
+            // Use the image URL from the database
+            $imageURL = '../assets/img/user-profiles/' . $row["file_name"];
+          }
+          
+          if ($status == "NOT YET STARTED") {
+            if ($due_date < $today) {
+              $class_label = "danger";
+              $sign        = "EXPIRED";
+              $class       = "invalid";
+            }
+            elseif ($due_date > $today) {
+              $class_label = "info";
+              $sign        = "PENDING";
+            }
+            elseif ($due_date == $today) {
+              $class_label = "primary";
+              $sign        = "NOT YET STARTED";
+            }
+            else {
+              $class_label = "muted";
+              $sign        = "INVALID";
+            }
+          }
+          
+          echo "<tr>
+          <td class='" . $class . "'>" . $row["task_code"] . " </td>";
+          if ($row['requirement_status'] == 1) {
+            echo "<td class='" . $class . "'> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";
+          }
+          else {
+            echo "<td class='" . $class . "'> </td>";
+          }
+          echo "                                                
+          <td id='normalwrap' class='" . $class . "'> " . $row["task_name"] . " </td>
+          <td class='" . $class . "'>" . $row["task_class"] . "</td>
+          <td class='" . $class . "'>" . $due . "</td>
+          <td class='" . $class . "' style='text-align: center'> <img src=" . $imageURL . " title=" . $row["username"] . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-left: 0'></td>  
+          <td class='" . $class . "'><center/><p class='label label-" . $class_label . "' style='font-size:100%;'>" . $sign . "</p></td>";
+          if ($due_date == $today) {
+            echo " <td> <center/><button id='task_id' value='" . $row['task_code'] . "' class='btn btn-primary' onclick='start(this)'><i class='fa fa-play-circle fa-1x'></i> </button></td>";
+          }
+          elseif ($due_date > $today) {
+            echo " <td> <center/><button disabled id='task_id' value='" . $row['task_code'] . "' class='btn btn-info' onclick='start(this)'><i class='fas fa-clock fa-1x'></i> </button></td>";
+          }
+          else {
+            echo " <td class='" . $class . "'> <center/><button disabled id='task_id' value='" . $row['task_code'] . "' class='btn btn-danger' onclick='start(this)'><i class='fa fa-exclamation-circle fa-1x'></i> </button></td>";
+          }
+          echo "</tr>";
+        }
+      }
     }
-
-    if($val_from != 0){             
-        $con->next_result();
-        $result = mysqli_query($con,"SELECT tasks_details.task_code, tasks_details.achievement, task_list.task_name, task_list.task_details, task_class.task_class, task_list.task_for, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, accounts.fname, accounts.lname, tasks_details.remarks, tasks_details.reschedule, accounts.card, (SELECT DISTINCT date FROM attendance WHERE card=accounts.card and date = tasks_details.due_date) AS loggedin FROM tasks_details LEFT JOIN task_list ON task_list.task_code=tasks_details.task_code LEFT JOIN task_class ON task_list.task_class=task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE tasks_details.task_status IS TRUE AND tasks_details.status='$status_input' AND tasks_details.due_date>='$val_from' AND tasks_details.due_date<='$val_to' AND tasks_details.in_charge='$username' AND tasks_details.approval_status IS TRUE  AND (tasks_details.reschedule = '0' OR tasks_details.reschedule = '2' AND tasks_details.approval_status=1) ORDER BY tasks_details.due_date ASC");           
-        if (mysqli_num_rows($result)>0) { 
-            while ($row = $result->fetch_assoc()) {
-            $today = date("Y-m-d");
-            $due_date = $row["due_date"];
-            $nextDate = date('Y-m-d', strtotime($due_date . ' + ' . 1 . ' days'));
-            $yesterday = date('Y-m-d', strtotime($today . ' -' . 1 . ' days'));
-            $twodago = date('Y-m-d', strtotime($due_date . ' +' . 2 . ' days'));
-            $status = $row['status'];
-            $task_class = $row['task_class'];
-            $achievement = $row['achievement'];
-            $class = "";
-            $sign = "";
-
-            if ($row['status'] == 'FINISHED') {
-                $class_label = "success";
-                $sign = "FINISHED";
-            }
-            if ($row['status'] == 'IN PROGRESS') {
-                if (($today > $due_date && ($task_class == "DAILY ROUTINE" || $task_class == "ADDITIONAL TASK" || $task_class == "PROJECT")) || ($twodago  <= $today && ($task_class == "WEEKLY ROUTINE" || $task_class == "MONTHLY ROUTINE"))){
-                    $class = "invalid";
-                    $sign = "OVERDUE";
-                    $class_label = "danger";
-                }
-                else {
-                    $sign = "IN PROGRESS";
-                    $class_label = "warning";
-                }
-            }
-            if ($status == "NOT YET STARTED") {
-                // DAILY, ADDITIONAL AND PROJECT
-                if ($task_class == "DAILY ROUTINE" || $task_class == "ADDITIONAL TASK" || $task_class == "PROJECT"){
-                    if ($due_date < $today){
-                        $class_label = "danger";
-                        $sign = "EXPIRED";
-                        $class = "invalid";
-                    }
-                    elseif ($due_date > $today){
-                        $class_label = "info";
-                        $sign = "PENDING";
-                    }
-                    elseif ($due_date == $today){
-                        $class_label = "primary";
-                        $sign = "NOT YET STARTED";
-                    }
-                    else {
-                        $class_label = "muted";
-                        $sign = "INVALID";
-                    }
-                }
-                // WEEKLY
-                if ($task_class == "WEEKLY ROUTINE"){
-                    if ($twodago  <= $today){
-                        $class_label = "danger";
-                        $sign = "EXPIRED";
-                        $class = "invalid";
-                    }
-                    elseif ($due_date <= $yesterday){
-                        $class_label = "warning";
-                        $sign = "EXPIRING";
-                    }
-                    elseif ($due_date == $today) {
-                        $class_label = "primary";
-                        $sign = "NOT YET STARTED";
-                    }
-                    elseif ($due_date >= $today) {
-                        $class_label = "info";
-                        $sign = "PENDING";
-                    }
-                    
-                }
-                // MONTHLY
-                if ($task_class == "MONTHLY ROUTINE"){
-                    if ($twodago  <= $today){
-                        $class_label = "danger";
-                        $sign = "EXPIRED";
-                        $class = "invalid";
-                    }
-                    elseif ($due_date <= $yesterday){
-                        $class_label = "warning";
-                        $sign = "EXPIRING";
-                    }
-                    elseif ($due_date >= $today) {
-                        $class_label = "primary";
-                        $sign = "NOT YET STARTED";
-                    }
-                }
-            }
-            echo "<tr>                                            
-                <td class='".$class."'> " . $row["task_name"] . " </td>  
-                <td class='".$class."'>" . $row["task_class"] . "</td> 
-                <td class='".$class."'>" . $row["due_date"] . "</td> 
-                <td class='".$class."'>" . $row["fname"].' '.$row["lname"] . "</td>
-                <td class='".$class."'><center/><p class='label label-".$class_label."' style='font-size:100%;'>".$sign."</p></td>";
-                
-                if ($status == "NOT YET STARTED" || $status == "IN PROGRESS") {
-                    if ($status == "NOT YET STARTED") 
-                    {
-                        // DAILY || ADDITIONAL TASK || PROJECT
-                        if ($task_class == "DAILY ROUTINE" || $task_class == "ADDITIONAL TASK" || $task_class == "PROJECT")
-                        {
-                            if (($due_date < $today)) {
-                            echo "<td class='".$class."'> <center/><button  id='' value='".$row['id']."' class='btn btn-warning'  style='background-color: #FFAC1C;' onclick='reschedule(this)'><i class='fa fa-calendar fa-1x'></i> Reschedule</button>
-                            </td> ";
-                            } 
-                            elseif (($due_date < $today)) 
-                            {
-                            echo "<td class='".$class."'> <center/><button disabled id='' value='".$row['id']."' class='btn btn-warning'  style='background-color: #FFAC1C;' onclick='reschedule(this)'><i class='fa fa-calendar fa-1x'></i> Reschedule</button>
-                            </td> ";
-                            }
-                            elseif ($due_date == $today) 
-                            {
-                            echo" <td> <center/><button id='task_id' value='".$row['id']."' class='btn btn-primary' onclick='start(this)'><i class='fa fa-play fa-1x'></i> </button>
-                            </td>";
-                            }
-                            elseif ($due_date > $today)
-                            {
-                            echo" <td> <center/><button disabled id='task_id' value='".$row['id']."' class='btn btn-info' onclick='start(this)'><i class='fas fa-clock fa-1x'></i> </button>
-                            </td>";
-                            }
-                            else {
-                            echo" <td> 
-                            </td>";
-                            }
-                        }
-
-                        // MONTHLY || WEEKLY
-                        else if ($task_class == "WEEKLY ROUTINE")
-                        {
-                            
-                            if($twodago <= $today && $row["loggedin"] == $due_date)
-                            {
-                                echo "<td class='".$class."'> <center/><button  id='' value='".$row['id']."' class='btn btn-warning'  style='background-color: #FFAC1C;' onclick='reschedule(this)'><i class='fa fa-calendar fa-1x'></i> Reschedule</button>
-                                </td> ";
-                            }
-
-                            elseif ($twodago <= $today && $row["loggedin"] == NULL)
-                            {
-                                echo "<td class='".$class."'> <center/><button disabled id='' value='".$row['id']."' class='btn btn-warning'  style='background-color: #FFAC1C;' onclick='reschedule(this)'><i class='fa fa-calendar fa-1x'></i> Reschedule</button>
-                                </td> ";
-                            }
-                            
-                            else if ($due_date == $yesterday || $due_date == $today)
-                            {
-                                echo" <td> <center/><button id='task_id' value='".$row['id']."' class='btn btn-primary' onclick='start(this)'><i class='fa fa-play fa-1x'></i> </button>
-                                </td>";
-                            } 
-                            elseif ($due_date > $today) 
-                            {
-                                echo" <td> <center/><button disabled id='task_id' value='".$row['id']."' class='btn btn-info' onclick='start(this)'><i class='fas fa-clock fa-1x'></i> </button>
-                                </td>";
-                            }
-                            else {
-                                echo" <td> 
-                                </td>";
-                            }
-                        }
-                        // MONTHLY
-                        else if ($task_class == "MONTHLY ROUTINE")
-                        {
-                            // Reschedule Task
-                            if($twodago  <= $today && $row['loggedin']  == $due_date )
-                            {
-                              echo "<td class='".$class."'> <center/><button  id='' value='".$row['id']."' class='btn btn-warning'  style='background-color: #FFAC1C;' onclick='reschedule(this)'><i class='fa fa-calendar fa-1x'></i> Reschedule</button>
-                              </td> ";
-                            }
-                            // Failed Task
-                            elseif ($twodago  <= $today && $row['loggedin']  == NULL )
-                             {
-                              echo "<td class='".$class."'> <center/><button disabled id='' value='".$row['id']."' class='btn btn-warning'  style='background-color: #FFAC1C;' onclick='reschedule(this)'><i class='fa fa-calendar fa-1x'></i> Reschedule</button>
-                              </td> ";
-                            }
-                            // Grace Period
-                           else if ($due_date == $yesterday || $due_date >= $today)
-                           {
-                             echo" <td> <center/><button id='task_id' value='".$row['id']."' class='btn btn-primary' onclick='start(this)'><i class='fa fa-play fa-1x'></i> </button>
-                             </td>";
-                            }
-                        }
-                    }
-                    elseif ($status == "IN PROGRESS") {
-                        echo" <td class='".$class."'> <center/><button ".$disabled." id='task_id' value='".$row['id']."' class='btn btn-danger' onclick='finish(this)'><i class='fa fa-stop fa-1x'></i></button>
-                        </td>";
-                    } 
-                    else {
-                        echo" <td> <center/><button ".$disabled." id='task_id' value='".$row['id']."' class='btn btn-primary' onclick='start(this)'><i class='fa fa-play fa-1x'></i> </button>
-                        </td>";
-                    }
-                }
-                elseif ($status == 'FINISHED'){
-                    echo"
-                        <td class='".$class."'>" . $row["date_accomplished"] . "</td>
-                        <td class='".$class."'>" . $achievement . "</td>
-                        <td class='".$class."'>" . $row["remarks"] . "</td>
-                        </tr>";
-                }
-            }
-        } 
-        else {
-            echo "0 results"; 
-        }    
-        if ($con->connect_error) {
-            die("Connection Failed".$con->connect_error); 
-        }; 
-    }                                  
+    else if ($status == "IN PROGRESS") {
+      $result = mysqli_query($con, "SELECT * FROM tasks_details JOIN accounts ON tasks_details.in_charge=accounts.username JOIN task_class on task_class.id=tasks_details.task_class WHERE in_charge='$username' AND tasks_details.status='$status' AND tasks_details.task_status=1 AND tasks_details.due_date>='$val_from' AND tasks_details.due_date<='$val_to'");
+      if (mysqli_num_rows($result) > 0) {
+        while ($row = $result->fetch_assoc()) {
+          $due_date   = $row["due_date"];
+          $date       = date('m / d / Y', strtotime($row['due_date']));
+          $verify     = $row['requirement_status'];
+          $twodago    = date('Y-m-d', strtotime($due_date . ' +' . 2 . ' days'));
+          $today      = date('Y-m-d');
+          $class      = '';
+          $task_class = $row['task_class'];
+          $emp_name   = $row['fname'] . ' ' . $row['lname'];
+          if (empty($row["file_name"])) {
+            // Use a default image URL
+            $imageURL = '../assets/img/user-profiles/nologo.png';
+          } 
+          else {
+            // Use the image URL from the database
+            $imageURL = '../assets/img/user-profiles/' . $row["file_name"];
+          }
+          if ($today > $due_date) {
+            $class       = "invalid";
+            $sign        = "OVERDUE";
+            $class_label = "danger";
+          }
+          else {
+            $sign        = "IN PROGRESS";
+            $class_label = "warning";
+          }
+          echo "<tr>
+          <td class='" . $class . "'> " . $row["task_code"] . " </td>";
+          if ($row['requirement_status'] == 1) {
+            echo "<td class='" . $class . "'> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";
+          } 
+          else {
+            echo "<td class='" . $class . "'> </td>";
+          }
+          echo "                                                    
+          <td id='normalwrap' class='" . $class . "'> " . $row["task_name"] . " </td>  
+          <td class='" . $class . "'>" . $row["task_class"] . "</td>  
+          <td class='" . $class . "'>" . $date . "</td> 
+          <td class='" . $class . "' style='text-align: center'> <img src=" . $imageURL . " title=" . $row["username"] . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-left: 0'></td>  
+          <td class='" . $class . "'><center/>
+          <p class='label label-" . $class_label . "' style='font-size:100%;'>" . $sign . "</p></td>";
+          if ($verify == 1) {
+            echo "
+            <td class='" . $class . "'> <center/><button id='task_id' value='" . $row['task_code'] . "' class='btn btn-danger' onclick='finish_with_attachment(this)'><i class='fa fa-stop fa-1x'></i></button>
+            </td>
+            </tr>";
+          }
+          else {
+            echo "
+            <td class='" . $class . "'> <center/><button id='task_id' value='" . $row['task_code'] . "' class='btn btn-danger' onclick='finish_without_attachment(this)'><i class='fa fa-stop fa-1x'></i></button>
+            </td>
+            </tr>";
+          }
+        }
+      }
+    }
+    else if ($status == "FINISHED") {
+      $result = mysqli_query($con, "SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND tasks_details.status='$status' AND tasks_details.task_status=1 AND tasks_details.approval_status=0 AND tasks_details.due_date>='$val_from' AND tasks_details.due_date<='$val_to'");
+      if (mysqli_num_rows($result) > 0) {
+        while ($row = $result->fetch_assoc()) {
+          $achievement = $row['achievement'];
+          $emp_name    = $row['fname'] . ' ' . $row['lname'];
+          $date        = date('m / d / Y h:i:s A', strtotime($row['date_accomplished']));
+          if (empty($row["file_name"])) {
+            // Use a default image URL
+            $imageURL = '../assets/img/user-profiles/nologo.png';
+          } 
+          else {
+            // Use the image URL from the database
+            $imageURL = '../assets/img/user-profiles/' . $row["file_name"];
+          }
+          if ($status == 'FINISHED' && $achievement != 0) {
+            $class_label = "success";
+            $sign        = "FINISHED";
+          }
+          if ($status == 'FINISHED' && $achievement == 0) {
+            $class_label = "danger";
+            $sign        = "FAILED";
+          }
+          echo "<tr>
+          <td> " . $row["task_code"] . " </td>";
+          if ($row['requirement_status'] == 1) {
+            echo "<td> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";
+          } 
+          else {
+            echo "<td> </td>";
+          }
+          echo "                                                  
+          <td id='normalwrap'> " . $row["task_name"] . " </td>                                                            
+          <td>" . $row["task_class"] . "</td>  
+          <td>" . $date . "</td>
+          <td style='text-align: center'> <img src=" . $imageURL . " title=" . $row["username"] . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-left: 0'></td>  
+          <td><center/><p class='label label-" . $class_label . "' style='font-size:100%;'>" . $sign . "</p></td>
+          <td><center />" . $achievement . "</td>
+          <td><center><button value='" . $row['task_code'] . "' data-name='" . $row['task_name'] . "' data-class='" . $row['task_class'] . "' data-remarks='" . $row['remarks'] . "' data-duedate='" . $row['due_date'] . "' data-datefinish='" . $row['date_accomplished'] . "' data-achievement='" . $row['achievement'] . "' data-file='" . $row['requirement_status'] . "' data-path='" . $row['attachment'] . "' data-note='" . $row['head_note'] . "' data-head='" . $row['head_name'] . "' class='btn btn-primary' onclick='view1(this)'><span class='fa fa-folder-open'></span> View </button></center></td> 
+          </tr>";
+        }
+      }
+    }
+    else if ($status == "VERIFICATION") {
+      $result = mysqli_query($con, "SELECT * FROM tasks_details LEFT JOIN task_list ON tasks_details.task_name = task_list.task_name LEFT JOIN task_class ON task_list.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND tasks_details.status='FINISHED' AND tasks_details.achievement!=0 AND tasks_details.task_status=1 AND tasks_details.approval_status=1 AND tasks_details.due_date>='$val_from' AND tasks_details.due_date<='$val_to'");
+      if (mysqli_num_rows($result) > 0) {
+        while ($row = $result->fetch_assoc()) {
+          $achievement = $row['achievement'];
+          $emp_name    = $row['fname'] . ' ' . $row['lname'];
+          if (empty($row["file_name"])) {
+            // Use a default image URL
+            $imageURL = '../assets/img/user-profiles/nologo.png';
+          } else {
+            // Use the image URL from the database
+            $imageURL = '../assets/img/user-profiles/' . $row["file_name"];
+          }
+          if ($status == 'VERIFICATION') {
+            $class_label = "danger";
+            $sign        = "REVIEWING";
+          }
+          echo "<tr>
+          <td> " . $row["task_code"] . " </td>";
+          if ($row['requirement_status'] == 1) {
+            echo "<td> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";
+          }
+          else {
+            echo "<td> </td>";
+          }
+          echo "                                                  
+          <td id='normalwrap'> " . $row["task_name"] . " </td>                                                            
+          <td>" . $row["task_class"] . "</td> 
+          <td>" . $row["date_accomplished"] . "</td>
+          <td style='text-align: center'> <img src=" . $imageURL . " title=" . $row["username"] . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-left: 0'></td>  
+          <td><center/><p class='label label-" . $class_label . "' style='font-size:100%;'>" . $sign . "</p></td>
+          <td><center />" . $achievement . "</td>
+          <td><center><button value='" . $row['task_code'] . "' data-name='" . $row['task_name'] . "' data-class='" . $row['task_class'] . "' data-remarks='" . $row['remarks'] . "' data-duedate='" . $row['due_date'] . "' data-datefinish='" . $row['date_accomplished'] . "' data-achievement='" . $row['achievement'] . "' data-file='" . $row['requirement_status'] . "' data-path='" . $row['attachment'] . "' class='btn btn-primary' onclick='view2(this)'><span class='fa fa-folder-open'></span> View </button></center></td> 
+          </tr>";
+        }
+      }
+    }
+    else if ($status == "RESCHEDULE") {
+      $result = mysqli_query($con, "SELECT * FROM tasks_details LEFT JOIN task_list ON tasks_details.task_name = task_list.task_name LEFT JOIN task_class ON task_list.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE tasks_details.status='NOT YET STARTED' AND tasks_details.reschedule=1 AND in_charge='$username' AND tasks_details.due_date>='$val_from' AND tasks_details.due_date<='$val_to'");
+      if (mysqli_num_rows($result) > 0) {
+        while ($row = $result->fetch_assoc()) {
+          $achievement = $row['achievement'];
+          $emp_name    = $row['fname'] . ' ' . $row['lname'];
+          if (empty($row["file_name"])) {
+            // Use a default image URL
+            $imageURL = '../assets/img/user-profiles/nologo.png';
+          } 
+          else {
+            // Use the image URL from the database
+            $imageURL = '../assets/img/user-profiles/' . $row["file_name"];
+          }
+          if ($status == 'RESCHEDULE') {
+            $class_label = "info";
+            $sign        = "RESCHEDULE PENDING";
+          }
+          echo "<tr>
+          <td> " . $row["task_code"] . " </td>";
+          if ($row['requirement_status'] == 1) {
+            echo "<td> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";
+          } 
+          else {
+            echo "<td> </td>";
+          }
+          echo "                                                      
+          <td id='normalwrap'> " . $row["task_name"] . " </td>                                                            
+          <td>" . $row["task_class"] . "</td>  
+          <td>" . $row["due_date"] . "</td> 
+          <td style='text-align: center'> <img src=" . $imageURL . " title=" . $row["username"] . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-left: 0'></td>  
+          <td><center/><p class='label label-" . $class_label . "' style='font-size:100%;'>" . $sign . "</p></td>
+          </tr>";
+        }
+      }
+    }
+  }
 }
 ?>
 <script>
@@ -228,104 +263,7 @@ $(document).ready(function() {
     $('#table_task').DataTable({
         responsive: true,
         destroy: true,
-        "order": [[ 2, "asc" ]]
+        "order": [[ 4, "asc" ]]
     });
 });
-</script>
-
-<script>   
-function start(obj) {
-    var taskID = obj.value;
-    $(document).ready(function() { 
-        $('#start').modal('show'); 
-        document.getElementById('modal_task_id2').
-        innerHTML = taskID; 
-        document.getElementById('hidden_task_id2').
-        value = taskID;   
-    });
-}
-function reschedule(obj) {
-     var taskID = obj.value;
-    $(document).ready(function() { 
-        $('#reschedule').modal('show'); 
-        document.getElementById('resched_task_id').value = taskID; 
-    });
-}
-function okButtonClick2() {
-    var taskID = document.getElementById('hidden_task_id2').value;
-    $.ajax({
-        type: "POST",
-        url: "task_details_start.php",
-        data: { id: taskID }
-    }).done(function(response) {
-        $('#start').modal('hide'); 
-        $('#success1').modal('show'); 
-        //window.location.reload();
-    }).fail(function(xhr, status, error) {
-        alert("An error occurred: " + status + "\nError: " + error);
-    });
-}
-</script>
-<script>
-    function okButtonClick3() {
-    
-    var taskID = $('#resched_task_id').val();
-    var reason = $('#resched_reason').val();
-    var requestDate = $('#request_date').val();
-    
-    $.ajax({
-        type: "POST",
-        url: "task_add_submit.php",
-        data: { id: taskID, reason: reason, requestdate: requestDate }
-    })
-    .done(function(response) {
-            $('#reschedule').modal('hide'); 
-            $('#success3').modal('show'); 
-        //window.location.reload();
-    }).fail(function(xhr, status, error) {
-        alert("An error occurred: " + status + "\nError: " + error);
-    });
-}
-</script>
-
-<script>   
-function finish(obj) {
-    var taskID = obj.value;
-    $(document).ready(function() { 
-        $('#finish').modal('show'); 
-        document.getElementById('modal_task_id').
-        innerHTML = taskID; 
-        document.getElementById('hidden_task_id').
-        value = taskID;   
-    });
-}
-
-function okButtonClick() {
-    var taskID = document.getElementById('hidden_task_id').value;
-    var action = document.getElementById('textArea').value;
-    $.ajax({
-        type: "POST",
-        url: "task_details_finish.php",
-        data: { id: taskID, action: action }
-    }).done(function(response) {
-        $('#finish').modal('hide'); 
-        $('#success2').modal('show'); 
-        // window.location.reload();
-    }).fail(function(xhr, status, error) {
-        alert("An error occurred: " + status + "\nError: " + error);
-    });
-}
-</script> 
-
-<script>
- function checkTextLength() {
-    var textArea = document.getElementById('textArea');
-    var okButton = document.getElementById('okButton');
-
-    if (textArea.value.length >= 30) {
-      okButton.disabled = false;
-    } else {
-      okButton.disabled = true;
-    }
- }
 </script>

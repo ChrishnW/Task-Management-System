@@ -8,26 +8,24 @@ $row = mysqli_fetch_array($sql);
     $id=$row['id'];
     $date_off=$row['date_off'];
 }
-    $from=date('Y-m-01');
-    $to=date("Y-m-t",strtotime("+9 Month"));
+    $from=date('Y-m-0');
+    $to=date("Y-m-t",strtotime("+12 Month"));
  ?>
-
+<div id="content" class="p-4 p-md-5 pt-5">
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Modify Day off
-            <a href="javascript:history.back()"><button type="button" class="btn btn-danger pull-right"><span class="fas fa-reply"> </span> Back</button></a></h1>
+            <h1 class="page-header">Modify Day off</h1>
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-10">
+        <div class="col-lg-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                    <strong>Modify Day off</strong>
                 </div>
                 <div class="panel-body">
                     <form class="form-horizontal" data-toggle="validator" action="dayoff_update.php" enctype="multipart/form-data" method="post">
-
                     <input type="hidden" name="id" value="<?php echo $id; ?>">
                     <input type="hidden" name="option" value="edit">
                     <div class="form-group">
@@ -66,15 +64,15 @@ $row = mysqli_fetch_array($sql);
                         <div class="col-lg-12">
                             <div class="form-group">
                                 <button type="button" id="submitBtn"class="btn btn-success pull-right" data-toggle="modal" data-target="#submitModal">
-                                <span class="fas fa-check"> </span> Submit</button>
+                                <span class="fa fa-check"> </span> Submit</button>
                                 <button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#cancelModal">
-                                <span class="fas fa-times"> </span> Cancel</button>
+                                <span class="fa fa-times"> </span> Cancel</button>
                             </div>
                         </div>
 
                         <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"  aria-hidden="true">
                             <div class="modal-dialog modal-sm">
-                                <div class="modal-content panel-info">
+                                <div class="modal-content panel-success">
                                     <div class="modal-header panel-heading">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                             <h4 class="modal-title" id="myModalLabel">Confirmation</h4>
@@ -87,8 +85,8 @@ $row = mysqli_fetch_array($sql);
                                     </center>
                                     </div>
                                     <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" id="submit-button-no" data-dismiss="modal"><span class="fas fa-times"> </span> No</button>
-                                    <button type="submit" id="submit-button" class="btn btn-success" ><span class="fas fa-check"> </span> Yes</button>
+                                    <button type="button" class="btn btn-danger" id="submit-button-no" data-dismiss="modal"><span class="fa fa-times"> </span> No</button>
+                                    <button type="submit" id="submit-button" class="btn btn-success" ><span class="fa fa-check"></span> Yes</button>
                                     <input type="hidden" name="submit">
                                     </div>
                                 </div>         <!-- /.modal-content -->
@@ -96,7 +94,7 @@ $row = mysqli_fetch_array($sql);
                         </div>            
                         <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" aria-hidden="true">
                             <div class="modal-dialog modal-sm">
-                                <div class="modal-content panel-info">
+                                <div class="modal-content panel-success">
                                     <div class="modal-header panel-heading">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                         <h4 class="modal-title" id="myModalLabel">Confirmation</h4>
@@ -109,8 +107,8 @@ $row = mysqli_fetch_array($sql);
                                     </center>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="fas fa-times"> </span> No</button>
-                                        <a href="javascript:history.back()"><button type="button" class="btn btn-success" ><span class="fas fa-check"> </span> Yes</button></a>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="fa fa-times"> </span> No</button>
+                                        <a href="javascript:history.back()"><button type="button" class="btn btn-success" ><span class="fa fa-check"> </span> Yes</button></a>
                                     </div>
                                 </div>
                             </div>
@@ -118,8 +116,10 @@ $row = mysqli_fetch_array($sql);
                     </form>
                 </div>
             </div>
+            <a href="#" onclick="history.back()"> <button class='btn btn-danger pull-left'><i class="fa fa-arrow-left"></i> Return to Day off</button></a>
         </div>
     </div>
+</div>
 </div>
 </div>
 </body>

@@ -214,13 +214,6 @@ img {
 	max-width: 100%;
 }
 
-body {
-	padding: 0;
-	margin: 0;
-	background: #ffffff;
-	font-family: "Raleway", sans-serif;
-}
-
 body a {
 	transition: 0.5s all;
 	-webkit-transition: 0.5s all;
@@ -259,8 +252,7 @@ h5,
 h6 {
 	margin: 0;
 	padding: 0;
-	font-family: "Raleway", sans-serif;
-	font-weight: 600;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	letter-spacing: 2px;
 }
 
@@ -304,6 +296,7 @@ img {
 /*-- //Reset-Code --*/
 
 input[type="text"] {
+	font-family: sans-serif;
 	font-size: 15px;
 	font-weight: 500;
 	text-align: left;
@@ -335,6 +328,7 @@ input[type="email"] {
 }
 
 input[type="password"] {
+	font-family: sans-serif;
 	font-size: 15px;
 	font-weight: 500;
 	text-align: left;
@@ -370,6 +364,7 @@ input[type="password"] {
 }
 
 .btn-danger {
+	position: relative;
 	color: #fff;
 	background-color: #337ab7;
 	margin-top: 15px;
@@ -676,4 +671,3 @@ i.fa.fa-facebook {
 	}
 }
 
-/** /Responsive **/

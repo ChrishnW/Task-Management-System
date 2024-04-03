@@ -4,23 +4,22 @@ include('../include/header.php');
 
 $id=$_GET['id']; 
 $section=$_GET['section']; 
-$result = mysqli_query($con,"SELECT tasks_details.task_code, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, tasks_details.task_status, accounts.fname, accounts.lname FROM tasks_details INNER JOIN accounts ON accounts.username=tasks_details.in_charge WHERE tasks_details.id=$id");       
+$result = mysqli_query($con,"SELECT tasks_details.task_code, tasks_details.date_created, tasks_details.due_date, tasks_details.in_charge, tasks_details.status, tasks_details.date_accomplished, tasks_details.id, tasks_details.task_status, accounts.fname, accounts.lname FROM tasks_details INNER JOIN accounts ON accounts.username=tasks_details.in_charge WHERE tasks_details.task_code='$id'");       
 $row= mysqli_fetch_assoc($result);
 
 $task_code = $row['task_code'];
 $date_created = $row['date_created'];
 $due_date = $row['due_date'];
 $in_charge = $row['in_charge'];
-$full_name = $row['fname']." ".$row['lname'];
+$full_name = strtolower($row['fname']." ".$row['lname']);
 $status = $row['status'];
 $date_accomplished = $row['date_accomplished'];
 $task_status = $row['task_status'];
-$id = $row['id'];
 
 if ($row['task_status'] == '1') {
-  $task_status_word = "ACTIVE";
+  $task_status_word = "Deployed";
 } else {
-  $task_status_word = "INACTIVE";
+  $task_status_word = "Not Deployed";
 }
 
 if ($date_accomplished!=null) {
@@ -71,92 +70,66 @@ if ($date_accomplished!=null) {
                             <div class="row">
                                 <div class="col-lg-12">
 
-                                    <form class="className" name="form" id="form" action="task_details_edit_submit.php"
-                                        method="POST">
+                                    <form class="className" name="form" id="form" action="task_details_edit_submit.php" method="POST">
                                         <div class="form-group">
 
                                             <div data-toggle="validator" class="form-group">
-                                                <label>Task Code:</label><span
-                                                    class="pull-right help-block with-errors"
-                                                    style="margin: 0px; font-size: 11px;"></span>
-                                                <input type="text" placeholder="Enter Task Code" class="form-control"
-                                                    name="task_code" id="task_code" pattern="[a-zA-Z0-9-/ ]+"
-                                                    data-error="Invalid input!" value="<?php echo $task_code; ?>" readonly>
-                                                <input type="hidden" class="form-control" name="id" id="id"
-                                                    value="<?php echo $id; ?>" required>
-                                                    <input type="hidden" class="form-control" name="section" id="section"
-                                                    value="<?php echo $section; ?>">
+                                                <label>Task Code:</label><span class="pull-right help-block with-errors"style="margin: 0px; font-size: 11px;"></span>
+                                                <input type="text" placeholder="Enter Task Code" class="form-control" name="task_code" id="task_code" pattern="[a-zA-Z0-9-/ ]+" data-error="Invalid input!" value="<?php echo $task_code; ?>" readonly>
+                                                <input type="hidden" class="form-control" name="id" id="id" value="<?php echo $id; ?>" required>
+                                                <input type="hidden" class="form-control" name="section" id="section" value="<?php echo $section; ?>">
                                             </div>
 
                                             <div data-toggle="validator" class="form-group">
-                                                <label>Date Created:</label><span
-                                                    class="pull-right help-block with-errors"
-                                                    style="margin: 0px; font-size: 11px;"></span>
-                                                <input type="date" placeholder="Date Created" class="form-control"
-                                                    name="date_created" id="date_created" value="<?php echo $date_created; ?>" readonly>
+                                                <label>Date Created:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
+                                                <input type="date" placeholder="Date Created" class="form-control" name="date_created" id="date_created" value="<?php echo $date_created; ?>" readonly>
                                             </div>
 
                                             <div data-toggle="validator" class="form-group">
-                                                <label>Due Date:</label><span
-                                                    class="pull-right help-block with-errors"
-                                                    style="margin: 0px; font-size: 11px;"></span>
-                                                <input type="date" placeholder="Due Date" class="form-control"
-                                                    name="due_date" id="due_date" value="<?php echo $due_date; ?>" <?php echo $readonly ?>>
+                                                <label>Due Date:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
+                                                <input type="date" placeholder="Due Date" class="form-control" name="due_date" id="due_date" value="<?php echo $due_date; ?>" <?php echo $readonly ?>>
                                             </div>
 
                                             <div data-toggle="validator" class="form-group">
-                                                <label>In Charge:</label><span
-                                                    class="pull-right help-block with-errors"
-                                                    style="margin: 0px; font-size: 11px;"></span>
-                                                <select name="in_charge" id="in_charge" class="form-control selectpicker show-menu-arrow" data-live-search="true">
-                                                <option disabled selected value="<?php echo $in_charge; ?>"><?php echo strtoupper($full_name); ?></option>
-                                                </select>
+                                                <label>In Charge:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
+                                                <input type="text" class="form-control" name="in_charge" id="in_charge" value="<?php echo ucwords($full_name); ?>" readonly>
                                             </div>
 
                                             <div data-toggle="validator" class="form-group">
-                                                <label>Status:</label><span
-                                                    class="pull-right help-block with-errors"
-                                                    style="margin: 0px; font-size: 11px;"></span>
-                                                <select name="status" id="status" class="form-control selectpicker show-menu-arrow" data-live-search="true">
-                                                <option disabled selected value="<?php echo $status; ?>"><?php echo strtoupper($status); ?></option>
-                                                </select>
+                                                <label>Status:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
+                                                <input type="text" class="form-control" name="status" id="status" value="<?php echo $status; ?>" readonly>
                                             </div>
 
                                             <div data-toggle="validator" class="form-group">
-                                                <label>Date Accomplished:</label><span
-                                                    class="pull-right help-block with-errors"
-                                                    style="margin: 0px; font-size: 11px;"></span>
-                                                <input type="date" placeholder="Date Accomplished" class="form-control"
-                                                    name="date_accomplished" id="date_accomplished" value="<?php echo $date_accomplished; ?>" readonly>
+                                                <label>Date Accomplished:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
+                                                <input type="date" placeholder="Date Accomplished" class="form-control" name="date_accomplished" id="date_accomplished" value="<?php echo $date_accomplished; ?>" readonly>
+                                            </div>
+
+                                            <div class="form-group required">
+                                                <label>Need Attachment:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
+                                                    <select name="requirement_status" id="requirement_status" class="form-control selectpicker show-menu-arrow" data-live-search="true" required>
+                                                        <option selected value="0">No</option>
+                                                        <option value="1">Yes</option>
+                                                    </select>
                                             </div>
 
                                             <div data-toggle="validator" class="form-group">
-                                                <label>Task Status:</label><span
-                                                    class="pull-right help-block with-errors"
-                                                    style="margin: 0px; font-size: 11px;"></span>
+                                                <label>Task Status:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
                                                 <select name="task_status" id="task_status" class="form-control selectpicker show-menu-arrow" data-live-search="true">
-                                                <option selected value="<?php echo $task_status; ?>"><?php echo strtoupper($task_status_word); ?></option>
+                                                <option selected value="<?php echo $task_status; ?>"><?php echo $task_status_word; ?></option>
                                                 <?php
                                                 if ($task_status=="1") {
-                                                  echo "<option value='0'>INACTIVE</option>";
+                                                  echo "<option value='0'>Not Deployed</option>";
                                                 }
-                                                 else {
-                                                  echo "<option value='1'>ACTIVE</option>";
+                                                else {
+                                                  echo "<option value='1'>Deployed</option>";
                                                 }
                                                 ?>
                                                 </select>
                                             </div>
                                             <br>
-                                            <div class="form-group">
-                                                <div class="col-sm-12 pull-right">
-                                                    <button id="submit" type="submit" class="btn btn-success pull-right">
-                                                        <span class="fa  fa-check"></span> Submit</button>
-                                                    <a href="task_details.php?section=<?php echo $section ?>">
-                                                        <button type="button" class="btn btn btn-danger"> <span class="fa fa-times">
-                                                        </span> Cancel</button></a>
-                                                </div>
-                                            </div>
-
+                                            <button id="submit" type="submit" class="btn btn-success pull-right"><span class="fa  fa-check"></span> Submit</button>
+                                            <a href="task_details.php?section=<?php echo $section ?>"><button type="button" class="btn btn btn-danger"> <span class="fa fa-times"></span> Cancel</button></a>
                                         </div>
                                     </form>
 

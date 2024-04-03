@@ -1,54 +1,46 @@
 <?php
-//Start session
-session_start();
-//Connect to mysql server
-include('connect.php');
+	//Start session
+	session_start();
+	//Connect to mysql server
+	include('connect.php');
+	date_default_timezone_set('Asia/Manila');
+  $systemtime = date('Y-m-d H:i:s');
 
-$error='';
-if(isset($_POST['submit'])){
-
-	$username = $_POST['username'];
-	$password = $_POST['password'];
-
-	$result = mysqli_query($con,"SELECT * FROM accounts WHERE username='$username' AND password='$password'");
-	
-	if(mysqli_num_rows($result) > 0)
-	{
-		while($row = mysqli_fetch_array($result)){
+	$error='';
+	if(isset($_POST['submit'])){
+		$username = $_POST['username'];
+		$password = $_POST['password'];
+		$hash = password_hash($password, PASSWORD_DEFAULT);
+		$con->next_result();
+		$result = mysqli_query($con,"SELECT * FROM accounts WHERE username='$username' AND status=1");
+		if(mysqli_num_rows($result) > 0) {
+			$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 			$access = $row['access'];
 			$emp_id = $row['id'];
 			$username = $row['username'];
-		}
+			$hash_password = $row['password'];
 
-		if($result) {
-			if(mysqli_num_rows($result) > 0) {
+			if (!password_verify($password, $hash_password)){
+				$error="Invalid Password!";
+			}
+			else{	
 				//Login Successful
 				session_regenerate_id();
-				$member = mysqli_fetch_assoc($result);
 				$_SESSION['SESS_MEMBER_ID'] = $emp_id;
 				$_SESSION['SESS_MEMBER_USERNAME'] = $username;
 				$_SESSION['SESS_MEMBER_ACCESS'] = $access;
-				$_SESSION['SESS_MEMBER_PASS'] = $password;
+				$_SESSION['SESS_MEMBER_PASS'] = $hash_password;
 				session_write_close();
 				
+				$systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Account login.', '$systemtime', '$username')";
+				$result = mysqli_query($con, $systemlog);
 				header("location: include/home.php");
 				exit();
-			}else {
-				//Login failed
-				$error="Username and Password did not match!";
-				
-				exit();
 			}
-		}else {
-			die("Query failed");
 		}
-
-		if(is_null($access))
-		{
-			$error="Error in accessing your account. Contact System Admin now!";
+		else {
+			//Login failed
+			$error="There's an error accessing your account. Contact system admin now!";
 		}
 	}
-	else{
-		$error="Username and Password is invalid!";
-	}
-} ?>
+?>

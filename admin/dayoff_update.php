@@ -79,6 +79,10 @@ elseif($access=='1')
             
             $con->next_result();
             $sql = mysqli_query($con,"UPDATE `day_off` SET date_off='$setdate',status=TRUE WHERE id='$id'");
+            $con->next_result();
+            $setdate = date('l, F d, Y', strtotime($setdate));
+            $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('$setdate, was marked as a day off.', '$systemtime', 'ADMIN')";
+            $result = mysqli_query($con, $systemlog);
         }
 
     }elseif($_GET['option']=='delete'){
@@ -87,6 +91,10 @@ elseif($access=='1')
         $setdate=$_GET['setdate'];
 
         $sql = mysqli_query($con,"UPDATE `day_off` SET date_off='$setdate',status=FALSE WHERE id='$id'");
+        $con->next_result();
+        $setdate = date('l, F d, Y', strtotime($setdate));
+        $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('$setdate, was deleted as a day off.', '$systemtime', '$username')";
+        $result = mysqli_query($con, $systemlog);
     }
     
     if ($sql){ ?>

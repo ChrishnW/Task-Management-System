@@ -25,7 +25,7 @@ $date_created = date("Y-m-d");
     <title>Assign Task</title>
 </head>
 
-<body>
+<div id="content" class="p-4 p-md-5 pt-5">
     <div id="wrapper">
         <div id="page-wrapper">
             <div class="row">
@@ -44,10 +44,8 @@ $date_created = date("Y-m-d");
                             <div class="row">
                                 <div class="col-lg-12">
 
-                                    <form data-toggle="validator" class="className" name="form" id="form"
-                                        action="assign_task_submit.php" method="POST">
+                                    <form data-toggle="validator" class="className" name="form" id="form" action="assign_task_submit.php" method="POST">
                                         <div class="form-group">
-
                                             <div class="form-group required">
                                                 <label>Employee Name:</label>
                                                 <select name="emp_name" id="emp_name" required
@@ -68,12 +66,8 @@ $date_created = date("Y-m-d");
                                             </div>
 
                                             <div class="form-group required">
-                                                <label>Select Tasks:</label><span
-                                                    class="pull-right help-block with-errors"
-                                                    style="margin: 0px; font-size: 11px;"></span>
-                                                    <select name="tasks" id="tasks" required
-                                                    class="form-control selectpicker show-menu-arrow"
-                                                    data-live-search="true" placeholder="Select Tasks" >
+                                                <label>Select Tasks:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
+                                                    <select name="tasks" id="tasks" required class="form-control selectpicker show-menu-arrow" data-live-search="true" placeholder="Select Tasks" >
                                                     </select>
                                             </div>
 
@@ -92,6 +86,14 @@ $date_created = date("Y-m-d");
                                                 <input type="date" placeholder="Due Date" class="form-control"
                                                     name="due_date" id="due_date" required>
                                                 <input type="hidden" name="section" id="section" value="<?php echo $section ?>">
+                                            </div>
+
+                                            <div class="form-group required">
+                                                <label>Need Attachment:</label><span class="pull-right help-block with-errors" style="margin: 0px; font-size: 11px;"></span>
+                                                    <select name="requirement_status" required id="requirement_status" class="form-control selectpicker show-menu-arrow" data-live-search="true">
+                                                        <option selected value="0">No</option>
+                                                        <option value="1">Yes</option>
+                                                    </select>
                                             </div>
 
                                             <div class="form-group">
@@ -115,7 +117,7 @@ $date_created = date("Y-m-d");
             </div>
         </div>
     </div>
-</body>
+</div>
 
 <script>
 function selectname(element) {

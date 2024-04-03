@@ -16,7 +16,6 @@ select.selectpicker {
 .bootstrap-select > .dropdown-toggle {
   width: 100%;
   padding-right: 25px;
-  z-index: 1;
 }
 .bootstrap-select > .dropdown-toggle.bs-placeholder,
 .bootstrap-select > .dropdown-toggle.bs-placeholder:hover,
@@ -293,7 +292,6 @@ select.selectpicker {
   padding: 0 8px 4px;
 }
 .bs-searchbox .form-control {
-  margin-bottom: 0;
   width: 100%;
   float: none;
 }

@@ -14,7 +14,7 @@ if($access!='1')
     </script>
     <div class="modal fade" id="error1" tabindex="-1" role="dialog"  data-backdrop="static" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
-            <div class="modal-content panel-danger">
+            <div class="modal-content panel-success">
                 <div class="modal-header panel-heading">
                   <button type="button" class="close"  aria-hidden="true">&times;</button>
                         <h4 class="modal-title" id="myModalLabel">Warning!</h4>
@@ -50,7 +50,7 @@ elseif($access=='1')
                 </script>
                 <div class="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"  aria-hidden="true">
                     <div class="modal-dialog modal-sm">
-                        <div class="modal-content panel-danger">
+                        <div class="modal-content panel-success">
                             <div class="modal-header panel-heading">
                                 <a href="javascript:history.back()"><button type="button" class="close"  aria-hidden="true">&times;</button></a>
                                 <h4 class="modal-title" id="myModalLabel">Warning!</h4>
@@ -81,7 +81,7 @@ elseif($access=='1')
                 </script>
                 <div class="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"  aria-hidden="true">
                     <div class="modal-dialog modal-sm">
-                        <div class="modal-content panel-danger">
+                        <div class="modal-content panel-success">
                             <div class="modal-header panel-heading">
                                 <a href="javascript:history.back()"><button type="button" class="close"  aria-hidden="true">&times;</button></a>
                                 <h4 class="modal-title" id="myModalLabel">Warning!</h4>
@@ -101,9 +101,14 @@ elseif($access=='1')
                 </div>
                 <?php
                 exit();
-            }else{
+            }
+            else {
                 $con->next_result();
                 $sql = mysqli_query($con,"INSERT INTO day_off (date_off,status) value ('$setdate',true)");
+                $con->next_result();
+                $setdate = date('l, F d, Y', strtotime($setdate));
+                $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('$setdate, was marked as a day off.', '$systemtime', 'ADMIN')";
+                $result = mysqli_query($con, $systemlog);
             }
         }
 
@@ -121,7 +126,7 @@ elseif($access=='1')
             </script>
             <div class="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"  aria-hidden="true">
                 <div class="modal-dialog modal-sm">
-                    <div class="modal-content panel-danger">
+                    <div class="modal-content panel-success">
                         <div class="modal-header panel-heading">
                             <a href="javascript:history.back()"><button type="button" class="close"  aria-hidden="true">&times;</button></a>
                             <h4 class="modal-title" id="myModalLabel">Warning!</h4>

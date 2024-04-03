@@ -48,7 +48,7 @@ include('../include/connect.php');
             
 
             $con->next_result();
-            $result = mysqli_query($con,"SELECT accounts.fname, accounts.lname, accounts.username, accounts.email, section.sec_name, access.access, accounts.status, accounts.id, accounts.card FROM accounts LEFT JOIN section ON accounts.sec_id=section.sec_id LEFT JOIN access on accounts.access=access.id");
+            $result = mysqli_query($con,"SELECT accounts.fname, accounts.lname, accounts.username, accounts.email, section.sec_name, access.access, accounts.status, accounts.id, accounts.card FROM accounts LEFT JOIN section ON accounts.sec_id=section.sec_id LEFT JOIN access on accounts.access=access.id WHERE accounts.access = 2 ORDER BY accounts.fname ASC");
           
             while($row = mysqli_fetch_array($result))
             {
@@ -60,13 +60,13 @@ include('../include/connect.php');
                 }
                 echo "
                 <tr>
-                <td> " . $row["fname"] . " ". $row["lname"] . "</td> 
-                <td>" . $row["card"] . "</td> 
-                <td>" . $row["username"] . "</td> 
-                <td>" . $row["email"] . "</td> 
-                <td>" . $row["sec_name"] . "</td>
-                <td>" . strtoupper($row["access"]) . "</td>
-                <td>". $status ."</td>
+                <td><center />" . $row["fname"] . " ". $row["lname"] . "</td> 
+                <td><center />" . $row["card"] . "</td> 
+                <td><center />" . $row["username"] . "</td> 
+                <td><center />" . $row["email"] . "</td> 
+                <td><center />" . $row["sec_name"] . "</td>
+                <td><center />" . strtoupper($row["access"]) . "</td>
+                <td><center />". $status ."</td>
                 </tr> ";
             } 
             ?>

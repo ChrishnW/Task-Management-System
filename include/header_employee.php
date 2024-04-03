@@ -1,11 +1,20 @@
 <!DOCTYPE html>
+<html lang="en">
 <?php
 	include('../include/connect.php');
 	include('../include/auth.php');
+	date_default_timezone_set('Asia/Manila');
+  $systemtime = date('Y-m-d H:i:s');
 	
-	?>
-<!DOCTYPE html>
-<html lang="en">
+	if($access!='2'){
+		$con->next_result();
+		$systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Tries to access employees account.', '$systemtime', '$username')";
+		$result = mysqli_query($con, $systemlog);
+		echo '<script>alert("Error 404")</script>'; 
+		echo '<script>history.back();</script>';
+		exit();
+	}
+?>
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -38,129 +47,126 @@
 			z-index: 9999;
 			background: url('../assets/img/loader.gif') 50% 50% no-repeat rgb(0, 0, 0);
 			}
-			.footer {
-			position: fixed;
-			left: 0;
-			bottom: 0;
-			width: 100%;
-			background-color: #00042b;
-			color: white;
-			text-align: center;
-			}
 		</style>
-		<script src="../vendor/jquery/jquery-1.9.1.min.js"></script>
-		<script>
-			$(window).on('load', function() {
-			$('#loader').fadeOut('slow');
-			});
-		</script>
+		<?php
+			$con->next_result();
+			$query = mysqli_query($con, "SELECT * FROM accounts INNER JOIN  section ON section.sec_id=accounts.sec_id WHERE username='$username' ");
+			if (mysqli_num_rows($query)>0) { 
+			    while ($row = $query->fetch_assoc()) {
+				$fname = $row['fname'];
+				$card = $row['card'];
+				$email = $row['email'];
+				$sec = $row['sec_name'];
+					// Check if file_name is empty
+					if (empty($row["file_name"])) {
+						// Use a default image URL
+						$imageURL = '../assets/img/user-profiles/nologo.png';
+					} else {
+						// Use the image URL from the database
+						$imageURL = '../assets/img/user-profiles/'.$row["file_name"];
+					}
+			    }
+			}
+			?>
 	</head>
-	<body>
-		<div id="loader"></div>
-		<div id="wrapper">
-			<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-				<div class="navbar-header">
-					<button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button> 
-					<a class="navbar-brand" href="index.php">
-						<p class="text-primary"><img src="../assets/img/gloryicon.png"> <font color="white">GLORY (PHILIPPINES), INC.</font> | <font color="red">TASK MANAGEMENT SYSTEM</font></p>
-					</a>
-				</div>
-				<div class="navbar-default sidebar" role="navigation">
-					<div class="sidebar-nav navbar-collapse">
-						<ul class="nav" id="side-menu">
-							<li style="list-style: none"><br></li>
-							<li>
-								<a href="../include/home.php"><i class="fa fa-home fa-fw"></i> Home</a>
-							</li>
-							<li>
-								<a href="index.php"><i class="glyphicon glyphicon-th-large fa-fw"></i> Dashboard</a>
-							</li>
-							<li>
-								<a href="#"><i class="glyphicon glyphicon-tasks fa-fw"></i> My Tasks</a>
-								<ul class="nav nav-second-level">
-									<li>
-										<a href="my_tasks.php?username=<?php echo $username?>" style="margin-top: 0"><i class="glyphicon glyphicon-paperclip fa-fw"></i> Assigned Tasks</a>
-									</li>
-									<li>
-										<a href="task_details.php?status=NOT YET STARTED" style="margin-top: 0"><i class="glyphicon glyphicon-time fa-fw"></i> Not Yet Started</a>
-									</li>
-									<li>
-										<a href="task_details.php?status=IN PROGRESS"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i> In-Progress</a>
-									</li>
-									<li>
-										<a href="task_details.php?status=FINISHED"><i class="fa fa-check-square fa-fw"></i> Finished</a>
-									</li>
-								</ul>
-							</li>
-							<li>
-								<a href="my_performance.php?username=<?php echo $username?>"><i class="glyphicon glyphicon-stats fa-fw"></i> My Performance</a>
-							</li>
-							<li>
-								<a href="#"><i class="fa fa-user-circle fa-fw"></i> Account<span class="fa arrow"></span></a>
-								<ul class="nav nav-second-level">
-									<li>
-										<a href="../include/user_profile.php?modal=hide" style="margin-top: 0"><i class="fa fa-cog fa-spin fa-fw"></i> Configuration</a>
-									</li>
-									<li>
-										<a href="../include/logout.php"><i class="glyphicon glyphicon-log-out fa-fw"></i> Logout</a>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</nav>
+	<script src="../vendor/jquery/jquery-1.9.1.min.js"></script>
+	<script>
+		$(window).on('load', function() {
+		$('#loader').fadeOut('slow');
+		});
+		
+	</script>
+	<div id="loader"></div>
+	<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; margin-top: -5px;">
+		<div class="navbar-header">
+			<button type="button" id="sidebarCollapse" class="pull-left" style="border: none">
+			<i class="fa fa-bars" style="font-size: 30px;"></i>
+			<span class="sr-only">Toggle Menu</span>
+			</button>
+			<a class="navbar-brand" href="index.php">
+				<p class="text-primary" title="Task Management System">GLORY (PHILIPPINES), INC. | <font color="red"> TASK MANAGEMENT SYSTEM</font></p>
+			</a>
 		</div>
-		<!-- <div class="footer" style="font-family: 'Courier New', monospace;">
-			<p>Developed by System Kaizen</p>
-		</div> -->
-		<script src="../vendor/jquery/jquery.min.js"></script>
-		<!-- Autocomplete Jquery-->
-		<script src="../vendor/jquery/jquery-ui.min.js"></script>
-		<!-- Flot Charts JavaScript -->
-		<script src="../vendor/flot/excanvas.min.js"></script>
-		<script src="../vendor/flot/jquery.flot.js"></script>
-		<script src="../vendor/flot/jquery.flot.pie.js"></script>
-		<script src="../vendor/flot/jquery.flot.resize.js"></script>
-		<script src="../vendor/flot/jquery.flot.time.js"></script>
-		<script src="../vendor/flot-tooltip/jquery.flot.tooltip.min.js"></script>
-		<script src="../data/flot-data.js"></script>
-		<!-- Metis Menu Plugin Javascript -->
-		<script src="../vendor/metisMenu/metisMenu.min.js"></script>
-		<script src="../assets/js/validator.js"></script>
-		<!-- DataTables Javascript -->
-		<script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
-		<script src="../vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
-		<!-- Morris Charts Javascript -->
-		<script src="../vendor/raphael/raphael.min.js"></script>
-		<script src="../vendor/morrisjs/morris.min.js"></script>
-		<!-- Custom Theme Javascript -->
-		<script src="../assets/js/sb-admin-2.js"></script>
-		<!-- For select multiple tag-->
-		<script src="../assets/js/bootstrap-select.js"></script> 
-		<script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-		<script src="../assets/js/select2.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
-		<script type="text/javascript">
-			$(document).ready(function() {
-			$('#admin-table').DataTable({
-			        "order":[[0,"desc"]],
-			        responsive: true,
-			        lengthMenu: [[10,15,20,50],[10,15,20,50]],
-			        pageLength: 10
-			    });
-			});
-		</script>
-		<script>
-			let lang = window.navigator.languages ? window.navigator.languages[0] : null;
-			    lang = lang || window.navigator.language || window.navigator.browserLanguage || window.navigator.userLanguage;
-			
-			let shortLang = lang;
-			if (shortLang.indexOf('-') !== -1)
-			    shortLang = shortLang.split('-')[0];
-			
-			if (shortLang.indexOf('_') !== -1)
-			    shortLang = shortLang.split('_')[0];
-			
-			console.log(lang, shortLang);
-		</script>
+	</nav>
+	<div class="wrapper d-flex align-items-stretch">
+	<nav id="sidebar">
+		<div class="p-4 pt-5">
+			<div class="prof" style="font-family: 'Trebuchet MS'; margin-top: 50px;text-align: center;">
+				<div class="logo">
+					<img src="<?php echo $imageURL; ?>" class="avatar img-circle img-thumbnail" alt="">
+				</div>
+				<h5 style="text-align: center; cursor: default"><?php echo $fname?></h5>
+				<h6 style="text-align: center; cursor: default"><?php echo $sec?></h6>
+			</div>
+			<ul class="nav" id="side-menu">
+				<li>
+					<a href="../include/home.php"><i class="fa fa-home fa-fw"></i> Home</a>
+				</li>
+				<li>
+					<a href="index.php"><i class="glyphicon glyphicon-th-large fa-fw"></i> Dashboard</a>
+				</li>
+				<li>
+					<a href="#"><i class="glyphicon glyphicon-tasks fa-fw"></i> My Tasks<span class="fa arrow"></span></a>
+					<ul class="nav nav-second-level">
+						<li>
+							<a href="my_tasks.php"><i class="fa fa-folder fa-fw"></i> Assigned Tasks</a>
+						</li>
+						<li>
+							<a href="task_details.php?status=NOT YET STARTED"><i class="glyphicon glyphicon-time fa-fw"></i> Not Yet Started</a>
+						</li>
+						<li>
+							<a href="task_details.php?status=IN PROGRESS"><i class="fa fa-spinner fa-fw"></i> In-Progress</a>
+						</li>
+						<li>
+							<a href="task_details.php?status=FINISHED"><i class="fa fa-check-square fa-fw"></i> Finished</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="my_performance.php"><i class="glyphicon glyphicon-stats fa-fw"></i> My Performance</a>
+				</li>
+				<li>
+					<a href="../include/user_profile.php" style="margin-top: 0"><i class="fa fa-cog fa-fw"></i> Settings</a>
+				</li>
+				<li>
+					<a href="../include/logout.php"><i class="glyphicon glyphicon-log-out fa-fw"></i> Logout</a>
+				</li>
+			</ul>
+			<div class="footer">
+				<p>
+					System Kaizen &copy;<script>document.write(new Date().getFullYear());</script> <br></a>
+				</p>
+			</div>
+		</div>
+	</nav>
+
+	<script src="../assets/js/jquery-3.3.1.min.js"></script>
+	<script src="../assets/js/popper.min.js"></script>
+	<script src="../assets/js/bootstrap.min.js"></script>
+	<script src="../assets/js/main.js"></script>
+	<script src="../vendor/jquery/jquery.min.js"></script>
+	<!-- Autocomplete Jquery-->
+	<script src="../vendor/jquery/jquery-ui.min.js"></script>
+	<!-- Flot Charts JavaScript -->
+	<script src="../vendor/flot/excanvas.min.js"></script>
+	<script src="../vendor/flot/jquery.flot.js"></script>
+	<script src="../vendor/flot/jquery.flot.pie.js"></script>
+	<script src="../vendor/flot/jquery.flot.resize.js"></script>
+	<script src="../vendor/flot/jquery.flot.time.js"></script>
+	<script src="../vendor/flot-tooltip/jquery.flot.tooltip.min.js"></script>
+	<script src="../data/flot-data.js"></script>
+	<!-- Metis Menu Plugin Javascript -->
+	<script src="../vendor/metisMenu/metisMenu.min.js"></script>
+	<script src="../assets/js/validator.js"></script>
+	<!-- DataTables Javascript -->
+	<script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+	<script src="../vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
+	<!-- Morris Charts Javascript -->
+	<script src="../vendor/raphael/raphael.min.js"></script>
+	<script src="../vendor/morrisjs/morris.min.js"></script>
+	<!-- Custom Theme Javascript -->
+	<script src="../assets/js/sb-admin-2.js"></script>
+	<!-- For select multiple tag-->
+	<script src="../assets/js/bootstrap-select.js"></script> 
+	<script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../assets/js/select2.min.js"></script>

@@ -191,7 +191,7 @@ if(isset($_POST['submit'])){
         <div class="footer">
             <!-- Card Number will be automatically record after Tap -->
             <form action="" method="post">
-                <input type="number" id="card" min="10" name="card" placeholder="Card Number" autocomplete="off">
+                <input type="number" id="card" min="10" name="card" placeholder="Card Number" autocomplete="off" autofocus>
                 <br>
                 <input type="date" id="date" name="date" hidden>
                 <button type="submit" id="submit" name="submit" hidden> Submit </button>

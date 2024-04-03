@@ -40,7 +40,7 @@ $id = $row['id'];
     <title>Edit Account Information</title>
 </head>
 
-<body>
+<div id="content" class="p-4 p-md-5 pt-5">
     <div id="wrapper">
         <div id="page-wrapper">
             <div class="row">
@@ -164,7 +164,7 @@ $id = $row['id'];
                                             </div>
 
                                             <br>
-                                                <i data="<?php echo $id?>" class='button btn btn-primary '><i class="fa fa-undo"></i> Reset Password</i>
+                                                <i data="<?php echo $username?>" class='button btn btn-primary '><i class="fa fa-undo"></i> Reset Password</i>
                                             <br>
                                             <br>
 
@@ -189,7 +189,7 @@ $id = $row['id'];
             </div>
         </div>
     </div>
-</body>
+</div>
 
 <script>
 //reset password set to default = 12345

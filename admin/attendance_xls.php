@@ -4,7 +4,7 @@ $month = date('m'); //Number of Month
 $monthname = date('F'); //Name of the Month
 $year = date('Y'); //Year
 header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
-header("Content-Disposition: attachment; filename=ATTENDANCE-SUMMARY_".$monthname.$year.".xls");  //File name extension was wrong
+header("Content-Disposition: attachment; filename=ATTENDANCE-SUMMARY_".$monthname.$year.".xls");
 header("Expires: 0");
 header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 header("Cache-Control: private",false);
@@ -50,7 +50,7 @@ include('../include/connect.php');
             
 
             $con->next_result();
-            $result = mysqli_query($con,"SELECT attendance.card, attendance.date, accounts.card, accounts.fname, accounts.lname, accounts.sec_id, accounts.email FROM attendance INNER JOIN accounts ON attendance.card=accounts.card WHERE MONTH(attendance.date) = '$month' ORDER BY accounts.sec_id, attendance.date DESC");
+            $result = mysqli_query($con,"SELECT attendance.card, attendance.date, accounts.card, accounts.fname, accounts.lname, accounts.sec_id, accounts.email FROM attendance INNER JOIN accounts ON attendance.card=accounts.card WHERE MONTH(attendance.date) = '$month' ORDER BY attendance.date ASC");
           
             while($row = mysqli_fetch_array($result))
             {

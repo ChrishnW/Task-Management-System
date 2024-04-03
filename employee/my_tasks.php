@@ -1,7 +1,5 @@
 <?php 
 include('../include/header_employee.php');
-include('../include/bubbles.php');
-$username=isset($_GET['username']) ? $_GET['username'] : die('ERROR: Record ID not found.'); 
 ?>
 
 <html>
@@ -24,12 +22,12 @@ $username=isset($_GET['username']) ? $_GET['username'] : die('ERROR: Record ID n
 <head>
     <title>Employees Assigned Tasks</title>
 </head>
-<body>
+<div id="content" class="p-4 p-md-5 pt-5">
     <div id="wrapper">
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">List of Assigned Tasks [ <?php echo $username; ?> ]
+                    <h1 class="page-header">My Assigned Tasks
                         <a href='my_tasks_xls.php?id=<?php echo $username?>'> <button
                                 class='btn btn-md btn-success pull-right'><i class='fas fa-download'></i> Download</button></a>
                     </h1>
@@ -45,42 +43,40 @@ $username=isset($_GET['username']) ? $_GET['username'] : die('ERROR: Record ID n
 
                         <div class="panel-body">
                             <div class="table-responsive">
-                                <table width="100%" class="table table-bordered table-dark" id="table">
+                                <table width="100%" class="table table-dark" id="table">
                                     <thead>
                                         <tr>
-                                            <th scope="col">
-                                                <center />Task Code
-                                            </th>
-                                            <th scope="col">
-                                                <center />Task Classification
-                                            </th>
-                                            <th scope="col">
-                                                <center />Task Name
-                                            </th>
-                                            <th scope="col">
-                                                Task Details
-                                            </th>
+                                            <th scope="col"> Task Names </th>
+                                            <th scope='col' title='Legend'> <i class='fa fa-asterisk' /> </th>
+                                            <th scope="col"> Task Details </th>
+                                            <th scope="col"> Task Classifications </th>
+                                            <th scope="col"> Task Recurrances </th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody">
                                     <?php
-                                    $result = mysqli_query($con,"SELECT accounts.fname, accounts.lname, tasks.task_code, task_list.task_name, task_list.task_details, task_class.task_class, tasks.id  FROM tasks LEFT JOIN accounts ON tasks.in_charge=accounts.username INNER JOIN task_list ON tasks.task_code=task_list.task_code AND task_list.status IS TRUE LEFT JOIN task_class ON task_list.task_class=task_class.id WHERE tasks.in_charge='$username' GROUP BY task_list.task_name ORDER BY task_list.id DESC");
+                                    $result = mysqli_query($con,"SELECT *, tasks.id FROM tasks JOIN task_class ON task_class.id=tasks.task_class WHERE in_charge='$username'");
                                     if (mysqli_num_rows($result)>0) { 
-                                    while ($row = $result->fetch_assoc()) { 
-                                    $task_code = $row['task_code'];
-                                    $task_name = $row['task_name'];
-                                    $task_details = $row['task_details'];
-                                    $task_class = $row['task_class'];
-                                    $task_id = $row['id'];
-                                    echo "<tr>                                                                                                         
-                                        <td><center />" . $task_code . "</td> 
-                                        <td><center />" . $task_class . "</td>
-                                        <td><center />" . $task_name . "</td> 
-                                        <td> " . $task_details . "</td> 
-                                        
-                                    </tr>";  
+                                        while ($row = $result->fetch_assoc()) { 
+                                            $task_name = $row['task_name'];
+                                            $task_details = $row['task_details'];
+                                            $task_class = $row['task_class'];
+                                            $due_date = $row['submission'];
+                                            echo "<tr>
+                                                <td id='normalwrap'><center />" . $task_name . "</td>";
+                                                if ($row['requirement_status'] == 1) {
+                                                    echo "<td> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";
+                                                } 
+                                                else {
+                                                    echo "<td> </td>";
+                                                }
+                                                echo " 
+                                                <td id='normalwrap'> " . $task_details . "</td>         
+                                                <td><center />" . $task_class . "</td>
+                                                <td><center />" . $due_date . "</td> 
+                                            </tr>";  
+                                        }
                                     }
-                                }
                                     ?>
                                     </tbody>
                                 </table>
@@ -91,12 +87,19 @@ $username=isset($_GET['username']) ? $_GET['username'] : die('ERROR: Record ID n
             </div>
         </div>
     </div>
-</body>
-<!-- <script>
+</div>
+<script>
 $(document).ready(function() {
     $('#table').DataTable({
-        responsive: true
+        responsive: true,
+        "order": [[ 3, "asc"]]
     });
 });
-</script> -->
+</script>
+<script>
+$(document).ready(function () {
+  $('#table').DataTable();
+  $('.dataTables_length').addClass('bs-select');
+});
+</script>
 </html>
