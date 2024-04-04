@@ -1,5 +1,4 @@
 <?php
-  include('../include/link.php');
   include('../include/auth.php');
   include('../include/connect.php');
 
