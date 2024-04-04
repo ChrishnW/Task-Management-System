@@ -1,13 +1,12 @@
 <?php 
-include('../include/header_employee.php');
+    include('../include/header_employee.php');
 ?>
 
 <html>
-<link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
-<link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
-<link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
-<link href="../assets/css/darkmode.css" rel="stylesheet">
-
+    <link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
+    <link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
+    <link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
+    <link href="../assets/css/darkmode.css" rel="stylesheet">
 <style>
 .form-group.required label {
     font-weight: bold;
@@ -27,20 +26,13 @@ include('../include/header_employee.php');
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">My Assigned Tasks
-                        <a href='my_tasks_xls.php?id=<?php echo $username?>'> <button
-                                class='btn btn-md btn-success pull-right'><i class='fas fa-download'></i> Download</button></a>
-                    </h1>
+                    <h1 class="page-header">My Assigned Tasks <a href='my_tasks_xls.php?id=<?php echo $username?>'> <button class='btn btn-md btn-success pull-right'><i class='fas fa-download'></i> Download</button></a> </h1>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            My Tasks
-                        </div>
-
+                        <div class="panel-heading"> My Tasks </div>
                         <div class="panel-body">
                             <div class="table-responsive">
                                 <table width="100%" class="table table-dark" id="table">

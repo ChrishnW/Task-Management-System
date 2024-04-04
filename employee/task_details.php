@@ -445,15 +445,6 @@
 			});
 		}
 
-		function reschedule(obj) {
-			var taskID = obj.value;
-
-			$(document).ready(function () {
-				$('#reschedule').modal('show');
-				document.getElementById('resched_task_id').value = taskID;
-			});
-		}
-
 		function okButtonClick2() {
 			var taskID = document.getElementById('hidden_task_id2').value;
 			var btn = document.getElementById('okButton');
@@ -477,39 +468,6 @@
 			}).fail(function (xhr, status, error) {
 				alert("An error occurred: " + status + "\nError: " + error);
 			});
-		}
-
-		function okButtonClick3() {
-			var taskID = $('#resched_task_id').val();
-			var reason = $('#resched_reason').val();
-			var requestDate = $('#request_date').val();
-			var btn = document.getElementById('okButton1');
-			var originalText = btn.textContent; // Store the original button text
-
-			$.ajax({
-					type: "POST",
-					url: "task_add_submit.php",
-					data: {
-						id: taskID,
-						reason: reason,
-						requestdate: requestDate
-					}
-
-				})
-				.done(function (response) {
-					document.getElementById('okButton1').disabled = true;
-					btn.textContent = 'Sending...'; // Change the button text to "Waiting"
-					setTimeout(function () {
-						$('#reschedule').modal('hide');
-					}, 2000); // Adjust the delay time (in milliseconds) as needed
-					setTimeout(function () {
-						$('#success3').modal('show');
-					}, 2000); // Adjust the delay time (in milliseconds) as needed		         
-				})
-
-				.fail(function (xhr, status, error) {
-					alert("An error occurred: " + status + "\nError: " + error);
-				});
 		}
 
 		function showValue(button) {
@@ -564,12 +522,30 @@
 			}).done(function (response) {
 				document.getElementById('okButton_1').disabled = true;
 				btn.textContent = 'Submitting...'; // Change the button text to "Waiting"
-				setTimeout(function () {
+				if (response === 'Success'){
+					setTimeout(function () {
 					$('#finish_1').modal('hide');
-				}, 2000); // Adjust the delay time (in milliseconds) as needed
-				setTimeout(function () {
-					$('#success2').modal('show');
-				}, 2000); // Adjust the delay time (in milliseconds) as needed
+					}, 2000); // Adjust the delay time (in milliseconds) as needed
+					setTimeout(function () {
+						$('#success2').modal('show');
+					}, 2000); // Adjust the delay time (in milliseconds) as needed
+				}
+				else if (response === 'File not supported') {
+					setTimeout(function () {
+					$('#finish_1').modal('hide');
+					}, 2000); // Adjust the delay time (in milliseconds) as needed
+					setTimeout(function () {
+						$('#error').modal('show');
+					}, 2000); // Adjust the delay time (in milliseconds) as needed
+				}
+				else if (response === 'Unexpected error') {
+					setTimeout(function () {
+					$('#finish_1').modal('hide');
+					}, 2000); // Adjust the delay time (in milliseconds) as needed
+					setTimeout(function () {
+						$('#error').modal('show');
+					}, 2000); // Adjust the delay time (in milliseconds) as needed
+				}
 			}).fail(function (xhr, status, error) {
 				alert("An error occurred: " + status + "\nError: " + error);
 			});
@@ -727,6 +703,29 @@
 			location.reload();
 		}
 	</script>
+
+	<div class="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content panel-success">
+				<div class="modal-header panel-heading">
+					<h4 class="modal-title" id="myModalLabel">Warning!</h4>
+				</div>
+				<div class="modal-body panel-body">
+					<center>
+						<i style="color:#e13232; font-size:80px;" class="fa fa-times-circle "></i>
+						<br><br>
+						File is not supported!
+						<br><br>
+						Please select PDF, XLS, XLSX, 
+						DOCX, PPTX and TXT file only.
+					</center>
+				</div>
+				<div class="modal-footer">
+					<a href="task_details.php?status=IN PROGRESS"><button type="button" name="submit" class="btn btn-danger pull-right"><i class='fa fa-times fa-1x'></i> Cancel</button></a>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<div class="modal fade" id="start" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
 		<div class="modal-dialog modal-sm">

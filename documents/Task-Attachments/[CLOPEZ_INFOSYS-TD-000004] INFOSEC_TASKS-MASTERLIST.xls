@@ -1,0 +1,218 @@
+
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    </head>
+        <center>
+        <b>
+            <font color="blue">GLORY (PHILIPPINES), INC.</font>
+        </b>
+        <br>
+        <b>TASK MANAGEMENT SYSTEM</b>
+        <br>
+        <h3>
+            <b>INFORMATION SECURITY</b>
+            <br>
+            <b>TASKS MASTERLIST</b>
+        </h3>
+    </center>
+    <div id="table-scroll">
+        <table width="100%" border="1" align="left">
+            <thead>
+                <tr>
+                    <th class="col-sm-1"> <center>#</center> </th>
+                    <th class="col-lg-2"> <center />Task Name </th>
+                    <th class="col-lg-2"> <center />Task Details </th>
+                    <th class="col-lg-2"> <center />Task Classification </th>
+                    <th class="col-lg-2"> <center />Date Registered </th>
+                    <th class="col-lg-1"> <center />Status </th>
+                </tr>
+            </thead>
+            <tbody id="show_account">
+                <tr>
+                                <td><center/> 1</td>                               
+                                <td id='normalwrap'><center/> Responding to user helpdesk tickets </td>
+                                <td id='normalwrap'><center/> Troubleshooting technical issues for end-users, such as password resets, software installation problems, and connectivity issues. </td>
+                                <td><center/>DAILY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 2</td>                               
+                                <td id='normalwrap'><center/> Receiving and filing of helpdesk request </td>
+                                <td id='normalwrap'><center/> Receive request thru phone call, e-mail, etc. and filing to Helpdesk as ticket. </td>
+                                <td><center/>DAILY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 3</td>                               
+                                <td id='normalwrap'><center/> Incident response </td>
+                                <td id='normalwrap'><center/> Investigating and responding to security incidents. </td>
+                                <td><center/>DAILY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 4</td>                               
+                                <td id='normalwrap'><center/> Security monitoring </td>
+                                <td id='normalwrap'><center/> Identifying and responding to security threats and vulnerabilities. </td>
+                                <td><center/>DAILY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 5</td>                               
+                                <td id='normalwrap'><center/> System and device monitoring </td>
+                                <td id='normalwrap'><center/> Checking system and logs for errors and performance issues. </td>
+                                <td><center/>DAILY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 6</td>                               
+                                <td id='normalwrap'><center/> Patch management </td>
+                                <td id='normalwrap'><center/> Applying security patches and updates to software and hardware to address vulnerabilities. </td>
+                                <td><center/>DAILY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 7</td>                               
+                                <td id='normalwrap'><center/> Network monitoring </td>
+                                <td id='normalwrap'><center/> Monitoring network traffic for suspicious activity and ensuring smooth operation. </td>
+                                <td><center/>DAILY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 8</td>                               
+                                <td id='normalwrap'><center/> Maintaining user accounts and permissions </td>
+                                <td id='normalwrap'><center/> Adding, modifying, and deleting user accounts as needed. </td>
+                                <td><center/>DAILY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 9</td>                               
+                                <td id='normalwrap'><center/> Security Audit </td>
+                                <td id='normalwrap'><center/> Auditing of server and  workstation, checking of backup,process,documents and policy. </td>
+                                <td><center/>WEEKLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 10</td>                               
+                                <td id='normalwrap'><center/> PMS  </td>
+                                <td id='normalwrap'><center/> Optimizing system and hardware performance (software update,hdd defragment and hardware cleaning) </td>
+                                <td><center/>WEEKLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 11</td>                               
+                                <td id='normalwrap'><center/> Server & Data backups </td>
+                                <td id='normalwrap'><center/> Backing up critical data regularly to ensure it can be recovered in case of a disaster. </td>
+                                <td><center/>WEEKLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 12</td>                               
+                                <td id='normalwrap'><center/> Documentation </td>
+                                <td id='normalwrap'><center/> Updating records,documents (ex. Email list,telephone, device, accounts etc.) </td>
+                                <td><center/>WEEKLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 13</td>                               
+                                <td id='normalwrap'><center/> Kaizen Improvement </td>
+                                <td id='normalwrap'><center/> Continuous improvement, should be embedded into the IT management process. </td>
+                                <td><center/>WEEKLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 14</td>                               
+                                <td id='normalwrap'><center/> Others  </td>
+                                <td id='normalwrap'><center/> Checking consumable, payment processing for billing, purchase request. </td>
+                                <td><center/>WEEKLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 15</td>                               
+                                <td id='normalwrap'><center/> Security awareness training & BCP </td>
+                                <td id='normalwrap'><center/> Educating users about cybersecurity best practices. </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 16</td>                               
+                                <td id='normalwrap'><center/> Disposal </td>
+                                <td id='normalwrap'><center/> Disposal of IT assets is crucial to ensure data security, environmental compliance, and resource recovery. </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 17</td>                               
+                                <td id='normalwrap'><center/> Infosec: I </td>
+                                <td id='normalwrap'><center/> Security Patch Approved Updates Report </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 18</td>                               
+                                <td id='normalwrap'><center/> Infosec: II </td>
+                                <td id='normalwrap'><center/> Information Security Report </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 19</td>                               
+                                <td id='normalwrap'><center/> Infosec: III </td>
+                                <td id='normalwrap'><center/> Backup Report  </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 20</td>                               
+                                <td id='normalwrap'><center/> MIS: IV </td>
+                                <td id='normalwrap'><center/> Computer Masterlist Report </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 21</td>                               
+                                <td id='normalwrap'><center/> MIS: V </td>
+                                <td id='normalwrap'><center/> Summary of IP Address Report </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 22</td>                               
+                                <td id='normalwrap'><center/> MIS: VI </td>
+                                <td id='normalwrap'><center/> Helpdesk Report </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 23</td>                               
+                                <td id='normalwrap'><center/> MIS: VII </td>
+                                <td id='normalwrap'><center/> PMS Report </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 24</td>                               
+                                <td id='normalwrap'><center/> MIS: Summary of email, telephone list and cctv </td>
+                                <td id='normalwrap'><center/> Summary of email, telephone list and cctv </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 25</td>                               
+                                <td id='normalwrap'><center/> MIS: Summary of MIS budget and expenses </td>
+                                <td id='normalwrap'><center/> Summary of MIS budget and expenses </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr><tr>
+                                <td><center/> 26</td>                               
+                                <td id='normalwrap'><center/> MIS: Summary of Problem encountered and Disposal </td>
+                                <td id='normalwrap'><center/> Summary of Problem encountered and Disposal </td>
+                                <td><center/>MONTHLY ROUTINE</td>
+                                <td><center/>March 27, 2024</td> 
+                                <td><center/><p class="label label-success" style="font-size:100%;">ACTIVE</p></td>
+                            </tr>            </tbody>
+        </table>
+    </div>
+</html>

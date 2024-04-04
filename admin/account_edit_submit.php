@@ -50,6 +50,6 @@
     $con->next_result(); 
     $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('$username account updated.', '$systemtime', 'ADMIN')";
     $result = mysqli_query($con, $systemlog);
-    header('location: account_list.php'); 
+    header('location: account_list.php');
   }
 ?>

@@ -1,13 +1,19 @@
 <?php
-include('../include/link.php');
-include('../include/auth.php');
-include('../include/connect.php');
+  include('../include/link.php');
+  include('../include/auth.php');
+  include('../include/connect.php');
 
-$ID = $_POST['id'];
-$ACTION = $_POST['action'];
-$FILE = $_FILES['file'];
+  $ID = $_POST['id'];
+  $ACTION = $_POST['action'];
+  $FILE = $_FILES['file'];
 
-$con->next_result();
-$update = "UPDATE tasks_details SET remarks='$ACTION' WHERE task_code='$ID'";
-$update = mysqli_query($con, $update);
+  $con->next_result();
+  $update = "UPDATE tasks_details SET remarks='$ACTION' WHERE task_code='$ID'";
+  $update = mysqli_query($con, $update);
+
+  if ($update) {
+    $con->next_result(); 
+    $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Edited [$ID] remarks.', '$systemtime', '$username')";
+    $result = mysqli_query($con, $systemlog);
+  }
 ?>
