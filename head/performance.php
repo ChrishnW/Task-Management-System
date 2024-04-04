@@ -60,15 +60,9 @@ $section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not fou
                             <table width="100%" class="table table-striped table-hover" id="table_task">
                                 <thead>
                                     <tr>
-                                        <th class="col-lg-3">
-                                            <center>Employee</center>
-                                        </th>
-                                        <th class="col-lg-3">
-                                            <center>Average Score</center>
-                                        </th>
-                                        <th class="col-lg-3">
-                                            <center>Total Tasks</center>
-                                        </th>
+                                        <th class="col-lg-3"> <center>Employee</center> </th>
+                                        <th class="col-lg-3"> <center>Average Score</center> </th>
+                                        <th class="col-lg-3"> <center>Total Tasks</center> </th>
                                     </tr>
                                 </thead>
 

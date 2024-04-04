@@ -17,21 +17,16 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-primary">
-                        <div class="panel-heading">List of Employee</div>
+                        <div class="panel-heading">Active Sections</div>
                         <div class="panel-body">
                             <div class="table-responsive">
                                 <table width="100%" class="table table-striped table-hover" id="table">
                                     <thead>
                                         <tr>
-                                            <th class="col-lg-2">
-                                                <center />Section
-                                            </th>
-                                            <th class="col-lg-2">
-                                                <center />Department
-                                            </th>
-                                            <th class="col-lg-2">
-                                                <center />Total Registered Tasks
-                                            </th>
+                                            <th class="col-lg-2"> <center />Section </th>
+                                            <th class="col-lg-2"> <center />Department </th>
+                                            <th class="col-xs-1"> <center />Monthly Report </th>
+                                            <th class="col-xs-1"> <center />Overall Performance </th>
                                         </tr>
                                     </thead>
 
@@ -42,6 +37,7 @@
                                         if (mysqli_num_rows($getactivesection)>0) {
                                             while ($row = $getactivesection->fetch_assoc()) {
 												$task_sec = $row['sec_id'];
+                                                $sec_name = $row['sec_name'];
 												$result = mysqli_query($con,"SELECT COUNT('id') as sec_total_tasks FROM tasks_details JOIN accounts ON tasks_details.in_charge=accounts.username JOIN task_class on task_class.id=tasks_details.task_class WHERE task_status = 1 AND task_for = '$task_sec'");
 												$rows = $result->fetch_assoc();
 												$total_task=$rows['sec_total_tasks'];
@@ -49,7 +45,8 @@
 												<tr>
 													<td>".$row['sec_name']."</td>
 													<td>".$row['dept_name']."</td>
-													<td><a href='performance.php?section=$task_sec'> <button class='btn btn-md btn-primary' style='margin-left: 10px'><i class='fa fa-eye'></i> View</button></a></td>
+													<td><a href='performance_monthly.php?section=$task_sec&name=$sec_name'> <button class='btn btn-md btn-primary' style='margin-left: 10px'><i class='fa fa-eye'></i> View</button></a></td>
+													<td><a href='performance.php?section=$task_sec&name=$sec_name'> <button class='btn btn-md btn-primary' style='margin-left: 10px'><i class='fa fa-eye'></i> View</button></a></td>
 												</tr>
 												";
                                             } 

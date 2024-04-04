@@ -203,6 +203,7 @@
 						</div>
 					</div>
 				</div>
+
 				<!-- <canvas id="myChart" style="border:solid 5px #fff;border-radius:10px;background-color:#fff"></canvas> -->
 			</div>
 		</div>
