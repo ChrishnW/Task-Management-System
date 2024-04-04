@@ -23,7 +23,7 @@ if ($filetrack != NULL) {
             readfile($file);
             
             $con->next_result(); 
-            $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Downloads file attachment of task [$ID].', '$systemtime', '$username')";
+            $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Downloads file $filetrack.', '$systemtime', '$username')";
             $result = mysqli_query($con, $systemlog);
         }
     }
