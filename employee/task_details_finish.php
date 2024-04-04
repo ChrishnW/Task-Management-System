@@ -50,6 +50,13 @@
                 }
                 $update = "UPDATE tasks_details SET attachment='$fileName', status='FINISHED', approval_status='1', achievement='$achievement', remarks='$ACTION', date_accomplished='$today' WHERE task_code='$ID'";
                 $update = mysqli_query($con, $update);
+                
+                if ($update){
+                    $con->next_result(); 
+                    $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Finished task [$ID].', '$systemtime', '$username')";
+                    $result = mysqli_query($con, $systemlog);
+                }
+                
                 echo "Success";
             }
         }
@@ -89,6 +96,12 @@
         }
         $update = "UPDATE tasks_details SET approval_status=1, achievement='$achievement', remarks='$ACTION', status='FINISHED', date_accomplished='$today' WHERE task_code = '$ID'";
         $update = mysqli_query($con, $update);
+        
+        if ($update){
+            $con->next_result(); 
+            $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Finished task [$ID].', '$systemtime', '$username')";
+            $result = mysqli_query($con, $systemlog);
+        }
       }
   }
 ?>

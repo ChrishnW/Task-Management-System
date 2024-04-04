@@ -1,4 +1,5 @@
 <?php
+include('../include/auth.php');
 include('../include/connect.php'); 
 $filetrack = $_GET['filetrack'];
 
@@ -20,6 +21,10 @@ if ($filetrack != NULL) {
             header('Pragma: public');
             header('Content-Length: ' . filesize($file));
             readfile($file);
+            
+            $con->next_result(); 
+            $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Downloads file attachment of task [$ID].', '$systemtime', '$username')";
+            $result = mysqli_query($con, $systemlog);
         }
     }
 }
