@@ -29,7 +29,6 @@
                                             <th class="col-xs-1"> <center />Overall Performance </th>
                                         </tr>
                                     </thead>
-
                                     <tbody id="tbody">
                                         <?php
                                         $con->next_result();
