@@ -93,12 +93,7 @@
 															}
 															
 															if ($status == "NOT YET STARTED") {
-																if ($due_date < $today) {
-																	$class_label = "danger";
-																	$sign        = "EXPIRED";
-																	$class       = "invalid";
-																}
-																elseif ($due_date > $today) {
+																if ($due_date > $today) {
 																	$class_label = "info";
 																	$sign        = "PENDING";
 																}
@@ -106,9 +101,14 @@
 																	$class_label = "primary";
 																	$sign        = "NOT YET STARTED";
 																}
+																elseif ($yesterday <= $today && $row["loggedin"] == $due_date) {
+																	$class_label = "primary";
+																	$sign        = "NOT YET STARTED";
+																}
 																else {
-																	$class_label = "muted";
-																	$sign        = "INVALID";
+																	$class_label = "danger";
+																	$sign        = "EXPIRED";
+																	$class       = "invalid";
 																}
 															}
 															
@@ -131,6 +131,9 @@
 															}
 															elseif ($due_date > $today) {
 																echo " <td> <center/><button disabled id='task_id' value='" . $row['task_code'] . "' class='btn btn-info' onclick='start(this)'><i class='fas fa-clock fa-1x'></i> </button></td>";
+															}
+															elseif ($yesterday <= $today && $row["loggedin"] == $due_date) {
+																echo " <td> <center/><button id='task_id' value='" . $row['task_code'] . "' class='btn btn-primary' onclick='start(this)'><i class='fa fa-play-circle fa-1x'></i> </button></td>";
 															}
 															else {
 																echo " <td class='" . $class . "'> <center/><button disabled id='task_id' value='" . $row['task_code'] . "' class='btn btn-danger' onclick='start(this)'><i class='fa fa-exclamation-circle fa-1x'></i> </button></td>";

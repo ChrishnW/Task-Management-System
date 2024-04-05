@@ -22,35 +22,28 @@ if(isset($_POST['valfrom'])){
     $two = 0;
     $one = 0;
     $zero = 0;
-    $result = mysqli_query($con,"SELECT tasks_details.task_code, tasks_details.task_name, task_class.task_class, tasks_details.date_accomplished, tasks_details.due_date, tasks_details.remarks, tasks_details.date_created, tasks_details.achievement, tasks_details.status FROM tasks_details LEFT JOIN task_list ON tasks_details.task_name = task_list.task_name LEFT JOIN task_class ON task_list.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND task_status!=0 AND tasks_details.due_date>='$val_from' AND tasks_details.due_date<='$val_to' AND approval_status=0");
+    $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND task_status!=0 AND tasks_details.due_date>='$val_from' AND tasks_details.due_date<='$val_to'");
     if (mysqli_num_rows($result)>0) { 
       while ($row = $result->fetch_assoc()) { 
-        $taskcode = $row['task_code'];
-        $taskname = $row['task_name'];
-        $taskclass = $row['task_class'];
-        $dateaccom = $row['date_accomplished'];
-        $datedue = $row['due_date'];
-        $remarks = $row['remarks'];
-        $datec = $row['date_created'];
         $achievement = $row['achievement'];
         
-        if (($row['status'] == 'NOT YET STARTED') || ($row['status'] == 'IN PROGRESS')) {
+        if ($row['head_name'] == NULL) {
           $remtask += 1; 
         }
-        if ($row['status'] == 'FINISHED') {
+        if ($row['head_name'] != NULL) {
           $donetotal += 1;
         }
         
-        if ($achievement == 3) {
+        if ($achievement == 3 && $row['head_name'] != NULL) {
           $three += 1;
         }
-        elseif ($achievement == 2) {
+        elseif ($achievement == 2 && $row['head_name'] != NULL) {
           $two += 1;
         }
-        elseif ($achievement == 1) {
+        elseif ($achievement == 1 && $row['head_name'] != NULL) {
           $one += 1;
         }
-        elseif ($achievement == 0){
+        elseif ($achievement == 0 && $row['head_name'] != NULL){
           $zero += 1;
         }
       }
@@ -83,11 +76,12 @@ if(isset($_POST['valfrom'])){
     else {
       $rate = '';
     }
-    echo "<tr>                                                   
+    echo "<tr>
+    <td><center />" . $tasktotal . "</td>                                                 
     <td><center />" . $donetotal . "</td>
-    <td><center />" . $tasktotal . "</td>
+    <td><center />" . $remtask . "</td>
     <td><center />" . $formatted_number . '<br>' . $rate . "</td>
-    <td><center /> "."<a href='my_list.php'> <button class='btn btn-sm btn-success'><i class='fas fa-eye'></i> View</button></a>"."</td>
+    <td><center /> "."<a href='my_list_sort.php?from=$val_from&to=$val_to'> <button class='btn btn-sm btn-success'><i class='fas fa-eye'></i> View</button></a>"."</td>
     </tr>";
   }
 }

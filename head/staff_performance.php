@@ -23,10 +23,10 @@
                                 <table width="100%" class="table table-striped table-hover" id="table">
                                     <thead>
                                         <tr>
-                                            <th class="col-lg-2"> <center />Section </th>
-                                            <th class="col-lg-2"> <center />Department </th>
-                                            <th class="col-xs-1"> <center />Monthly Report </th>
-                                            <th class="col-xs-1"> <center />Overall Performance </th>
+                                            <th class="col-lg-2"> <center /> Section </th>
+                                            <th class="col-lg-2"> <center /> Department </th>
+                                            <th class="col-xs-1"> <center /> Monthly Report </th>
+                                            <th class="col-xs-1"> <center /> Task Performance </th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody">
@@ -44,11 +44,11 @@
 												<tr>
 													<td>".$row['sec_name']."</td>
 													<td>".$row['dept_name']."</td>
-													<td><a href='performance_monthly.php?section=$task_sec&name=$sec_name'> <button class='btn btn-md btn-primary' style='margin-left: 10px'><i class='fa fa-eye'></i> View</button></a></td>
-													<td><a href='performance.php?section=$task_sec&name=$sec_name'> <button class='btn btn-md btn-primary' style='margin-left: 10px'><i class='fa fa-eye'></i> View</button></a></td>
+													<td><a href='performance.php?section=$task_sec&monthly=TRUE'> <button class='btn btn-md btn-primary' style='margin-left: 10px'><i class='fa fa-eye'></i> View</button></a></td>
+													<td><a href='performance.php?section=$task_sec'> <button class='btn btn-md btn-primary' style='margin-left: 10px'><i class='fa fa-eye'></i> View</button></a></td>
 												</tr>
 												";
-                                            } 
+                                            }   
                                         }
                                         else {
                                             echo "0 results"; }    
