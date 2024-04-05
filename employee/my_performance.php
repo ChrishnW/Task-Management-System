@@ -67,7 +67,7 @@
 											if (mysqli_num_rows($result) > 0) {
 												while ($row = $result->fetch_assoc()) {
 													$achievement = $row['achievement'];
-
+													
 													if ($row['head_name'] == NULL) {
 														$remtask += 1;
 													}
