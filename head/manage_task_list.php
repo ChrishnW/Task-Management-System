@@ -21,11 +21,10 @@ include('../include/connect.php');
                     <h1 class="page-header">List of Assigned Tasks</h1>
                 </div>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-lg-4">
                 <label>Section:</label><br>
-                    <select name="show_status" id="show_status" class="form-control selectpicker show-menu-arrow "
-                        placeholder="" onchange="selectsection(this)">
+                    <select name="show_status" id="show_status" class="form-control selectpicker show-menu-arrow" onchange="selectsection(this)">
                         <option disabled selected value="">--Sort by Section--</option>
                         <?php
                             $sql = mysqli_query($con,"SELECT * FROM section WHERE status=1 AND dept_id='$dept_id' ORDER BY sec_name ASC"); 
@@ -42,7 +41,7 @@ include('../include/connect.php');
                     <br>
                     <br>
                 </div>
-            </div>
+            </div> -->
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-primary">

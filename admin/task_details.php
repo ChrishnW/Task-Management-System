@@ -2,7 +2,6 @@
 <?php 
 include('../include/header.php');
 include('../include/connect.php');
-include('../include/bubbles.php');
 $section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not found.'); 
 ?>
 <html>
