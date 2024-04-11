@@ -82,7 +82,7 @@
         if ($total_task == "0") {
           $pdf->Cell(90, 5, $emp_name, 'LR', 0, 'C');
           $pdf->Cell(50, 5, $formatted_num, 'LR', 0, 'C');
-          $pdf->Cell(50, 5, '0', 'LR', 1, 'C');
+          $pdf->Cell(50, 5, '0 %', 'LR', 1, 'C');
         }
         else {
           $donetotal = 0;
@@ -254,7 +254,7 @@
         if ($total_task == "0") {
           $pdf->Cell(90, 5, $emp_name, 'LR', 0, 'C');
           $pdf->Cell(50, 5, $formatted_num, 'LR', 0, 'C');
-          $pdf->Cell(50, 5, '0', 'LR', 1, 'C');
+          $pdf->Cell(50, 5, '0 %', 'LR', 1, 'C');
         }
         else {
           $donetotal = 0;

@@ -91,7 +91,7 @@
 										<tr>
 											<th class="col-lg-3"> <center> Employee </center> </th>
 											<th class="col-lg-3"> <center> Average Score </center> </th>
-											<th class="col-lg-3"> <center> Total Tasks </center> </th>
+											<th class="col-lg-3"> <center> Completed Tasks </center> </th>
 										</tr>
 									</thead>
 									<tbody id="show_task">

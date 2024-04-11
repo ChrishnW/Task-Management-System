@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-10">
                     <div class="panel panel-primary">
                         <div class="panel-heading">Active Sections</div>
                         <div class="panel-body">
@@ -24,7 +24,6 @@
                                     <thead>
                                         <tr>
                                             <th class="col-lg-2"> <center /> Section </th>
-                                            <th class="col-lg-2"> <center /> Department </th>
                                             <th class="col-xs-1"> <center /> Monthly Report </th>
                                             <th class="col-xs-1"> <center /> Task Performance </th>
                                         </tr>
@@ -43,7 +42,6 @@
 												echo"
 												<tr>
 													<td>".$row['sec_name']."</td>
-													<td>".$row['dept_name']."</td>
 													<td><a href='performance.php?section=$task_sec&monthly=TRUE'> <button class='btn btn-md btn-primary' style='margin-left: 10px'><i class='fa fa-eye'></i> View</button></a></td>
 													<td><a href='performance.php?section=$task_sec'> <button class='btn btn-md btn-primary' style='margin-left: 10px'><i class='fa fa-eye'></i> View</button></a></td>
 												</tr>

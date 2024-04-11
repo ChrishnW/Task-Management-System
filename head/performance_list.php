@@ -59,56 +59,107 @@ $id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
                                             <th class="col-lg-2">
                                                 <center />Score
                                             </th>
-                                            <!-- <th class="col-lg-2">
-                                                Details
-                                            </th> -->
                                         </tr>
                                     </thead>
                                     <tbody id="tbody">
                                     <?php
-                                    if (isset($_GET['monthly'])){
-                                        $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$id' AND task_status=1 AND approval_status=0 AND MONTH(tasks_details.date_accomplished)='$month' AND YEAR(tasks_details.date_accomplished)='$year' AND tasks_details.date_accomplished IS NOT NULL AND tasks_details.task_class=3");
-                                        if (mysqli_num_rows($result)>0) { 
-                                            while ($row = $result->fetch_assoc()) { 
-                                            $taskcode = $row['task_code'];
-                                            $taskname = $row['task_name'];
-                                            $taskclass = $row['task_class'];
-                                            $dateaccom = $row['date_accomplished'];
-                                            $datedue = $row['due_date'];
-                                            $datec = $row['date_created'];
-                                            $achievement = $row['achievement'];
+                                    if(isset($_GET['monthly'])){
+                                        if(isset($_GET['m_from'])){
+                                            $val_from = $_GET['m_from'];
+                                            $val_to = $_GET['m_to'];
+                                            $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$id' AND task_status=1 AND approval_status=0 AND tasks_details.date_accomplished IS NOT NULL AND tasks_details.task_class=3 AND tasks_details.due_date>='$val_from' AND tasks_details.due_date<='$val_to'");
+                                            if (mysqli_num_rows($result)>0) { 
+                                                while ($row = $result->fetch_assoc()) { 
+                                                $taskcode = $row['task_code'];
+                                                $taskname = $row['task_name'];
+                                                $taskclass = $row['task_class'];
+                                                $dateaccom = $row['date_accomplished'];
+                                                $datedue = $row['due_date'];
+                                                $datec = $row['date_created'];
+                                                $achievement = $row['achievement'];
 
-                                            echo "<tr>                                                       
-                                            <td><center />" . $taskcode . "</td>
-                                            <td id='normalwrap'>" . $taskname . "</td>
-                                            <td><center />" . $taskclass . "</td>
-                                            <td><center />" . $datedue . "</td>
-                                            <td><center />" . $dateaccom . "</td>
-                                            <td><center />" . $achievement . "</td>
-                                            </tr>";
+                                                echo "<tr>                                                       
+                                                <td><center />" . $taskcode . "</td>
+                                                <td id='normalwrap'>" . $taskname . "</td>
+                                                <td><center />" . $taskclass . "</td>
+                                                <td><center />" . $datedue . "</td>
+                                                <td><center />" . $dateaccom . "</td>
+                                                <td><center />" . $achievement . "</td>
+                                                </tr>";
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$id' AND task_status=1 AND approval_status=0 AND tasks_details.date_accomplished IS NOT NULL AND tasks_details.task_class=3 AND MONTH(tasks_details.date_accomplished)='$month' AND YEAR(tasks_details.date_accomplished)='$year'");
+                                            if (mysqli_num_rows($result)>0) { 
+                                                while ($row = $result->fetch_assoc()) { 
+                                                $taskcode = $row['task_code'];
+                                                $taskname = $row['task_name'];
+                                                $taskclass = $row['task_class'];
+                                                $dateaccom = $row['date_accomplished'];
+                                                $datedue = $row['due_date'];
+                                                $datec = $row['date_created'];
+                                                $achievement = $row['achievement'];
+
+                                                echo "<tr>                                                       
+                                                <td><center />" . $taskcode . "</td>
+                                                <td id='normalwrap'>" . $taskname . "</td>
+                                                <td><center />" . $taskclass . "</td>
+                                                <td><center />" . $datedue . "</td>
+                                                <td><center />" . $dateaccom . "</td>
+                                                <td><center />" . $achievement . "</td>
+                                                </tr>";
+                                                }
                                             }
                                         }
                                     }
                                     else {
-                                        $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$id' AND task_status=1 AND approval_status=0 AND MONTH(tasks_details.date_accomplished)='$month' AND YEAR(tasks_details.date_accomplished)='$year' AND tasks_details.date_accomplished IS NOT NULL AND tasks_details.task_class!=3");
-                                        if (mysqli_num_rows($result)>0) { 
-                                            while ($row = $result->fetch_assoc()) { 
-                                            $taskcode = $row['task_code'];
-                                            $taskname = $row['task_name'];
-                                            $taskclass = $row['task_class'];
-                                            $dateaccom = $row['date_accomplished'];
-                                            $datedue = $row['due_date'];
-                                            $datec = $row['date_created'];
-                                            $achievement = $row['achievement'];
+                                        if(isset($_GET['from'])){
+                                            $val_from = $_GET['from'];
+                                            $val_to = $_GET['to'];
+                                            $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$id' AND task_status=1 AND approval_status=0 AND tasks_details.date_accomplished IS NOT NULL AND tasks_details.task_class!=3 AND tasks_details.due_date>='$val_from' AND tasks_details.due_date<='$val_to'");
+                                            if (mysqli_num_rows($result)>0) { 
+                                                while ($row = $result->fetch_assoc()) { 
+                                                $taskcode = $row['task_code'];
+                                                $taskname = $row['task_name'];
+                                                $taskclass = $row['task_class'];
+                                                $dateaccom = $row['date_accomplished'];
+                                                $datedue = $row['due_date'];
+                                                $datec = $row['date_created'];
+                                                $achievement = $row['achievement'];
 
-                                            echo "<tr>                                                       
-                                            <td><center />" . $taskcode . "</td>
-                                            <td id='normalwrap'>" . $taskname . "</td>
-                                            <td><center />" . $taskclass . "</td>
-                                            <td><center />" . $datedue . "</td>
-                                            <td><center />" . $dateaccom . "</td>
-                                            <td><center />" . $achievement . "</td>
-                                            </tr>";
+                                                echo "<tr>                                                       
+                                                <td><center />" . $taskcode . "</td>
+                                                <td id='normalwrap'>" . $taskname . "</td>
+                                                <td><center />" . $taskclass . "</td>
+                                                <td><center />" . $datedue . "</td>
+                                                <td><center />" . $dateaccom . "</td>
+                                                <td><center />" . $achievement . "</td>
+                                                </tr>";
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$id' AND task_status=1 AND approval_status=0 AND tasks_details.date_accomplished IS NOT NULL AND tasks_details.task_class!=3 AND MONTH(tasks_details.date_accomplished)='$month' AND YEAR(tasks_details.date_accomplished)='$year'");
+                                            if (mysqli_num_rows($result)>0) { 
+                                                while ($row = $result->fetch_assoc()) { 
+                                                $taskcode = $row['task_code'];
+                                                $taskname = $row['task_name'];
+                                                $taskclass = $row['task_class'];
+                                                $dateaccom = $row['date_accomplished'];
+                                                $datedue = $row['due_date'];
+                                                $datec = $row['date_created'];
+                                                $achievement = $row['achievement'];
+
+                                                echo "<tr>                                                       
+                                                <td><center />" . $taskcode . "</td>
+                                                <td id='normalwrap'>" . $taskname . "</td>
+                                                <td><center />" . $taskclass . "</td>
+                                                <td><center />" . $datedue . "</td>
+                                                <td><center />" . $dateaccom . "</td>
+                                                <td><center />" . $achievement . "</td>
+                                                </tr>";
+                                                }
                                             }
                                         }
                                     }

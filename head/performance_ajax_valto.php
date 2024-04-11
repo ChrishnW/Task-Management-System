@@ -106,12 +106,13 @@ if (isset($_POST['valfrom'])) {
         echo "<tr>          
         <td style='text-align: justify'> <img src=" . $imageURL . " title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>
         <td><center />" . $formatted_number . '<br>' . $rate . "</td>
-        <td><center /><a href='performance_list.php?id=" . $username . "'> <button class='btn btn-sm btn-success'><i class='fas fa-eye'></i> View  " . $donetotal . ' ' . $label . "</button></a>" . "</td>
+        <td><center /><a href='performance_list.php?id=$username&from=$val_from&to=$val_to'> <button class='btn btn-sm btn-success'><i class='fas fa-eye'></i> View  " . $donetotal . ' ' . $label . "</button></a>" . "</td>
         </tr>";
       }
     }
   }
 }
+
 else {
   $val_from = $_POST['valfrom1'];
   $val_to = $_POST['valto1'];
@@ -217,7 +218,7 @@ else {
         echo "<tr>          
         <td style='text-align: justify'> <img src=" . $imageURL . " title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>
         <td><center />" . $formatted_number . '<br>' . $rate . "</td>
-        <td><center /><a href='performance_list.php?id=" . $username . "'> <button class='btn btn-sm btn-success'><i class='fas fa-eye'></i> View  " . $donetotal . ' ' . $label . "</button></a>" . "</td>
+        <td><center /><a href='performance_list.php?id=$username&m_from=$val_from&m_to=$val_to&monthly=TRUE'> <button class='btn btn-sm btn-success'><i class='fas fa-eye'></i> View  " . $donetotal . ' ' . $label . "</button></a>" . "</td>
         </tr>";
       }
     }
