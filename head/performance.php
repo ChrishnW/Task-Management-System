@@ -90,156 +90,78 @@
 									<thead>
 										<tr>
 											<th class="col-lg-3"> <center> Employee </center> </th>
-											<th class="col-lg-3"> <center> Average Score </center> </th>
+											<th class="col-lg-3"> <center> Task Performance </center> </th>
+                      <th class="col-lg-3"> <center> Monthly Report </center> </th>
 											<th class="col-lg-3"> <center> Completed Tasks </center> </th>
 										</tr>
 									</thead>
 									<tbody id="show_task">
                     <?php
-                      if (isset($_GET['monthly'])){
-                        $con->next_result();
-                        $result = mysqli_query($con, "SELECT * FROM accounts WHERE sec_id='$section' AND access=2");
-                        while ($row = $result->fetch_assoc()) {
-                          $emp_name = $row["fname"] . " " . $row["lname"];
-                          $username = $row["username"];
-                          $id       = $row["card"];
-                          $label    = "Completed Task/s";
-                          $emp_avg  = 0;
-                          if (empty($row["file_name"])) {
-                            // Use a default image URL
-                            $imageURL = "../assets/img/user-profiles/nologo.png";
-                          }
-                          else {
-                            // Use the image URL from the database
-                            $imageURL = "../assets/img/user-profiles/" . $row["file_name"];
-                          }
-                          $formatted_num = number_format($emp_avg, 2);
-                          $rate = "";
-                          $count_task = mysqli_query($con, "SELECT COUNT(tasks_details.task_code) as total_task FROM tasks_details WHERE tasks_details.in_charge = '$username' AND MONTH(tasks_details.due_date)='$month' AND YEAR(tasks_details.due_date)='$year' AND tasks_details.task_status=1 AND tasks_details.date_accomplished IS NOT NULL AND tasks_details.task_class=3");
-                          $count_task_row = $count_task->fetch_assoc();
-                          $total_task = $count_task_row["total_task"];
-                          if ($total_task == "0") {
-                            $total_task = "No";
-                            echo "<tr> <td style='text-align: justify'> <img src=" . $imageURL . " title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td> <td><center />" . $formatted_num . "<br>" . $rate . "</td> <td><center /> " . $total_task . " " . $label . "</td> </tr>";
-                          }
-                          else {
-                            $donetotal = 0;
-                            $tasktotal = 0;
-                            $totavg    = 0;
-                            $donesum   = 0;
-                            $latedone  = 0;
-                            $resdone   = 0;
-                            $remtask   = 0;
-                            $ftask     = 0;
-                            $three     = 0;
-                            $two       = 0;
-                            $one       = 0;
-                            $zero      = 0;
-                            $avg_task = mysqli_query($con, "SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND task_status!=0 AND MONTH(tasks_details.due_date)='$month' AND YEAR(tasks_details.due_date)='$year' AND tasks_details.task_class=3");
-                            if (mysqli_num_rows($avg_task) > 0) {
-                              while ($row = $avg_task->fetch_assoc()) {
-                                $achievement = $row['achievement'];
-
-                                if ($row['head_name'] == NULL) {
-                                  $remtask += 1;
-                                }
-                                if ($row['head_name'] != NULL) {
-                                  $donetotal += 1;
-                                }
-
-                                if ($achievement == 3 && $row['head_name'] != NULL) {
-                                  $three += 1;
-                                }
-                                elseif ($achievement == 2 && $row['head_name'] != NULL) {
-                                  $two += 1;
-                                }
-                                elseif ($achievement == 1 && $row['head_name'] != NULL) {
-                                  $one += 1;
-                                }
-                                elseif ($achievement == 0 && $row['head_name'] != NULL) {
-                                  $zero += 1;
-                                }
-                              }
-                            }
-                            $donesum = ($three * 3) + ($two * 2) + ($one * 1) + ($zero * 0);
-                            $tasktotal = $remtask + $donetotal;
-                            if ($donesum != 0) {
-                              $totavg = $donesum / $tasktotal;
-                            }
-                            $formatted_number = number_format($totavg, 2);
-
-                            if ($formatted_number == 3) {
-                              $rate = '<span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow">';
-                            }
-                            elseif ($formatted_number >= 2.5) {
-                              $rate = '<span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star-half" style="color: yellow">';
-                            }
-                            elseif ($formatted_number == 2) {
-                              $rate = '<span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow">';
-                            }
-                            elseif ($formatted_number >= 1.5) {
-                              $rate = '<span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star-half" style="color: yellow">';
-                            }
-                            elseif ($formatted_number == 1) {
-                              $rate = '<span class="fa fa-solid fa-star" style="color: yellow">';
-                            }
-                            elseif ($formatted_number > 0) {
-                              $rate = '<span class="fa fa-solid fa-star-half" style="color: yellow">';
-                            }
-                            else {
-                              $rate = '';
-                            }
-                            echo "<tr> <td style='text-align: justify'> <img src=" . $imageURL . " title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td> <td><center />" . $formatted_number . "<br>" . $rate . "</td> <td><center /><a href='performance_list.php?id=" . $username . "&monthly=TRUE'> <button class='btn btn-sm btn-success'><i class='fas fa-eye'></i> View  " . $donetotal . " " . $label . "</button></a>" . "</td> </tr>";
-                          }
+                      $con->next_result();
+                      $result = mysqli_query($con, "SELECT * FROM accounts WHERE sec_id='$section' AND access=2");
+                      while ($row = $result->fetch_assoc()) {
+                        $emp_name = $row["fname"] . " " . $row["lname"];
+                        $username = $row["username"];
+                        $id       = $row["card"];
+                        $label    = "Completed Task/s";
+                        $emp_avg  = 0;
+                        if (empty($row["file_name"])) {
+                          // Use a default image URL
+                          $imageURL = "../assets/img/user-profiles/nologo.png";
                         }
-                      }
-                      else{
-                        $con->next_result();
-                        $result = mysqli_query($con, "SELECT * FROM accounts WHERE sec_id='$section' AND access=2");
-                        while ($row = $result->fetch_assoc()) {
-                          $emp_name = $row["fname"] . " " . $row["lname"];
-                          $username = $row["username"];
-                          $id       = $row["card"];
-                          $label    = "Completed Task/s";
-                          $emp_avg  = 0;
-                          if (empty($row["file_name"])) {
-                            // Use a default image URL
-                            $imageURL = "../assets/img/user-profiles/nologo.png";
-                          }
-                          else {
-                            // Use the image URL from the database
-                            $imageURL = "../assets/img/user-profiles/" . $row["file_name"];
-                          }
-                          $formatted_num = number_format($emp_avg, 2);
-                          $rate = "";
-                          $count_task = mysqli_query($con, "SELECT COUNT(tasks_details.task_code) as total_task FROM tasks_details WHERE tasks_details.in_charge = '$username' AND MONTH(tasks_details.due_date)='$month' AND YEAR(tasks_details.due_date)='$year' AND tasks_details.task_status=1 AND tasks_details.date_accomplished IS NOT NULL AND tasks_details.task_class!=3");
-                          $count_task_row = $count_task->fetch_assoc();
-                          $total_task = $count_task_row["total_task"];
-                          if ($total_task == "0") {
-                            $total_task = "No";
-                            echo "<tr> <td style='text-align: justify'> <img src=" . $imageURL . " title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td> <td><center />" . $formatted_num . "<br>" . $rate . "</td> <td><center /> " . $total_task . " " . $label . "</td> </tr>";
-                          }
-                          else {
-                            $donetotal = 0;
-                            $tasktotal = 0;
-                            $totavg    = 0;
-                            $donesum   = 0;
-                            $latedone  = 0;
-                            $resdone   = 0;
-                            $remtask   = 0;
-                            $ftask     = 0;
-                            $three     = 0;
-                            $two       = 0;
-                            $one       = 0;
-                            $zero      = 0;
-                            $avg_task = mysqli_query($con, "SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND task_status!=0 AND MONTH(tasks_details.due_date)='$month' AND YEAR(tasks_details.due_date)='$year' AND tasks_details.task_class!=3");
-                            if (mysqli_num_rows($avg_task) > 0) {
-                              while ($row = $avg_task->fetch_assoc()) {
-                                $achievement = $row['achievement'];
+                        else {
+                          // Use the image URL from the database
+                          $imageURL = "../assets/img/user-profiles/" . $row["file_name"];
+                        }
+                        $formatted_num = number_format($emp_avg, 2);
+                        $rate = "";
+                        $count_task = mysqli_query($con, "SELECT COUNT(tasks_details.task_code) as total_task FROM tasks_details WHERE tasks_details.in_charge = '$username' AND MONTH(tasks_details.due_date)='$month' AND YEAR(tasks_details.due_date)='$year' AND tasks_details.task_status=1 AND tasks_details.date_accomplished IS NOT NULL");
+                        $count_task_row = $count_task->fetch_assoc();
+                        $total_task = $count_task_row["total_task"];
+                        if ($total_task == "0") {
+                          $total_task = "No";
+                          echo "<tr> <td style='text-align: justify'> <img src=" . $imageURL . " title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td> <td><center />" . $formatted_num . "<br>" . $rate . "</td> <td><center /> " . $total_task . " " . $label . "</td> </tr>";
+                        }
+                        else {
+                          $m_remtask = 0; $m_donetotal = 0; $m_three = 0; $m_two = 0; $m_one = 0; $m_zero = 0; $m_donesum = 0; $m_tasktotal = 0; $m_totavg = 0; $monthly = 0;
+                          $remtask = 0; $donetotal = 0; $three = 0; $two = 0; $one = 0; $zero = 0; $donesum = 0; $tasktotal = 0; $totavg = 0; $formatted_number = 0;
+                          $avg_task = mysqli_query($con, "SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND task_status!=0 AND MONTH(tasks_details.due_date)='$month' AND YEAR(tasks_details.due_date)='$year'");
+                          if (mysqli_num_rows($avg_task) > 0) {
+                            while ($row = $avg_task->fetch_assoc()) {
+                              $achievement = $row['achievement'];
+                              if ($row['task_class'] == 'MONTHLY ROUTINE') {
+                                if ($row['head_name'] == NULL) {
+                                  $m_remtask += 1;
+                                }
 
+                                if ($row['head_name'] != NULL) {
+                                  $m_donetotal += 1;
+                                }
+
+                                if ($achievement == 3 && $row['head_name'] != NULL) {
+                                  $m_three += 1;
+                                }
+                                elseif ($achievement == 2 && $row['head_name'] != NULL) {
+                                  $m_two += 1;
+                                }
+                                elseif ($achievement == 1 && $row['head_name'] != NULL) {
+                                  $m_one += 1;
+                                }
+                                elseif ($achievement == 0 && $row['head_name'] != NULL) {
+                                  $m_zero += 1;
+                                }
+                                $m_donesum = ($m_three * 3) + ($m_two * 2) + ($m_one * 1) + ($m_zero * 0);
+                                $m_tasktotal = $m_remtask + $m_donetotal;
+                                if ($m_donesum != 0) {
+                                  $m_totavg = $m_donesum / $m_tasktotal;
+                                }
+                                $monthly = number_format($m_totavg, 2);
+                              }
+                              elseif ($row['task_class'] != 'MONTHLY ROUTINE') {
                                 if ($row['head_name'] == NULL) {
                                   $remtask += 1;
                                 }
+
                                 if ($row['head_name'] != NULL) {
                                   $donetotal += 1;
                                 }
@@ -256,38 +178,24 @@
                                 elseif ($achievement == 0 && $row['head_name'] != NULL) {
                                   $zero += 1;
                                 }
+                                $donesum = ($three * 3) + ($two * 2) + ($one * 1) + ($zero * 0);
+                                $tasktotal = $remtask + $donetotal;
+                                if ($donesum != 0) {
+                                  $totavg = $donesum / $tasktotal;
+                                }
+                                $formatted_number = number_format($totavg, 2);
                               }
                             }
-                            $donesum = ($three * 3) + ($two * 2) + ($one * 1) + ($zero * 0);
-                            $tasktotal = $remtask + $donetotal;
-                            if ($donesum != 0) {
-                              $totavg = $donesum / $tasktotal;
-                            }
-                            $formatted_number = number_format($totavg, 2);
-
-                            if ($formatted_number == 3) {
-                              $rate = '<span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow">';
-                            }
-                            elseif ($formatted_number >= 2.5) {
-                              $rate = '<span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star-half" style="color: yellow">';
-                            }
-                            elseif ($formatted_number == 2) {
-                              $rate = '<span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star" style="color: yellow">';
-                            }
-                            elseif ($formatted_number >= 1.5) {
-                              $rate = '<span class="fa fa-solid fa-star" style="color: yellow"> <span class="fa fa-solid fa-star-half" style="color: yellow">';
-                            }
-                            elseif ($formatted_number == 1) {
-                              $rate = '<span class="fa fa-solid fa-star" style="color: yellow">';
-                            }
-                            elseif ($formatted_number > 0) {
-                              $rate = '<span class="fa fa-solid fa-star-half" style="color: yellow">';
-                            }
-                            else {
-                              $rate = '';
-                            }
-                            echo "<tr> <td style='text-align: justify'> <img src=" . $imageURL . " title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td> <td><center />" . $formatted_number . "<br>" . $rate . "</td> <td><center /><a href='performance_list.php?id=" . $username . "'> <button class='btn btn-sm btn-success'><i class='fas fa-eye'></i> View  " . $donetotal . " " . $label . "</button></a>" . "</td> </tr>";
                           }
+                          $ftasktotal = $tasktotal + $m_tasktotal;
+                          $fdonetotal = $donetotal + $m_donetotal;
+                          $fremtask = $remtask + $m_remtask;
+                          echo "<tr>
+                            <td style='text-align: justify'> <img src=" . $imageURL . " title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>
+                            <td><center />" . $formatted_number . "</td>
+                            <td><center />" . $monthly . "</td>
+                            <td><center /><a href='performance_list.php?id=" . $username . "'> <button class='btn btn-sm btn-success'><i class='fas fa-eye'></i> View  " . $fdonetotal . " " . $label . "</button></a>" . "</td>
+                          </tr>";
                         }
                       }
                     ?>
@@ -325,33 +233,6 @@
 				"order": [[1, "desc"], [2, "asc"]] // This will sort first by column 1 in descending order, then by column 2 in ascending order.
 			});
 		});
-	</script>
-	<script>
-		function selectmodel(element) {
-			let sid = $(element).val();
-			var username = <?php echo $username; ?>;
-			var section = <?php echo $section; ?>;
-			$('#table_task').DataTable().destroy();
-			$('#show_task').empty();
-			if (sid) {
-				$.ajax({
-					type: "post",
-					url: "performance_ajax.php",
-					data: {
-						"sid": sid,
-						"username": username,
-						"section": section
-					},
-					success: function(response) {
-						$('#show_task').append(response);
-						$('#table_task').DataTable({
-							responsive: true,
-							"order": [[1, "desc"]]
-						});
-					}
-				});
-			}
-		}
 	</script>
   
 	<script>
@@ -393,55 +274,6 @@
 						"valfrom": valfrom,
 						"section": section,
 						"valto": valto
-					},
-					success: function(response) {
-						$('#show_task').append(response);
-						$('#table_task').DataTable();
-					}
-				});
-			}
-		}
-	</script>
-
-	<script>
-		function selectfrom1(element) {
-			let valfrom = $(element).val();
-			let section = <?php echo json_encode($section) ?>;
-			let valto = $('#val_to').val();
-			$('#table_task').DataTable().destroy();
-			$('#show_task').empty();
-			if (valfrom) {
-				$.ajax({
-					type: "post",
-					url: "performance_ajax_valfrom.php",
-					data: {
-						"valfrom1": valfrom,
-						"section1": section,
-						"valto1": valto
-					},
-					success: function(response) {
-						$('#show_task').append(response);
-						$('#table_task').DataTable();
-					}
-				});
-			}
-		}
-	</script>
-	<script>
-		function selectto1(element) {
-			let valto = $(element).val();
-			let section = <?php echo json_encode($section) ?>;
-			let valfrom = $('#val_from').val();
-			$('#table_task').DataTable().destroy();
-			$('#show_task').empty();
-			if (valto) {
-				$.ajax({
-					type: "post",
-					url: "performance_ajax_valto.php",
-					data: {
-						"valfrom1": valfrom,
-						"section1": section,
-						"valto1": valto
 					},
 					success: function(response) {
 						$('#show_task').append(response);
