@@ -38,6 +38,7 @@
                                 <table width="100%" class="table table-dark" id="table">
                                     <thead>
                                         <tr>
+                                            <th class="col"> # </th>
                                             <th scope="col"> Task Names </th>
                                             <th scope='col' title='Legend'> <i class='fa fa-asterisk' /> </th>
                                             <th scope="col"> Task Details </th>
@@ -49,12 +50,15 @@
                                     <?php
                                     $result = mysqli_query($con,"SELECT *, tasks.id FROM tasks JOIN task_class ON task_class.id=tasks.task_class WHERE in_charge='$username'");
                                     if (mysqli_num_rows($result)>0) { 
+                                        $number = 0;
                                         while ($row = $result->fetch_assoc()) { 
+                                            $number += 1;
                                             $task_name = $row['task_name'];
                                             $task_details = $row['task_details'];
                                             $task_class = $row['task_class'];
                                             $due_date = $row['submission'];
                                             echo "<tr>
+                                                <td> " . $number . "</td>  
                                                 <td id='normalwrap'><center />" . $task_name . "</td>";
                                                 if ($row['requirement_status'] == 1) {
                                                     echo "<td> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";

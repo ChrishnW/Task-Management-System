@@ -25,7 +25,7 @@ include('../include/connect.php');
         <br>
         <b>TASK MANAGEMENT SYSTEM</b>
         <br>
-       <h3> <b><?php echo $employee?> ASSIGNED TASKS LIST</b></h3>
+       <h3> <b><?php echo $employee?> ASSIGNED TASKS</b></h3>
         <br>
     </center>
     <br>
@@ -38,7 +38,10 @@ include('../include/connect.php');
                         <center />Task Name
                     </th>
                     <th scope="col">
-                        Task Details
+                        <center />Legend
+                    </th>
+                    <th scope="col">
+                        <center />Task Details
                     </th>
                     <th scope="col">
                         <center />Task Classification
@@ -52,16 +55,23 @@ include('../include/connect.php');
             <tbody>
             <?php
                 $con->next_result();
-                $result = mysqli_query($con,"SELECT * FROM task_list LEFT JOIN tasks ON tasks.task_name=task_list.task_name LEFT JOIN task_class ON task_list.task_class = task_class.id WHERE in_charge='$username'");
+                $result = mysqli_query($con,"SELECT *, tasks.id FROM tasks JOIN task_class ON task_class.id=tasks.task_class WHERE in_charge='$username'");
                 if (mysqli_num_rows($result)>0) { 
                     while ($row = $result->fetch_assoc()) { 
                         $task_name = $row['task_name'];
                         $task_details = $row['task_details'];
                         $task_class = $row['task_class'];
                         $due_date = $row['submission'];
-                        echo "<tr>
-                            <td id='normalwrap'><center />" . $task_name . "</td>
-                            <td> " . $task_details . "</td>         
+                        echo "<tr>  
+                            <td id='normalwrap'><center />" . $task_name . "</td>";
+                            if ($row['requirement_status'] == 1) {
+                                echo "<td><center /> * </td>";
+                            } 
+                            else {
+                                echo "<td> </td>";
+                            }
+                            echo " 
+                            <td><center />" . $task_details . "</td>         
                             <td><center />" . $task_class . "</td>
                             <td><center />" . $due_date . "</td> 
                         </tr>";  
