@@ -36,7 +36,7 @@
 					$con->next_result();
 					$import_checker = mysqli_query($con, "SELECT * FROM tasks WHERE task_name = '$task_name' AND task_class='$task_class' AND in_charge = '$in_charge' AND submission = '$submission'");
 					$import_checker_result = mysqli_num_rows($import_checker);
-					// Task will be uploaded in Tasks Temporary Table for sanitation 
+
 					if ($import_checker_result > 0){
 						$task_duplicated = "INSERT INTO task_temp (`task_name`, `task_details`, `task_class`, `task_for`, `in_charge`, `submission`, `attachment`, `status`) values ('$task_name', '$task_details', '$task_class', '$task_for', '$in_charge', '$submission', '$attachment', 'DUPLICATED')";
 						$task_duplicated_result = mysqli_query($con, $task_duplicated);
@@ -87,21 +87,17 @@
 						if ($import_checker_result == 0){
 							$assign_task = "INSERT INTO tasks (`task_name`, `task_class`, `task_details`, `task_for`, `requirement_status`, `in_charge`, `submission`) VALUES ('$task_name', '$task_class', '$task_details', '$task_for', '$attachment', '$in_charge', '$submission')";
 							$assign_task_result = mysqli_query($con, $assign_task);
-						}						
+						}
+					}
+					if ($assign_task_result) {
+						$con->next_result();
+						$systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Import tasks module runs successfully.', '$systemtime', '$username')";
+						$result = mysqli_query($con, $systemlog);
+						echo "<script type='text/javascript'>   $(document).ready(function(){ $('#success').modal('show');   });</script>";
 					}
 				}
-				// Checking if Deployment is Successful or not
-				if ($assign_task_result) {
-					$con->next_result();
-					$systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Import tasks module runs successfully.', '$systemtime', '$username')";
-        	$result = mysqli_query($con, $systemlog);
-					echo "<script type='text/javascript'>   $(document).ready(function(){ $('#success').modal('show');   });</script>";
-				}
 				else {
-					$con->next_result();
-					$systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Import tasks module failed to run.', '$systemtime', '$username')";
-        	$result = mysqli_query($con, $systemlog);
-					echo "<script type='text/javascript'>   $(document).ready(function(){ $('#error').modal('show');   });</script>";
+					echo "<script type='text/javascript'>   $(document).ready(function(){ $('#warning').modal('show');   });</script>";
 				}
 			}
 		}
@@ -173,6 +169,31 @@
 					Invalid File!
 					<br>
 					Please upload XLS, XLSX & CSV file only.
+				</center>
+			</div>
+			<div class="modal-footer">
+				<a href="task_import.php"><button type="button" name="submit"
+					class="btn btn-danger pull-right">Return</button></a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="warning" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content panel-success">
+			<div class="modal-header panel-heading">
+				<a href="task_import.php"><button type="button" class="close"
+					aria-hidden="true">&times;</button></a>
+				<h4 class="modal-title" id="myModalLabel">System Error!</h4>
+			</div>
+			<div class="modal-body panel-body">
+				<center>
+					<i style="color:#e13232; font-size:80px;" class="fa fa-exclamation-triangle"></i>
+					<br><br>
+					The system encountered an unexpected error;
+					<br>
+					Please contact the system administrator now!
 				</center>
 			</div>
 			<div class="modal-footer">
