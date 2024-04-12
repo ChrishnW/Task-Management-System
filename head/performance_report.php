@@ -34,7 +34,7 @@
         $this->Cell(50,5,'Employee',1,0,'C',true);
         $this->Cell(40,5,'Task Performance',1,0,'C',true);
         $this->Cell(30,5,'Equivalent',1,0,'C',true);
-        $this->Cell(40,5,'Monthly Performance',1,0,'C',true);
+        $this->Cell(40,5,'Monthly Report',1,0,'C',true);
         $this->Cell(30,5,'Equivalent',1,1,'C',true);
       }
       function Footer(){
