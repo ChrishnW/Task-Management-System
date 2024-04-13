@@ -1,27 +1,19 @@
 <?php 
+    include('../include/header.php');
 
-include('../include/header.php');
+    $id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.'); 
+    $result = mysqli_query($con,"SELECT task_list.id, task_list.task_name, task_list.task_details, task_class.task_class, section.sec_name, task_list.task_for, task_list.date_created, task_list.status, task_class.id as task_class_id FROM task_list LEFT JOIN task_class ON task_class.id = task_list.task_class LEFT JOIN section ON section.sec_id = task_list.task_for WHERE task_list.id=$id");       
+    $row= mysqli_fetch_assoc($result);
 
-$id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.'); 
-$result = mysqli_query($con,"SELECT task_list.id, task_list.task_name, task_list.task_details, task_class.task_class, section.sec_name, task_list.task_for, task_list.date_created, task_list.status, task_class.id as task_class_id FROM task_list LEFT JOIN task_class ON task_class.id = task_list.task_class LEFT JOIN section ON section.sec_id = task_list.task_for WHERE task_list.id=$id");       
-$row= mysqli_fetch_assoc($result);
-
-
-$task_name = $row['task_name'];
-$task_details = $row['task_details'];
-$task_class = $row['task_class'];
-$task_class_id = $row['task_class_id'];
-$task_for = $row['task_for'];
-$sec_name = $row['sec_name'];
-$status = $row['status'];
-$id = $row['id'];
+    $task_name = $row['task_name'];
+    $task_details = $row['task_details'];
+    $task_class = $row['task_class'];
+    $task_class_id = $row['task_class_id'];
+    $task_for = $row['task_for'];
+    $sec_name = $row['sec_name'];
+    $status = $row['status'];
+    $id = $row['id'];
 ?>
-
-<html>
-<link href="../vendor/font-awesome/css/fontawesome.css" rel="stylesheet">
-<link href="../vendor/font-awesome/css/brands.css" rel="stylesheet">
-<link href="../vendor/font-awesome/css/solid.css" rel="stylesheet">
-<link href="../assets/css/darkmode.css" rel="stylesheet">
 <style>
 .form-group.required label {
     font-weight: bold;
