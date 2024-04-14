@@ -88,7 +88,7 @@
 $(document).ready(function() {
     $('#table').DataTable({
         responsive: true,
-        "order": [[ 3, "asc"]]
+        "order": [[ 0, "asc"]]
     });
 });
 </script>
