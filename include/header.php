@@ -142,23 +142,7 @@
 					</ul>
 				</li>
 				<li>
-					<a href="#"><i class="fa fa-archive fa-fw"></i> Task Details<span class="fa arrow"></span></a>
-					<ul class="nav nav-second-level">
-						<?php
-							$get_section_task_list = mysqli_query($con,"SELECT * FROM section WHERE status = 1 ORDER BY sec_name ASC");
-							if (mysqli_num_rows($get_section_task_list)>0) { 
-								while ($row = $get_section_task_list->fetch_assoc()) {
-								$seclist = $row['sec_id'];
-								$secname = strtolower($row['sec_name']);
-								echo "
-									<li>
-										<a href='task_details.php?section=$seclist' style='text-transform: capitalize;'><i class='fa fa-folder-open fa-fw'></i> $secname</a>
-									</li>
-								";
-								}
-							}
-							?>
-					</ul>
+					<a href="task_details_list.php"><i class="fa fa-archive fa-fw"></i> Task Details</a>
 				</li>
 				<li>
 					<a href="../include/user_profile.php?modal=hide" style="margin-top: 0"><i class="fa fa-cog fa-fw"></i> Configuration</a>
