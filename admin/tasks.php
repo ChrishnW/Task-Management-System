@@ -84,6 +84,7 @@
 										</thead>
 										<tbody id="show_task">
 											<?php
+												/* and access!='1' */
 												$con->next_result();
 												$result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge=accounts.username JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND tasks_details.approval_status='0' AND tasks_details.reschedule=0 AND tasks_details.status='$status'");               
 												if (mysqli_num_rows($result)>0) { 
