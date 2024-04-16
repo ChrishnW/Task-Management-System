@@ -1066,3 +1066,10 @@ input#flexCheckDefault {
   width: 20px;
   height: 20px;
 }
+.profile {
+  transition: transform 0.3s;
+}
+.profile:hover {
+  transform: scale(1.9);
+  cursor: pointer;
+}

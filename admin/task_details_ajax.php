@@ -6,7 +6,7 @@ if(isset($_POST['sid'])){
     $ID2 = $_POST['section'];
     if ($ID=='ALL') {
         $con->next_result();
-        $result = mysqli_query($con,"SELECT *, (tasks_details.status) FROM tasks_details LEFT JOIN accounts ON accounts.username = tasks_details.in_charge LEFT JOIN task_list ON tasks_details.task_name = task_list.task_name LEFT JOIN task_class ON task_list.task_class = task_class.id WHERE task_status = 1 AND task_for = '$ID2'");   
+        $result = mysqli_query($con,"SELECT *, (tasks_details.status) FROM tasks_details JOIN accounts ON accounts.username = tasks_details.in_charge JOIN task_class ON tasks_details.task_class = task_class.id WHERE task_status = 1 AND task_for = '$ID2'");   
             
         if (mysqli_num_rows($result)>0) { 
             while ($row = $result->fetch_assoc()) {
@@ -57,7 +57,7 @@ if(isset($_POST['sid'])){
                     <td>" . $row["task_class"] . "</td>
                     <td>" . $row["date_created"] . "</td> 
                     <td>" . $row["due_date"] . "</td> 
-                    <td style='text-align: justify'> <img src=".$imageURL." title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
+                    <td style='text-align: justify'> <img src=".$imageURL." class='profile' title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
                     </td>
                     <td><p class='label label-".$class_label_status."' style='font-size:100%;'>" . $status . "</p></td>
                     <td><p class='label label-".$class_label."' style='font-size:100%;'>".$sign."</p></td>
@@ -67,7 +67,7 @@ if(isset($_POST['sid'])){
     } 
     else {
         $con->next_result();
-        $result = mysqli_query($con,"SELECT *, (tasks_details.status) FROM tasks_details LEFT JOIN accounts ON accounts.username = tasks_details.in_charge LEFT JOIN task_list ON tasks_details.task_name = task_list.task_name LEFT JOIN task_class ON task_list.task_class = task_class.id WHERE task_status = 1 AND task_for = '$ID2' AND  tasks_details.status='$ID'");    
+        $result = mysqli_query($con,"SELECT *, (tasks_details.status) FROM tasks_details JOIN accounts ON accounts.username = tasks_details.in_charge JOIN task_class ON tasks_details.task_class = task_class.id WHERE task_status = 1 AND task_for = '$ID2' AND  tasks_details.status='$ID'");    
         
         if (mysqli_num_rows($result)>0) { 
             while ($row = $result->fetch_assoc()) {
@@ -118,7 +118,7 @@ if(isset($_POST['sid'])){
                     <td>" . $row["task_class"] . "</td>
                     <td>" . $row["date_created"] . "</td> 
                     <td>" . $row["due_date"] . "</td> 
-                    <td style='text-align: justify'> <img src=".$imageURL." title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
+                    <td style='text-align: justify'> <img src=".$imageURL." class='profile' title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
                     </td>
                     <td><p class='label label-".$class_label_status."' style='font-size:100%;'>" . $status . "</p></td>
                     <td><p class='label label-".$class_label."' style='font-size:100%;'>".$sign."</p></td>

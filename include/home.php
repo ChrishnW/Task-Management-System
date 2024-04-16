@@ -65,14 +65,14 @@
 					<span class="icon-bar"></span>
 					</button>
 					<a class="navbar-brand" href="">
-						<p class="text-primary">GLORY (PHILIPPINES), INC. | <font color="red">GLORY TASK MANAGEMENT SYSTEM</font></p>
+						<p class="text-primary">GLORY (PHILIPPINES), INC. | <font color="red">TASK MANAGEMENT SYSTEM</font></p>
 					</a>
 				</div>
 			</nav>
 			<div id="page-wrapper">
 				<div class="row">
 					<div class="col-lg-12">
-						<h1 class="page-header"> </h1>
+						<h1 class="page-header">Home </h1>
 					</div>
 				</div>
 				<div class="row">
@@ -93,7 +93,7 @@
 													<div class="panel panel-default">
 														<div class="panel-body" style="border-radius: 3px;">
 															<i class="fas fa-server	fa-5x"></i></br>
-															<font color="#fffff"><b><?php echo $row['system_name']; ?></b> </font>
+															<font color="#a6a4a4"><b><?php echo $row['system_name']; ?></b> </font>
 														</div>
 													</div>
 												</div>
@@ -114,36 +114,47 @@
 										<div class="row">
 											<div class="panel panel-primary">
 												<div class="panel-heading">
-													<b>Account Information</b> <a href="../include/logout.php" class="pull-right"><i class="glyphicon glyphicon-log-out"></i> Logout</a>
+													<b>ACCOUNT INFORMATION</b> <a href="../include/logout.php" class="pull-right"><i class="glyphicon glyphicon-log-out"></i> Logout</a>
 												</div>
 												<div class="panel-body">
-													<div class='form-group'>
-														<div class="col-xs-12">
-															<label>Name:</label>
-    													<input class="form-control input-sm" type="text" value="<?php echo $row['fname']; ?> <?php echo $row['lname']; ?>"><br>
+													<form class="form">
+														<div class="form-group">
+															<label class="control-label col-sm-4">Username:</label>
+															<div class="col-sm-8">
+																<input class="form-control" value="<?php echo $row['username']; ?>" disabled>
+															</div>
 														</div>
-														<div class="col-xs-6">
-															<label>Username:</label>
-    													<input class="form-control input-sm" type="text" value="<?php echo $row['username']; ?>"><br>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Employee Name:</label>
+															<div class="col-sm-8">
+																<input class="form-control" value="<?php echo $row['fname']; ?> <?php echo $row['lname']; ?>" disabled>
+															</div>
 														</div>
-														<div class="col-xs-6">
-															<label>ID:</label>
-    													<input class="form-control input-sm" type="text" value="<?php echo $row['card'] ?>"><br>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Department:</label>
+															<div class="col-sm-8">
+																<input class="form-control" value="<?php echo strtoupper($row['dept_name']); ?>" disabled>
+															</div>
 														</div>
-														<div class="col-xs-12">
-															<label>Email:</label>
-    													<input class="form-control input-sm" type="text" value="<?php echo $row['email']; ?>"><br>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Section:</label>
+															<div class="col-sm-8">
+																<input class="form-control" value="<?php echo $row['sec_name']; ?>" disabled>
+															</div>
 														</div>
-														
-														<div class="col-xs-12">
-															<label>Section:</label>
-    													<input class="form-control input-sm" type="text" value="<?php echo $row['sec_name']; ?>"><br>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Email Account:</label>
+															<div class="col-sm-8">
+																<input class="form-control" value="<?php echo $row['email']; ?>" disabled>
+															</div>
 														</div>
-														<div class="col-xs-12">
-															<label>Department:</label>
-    													<input class="form-control input-sm" type="text" value="<?php echo strtoupper($row['dept_name']); ?>"><br>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Card Number:</label>
+															<div class="col-sm-8">
+																<input class="form-control" value="<?php echo $row['card'] ?>" disabled>
+															</div>
 														</div>
-													</div>
+													</form>
 												</div>
 											</div>
 										</div>

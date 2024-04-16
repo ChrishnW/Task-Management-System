@@ -89,7 +89,7 @@
 												} 
 												echo "<tr>    
 												<td> <center /><a href='account_edit.php?id=".$row['id']."' <button class='btn btn-primary' ><i class='fa fa-edit fa-1x'></i> Edit</button></a> </td>                                                   
-												<td style='text-align: justify'> <img src=".$imageURL." title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>  
+												<td style='text-align: justify'> <img src=".$imageURL." class='profile' title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>  
 												<td>" . $row["username"] . "</td> 
 												<td>" . $row["email"] . "</td> 
 												<td id='normalwrap'>" . $row["sec_name"] . "</td> 

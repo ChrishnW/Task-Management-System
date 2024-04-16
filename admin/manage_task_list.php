@@ -90,7 +90,7 @@ include('../include/connect.php');
                                                     $total_task='No';
                                                 }
                                                     echo "<tr>                                                       
-                                                        <td style='text-align: justify'> <img src=".$imageURL." title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>
+                                                        <td style='text-align: justify'> <img src=".$imageURL." class='profile' title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>
                                                         <td> " . $section . "</td>
                                                         <td style='text-align: right;'> " . $total_task .' '.$label. "
                                                             <a href='manage_task_emp_list.php?id=".$username."&section=".$secid."'> <button class='btn btn-md btn-primary' style='margin-left: 10px'><i class='fas fa-eye'></i> View</button></a>

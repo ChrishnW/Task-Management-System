@@ -144,7 +144,7 @@ $section=isset($_GET['section']) ? $_GET['section'] : die('ERROR: Record not fou
                                                     <td>" . $row["task_class"] . "</td>
                                                     <td>" . $row["date_created"] . "</td> 
                                                     <td>" . $row["due_date"] . "</td> 
-                                                    <td style='text-align: justify'> <img src=".$imageURL." title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
+                                                    <td style='text-align: justify'> <img src=".$imageURL." class='profile' title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
                                                     </td>
                                                     <td><p class='label label-".$class_label_status."' style='font-size:100%;'>" . $status . "</p></td>
                                                     <td><p class='label label-".$class_label."' style='font-size:100%;'>".$sign."</p></td>

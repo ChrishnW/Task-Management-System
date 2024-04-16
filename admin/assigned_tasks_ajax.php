@@ -25,7 +25,7 @@ if(isset($_POST['sid'])){
                 $total_task='No';
             }
                 echo "<tr>                                                       
-                    <td style='text-align: justify'> <img src=".$imageURL." title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>
+                    <td style='text-align: justify'> <img src=".$imageURL." class='profile' title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>
                     <td> " . $section . "</td>
                     <td> " . $total_task .' '.$label. "
                         <a href='manage_task_emp_list.php?id=".$username."'> <button class='btn btn-md btn-primary pull-right' ><i class='fas fa-eye fa-fw'></i> View</button></a>
