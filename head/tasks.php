@@ -210,12 +210,12 @@
 																echo "<td class='".$class."'> </td>";
 															}
 															echo "
-												            <td id='normalwrap' class='".$class."'>" . $row["task_name"] . " </td>   
-												            <td class='".$class."'><center />" . $row["task_class"] . "</td> 
-                                                    		<td class='".$class."' style='text-align: justify'> <img src=".$imageURL." title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
-												            <td class='".$class."'><center /><p class='label label-".$class_label."' style='font-size:100%;'>".$sign."</p></td>
-												            <td class='".$class."'><center />" . $date . "</td>
-												            <td class='".$class."'><center />" . $row['achievement'] . "</td>
+															<td id='normalwrap' class='".$class."'>" . $row["task_name"] . " </td>   
+															<td class='".$class."'><center />" . $row["task_class"] . "</td> 
+															<td class='".$class."' style='text-align: justify'> <img src=".$imageURL." class='profile' title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
+															<td class='".$class."'><center /><p class='label label-".$class_label."' style='font-size:100%;'>".$sign."</p></td>
+															<td class='".$class."'><center />" . $date . "</td>
+															<td class='".$class."'><center />" . $row['achievement'] . "</td>
 															<td><center><button value='".$row['task_code']."' data-name='".$row['task_name']."' data-class='".$row['task_class']."' data-remarks='".$row['remarks']."' data-duedate='".$row['due_date']."' data-datefinish='".$row['date_accomplished']."' data-achievement='".$row['achievement']."' data-file='".$row['requirement_status']."' data-note='".$row['head_note']."' data-head='".$row['head_name']."' data-path='".$row['attachment']."' class='btn btn-primary' onclick='view1(this)'><span class='fa fa-folder-open'></span> View </button></center></td> 
 
 												        </tr>";
@@ -233,7 +233,7 @@
 															echo " 
 												            <td id='normalwrap' class='".$class."'>" . $row["task_name"] . " </td>   
 												            <td class='".$class."'><center />" . $row["task_class"] . "</td> 
-                                                    		<td class='".$class."' style='text-align: justify'> <img src=".$imageURL." title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
+																		<td class='".$class."' style='text-align: justify'> <img src=".$imageURL." class='profile' title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
 												            <td class='".$class."'><center />" . $due . "</td> 
 												            <td class='".$class."'><center /><p class='label label-".$class_label."' style='font-size:100%;'>".$sign."</p></td>
 												        </tr>";

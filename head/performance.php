@@ -120,7 +120,7 @@
                         $total_task = $count_task_row["total_task"];
                         if ($total_task == "0") {
                           $total_task = "No";
-                          echo "<tr> <td style='text-align: justify'> <img src=" . $imageURL . " title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td> <td><center />" . $formatted_num . "<br>" . $rate . "</td> <td><center /> " . $total_task . " " . $label . "</td> </tr>";
+                          echo "<tr> <td style='text-align: justify'> <img src=" . $imageURL . " class='profile' title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td> <td><center />" . $formatted_num . "<br>" . $rate . "</td> <td><center /> " . $total_task . " " . $label . "</td> </tr>";
                         }
                         else {
                           $m_remtask = 0; $m_donetotal = 0; $m_three = 0; $m_two = 0; $m_one = 0; $m_zero = 0; $m_donesum = 0; $m_tasktotal = 0; $m_totavg = 0; $monthly = 0;
@@ -191,7 +191,7 @@
                           $fdonetotal = $donetotal + $m_donetotal;
                           $fremtask = $remtask + $m_remtask;
                           echo "<tr>
-                            <td style='text-align: justify'> <img src=" . $imageURL . " title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>
+                            <td style='text-align: justify'> <img src=" . $imageURL . " class='profile' title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td>
                             <td><center />" . $formatted_number . "</td>
                             <td><center />" . $monthly . "</td>
                             <td><center /><a href='performance_list.php?id=" . $username . "'> <button class='btn btn-sm btn-success'><i class='fas fa-eye'></i> View  " . $fdonetotal . " " . $label . "</button></a>" . "</td>

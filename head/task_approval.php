@@ -81,7 +81,7 @@ $date_today = date('Y-m-d');
                                                     <td>" . $row["task_class"] . "</td>
                                                     <td>" . $date . "</td> 
                                                     <td>" . $due . "</td> 
-                                                    <td style='text-align: justify'> <img src=".$imageURL." title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
+                                                    <td style='text-align: justify'> <img src=".$imageURL." class='profile' title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
                                                     <td><center><button id='task_id' value='".$row['task_code']."' data-reason = '".$row['resched_reason']."' data-date = '".$row['due_date']."' data-case='".$row['reschedule']."' class='btn btn-primary' onclick='view(this)'> View </button></center></td>
                                                 </tr>";
                                              }
