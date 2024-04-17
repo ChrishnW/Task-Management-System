@@ -30,7 +30,7 @@ if (isset($_POST['valfrom'])) {
       $total_task = $count_task_row["total_task"];
       if ($total_task == "0") {
         $total_task = "No";
-        echo "<tr> <td style='text-align: justify'> <img src=" . $imageURL . " class='profile' title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td> <td><center />" . $formatted_num . "<br>" . $rate . "</td> <td><center /> " . $total_task . " " . $label . "</td> </tr>";
+        echo "<tr> <td style='text-align: justify'> <img src=" . $imageURL . " class='profile' title=" . $username . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 45px'>" . $emp_name . "</td> <td><center />" . $formatted_num . "<br>" . $rate . "</td> <td><center />" . $formatted_num . "<br>" . $rate . "</td> <td><center /> " . $total_task . " " . $label . "</td> </tr>";
       }
       else {
         $m_remtask = 0; $m_donetotal = 0; $m_three = 0; $m_two = 0; $m_one = 0; $m_zero = 0; $m_donesum = 0; $m_tasktotal = 0; $m_totavg = 0; $monthly = 0;
@@ -48,19 +48,10 @@ if (isset($_POST['valfrom'])) {
                 $m_donetotal += 1;
               }
 
-              if ($achievement == 3 && $row['head_name'] != NULL) {
-                $m_three += 1;
+              if ($achievement != NULL && $row['head_name'] != NULL) {
+                $m_donesum += $achievement;
               }
-              elseif ($achievement == 2 && $row['head_name'] != NULL) {
-                $m_two += 1;
-              }
-              elseif ($achievement == 1 && $row['head_name'] != NULL) {
-                $m_one += 1;
-              }
-              elseif ($achievement == 0 && $row['head_name'] != NULL) {
-                $m_zero += 1;
-              }
-              $m_donesum = ($m_three * 3) + ($m_two * 2) + ($m_one * 1) + ($m_zero * 0);
+
               $m_tasktotal = $m_remtask + $m_donetotal;
               if ($m_donesum != 0) {
                 $m_totavg = $m_donesum / $m_tasktotal;
@@ -76,19 +67,10 @@ if (isset($_POST['valfrom'])) {
                 $donetotal += 1;
               }
 
-              if ($achievement == 3 && $row['head_name'] != NULL) {
-                $three += 1;
+              if ($achievement != NULL && $row['head_name'] != NULL) {
+                $donesum += $achievement;
               }
-              elseif ($achievement == 2 && $row['head_name'] != NULL) {
-                $two += 1;
-              }
-              elseif ($achievement == 1 && $row['head_name'] != NULL) {
-                $one += 1;
-              }
-              elseif ($achievement == 0 && $row['head_name'] != NULL) {
-                $zero += 1;
-              }
-              $donesum = ($three * 3) + ($two * 2) + ($one * 1) + ($zero * 0);
+
               $tasktotal = $remtask + $donetotal;
               if ($donesum != 0) {
                 $totavg = $donesum / $tasktotal;
