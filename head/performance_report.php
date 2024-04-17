@@ -100,19 +100,10 @@
                 $m_donetotal += 1;
               }
 
-              if ($achievement == 3 && $row['head_name'] != NULL) {
-                $m_three += 1;
+              if ($achievement != NULL && $row['head_name'] != NULL) {
+                $m_donesum += $achievement;
               }
-              elseif ($achievement == 2 && $row['head_name'] != NULL) {
-                $m_two += 1;
-              }
-              elseif ($achievement == 1 && $row['head_name'] != NULL) {
-                $m_one += 1;
-              }
-              elseif ($achievement == 0 && $row['head_name'] != NULL) {
-                $m_zero += 1;
-              }
-              $m_donesum = ($m_three * 3) + ($m_two * 2) + ($m_one * 1) + ($m_zero * 0);
+
               $m_tasktotal = $m_remtask + $m_donetotal;
               if ($m_donesum != 0) {
                 $m_totavg = $m_donesum / $m_tasktotal;
@@ -128,19 +119,10 @@
                 $donetotal += 1;
               }
 
-              if ($achievement == 3 && $row['head_name'] != NULL) {
-                $three += 1;
+              if ($achievement != NULL && $row['head_name'] != NULL) {
+                $donesum += $achievement;
               }
-              elseif ($achievement == 2 && $row['head_name'] != NULL) {
-                $two += 1;
-              }
-              elseif ($achievement == 1 && $row['head_name'] != NULL) {
-                $one += 1;
-              }
-              elseif ($achievement == 0 && $row['head_name'] != NULL) {
-                $zero += 1;
-              }
-              $donesum = ($three * 3) + ($two * 2) + ($one * 1) + ($zero * 0);
+
               $tasktotal = $remtask + $donetotal;
               if ($donesum != 0) {
                 $totavg = $donesum / $tasktotal;
