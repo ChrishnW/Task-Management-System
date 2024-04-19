@@ -6,7 +6,7 @@
     $status = $_GET['status'];
     $username = $_GET['username'];
     header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
-    header("Content-Disposition: attachment; filename="."[".$username."] ".$status." TASKS-LIST (".$monthyear.").xls");
+    header("Content-Disposition: attachment; filename="."[".$username."] ".$status." TASKS (".$monthyear.").xls");
     header("Expires: 0");
     header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
     header("Cache-Control: private",false);
@@ -22,16 +22,13 @@
 
 <body>
     <center>
-        <b>
-            <font color="blue">GLORY (PHILIPPINES), INC.</font>
-        </b>
+        <b> <font color="blue">GLORY (PHILIPPINES), INC.</font> </b>
         <br>
         <b>TASK MANAGEMENT SYSTEM</b>
         <br>
-       <h3> <b><?php echo $status ?> TASKS LIST</b></h3>
+       <h3> <b><?php echo $status ?> TASKS</b></h3>
         <br>
     </center>
-    <br>
 
     <div id="table-scroll">
         <table width="100%" border="1" align="left">
@@ -47,13 +44,7 @@
                         Task Classification
                     </th>
                     <th scope="col">
-                        Task For
-                    </th>
-                    <th scope="col">
                         In-charge
-                    </th>
-                    <th scope="col">
-                        Status
                     </th>
                     <th scope="col">
                         Due Date
@@ -74,9 +65,12 @@
             <tbody>
             <?php
                 $con->next_result();
-                $result = mysqli_query($con,"SELECT *, (SELECT DISTINCT date FROM attendance WHERE card=accounts.card and date = tasks_details.due_date) AS loggedin FROM tasks_details LEFT JOIN task_list ON tasks_details.task_name = task_list.task_name LEFT JOIN task_class ON task_list.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND tasks_details.task_status=1 AND tasks_details.reschedule=0 AND tasks_details.status='$status' AND MONTH(tasks_details.due_date)='$month' AND YEAR(tasks_details.due_date)='$year' ORDER BY tasks_details.due_date ASC");
+                $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND tasks_details.status='$status' AND tasks_details.task_status=1 AND tasks_details.approval_status=0");
                     while($row = mysqli_fetch_array($result)) {
                         $achievement = $row['achievement'];
+                        $due         = date('d-m-Y h:i A', strtotime($row['due_date'].'16:00:00'));
+                        $date        = date('d-m-Y h:i A', strtotime($row['date_accomplished']));
+
                         if ($row['status'] == 'FINISHED') {
                             $status = "COMPLETED";
                         } 
@@ -96,13 +90,11 @@
                                 echo "
                                 <td><center/>" . $row["task_name"] . "</td> 
                                 <td><center/>" . $row["task_class"] . "</td>
-                                <td><center/>" . $row["task_for"] . "</td>
                                 <td><center/>" . $row["fname"].' '.$row["lname"] . "</td>
-                                <td><center/>" . $status . "</td>
-                                <td><center/>" . $row["due_date"] . "</td>";?>
+                                <td><center/>" . $due . "</td>";?>
                                 <?php
                                 if ($status == "FINISHED"){
-                                    echo "<td><center/>" . $row["date_accomplished"] . "</td>
+                                    echo "<td><center/>" . $date . "</td>
                                             <td><center/>". $achievement ."</td>";
                                 }
                                 echo"

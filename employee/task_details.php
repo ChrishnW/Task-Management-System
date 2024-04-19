@@ -30,7 +30,11 @@
 						<label>To:</label><br>
 							<input type='date' class='form-control' name='val_to' id='val_to' onchange='selectto(this)'>
 					</div>
-					<a href='tasks_xls.php?status=<?php echo $status ?>&username=<?php echo $username ?>'> <button class='btn btn-success pull-right' style='margin-right: 20px;margin-top: 23px;'><span class='fa fa-download'></span> Download</button></a>
+					<?php
+						if ($status == "FINISHED"){
+							echo "<a href='tasks_xls.php?status=$status&username=$username'> <button class='btn btn-success pull-right' style='margin-right: 20px;margin-top: 23px;'><span class='fa fa-download'></span> Download XLS</button></a>";
+						}
+					?>
 					<div class="col-lg-12">
 						<div class="panel panel-primary">
 							<div class="panel-heading">
@@ -91,15 +95,6 @@
 															$class      = "";
 															$sign       = "";
 															$emp_name   = $row['fname'] . ' ' . $row['lname'];
-															
-															if (empty($row["file_name"])) {
-																// Use a default image URL
-																$imageURL = '../assets/img/user-profiles/nologo.png';
-															}
-															else {
-																// Use the image URL from the database
-																$imageURL = '../assets/img/user-profiles/' . $row["file_name"];
-															}
 															
 															if ($status == "NOT YET STARTED") {
 																if ($due_date > $today) {
@@ -164,14 +159,7 @@
 															$class      = '';
 															$task_class = $row['task_class'];
 															$emp_name   = $row['fname'] . ' ' . $row['lname'];
-															if (empty($row["file_name"])) {
-																// Use a default image URL
-																$imageURL = '../assets/img/user-profiles/nologo.png';
-															} 
-															else {
-																// Use the image URL from the database
-																$imageURL = '../assets/img/user-profiles/' . $row["file_name"];
-															}
+
 															if ($today > $due_date) {
 																$class       = "invalid";
 																$sign        = "OVERDUE";
@@ -218,14 +206,7 @@
 															$achievement = $row['achievement'];
 															$emp_name    = $row['fname'] . ' ' . $row['lname'];
 															$date        = date('d-m-Y h:i A', strtotime($row['date_accomplished']));
-															if (empty($row["file_name"])) {
-																// Use a default image URL
-																$imageURL = '../assets/img/user-profiles/nologo.png';
-															} 
-															else {
-																// Use the image URL from the database
-																$imageURL = '../assets/img/user-profiles/' . $row["file_name"];
-															}
+
 															if ($status == 'FINISHED' && $achievement != 0) {
 																$class_label = "success";
 																$sign        = "FINISHED";
@@ -261,16 +242,10 @@
 															$achievement = $row['achievement'];
 															$emp_name    = $row['fname'] . ' ' . $row['lname'];
 															$date        = date('d-m-Y h:i A', strtotime($row['date_accomplished']));
-															if (empty($row["file_name"])) {
-																// Use a default image URL
-																$imageURL = '../assets/img/user-profiles/nologo.png';
-															} else {
-																// Use the image URL from the database
-																$imageURL = '../assets/img/user-profiles/' . $row["file_name"];
-															}
+
 															if ($status == 'VERIFICATION') {
 																$class_label = "danger";
-																$sign        = "REVIEWING";
+																$sign        = "TBD";
 															}
 															echo "<tr>
 															<td> " . $row["task_code"] . " </td>";
@@ -299,14 +274,7 @@
 															$achievement = $row['achievement'];
 															$emp_name    = $row['fname'] . ' ' . $row['lname'];
 															$due         = date('d-m-Y h:i A', strtotime($row['due_date']));
-															if (empty($row["file_name"])) {
-																// Use a default image URL
-																$imageURL = '../assets/img/user-profiles/nologo.png';
-															} 
-															else {
-																// Use the image URL from the database
-																$imageURL = '../assets/img/user-profiles/' . $row["file_name"];
-															}
+
 															if ($status == 'RESCHEDULE') {
 																$class_label = "info";
 																$sign        = "RESCHEDULE PENDING";
