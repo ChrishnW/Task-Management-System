@@ -6,6 +6,8 @@
 	$month = date('m');
 	$year = date('Y');
 	$status=isset($_GET['status']) ? $_GET['status'] : die('ERROR: Record ID not found.');
+	$status_lower =  strtolower($status);
+	$status_name = ucwords($status_lower);
 ?>
 <html>
 	<head>
@@ -18,7 +20,7 @@
 	<div id="content" class="p-4 p-md-5 pt-5">
 		<div id="wrapper">
 			<div id="page-wrapper">
-				<h1 class="page-header">My <?php echo $status ?> Tasks</h1>
+				<h1 class="page-header"><?php echo $status_name ?> <font style="color:red;">Tasks</font></h1>
 				<div class="row">
 					<div class='form-group col-lg-2'>
 						<label>From:</label><br>
@@ -33,12 +35,19 @@
 						<div class="panel panel-primary">
 							<div class="panel-heading">
 								My Task Details
+								<button class='btn btn-primary pull-right' id='hidden-btn' onclick='done(this)' style="margin-top: -7px; border-color: transparent;"><i class="fa fa-play-circle"></i> Start Marked Tasks</button>
+								<br>
 							</div>
 							<div class="panel-body">
 								<div class="table-responsive">
 									<table width="100%" class="table table-dark table-hover" id="table_task">
 										<thead class="thead-light">
 											<tr>
+												<?php
+													if($status=="NOT YET STARTED"){
+														echo "<th scope='col'> <input type='checkbox' id='selectAll' class='messageCheckbox'/> </td>";
+													}
+												?>
 												<th scope="col"> Task Code </th>
 												<th scope='col' title='Legend'> <i class='fa fa-asterisk' /> </th>
 												<th scope="col"> Task Name </th>
@@ -74,7 +83,7 @@
 														while ($row = $result->fetch_assoc()) {
 															$today      = date("Y-m-d");
 															$due_date   = $row["due_date"];
-															$due        = date('d-m-Y h:i A', strtotime($row['due_date']));
+															$due        = date('d-m-Y h:i A', strtotime($row['due_date'].'16:00:00'));
 															$nextDate   = date('Y-m-d', strtotime($due_date . ' + ' . 1 . ' days'));
 															$yesterday  = date('Y-m-d', strtotime($today . ' -' . 1 . ' days'));
 															$twodago    = date('Y-m-d', strtotime($due_date . ' +' . 2 . ' days'));
@@ -113,6 +122,7 @@
 															}
 															
 															echo "<tr>
+															<td> <input type='checkbox' class='messageCheckbox' name='item[]' id='flexCheckDefault' value='".$row['task_code']."'/> </td>
 															<td class='" . $class . "'>" . $row["task_code"] . " </td>";
 															if ($row['requirement_status'] == 1) {
 																echo "<td class='" . $class . "'> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";
@@ -147,7 +157,7 @@
 													if (mysqli_num_rows($result) > 0) {
 														while ($row = $result->fetch_assoc()) {
 															$due_date   = $row["due_date"];
-															$date        = date('d-m-Y h:i A', strtotime($row['due_date']));
+															$due        = date('d-m-Y h:i A', strtotime($row['due_date'].'16:00:00'));
 															$verify     = $row['requirement_status'];
 															$twodago    = date('Y-m-d', strtotime($due_date . ' +' . 2 . ' days'));
 															$today      = date('Y-m-d');
@@ -182,7 +192,7 @@
 															echo "                                                    
 															<td id='normalwrap' class='" . $class . "'> " . $row["task_name"] . " </td>  
 															<td class='" . $class . "'>" . $row["task_class"] . "</td>  
-															<td class='" . $class . "'>" . $date . "</td> 
+															<td class='" . $class . "'>" . $due . "</td> 
 															<td class='" . $class . "' style='text-align: center'> <img src=" . $imageURL . " title=" . $row["username"] . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-left: 0'></td>  
 															<td class='" . $class . "'><center/>
 															<p class='label label-" . $class_label . "' style='font-size:100%;'>" . $sign . "</p></td>";
@@ -344,6 +354,79 @@
 						"order": [[ 4, "asc" ]]
 				});
 		});
+
+		function done(obj) {
+			var taskID = obj.value;
+
+			$(document).ready(function() { 
+				$('#caution').modal('show');
+			});
+    }
+
+    window.onload = function() {
+    // Get all checkboxes with the same class name
+    var checkboxes = document.querySelectorAll('.messageCheckbox');
+    var button = document.getElementById('hidden-btn');
+
+    // Function to check if any checkbox is checked
+    function checkCheckboxes() {
+			var isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+			button.style.display = isChecked ? 'block' : 'none';
+    }
+
+    // Add event listener to each checkbox
+    checkboxes.forEach(function(checkbox) {
+			checkbox.addEventListener('change', checkCheckboxes);
+    });
+
+    // Initial check to set the correct button visibility
+    checkCheckboxes();
+    };
+
+		function toggleAll(source) {
+			const checkboxes = document.querySelectorAll('input[name="item[]"]');
+
+			checkboxes.forEach((checkbox) => {
+				checkbox.checked = source.checked;
+			});
+    }
+
+    // Attach the function to the "Select All" checkbox
+    const selectAllCheckbox = document.getElementById('selectAll');
+    selectAllCheckbox.addEventListener('change', function () {
+			toggleAll(this);
+    });
+
+    $(document).ready(function () {
+        // When the submit button is clicked
+        $("#submit-button").on("click", function () {
+            var selectedValues = []; // Initialize an empty array
+
+            // Loop through each checked checkbox
+            $(".messageCheckbox:checked").each(function () {
+                selectedValues.push($(this).val()); // Add the value to the array
+            });
+
+            // Log the selected values
+            console.log("Selected values:", selectedValues);
+
+            // Send the selectedValues via AJAX (you'll need to implement this part)
+            // Example AJAX request:
+            $.ajax({
+                url: "task_details_start_array.php",
+                method: "POST",
+                data: { selectedValues: selectedValues },
+                success: function (response) {
+                    console.log("Data sent successfully:", response);
+                    $('#caution').modal('hide');
+                    $('#success1').modal('show'); 
+                },
+                error: function (error) {
+                    console.error("Error sending data:", error);
+                }
+            });
+        });
+    });
 
 		function view1(element) {
 			var taskcode = element.value;
@@ -706,6 +789,33 @@
 			location.reload();
 		}
 	</script>
+
+	<div class="modal fade" id="caution" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content panel-success">
+				<div class="modal-header panel-heading">
+					<a href="pending_for_approval.php"> <button type="button" class="close" aria-hidden="true"> &times; </button> </a>
+					<h4 class="modal-title" id="myModalLabel"> Caution </h4>
+				</div>
+				<div class="modal-body panel-body">
+					<center>
+						<i style="color: yellow; font-size:80px;" class="fa fa-exclamation-triangle"></i>
+						<br><br>
+						<p>
+							You're about to start all of the marked tasks.
+							<br>
+							Do you wish to continue?
+						</p>
+					</center>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id='submit-button' class="btn btn-success pull-left"> <i class="fa fa-check-circle"> </i> Yes </button>
+					<button type="button" name="submit" class="btn btn-danger pull-right" data-dismiss="modal"> <i class="fa fa-times-circle"> </i> No </button>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<div class="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
 		<div class="modal-dialog modal-sm">

@@ -1073,3 +1073,6 @@ input#flexCheckDefault {
   transform: scale(1.9);
   cursor: pointer;
 }
+#hidden-btn {
+  display: none;
+}

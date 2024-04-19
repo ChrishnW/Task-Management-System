@@ -1,5 +1,8 @@
 <?php 
 include ('../include/connect.php');
+$date_today = date('Y-m-d');
+$month = date('m');
+$year = date('Y');
 
 if(isset($_POST['valto'])){
   $val_from = $_POST['valfrom'];
@@ -15,7 +18,7 @@ if(isset($_POST['valto'])){
         while ($row = $result->fetch_assoc()) {
           $today      = date("Y-m-d");
           $due_date   = $row["due_date"];
-          $due        = date('m / d / Y', strtotime($row['due_date']));
+          $due        = date('d-m-Y h:i A', strtotime($row['due_date'].'16:00:00'));
           $nextDate   = date('Y-m-d', strtotime($due_date . ' + ' . 1 . ' days'));
           $yesterday  = date('Y-m-d', strtotime($today . ' -' . 1 . ' days'));
           $twodago    = date('Y-m-d', strtotime($due_date . ' +' . 2 . ' days'));
@@ -54,6 +57,7 @@ if(isset($_POST['valto'])){
           }
           
           echo "<tr>
+          <td> <input type='checkbox' class='messageCheckbox' name='item[]' id='flexCheckDefault' value='".$row['task_code']."'/> </td>
           <td class='" . $class . "'>" . $row["task_code"] . " </td>";
           if ($row['requirement_status'] == 1) {
             echo "<td class='" . $class . "'> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";
@@ -85,7 +89,7 @@ if(isset($_POST['valto'])){
       if (mysqli_num_rows($result) > 0) {
         while ($row = $result->fetch_assoc()) {
           $due_date   = $row["due_date"];
-          $date       = date('m / d / Y', strtotime($row['due_date']));
+          $due        = date('d-m-Y h:i A', strtotime($row['due_date'].'16:00:00'));
           $verify     = $row['requirement_status'];
           $twodago    = date('Y-m-d', strtotime($due_date . ' +' . 2 . ' days'));
           $today      = date('Y-m-d');
@@ -120,7 +124,7 @@ if(isset($_POST['valto'])){
           echo "                                                    
           <td id='normalwrap' class='" . $class . "'> " . $row["task_name"] . " </td>  
           <td class='" . $class . "'>" . $row["task_class"] . "</td>  
-          <td class='" . $class . "'>" . $date . "</td> 
+          <td class='" . $class . "'>" . $due . "</td> 
           <td class='" . $class . "' style='text-align: center'> <img src=" . $imageURL . " title=" . $row["username"] . " style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-left: 0'></td>  
           <td class='" . $class . "'><center/>
           <p class='label label-" . $class_label . "' style='font-size:100%;'>" . $sign . "</p></td>";
