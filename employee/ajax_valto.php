@@ -27,22 +27,8 @@ if(isset($_POST['valto'])){
           $sign       = "";
           $emp_name   = $row['fname'] . ' ' . $row['lname'];
           
-          if (empty($row["file_name"])) {
-            // Use a default image URL
-            $imageURL = '../assets/img/user-profiles/nologo.png';
-          }
-          else {
-            // Use the image URL from the database
-            $imageURL = '../assets/img/user-profiles/' . $row["file_name"];
-          }
-          
           if ($status == "NOT YET STARTED") {
-            if ($due_date < $today) {
-              $class_label = "danger";
-              $sign        = "EXPIRED";
-              $class       = "invalid";
-            }
-            elseif ($due_date > $today) {
+            if ($due_date > $today) {
               $class_label = "info";
               $sign        = "PENDING";
             }
@@ -50,14 +36,25 @@ if(isset($_POST['valto'])){
               $class_label = "primary";
               $sign        = "NOT YET STARTED";
             }
+            elseif ($yesterday <= $today && $row["loggedin"] == $due_date) {
+              $class_label = "primary";
+              $sign        = "NOT YET STARTED";
+            }
             else {
-              $class_label = "muted";
-              $sign        = "INVALID";
+              $class_label = "danger";
+              $sign        = "EXPIRED";
+              $class       = "invalid";
             }
           }
           
-          echo "<tr>
-          <td> <input type='checkbox' class='messageCheckbox' name='item[]' id='flexCheckDefault' value='".$row['task_code']."'/> </td>
+          echo "<tr>";
+          if ($due_date == $today){
+            echo "<td class='". $class ."'> <input type='checkbox' class='messageCheckbox' name='item[]' id='flexCheckDefault' value='".$row['task_code']."'/> </td>";
+          }
+          else{
+            echo "<td class='". $class ."'> <i class='fa fa-ban'></i> </td>";
+          }
+          echo "
           <td class='" . $class . "'>" . $row["task_code"] . " </td>";
           if ($row['requirement_status'] == 1) {
             echo "<td class='" . $class . "'> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";
@@ -76,6 +73,9 @@ if(isset($_POST['valto'])){
           }
           elseif ($due_date > $today) {
             echo " <td> <center/><button disabled id='task_id' value='" . $row['task_code'] . "' class='btn btn-info' onclick='start(this)'><i class='fas fa-clock fa-1x'></i> </button></td>";
+          }
+          elseif ($yesterday <= $today && $row["loggedin"] == $due_date) {
+            echo " <td> <center/><button id='task_id' value='" . $row['task_code'] . "' class='btn btn-primary' onclick='start(this)'><i class='fa fa-play-circle fa-1x'></i> </button></td>";
           }
           else {
             echo " <td class='" . $class . "'> <center/><button disabled id='task_id' value='" . $row['task_code'] . "' class='btn btn-danger' onclick='start(this)'><i class='fa fa-exclamation-circle fa-1x'></i> </button></td>";
