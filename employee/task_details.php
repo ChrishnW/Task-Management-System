@@ -49,7 +49,7 @@
 											<tr>
 												<?php
 													if($status=="NOT YET STARTED"){
-														echo "<th scope='col'> <input type='checkbox' id='selectAll' class='messageCheckbox'/> </td>";
+														echo "<th scope='col'> Select All <input type='checkbox' id='selectAll' class='messageCheckbox'/> </td>";
 													}
 												?>
 												<th scope="col"> Task Code </th>
@@ -116,8 +116,14 @@
 																}
 															}
 															
-															echo "<tr>
-															<td> <input type='checkbox' class='messageCheckbox' name='item[]' id='flexCheckDefault' value='".$row['task_code']."'/> </td>
+															echo "<tr>";
+															if ($due_date == $today){
+																echo "<td class='". $class ."'> <input type='checkbox' class='messageCheckbox' name='item[]' id='flexCheckDefault' value='".$row['task_code']."'/> </td>";
+															}
+															else{
+																echo "<td class='". $class ."'> <i class='fa fa-ban'></i> </td>";
+															}
+															echo "
 															<td class='" . $class . "'>" . $row["task_code"] . " </td>";
 															if ($row['requirement_status'] == 1) {
 																echo "<td class='" . $class . "'> <span style='color: #00ff26'><i class='fa fa-paperclip' title='Attachment Required'></i></span></td>";
@@ -332,23 +338,19 @@
     }
 
     window.onload = function() {
-    // Get all checkboxes with the same class name
-    var checkboxes = document.querySelectorAll('.messageCheckbox');
-    var button = document.getElementById('hidden-btn');
+			var checkboxes = document.querySelectorAll('.messageCheckbox');
+			var button = document.getElementById('hidden-btn');
 
-    // Function to check if any checkbox is checked
-    function checkCheckboxes() {
-			var isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-			button.style.display = isChecked ? 'block' : 'none';
-    }
+			function checkCheckboxes() {
+				var isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+				button.style.display = isChecked ? 'block' : 'none';
+			}
 
-    // Add event listener to each checkbox
-    checkboxes.forEach(function(checkbox) {
-			checkbox.addEventListener('change', checkCheckboxes);
-    });
+			checkboxes.forEach(function(checkbox) {
+				checkbox.addEventListener('change', checkCheckboxes);
+			});
 
-    // Initial check to set the correct button visibility
-    checkCheckboxes();
+			checkCheckboxes();
     };
 
 		function toggleAll(source) {
@@ -359,41 +361,45 @@
 			});
     }
 
-    // Attach the function to the "Select All" checkbox
     const selectAllCheckbox = document.getElementById('selectAll');
     selectAllCheckbox.addEventListener('change', function () {
 			toggleAll(this);
     });
 
     $(document).ready(function () {
-        // When the submit button is clicked
+			var btn = document.getElementById('submit-button');
         $("#submit-button").on("click", function () {
-            var selectedValues = []; // Initialize an empty array
+					var selectedValues = [];
 
-            // Loop through each checked checkbox
-            $(".messageCheckbox:checked").each(function () {
-                selectedValues.push($(this).val()); // Add the value to the array
-            });
+				$(".messageCheckbox:checked").each(function () {
+					selectedValues.push($(this).val());
+				});
 
-            // Log the selected values
-            console.log("Selected values:", selectedValues);
+				console.log("Selected values:", selectedValues);
 
-            // Send the selectedValues via AJAX (you'll need to implement this part)
-            // Example AJAX request:
-            $.ajax({
-                url: "task_details_start_array.php",
-                method: "POST",
-                data: { selectedValues: selectedValues },
-                success: function (response) {
-                    console.log("Data sent successfully:", response);
-                    $('#caution').modal('hide');
-                    $('#success1').modal('show'); 
-                },
-                error: function (error) {
-                    console.error("Error sending data:", error);
-                }
-            });
-        });
+				$.ajax({
+					url: "task_details_start_array.php",
+					method: "POST",
+					data: { selectedValues: selectedValues },
+					success: function (response) {
+						document.getElementById('submit-button').disabled = true;
+						btn.textContent = 'Starting...';
+						setTimeout(function () {
+						$('#caution').modal('hide');
+						}, 2000);
+						setTimeout(function () {
+							$('#success1').modal('show');
+						}, 2000);
+
+						console.log("Data sent successfully:", response);
+						// $('#caution').modal('hide');
+						// $('#success1').modal('show'); 
+					},
+					error: function (error) {
+						console.error("Error sending data:", error);
+					}
+				});
+			});
     });
 
 		function view1(element) {
@@ -880,34 +886,6 @@
 				<div class="modal-footer">
 					<button disabled id='okButton_2' class='btn btn-success pull-left' onclick='okButtonClick_2()'><i class='fa fa-paper-plane fa-1x'></i> Submit</button>
 					<button type="button" name="submit" class="btn btn-danger pull-right" data-dismiss="modal"><i class='fa fa-times fa-1x'></i> Cancel</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="modal fade" id="reschedule" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content panel-success">
-				<div class="modal-header panel-heading">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel"> Reschedule Task</h4>
-				</div>
-				<div class="modal-body panel-body">
-					<div class="form-group">
-						<input type="hidden" id="resched_task_id" name="resched_task_id" value="">
-						<label>Request Date to Finish:</label>
-						<input class="form-control" type="date" name="request_date"  onchange="checkInput()" id="request_date" required><br>
-						<div class="help-block with-errors"></div>
-					</div>
-					<div class="form-group">
-						<label>Reason:</label>
-						<textarea name="resched_reason" id="resched_reason" onkeyup="checkInput()" class="form-control" placeholder="Type Reason Here" autofocus required></textarea>
-						<div class="help-block with-errors"></div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button disabled id='okButton1' class='btn btn-success pull-left' onclick='okButtonClick3()'><i class='fa fa-envelope fa-1x'></i> Send</button>
-					<a href="task_details.php?status=NOT YET STARTED"><button type="button" name="submit" class="btn btn-danger pull-right"><i class='fa fa-times fa-1x'></i> Cancel</button></a>
 				</div>
 			</div>
 		</div>
