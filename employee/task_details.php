@@ -192,13 +192,13 @@
 															<p class='label label-" . $class_label . "' style='font-size:100%;'>" . $sign . "</p></td>";
 															if ($verify == 1) {
 																echo "
-																<td class='" . $class . "'> <center/><button id='task_id' value='" . $row['task_code'] . "' class='btn btn-danger' onclick='finish_with_attachment(this)'><i class='fa fa-stop fa-1x'></i></button>
+																<td class='" . $class . "'> <center/><button id='task_id' value='" . $row['task_code'] . "' class='btn btn-danger' onclick='finish_with_attachment(this)'><i class='fa fa-circle fa-1x'></i></button>
 																</td>
 																</tr>";
 															}
 															else {
 																echo "
-																<td class='" . $class . "'> <center/><button id='task_id' value='" . $row['task_code'] . "' class='btn btn-danger' onclick='finish_without_attachment(this)'><i class='fa fa-stop fa-1x'></i></button>
+																<td class='" . $class . "'> <center/><button id='task_id' value='" . $row['task_code'] . "' class='btn btn-danger' onclick='finish_without_attachment(this)'><i class='fa fa-circle fa-1x'></i></button>
 																</td>
 																</tr>";
 															}
@@ -322,11 +322,21 @@
 
 	<script>
 		$(document).ready(function() {
+			var task_status = <?php echo json_encode($status) ?>;
+			if (task_status === 'NOT YET STARTED') {
 				$('#table_task').DataTable({
-						responsive: true,
-						destroy: true,
-						"order": [[ 4, "asc" ]]
+					responsive: true,
+					destroy: true,
+					"order": [[5, "asc"]]
 				});
+			}
+			else {
+				$('#table_task').DataTable({
+					responsive: true,
+					destroy: true,
+					"order": [[4, "asc"]]
+				});
+			}
 		});
 
 		function done(obj) {
