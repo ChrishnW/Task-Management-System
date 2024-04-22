@@ -40,13 +40,6 @@
 			}
 		</style>
 	</head>
-	<nav class="navbar navbar-default navbar-static-top" role="navigation" >
-		<div class="navbar-header">
-			<a class="navbar-brand" href="">
-				<p class="text-primary"><img src="../assets/img/gloryicon.png"> GLORY (PHILIPPINES), INC. | <font color="red">GLORY TASK MANAGEMENT SYSTEM</font></p>
-			</a>
-		</div>
-	</nav>
 	<?php
 		$con->next_result();
 		$query = mysqli_query($con, "SELECT * FROM accounts WHERE username='$username'");
@@ -63,7 +56,7 @@
 		    }
 		}
 		?>
-	<div class="container bootstrap snippets bootdey" style="height: 100vh;">
+	<div class="container bootstrap snippets bootdey" style="height: 100vh;padding: 50px 50px;">
 		<h1 class="text-primary">Edit Profile</h1>
 		<hr>
 		<div class="row">
@@ -129,11 +122,12 @@
 					<?php }  $con-> close(); ?>
 				</form>
 				<a href="home.php"><button type="button" class="btn btn-danger pull-right" style="margin-right: 75px"><i class="fa fa-arrow-left"></i> Back</button></a>
-				<button type="button" id="submit-btn" class="btn btn-primary pull-right" style="margin-right: 5px" data-toggle="modal" data-target="#success">Change Password</button>
+				<button type="button" id="submit-btn" class="btn btn-primary pull-right" style="margin-right: 5px" data-toggle="modal" data-target="#success"><i class="fa fa-unlock-alt"></i> Change Password</button>
 			</div>
 		</div>
 		<hr>
 	</div>
+	
 	<div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content panel-success">
