@@ -77,11 +77,10 @@
 		
 	</script>
 	<div id="loader"></div>
-	<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; margin-top: -5px;">
+	<nav class="navbar navbar-default navbar-static-top" role="navigation">
 		<div class="navbar-header">
-			<button type="button" id="sidebarCollapse" class="pull-left" style="border: none">
+			<button type="button" id="sidebarCollapse" class="pull-left" style="border: none;text-align: center;margin-top: -6px;margin-left: 5px;">
 			<i class="fa fa-bars" style="font-size: 30px;"></i>
-			<span class="sr-only">Toggle Menu</span>
 			</button>
 			<a class="navbar-brand" href="index.php">
 				<p class="text-primary" title="Task Management System">GLORY (PHILIPPINES), INC. | <font color="red"> TASK MANAGEMENT SYSTEM</font></p>
