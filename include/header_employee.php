@@ -99,9 +99,6 @@
 			</div>
 			<ul class="nav" id="side-menu">
 				<li>
-					<a href="../include/home.php"><i class="fa fa-home fa-fw"></i> Home</a>
-				</li>
-				<li>
 					<a href="index.php"><i class="glyphicon glyphicon-th-large fa-fw"></i> Dashboard</a>
 				</li>
 				<li>
