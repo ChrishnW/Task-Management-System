@@ -4,7 +4,8 @@
 
   date_default_timezone_set('Asia/Manila');
   $ID = $_POST['id'];
-  $ACTION = $_POST['action'];
+  $ACTION_TEMP = $_POST['action'];
+  $ACTION = str_replace("'", "&apos;", $ACTION_TEMP);
   $today = date("Y-m-d:H:i:s");
   $con->next_result();
 
