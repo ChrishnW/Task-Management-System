@@ -96,7 +96,7 @@
 										<div class="col-xs-9 text-right">
 											<div class="huge">
 												<?php
-													$result = mysqli_query($con,"SELECT COUNT(tasks_details.id) as for_approval_task FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.status='FINISHED' AND tasks_details.task_status=1 AND tasks_details.approval_status = 1 AND section.dept_id='$dept_id'");
+													$result = mysqli_query($con,"SELECT COUNT(tasks_details.id) as for_approval_task FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge = accounts.username JOIN section ON accounts.sec_id = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.approval_status = 1 AND tasks_details.status = 'FINISHED' AND section.dept_id = '$dept_id'");
 													$row = $result->fetch_assoc();
 													echo $row['for_approval_task']; ?>
 											</div>

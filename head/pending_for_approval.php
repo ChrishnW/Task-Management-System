@@ -71,7 +71,7 @@ $date_today = date('Y-m-d');
                                         <?php
                                         /* and access!='1' */
                                         $con->next_result();
-                                        $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge=accounts.username JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.status='FINISHED' AND task_status=1 AND tasks_details.approval_status=1 AND section.dept_id='$dept_id'");           
+                                        $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge = accounts.username JOIN section ON accounts.sec_id = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.approval_status = 1 AND tasks_details.status = 'FINISHED' AND section.dept_id = '$dept_id'");           
                                         if (mysqli_num_rows($result)>0) { 
                                             while ($row = $result->fetch_assoc()) {
                                                 $today = date("Y-m-d");
