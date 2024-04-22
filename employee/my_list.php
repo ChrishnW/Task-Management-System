@@ -71,12 +71,12 @@
 												$result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id LEFT JOIN accounts ON tasks_details.in_charge=accounts.username WHERE in_charge='$username' AND task_status!=0 AND MONTH(tasks_details.date_accomplished)='$month' AND YEAR(tasks_details.date_accomplished)='$year' AND tasks_details.date_accomplished IS NOT NULL AND approval_status=0");
 												if (mysqli_num_rows($result)>0) { 
 												while ($row = $result->fetch_assoc()) { 
-												$taskcode = $row['task_code'];
-												$taskname = $row['task_name'];
-												$taskclass = $row['task_class'];
-												$dateaccom = date('d-m-Y h:m A', strtotime($row['date_accomplished']));
-												$datedue = date('d-m-Y h:m A', strtotime($row['due_date']));
-												$datec = $row['date_created'];
+												$taskcode    = $row['task_code'];
+												$taskname    = $row['task_name'];
+												$taskclass   = $row['task_class'];
+												$dateaccom   = date('d-m-Y h:i A', strtotime($row['date_accomplished']));
+												$datedue     = date('d-m-Y h:i A', strtotime($row['due_date'].'16:00:00'));
+												$datec       = $row['date_created'];
 												$achievement = $row['achievement'];
 												
 												if ($taskclass == "1"){
