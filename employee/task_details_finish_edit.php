@@ -3,7 +3,8 @@
   include('../include/connect.php');
 
   $ID = $_POST['id'];
-  $ACTION = $_POST['action'];
+  $ACTION_TEMP = $_POST['action'];
+  $ACTION = str_replace("'", "&apos;", $ACTION_TEMP);
   $FILE = $_FILES['file'];
 
   $con->next_result();
