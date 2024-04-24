@@ -106,7 +106,7 @@
 								</div>
 								<?php
 									$con->next_result();
-									$result = mysqli_query($con,"SELECT accounts.username, accounts.card, accounts.fname, accounts.lname, section.sec_name, accounts.email, access.access, department.dept_name FROM accounts JOIN section ON section.sec_id=accounts.sec_id JOIN access ON access.id=accounts.access JOIN department ON department.dept_id=section.dept_id WHERE username = '$username'");
+									$result = mysqli_query($con,"SELECT accounts.username, accounts.card, accounts.fname, accounts.lname, section.sec_name, accounts.email, accounts.access, department.dept_name FROM accounts JOIN section ON section.sec_id=accounts.sec_id JOIN access ON access.id=accounts.access JOIN department ON department.dept_id=section.dept_id WHERE username = '$username'");
 									while($row = mysqli_fetch_array($result)){ 
                 ?>
 								<div class="col-lg-5 pull-right">
@@ -130,18 +130,24 @@
 																<input class="form-control" value="<?php echo $row['fname']; ?> <?php echo $row['lname']; ?>" disabled>
 															</div>
 														</div>
-														<div class="form-group">
-															<label class="control-label col-sm-4">Department:</label>
-															<div class="col-sm-8">
-																<input class="form-control" value="<?php echo strtoupper($row['dept_name']); ?>" disabled>
-															</div>
-														</div>
-														<div class="form-group">
-															<label class="control-label col-sm-4">Section:</label>
-															<div class="col-sm-8">
-																<input class="form-control" value="<?php echo $row['sec_name']; ?>" disabled>
-															</div>
-														</div>
+														<?php
+															if ($row['access'] == 3){ ?>
+																<div class="form-group">
+																	<label class="control-label col-sm-4">Department:</label>
+																	<div class="col-sm-8">
+																		<input class="form-control" type="text" value="<?php echo $row['dept_name']; ?>" disabled>
+																	</div>
+																</div>
+															<?php }
+															else { ?>
+																<div class="form-group">
+																	<label class="control-label col-sm-4">Section:</label>
+																	<div class="col-sm-8">
+																		<input class="form-control" type="text" value="<?php echo $row['sec_name']; ?>" disabled>
+																	</div>
+																</div>
+															<?php }
+														?>
 														<div class="form-group">
 															<label class="control-label col-sm-4">Email Account:</label>
 															<div class="col-sm-8">

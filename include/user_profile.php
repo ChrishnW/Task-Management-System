@@ -40,6 +40,13 @@
 			}
 		</style>
 	</head>
+	<nav class="navbar navbar-default navbar-static-top" role="navigation" >
+		<div class="navbar-header">
+			<a class="navbar-brand" href="">
+				<p class="text-primary"><img src="../assets/img/gloryicon.png"> GLORY (PHILIPPINES), INC. | <font color="red">GLORY TASK MANAGEMENT SYSTEM</font></p>
+			</a>
+		</div>
+	</nav>
 	<?php
 		$con->next_result();
 		$query = mysqli_query($con, "SELECT * FROM accounts WHERE username='$username'");
@@ -56,7 +63,7 @@
 		    }
 		}
 		?>
-	<div class="container bootstrap snippets bootdey" style="height: 100vh;padding: 50px 50px;">
+	<div class="container bootstrap snippets bootdey" style="height: 100vh;">
 		<h1 class="text-primary">Edit Profile</h1>
 		<hr>
 		<div class="row">
@@ -78,10 +85,13 @@
 				<form class="form-horizontal" role="form">
 					<?php
 						$con->next_result();
-						$result = mysqli_query($con,"SELECT accounts.username, accounts.fname, accounts.lname, section.sec_name,section.sec_id, accounts.email, access.access, accounts.access, accounts.card AS access_code FROM accounts INNER JOIN section on section.sec_id=accounts.sec_id INNER JOIN access ON access.id=accounts.access WHERE username = '$username'");
+						$result = mysqli_query($con,"SELECT accounts.username, accounts.fname, accounts.lname, section.sec_name,section.sec_id, accounts.email, access.access, accounts.access, department.dept_name,accounts.card AS access_code FROM accounts INNER JOIN section on section.sec_id=accounts.sec_id JOIN access ON access.id=accounts.access JOIN department ON department.dept_id=section.dept_id WHERE username = '$username'");
 						while($row = mysqli_fetch_array($result)){ 
 						    $sec_id = $row['sec_id'];
 						    $access_code = $row['access_code']; 
+								$level = $row['access'];
+								$department_temp = strtolower($row['dept_name']);
+								$department = ucwords($department_temp);
 						?>
 					<div class="form-group">
 						<label class="col-lg-3 control-label">Username:</label>
@@ -101,12 +111,24 @@
 							<input class="form-control" type="text" value="<?php echo $row['lname']; ?>" disabled>
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="col-lg-3 control-label">Section:</label>
-						<div class="col-lg-8">
-							<input class="form-control" type="text" value="<?php echo $row['sec_name']; ?>" disabled>
-						</div>
-					</div>
+					<?php
+						if ($level == 3){ ?>
+							<div class="form-group">
+								<label class="col-lg-3 control-label">Department:</label>
+								<div class="col-lg-8">
+									<input class="form-control" type="text" value="<?php echo $department; ?>" disabled>
+								</div>
+							</div>
+						<?php }
+						else { ?>
+							<div class="form-group">
+								<label class="col-lg-3 control-label">Section:</label>
+								<div class="col-lg-8">
+									<input class="form-control" type="text" value="<?php echo $row['sec_name']; ?>" disabled>
+								</div>
+							</div>
+						<?php }
+					?>
 					<div class="form-group">
 						<label class="col-lg-3 control-label">Email:</label>
 						<div class="col-lg-8">
@@ -122,12 +144,11 @@
 					<?php }  $con-> close(); ?>
 				</form>
 				<a href="home.php"><button type="button" class="btn btn-danger pull-right" style="margin-right: 75px"><i class="fa fa-arrow-left"></i> Back</button></a>
-				<button type="button" id="submit-btn" class="btn btn-primary pull-right" style="margin-right: 5px" data-toggle="modal" data-target="#success"><i class="fa fa-unlock-alt"></i> Change Password</button>
+				<button type="button" id="submit-btn" class="btn btn-primary pull-right" style="margin-right: 5px" data-toggle="modal" data-target="#success">Change Password</button>
 			</div>
 		</div>
 		<hr>
 	</div>
-	
 	<div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="true">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content panel-success">
