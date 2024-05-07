@@ -49,7 +49,7 @@
 											</tr>
 										</thead>
 										<tbody id="tbody">
-                      <?php $query = mysqli_query($con, "SELECT * FROM tasks_details JOIN accounts ON tasks_details.in_charge=accounts.username JOIN task_class on task_class.id=tasks_details.task_class WHERE tasks_details.status='FINISHED' AND tasks_details.requirement_status=1 AND tasks_details.attachment!='' AND tasks_details.task_for='$sec_id'");
+                      <?php $query = mysqli_query($con, "SELECT * FROM tasks_details JOIN accounts ON tasks_details.in_charge=accounts.username JOIN task_class on task_class.id=tasks_details.task_class WHERE tasks_details.status='FINISHED' AND tasks_details.requirement_status=1 AND tasks_details.attachment!='' AND tasks_details.task_for='$sec_id' AND tasks_details.approval_status=0");
                       if (mysqli_num_rows($query) > 0){
                         while($row=$query->fetch_assoc()){
                           $date_accomplished = date('d-m-Y h:i A', strtotime($row['date_accomplished']));?>
