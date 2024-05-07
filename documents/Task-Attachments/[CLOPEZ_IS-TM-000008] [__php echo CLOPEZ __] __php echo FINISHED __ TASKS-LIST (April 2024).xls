@@ -1,0 +1,54 @@
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+    <center>
+        <b>
+            <font color="blue">GLORY (PHILIPPINES), INC.</font>
+        </b>
+        <br>
+        <b>TASK MANAGEMENT SYSTEM</b>
+        <br>
+       <h3> <b><?php echo FINISHED ?> TASKS LIST</b></h3>
+        <br>
+    </center>
+    <br>
+
+    <div id="table-scroll">
+        <table width="100%" border="1" align="left">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        Task Code
+                    </th>
+                    <th scope="col">
+                        Task Name
+                    </th>
+                    <th scope="col">
+                        Task Classification
+                    </th>
+                    <th scope="col">
+                        Task For
+                    </th>
+                    <th scope="col">
+                        In-charge
+                    </th>
+                    <th scope="col">
+                        Status
+                    </th>
+                    <th scope="col">
+                        Due Date
+                    </th>
+                                    </tr>
+            </thead>
+
+            <tbody>
+                        </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
