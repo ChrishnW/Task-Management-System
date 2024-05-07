@@ -54,8 +54,11 @@
                             echo "<th scope='col'>
                                 Date Accomplished
                             </th>
-                            <th class='col-lg-1'>
+                            <th class='col'>
                                 Achievement
+                            </th>
+                            <th class='col'>
+                                Remarks
                             </th>";
                         }
                     ?>
@@ -94,8 +97,9 @@
                                 <td><center/>" . $due . "</td>";?>
                                 <?php
                                 if ($status == "FINISHED"){
-                                    echo "<td><center/>" . $date . "</td>
-                                            <td><center/>". $achievement ."</td>";
+                                    echo "  <td><center/>" . $date . "</td>
+                                            <td><center/>". $achievement ."</td>
+                                            <td><center/>". $row['remarks'] ."</td>";
                                 }
                                 echo"
                             </tr> ";
