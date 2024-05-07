@@ -52,11 +52,12 @@
 			$con->next_result();
 			$query = mysqli_query($con, "SELECT * FROM accounts INNER JOIN  section ON section.sec_id=accounts.sec_id WHERE username='$username' ");
 			if (mysqli_num_rows($query)>0) { 
-			    while ($row = $query->fetch_assoc()) {
-				$fname = $row['fname'];
-				$card = $row['card'];
-				$email = $row['email'];
-				$sec = $row['sec_name'];
+				while ($row = $query->fetch_assoc()) {
+				$fname 	= $row['fname'];
+				$card 	= $row['card'];
+				$email 	= $row['email'];
+				$sec 		= $row['sec_name'];
+				$sec_id = $row['sec_id'];
 					// Check if file_name is empty
 					if (empty($row["file_name"])) {
 						// Use a default image URL
@@ -120,6 +121,9 @@
 				</li>
 				<li>
 					<a href="my_performance.php"><i class="glyphicon glyphicon-stats fa-fw"></i> My Performance</a>
+				</li>
+				<li>
+					<a href="file_archives.php"><i class="fas fa-archive fa-fw"></i> Report Archives</a>
 				</li>
 				<li>
 					<a href="../include/user_profile.php" style="margin-top: 0"><i class="fa fa-cog fa-fw"></i> Settings</a>
