@@ -54,7 +54,8 @@ $date_today = date('Y-m-d');
                                     </thead>
 
                                     <tbody id="show_task">
-                                    <?php
+                                        <?php
+                                        /* and access!='1' */
                                         $con->next_result();
                                         $result = mysqli_query($con,"SELECT * FROM tasks_details JOIN task_class ON tasks_details.task_class = task_class.id JOIN accounts ON tasks_details.in_charge=accounts.username JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.status='NOT YET STARTED' AND tasks_details.reschedule>0 AND section.dept_id='$dept_id'");           
                                         if (mysqli_num_rows($result)>0) { 
@@ -83,12 +84,10 @@ $date_today = date('Y-m-d');
                                                     <td style='text-align: justify'> <img src=".$imageURL." class='profile' title=".$row["username"]." style='width: 50px;height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-left: 0'>" . $emp_name . "</td>  
                                                     <td><center><button id='task_id' value='".$row['task_code']."' data-reason = '".$row['resched_reason']."' data-date = '".$row['due_date']."' data-case='".$row['reschedule']."' class='btn btn-primary' onclick='view(this)'> View </button></center></td>
                                                 </tr>";
-                                            }
-                                        }
+                                             }
+                                        } 
                                         if ($con->connect_error) {
-                                            die("Connection Failed".$con->connect_error); 
-                                        }; 
-                                    ?>
+                                            die("Connection Failed".$con->connect_error); }; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -128,8 +127,8 @@ $date_today = date('Y-m-d');
               <!-- <button id='declineButton' class="btn btn-danger pull-right" onclick='declineButton()'>Decline</button> -->
               <a href="task_approval.php"><button type="button" name="submit" class="btn btn-danger pull-right">Back</button></a>
             </div>
-        </div>
-    </div>
+        </div> <!-- /.modal-content -->
+    </div> <!-- /.modal-dialog -->
 </div>
 
 <div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"

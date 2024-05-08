@@ -3,39 +3,90 @@
     include('../include/link.php');
     include('../include/connect.php');
 
+    if(isset($_POST['submission'])){
+        $recurrance = $_POST['submission'];
+    }
+    if(isset($_POST['due_date'])){
+        $due_date = $_POST['due_date'];
+    }
     $emp_name = $_POST['emp_name'];
-    $recurrance = $_POST['submission'];
     $task_name_array = $_POST['tasks'];
     $task_for = $_POST['emp_section'];
     $task_class = $_POST['task_class'];
+    $requirement_status = $_POST['requirement_status'];
+    $task_details = 'N/A';
+    $status = "NOT YET STARTED";
+    $today = date('Y-m-d');
 
-
-    $count = 0;
-
-    foreach ($task_name_array as $task_name) {
-        $con->next_result();
-        $check=mysqli_query($con,"SELECT * FROM tasks WHERE task_name='$task_name' AND in_charge='$emp_name'");
-        $checkrows=mysqli_num_rows($check);
-        
-        $con->next_result();
-        $get_descp=mysqli_query($con,"SELECT * FROM task_list WHERE task_name='$task_name' AND task_for='$task_for'");
-        $row=mysqli_fetch_assoc($get_descp);
-
-        if($checkrows>0) {
-            $count += 1;
-            echo "<script type='text/javascript'> $(document).ready(function(){ $('#exists').modal('show'); });</script>";
-        }
-        else {
-            // Assign the New Tasks to the Employee
+    if($task_class <= 3){
+        $count = 0;
+        foreach ($task_name_array as $task_name) {
             $con->next_result();
-            $import_checker = mysqli_query($con, "SELECT * FROM tasks WHERE task_name='$task_name' AND in_charge='$emp_name' AND task_class='$task_class' AND task_for='$task_for' AND submission='$recurrance'");
-            $import_checker_result = mysqli_num_rows($import_checker);
-            if ($import_checker_result == 0) {
-                $task_details = $row['task_details'];
-                $assign_task = "INSERT INTO tasks (`task_name`, `task_class`, `task_details`, `task_for`, `in_charge`, `submission`) VALUES ('$task_name', '$task_class', '$task_details', '$task_for', '$emp_name', '$recurrance')";
-                $assign_task_result = mysqli_query($con, $assign_task);
+            $check=mysqli_query($con,"SELECT * FROM tasks WHERE task_name='$task_name' AND in_charge='$emp_name'");
+            $checkrows=mysqli_num_rows($check);
+
+            if($checkrows>0) {
+                $count += 1;
+                echo "<script type='text/javascript'> $(document).ready(function(){ $('#exists').modal('show'); });</script>";
+            }
+            else {
+                // Assign the New Tasks to the Employee
                 $con->next_result();
-                $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Assigned a task/s.', '$systemtime', 'ADMIN')";
+                $assign_task = "INSERT INTO tasks (`task_name`, `task_class`, `task_details`, `task_for`, `requirement_status`, `in_charge`, `submission`) VALUES ('$task_name', '$task_class', '$task_details', '$task_for', '$requirement_status', '$emp_name', '$recurrance')";
+                $assign_task_result = mysqli_query($con, $assign_task);
+                // Record Logs
+                $con->next_result();
+                $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Assigned $emp_name a task/s.', '$systemtime', 'ADMIN')";
+                $result = mysqli_query($con, $systemlog);
+                echo "<script type='text/javascript'> $(document).ready(function(){ $('#success').modal('show'); });</script>";
+            }
+        }
+    }
+    else {
+        $count = 0;
+        foreach ($task_name_array as $task_name) {
+            $con->next_result();
+            $check=mysqli_query($con,"SELECT * FROM tasks_details WHERE task_name='$task_name' AND in_charge='$emp_name' AND due_date='$due_date'");
+            $checkrows=mysqli_num_rows($check);
+
+            if($checkrows>0) {
+                $count += 1;
+                echo "<script type='text/javascript'> $(document).ready(function(){ $('#exists').modal('show'); });</script>";
+            }
+            else {
+                // Assign the New Tasks to the Employee
+                $con->next_result();
+                $import_checker = mysqli_query($con, "SELECT * FROM tasks_details WHERE task_name='$task_name' AND in_charge='$emp_name' AND due_date='$due_date' AND date_accomplished IS NULL");
+                $import_checker_result = mysqli_num_rows($import_checker);
+                if ($import_checker_result <= 0){
+                    $getlatestcode = mysqli_query($con, "SELECT MAX(task_code) AS latest_task_code FROM tasks_details WHERE task_class = '$task_class' AND task_for = '$task_for'");
+                    $getlatestcode_result = mysqli_fetch_assoc($getlatestcode);
+                    $latestcode = $getlatestcode_result['latest_task_code'];
+                    $prefix = '';
+                    if ($task_class == '1') {
+                        $prefix = 'TD';
+                    } 
+                    elseif ($task_class == '2') {
+                        $prefix = 'TW';
+                    } 
+                    elseif ($task_class == '3') {
+                        $prefix = 'TM';
+                    } 
+                    elseif ($task_class == '4') {
+                        $prefix = 'TA';
+                    } 
+                    elseif ($task_class == '5') {
+                        $prefix = 'TP';
+                    }
+                    $numeric_portion = intval(substr($latestcode, -6)) + 1;
+                    $task_code = $task_for.'-'.$prefix . '-' . str_pad($numeric_portion, 6, '0', STR_PAD_LEFT);
+
+                    $deploytask = "INSERT INTO tasks_details (`task_code`, `task_name`, `task_class`, `task_for`, `in_charge`, `status`, `date_created`, `due_date`, `requirement_status`, `task_status`) VALUES ('$task_code', '$task_name', '$task_class', '$task_for', '$emp_name', '$status', '$today', '$due_date', '$requirement_status', 1)";
+                    $deploytask_result = mysqli_query($con, $deploytask);
+                }
+                // Record Logs
+                $con->next_result();
+                $systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Assigned $emp_name a task/s.', '$systemtime', 'ADMIN')";
                 $result = mysqli_query($con, $systemlog);
                 echo "<script type='text/javascript'> $(document).ready(function(){ $('#success').modal('show'); });</script>";
             }

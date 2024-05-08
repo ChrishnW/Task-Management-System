@@ -43,7 +43,7 @@
 												<select name="emp_name" id="emp_name" required class="form-control selectpicker show-menu-arrow" data-live-search="true" placeholder="Select Employee" onchange="selectname(this)">
 													<option disabled selected value="">--Select Employee--</option>
 													<?php
-														$sql = mysqli_query($con,"SELECT * FROM accounts WHERE access=2 ORDER BY fname ASC"); 
+														$sql = mysqli_query($con,"SELECT * FROM accounts WHERE access=2 AND status=1 ORDER BY fname ASC"); 
 														$con->next_result();
 														if(mysqli_num_rows($sql)>0){
 														    while($row=mysqli_fetch_assoc($sql)){
@@ -82,8 +82,19 @@
 												</select>
 											</div>
 											<div class="form-group required">
+												<label>Attachment:</label>
+												<select class="form-control selectpicker show-menu-arrow" name="requirement_status" id="requirement_status">
+													<option value="1">Yes</option>
+													<option value="0">No</option>
+												</select>
+											</div>
+											<div class="form-group required" id="recurrence_dates">
 												<label>Deployment Recurrence:</label>
 												<input type="text" id="submission" name="submission" class="form-control" placeholder="ex. Everyday / Thursday / 1st week of Wednesday">
+											</div>
+											<div class="form-group required" id="due_dates" hidden>
+												<label>Select Due Date:</label>
+												<input type="date" id="due_date" name="due_date" class="form-control" disabled>
 											</div>
 											<div class="form-group">
 												<div class="col-sm-12 pull-right">
@@ -140,6 +151,21 @@
 		            }
 		        });
 		    }
+				var targetDiv = $('#recurrence_dates');
+				var targetDiv2 = $('#due_dates');
+				if (classnum === '4' || classnum === '5') {
+					console.log("True");
+					document.getElementById("submission").disabled = true;
+					document.getElementById("due_date").disabled = false;
+					targetDiv.hide();
+					targetDiv2.show();
+				}
+				else {
+					document.getElementById("submission").disabled = false;
+					document.getElementById("due_date").disabled = true;
+					targetDiv.show();
+					targetDiv2.hide();
+				}
 		}
 		
 	</script>
