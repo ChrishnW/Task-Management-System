@@ -61,7 +61,9 @@
 						<input type="password" class="form-control" id="password" name="password" placeholder="PASSWORD">
 						<span title="Show Password" style="cursor: pointer;"><i id="togglePassword" class="fa fa-eye" aria-hidden="true"></i></span>
 					</div>
-					<small class="form-text text-danger d-none" id="password-caps-warning">Warning: Caps lock enabled</small> <button class="btn btn-danger btn-block" name="submit" type="submit" value="submit">Sign In</button><br>
+					<small class="form-text text-danger d-none" id="password-caps-warning">Warning: Caps lock enabled</small>
+					<button class="btn btn-danger btn-block" name="submit" type="submit" value="submit">Sign In</button>
+					<br>
 				</form>
 				<br>
 				<h6>
