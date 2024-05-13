@@ -555,10 +555,8 @@ $status_name = ucwords($status_lower);
 		var taskID = obj.value;
 		$(document).ready(function() {
 			$('#finish_1').modal('show');
-			document.getElementById('modal_task_id').
-			innerHTML = taskID;
-			document.getElementById('hidden_task_id').
-			value = taskID;
+			document.getElementById('modal_task_id').innerHTML = taskID;
+			document.getElementById('hidden_task_id').value = taskID;
 		});
 	}
 
