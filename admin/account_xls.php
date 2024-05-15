@@ -42,7 +42,6 @@ include('../include/connect.php');
                     <th>Status</th>
                 </tr>
             </thead>
-
             <tbody>
                 <?php
             
