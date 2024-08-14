@@ -164,7 +164,7 @@ if (isset($_POST['actionView'])) {
         </button>
       </div>
     </div>
-    <div class="card-body scrollable-card-body">
+    <div class="card-body">
       <div class="card mb-4 border-left-info">
         <div class="card-body custom-card">
           <div class="left-content col-3">

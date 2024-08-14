@@ -72,6 +72,8 @@ include('../include/header.php');
               <?php $query_result = mysqli_query($con, "SELECT project_task.*, project_list.title, project_list.leader, project_list.member, project_list.start, project_list.end, project_list.status AS pstatus FROM project_task JOIN project_list ON project_list.id=project_task.project_id WHERE $emp_id IN (project_list.member)");
               if (mysqli_num_rows($query_result) > 0) {
                 while ($row = $query_result->fetch_assoc()) {
+                  $dateStart = date_format(date_create($row['start']), "F d, Y");
+                  $dateEnd   = date_format(date_create($row['end']), "F d, Y");
               ?>
                   <tr>
                     <td>
@@ -80,14 +82,14 @@ include('../include/header.php');
                         <div class="dropdown-menu">
                           <button type="button" class="dropdown-item" onclick="actionView(this)" value="<?php echo $row['project_id'] ?>"><i class="fas fa-eye fa-fw"></i> View</button>
                           <div class="dropdown-divider"></div>
-                          <button type="button" class="dropdown-item" onclick="actionEdit(this)" value="<?php echo $row['project_id'] ?>"><i class="fas fa-reply fa-fw"></i> Add Activity</button>
+                          <button type="button" class="dropdown-item" onclick="addActivity(this)" value="<?php echo $row['project_id'] ?>"><i class="fas fa-reply fa-fw"></i> Add Activity</button>
                         </div>
                       </div>
                     </td>
                     <td><?php echo $row['title']; ?></td>
                     <td><?php echo $row['task']; ?></td>
-                    <td><?php echo $row['start']; ?></td>
-                    <td><?php echo $row['end']; ?></td>
+                    <td><?php echo $dateStart; ?></td>
+                    <td><?php echo $dateEnd; ?></td>
                     <td><span class="badge"><?php echo $row['pstatus']; ?></span></td>
                     <td><span class="badge"><?php echo $row['status']; ?></span></td>
                   </tr>
@@ -279,45 +281,63 @@ include('../include/header.php');
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content border-primary">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">Create New Task</h5>
+        <h5 class="modal-title"><i class="fas fa-plus fa-fw"></i> Project Activity for: <span id="taskname"></span></h5>
       </div>
-      <form id="taskAddDetails" enctype="multipart/form-data">
+      <form id="projectActivity" enctype="multipart/form-data">
         <div class="modal-body">
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-8">
               <div class="form-group">
-                <label>Task:</label>
+                <label>Subject:</label>
                 <div class="input-group mb-2">
                   <div class="input-group-prepend">
                     <div class="input-group-text"><i class="fas fa-font"></i></div>
                   </div>
-                  <input type="text" class="form-control" name="task_name" id="task_name">
+                  <input type="text" class="form-control" name="subject" id="subject">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Date:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-calendar-day"></i></div>
+                  </div>
+                  <input type="date" class="form-control" name="date" id="date">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Start Time:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-hourglass-start"></i></div>
+                  </div>
+                  <input type="time" class="form-control" name="start" id="start">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>End Time:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-hourglass-end"></i></div>
+                  </div>
+                  <input type="time" class="form-control" name="end" id="end">
                 </div>
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group">
-                <label>Description:</label>
+                <label>Comment or Progress Description:</label>
                 <div class="input-group mb-2">
                   <div class="input-group-prepend">
                     <div class="input-group-text"><i class="fas fa-info"></i></div>
                   </div>
                   <textarea name="task_details" id="task_details" class="form-control"></textarea>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12">
-              <div class="form-group">
-                <label>Status:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-flag"></i></div>
-                  </div>
-                  <select name="task_status" id="task_status" class="form-control">
-                    <option value="PENDING">Pending</option>
-                    <option value="IN PROGRESS">In Progress</option>
-                    <option value="Completed">Completed</option>
-                  </select>
                 </div>
               </div>
             </div>
