@@ -82,7 +82,7 @@ include('../include/header.php');
                         <div class="dropdown-menu">
                           <button type="button" class="dropdown-item" onclick="actionView(this)" value="<?php echo $row['project_id'] ?>"><i class="fas fa-eye fa-fw"></i> View</button>
                           <div class="dropdown-divider"></div>
-                          <button type="button" class="dropdown-item" onclick="addActivity(this)" value="<?php echo $row['project_id'] ?>" data-name="<?php echo $row['task']; ?>"><i class="fas fa-reply fa-fw"></i> Add Activity</button>
+                          <button type="button" class="dropdown-item" onclick="addActivity(this)" value="<?php echo $row['project_id'] ?>" data-name="<?php echo $row['task']; ?>" data-id="<?php echo $row['project_id']; ?>"><i class="fas fa-reply fa-fw"></i> Add Activity</button>
                         </div>
                       </div>
                     </td>
@@ -348,7 +348,7 @@ include('../include/header.php');
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="saveTaskButton">Post</button>
+          <button type="button" class="btn btn-primary" id="postButton">Post</button>
         </div>
       </form>
     </div>
@@ -445,9 +445,35 @@ include('../include/header.php');
   }
 
   function addActivity(element) {
-    var id    = element.value;
-    var name  = element.getAttribute('data-name');
+    var taskId    = element.value;
+    var name      = element.getAttribute('data-name');
+    var projectId = element.getAttribute('data-id');
     document.getElementById('taskname').innerHTML = name;
     $('#submit').modal('show');
+    $('#postButton').off('click').on('click', function() {
+      document.getElementById('postButton').disabled = true;
+      var formDetails = new FormData(document.getElementById('projectActivity'));
+      formDetails.append('task_id', taskId);
+      formDetails.append('project_id', projectId);
+      formDetails.append('createActivity', true);
+      console.log(formDetails);
+      $.ajax({
+        method: "POST",
+        url: "../config/project.php",
+        data: formDetails,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+          if (response === 'Success') {
+            document.getElementById('postButton').disabled = false;
+            $('#submit').modal('hide');
+          } else {
+            document.getElementById('error_found').innerHTML = response;
+            document.getElementById('postButton').disabled = false;
+            $('#error').modal('show');
+          }
+        }
+      });
+    });
   }
 </script>
