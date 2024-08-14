@@ -165,46 +165,33 @@ if (isset($_POST['actionView'])) {
       </div>
     </div>
     <div class="card-body">
-      <div class="card mb-4 border-left-info">
-        <div class="card-body custom-card">
-          <div class="left-content col-3">
-            <div class="display-8 font-weight-bold">Juan Dela Cruz</div>
-            <span>Task Name</span>
+      <?php $con->next_result();
+      $query_result = mysqli_query($con, "SELECT project_productivity.*, concat(accounts.fname,' ',accounts.lname) as name FROM project_productivity JOIN accounts ON accounts.id=project_productivity.user_id WHERE project_id='$id'");
+      if (mysqli_num_rows($query_result) > 0) {
+        while ($row = $query_result->fetch_assoc()) { 
+          $name = ucwords(strtolower($row['name'])); ?>
+          <div class="card mb-4 border-left-info">
+            <div class="card-body custom-card">
+              <div class="left-content col-3">
+                <div class="display-8 font-weight-bold"><?php echo $name ?></div>
+                <span>Task Name</span>
+              </div>
+              <div class="middle-content col-4">
+                <span><i class="fas fa-calendar-day fa-fw"></i> August 01, 2024 07:00 am</span><br>
+                <span><i class="fas fa-calendar-check fa-fw"></i> August 01, 2024 03:59 pm</span><br>
+                <span><i class="fas fa-stopwatch fa-fw"></i> 9 hours</span>
+              </div>
+              <div class="right-content text-left col-5">
+                <h6 class="font-weight-normal">
+                  Lorem ipsum odor amet, consectetuer adipiscing elit. Proin aliquam hendrerit nullam interdum venenatis. Cras netus class odio rutrum non. Pellentesque purus conubia ad vivamus magna felis. Tempus ridiculus nostra porttitor; dis hac est quis nec. Arcu porta sodales praesent ultricies integer consectetur eget.
+                  <br>
+                  <span class=" display-9"><i class="fas fa-link"></i> <a href="javascript:void(0)">Attachment Sample #1</a></span>
+                </h6>
+              </div>
+            </div>
           </div>
-          <div class="middle-content col-4">
-            <span><i class="fas fa-calendar-day fa-fw"></i> August 01, 2024 07:00 am</span><br>
-            <span><i class="fas fa-calendar-check fa-fw"></i> August 01, 2024 03:59 pm</span><br>
-            <span><i class="fas fa-stopwatch fa-fw"></i> 9 hours</span>
-          </div>
-          <div class="right-content text-left col-5">
-            <h6 class="font-weight-normal">
-              Lorem ipsum odor amet, consectetuer adipiscing elit. Proin aliquam hendrerit nullam interdum venenatis. Cras netus class odio rutrum non. Pellentesque purus conubia ad vivamus magna felis. Tempus ridiculus nostra porttitor; dis hac est quis nec. Arcu porta sodales praesent ultricies integer consectetur eget.
-              <br>
-              <span class=" display-9"><i class="fas fa-link"></i> <a href="javascript:void(0)">Attachment Sample #1</a></span>
-            </h6>
-          </div>
-        </div>
-      </div>
-      <div class="card mb-4 border-left-info">
-        <div class="card-body custom-card">
-          <div class="left-content col-3">
-            <div class="display-8 font-weight-bold">Juan Dela Cruz</div>
-            <span>Task Name</span>
-          </div>
-          <div class="middle-content col-4">
-            <span><i class="fas fa-calendar-day fa-fw"></i> August 01, 2024 07:00 am</span><br>
-            <span><i class="fas fa-calendar-check fa-fw"></i> August 01, 2024 03:59 pm</span><br>
-            <span><i class="fas fa-stopwatch fa-fw"></i> 9 hours</span>
-          </div>
-          <div class="right-content text-left col-5">
-            <h6 class="font-weight-normal">
-              Lorem ipsum odor amet, consectetuer adipiscing elit. Proin aliquam hendrerit nullam interdum venenatis. Cras netus class odio rutrum non. Pellentesque purus conubia ad vivamus magna felis. Tempus ridiculus nostra porttitor; dis hac est quis nec. Arcu porta sodales praesent ultricies integer consectetur eget.
-              <br>
-              <span class=" display-9"><i class="fas fa-link"></i> <a href="javascript:void(0)">Attachment Sample #1</a></span>
-            </h6>
-          </div>
-        </div>
-      </div>
+      <?php }
+      } ?>
     </div>
   </div>
 <?php }
