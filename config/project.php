@@ -223,4 +223,14 @@ if (isset($_POST['createTask'])) {
     echo "Unable to complete the operation. Please try again later.";
   }
 }
+
+if (isset($_POST['createActivity'])) {
+  $task_id    = $_POST['task_id'];
+  $project_id = $_POST['project_id'];
+  $subject    = ucwords(strtolower($_POST['subject']));
+  $date       = $_POST['date'];
+  $start      = $_POST['start'];
+  $end        = $_POST['end'];
+  $comments   = ucwords(strtolower($_POST['comments']));
+}
 ?>

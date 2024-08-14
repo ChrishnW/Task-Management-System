@@ -331,7 +331,7 @@ include('../include/header.php');
                   <div class="input-group-prepend">
                     <div class="input-group-text"><i class="fas fa-info"></i></div>
                   </div>
-                  <textarea name="task_details" id="task_details" class="form-control" cols="30" rows="8" placeholder="Write something here..."></textarea>
+                  <textarea name="comments" id="comments" class="form-control" cols="30" rows="8" placeholder="Write something here..."></textarea>
                 </div>
               </div>
               <div class="form-group">
@@ -340,7 +340,7 @@ include('../include/header.php');
                   <div class="input-group-prepend">
                     <div class="input-group-text"><i class="fas fa-link"></i></div>
                   </div>
-                  <input type="file" class="form-control" name="end" id="end">
+                  <input type="file" class="form-control" name="file" id="file">
                 </div>
               </div>
             </div>
@@ -456,7 +456,6 @@ include('../include/header.php');
       formDetails.append('task_id', taskId);
       formDetails.append('project_id', projectId);
       formDetails.append('createActivity', true);
-      console.log(formDetails);
       $.ajax({
         method: "POST",
         url: "../config/project.php",
