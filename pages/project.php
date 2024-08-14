@@ -206,7 +206,7 @@ include('../include/header.php');
     </div>
   <?php } ?>
 </div>
- 
+
 <div class="modal fade" id="view" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
     <div class="modal-content border-primary">
@@ -286,18 +286,16 @@ include('../include/header.php');
       <form id="projectActivity" enctype="multipart/form-data">
         <div class="modal-body">
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-6">
               <div class="form-group">
                 <label>Subject:</label>
                 <div class="input-group mb-2">
                   <div class="input-group-prepend">
                     <div class="input-group-text"><i class="fas fa-font"></i></div>
                   </div>
-                  <input type="text" class="form-control" name="subject" id="subject">
+                  <input type="text" class="form-control" name="subject" id="subject" placeholder="Empty">
                 </div>
               </div>
-            </div>
-            <div class="col-md-4">
               <div class="form-group">
                 <label>Date:</label>
                 <div class="input-group mb-2">
@@ -307,8 +305,6 @@ include('../include/header.php');
                   <input type="date" class="form-control" name="date" id="date">
                 </div>
               </div>
-            </div>
-            <div class="col-md-3">
               <div class="form-group">
                 <label>Start Time:</label>
                 <div class="input-group mb-2">
@@ -318,8 +314,6 @@ include('../include/header.php');
                   <input type="time" class="form-control" name="start" id="start">
                 </div>
               </div>
-            </div>
-            <div class="col-md-3">
               <div class="form-group">
                 <label>End Time:</label>
                 <div class="input-group mb-2">
@@ -330,14 +324,23 @@ include('../include/header.php');
                 </div>
               </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
               <div class="form-group">
                 <label>Comment or Progress Description:</label>
                 <div class="input-group mb-2">
                   <div class="input-group-prepend">
                     <div class="input-group-text"><i class="fas fa-info"></i></div>
                   </div>
-                  <textarea name="task_details" id="task_details" class="form-control"></textarea>
+                  <textarea name="task_details" id="task_details" class="form-control" cols="30" rows="8" placeholder="Write something here..."></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>File Attachment:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-link"></i></div>
+                  </div>
+                  <input type="file" class="form-control" name="end" id="end">
                 </div>
               </div>
             </div>
@@ -345,7 +348,7 @@ include('../include/header.php');
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="saveTaskButton">Save</button>
+          <button type="button" class="btn btn-primary" id="saveTaskButton">Post</button>
         </div>
       </form>
     </div>
