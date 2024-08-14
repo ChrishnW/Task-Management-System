@@ -6,17 +6,6 @@ use PhpOffice\PhpSpreadsheet\Shared\PasswordHasher;
 
 class Protection
 {
-    const ALGORITHM_MD2 = 'MD2';
-    const ALGORITHM_MD4 = 'MD4';
-    const ALGORITHM_MD5 = 'MD5';
-    const ALGORITHM_SHA_1 = 'SHA-1';
-    const ALGORITHM_SHA_256 = 'SHA-256';
-    const ALGORITHM_SHA_384 = 'SHA-384';
-    const ALGORITHM_SHA_512 = 'SHA-512';
-    const ALGORITHM_RIPEMD_128 = 'RIPEMD-128';
-    const ALGORITHM_RIPEMD_160 = 'RIPEMD-160';
-    const ALGORITHM_WHIRLPOOL = 'WHIRLPOOL';
-
     /**
      * Sheet.
      *
@@ -130,32 +119,11 @@ class Protection
     private $selectUnlockedCells = false;
 
     /**
-     * Hashed password.
+     * Password.
      *
      * @var string
      */
     private $password = '';
-
-    /**
-     * Algorithm name.
-     *
-     * @var string
-     */
-    private $algorithm = '';
-
-    /**
-     * Salt value.
-     *
-     * @var string
-     */
-    private $salt = '';
-
-    /**
-     * Spin count.
-     *
-     * @var int
-     */
-    private $spinCount = 10000;
 
     /**
      * Create a new Protection.
@@ -202,13 +170,13 @@ class Protection
     /**
      * Set Sheet.
      *
-     * @param bool $sheet
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setSheet($sheet)
+    public function setSheet($pValue)
     {
-        $this->sheet = $sheet;
+        $this->sheet = $pValue;
 
         return $this;
     }
@@ -226,13 +194,13 @@ class Protection
     /**
      * Set Objects.
      *
-     * @param bool $objects
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setObjects($objects)
+    public function setObjects($pValue)
     {
-        $this->objects = $objects;
+        $this->objects = $pValue;
 
         return $this;
     }
@@ -250,13 +218,13 @@ class Protection
     /**
      * Set Scenarios.
      *
-     * @param bool $scenarios
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setScenarios($scenarios)
+    public function setScenarios($pValue)
     {
-        $this->scenarios = $scenarios;
+        $this->scenarios = $pValue;
 
         return $this;
     }
@@ -274,13 +242,13 @@ class Protection
     /**
      * Set FormatCells.
      *
-     * @param bool $formatCells
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setFormatCells($formatCells)
+    public function setFormatCells($pValue)
     {
-        $this->formatCells = $formatCells;
+        $this->formatCells = $pValue;
 
         return $this;
     }
@@ -298,13 +266,13 @@ class Protection
     /**
      * Set FormatColumns.
      *
-     * @param bool $formatColumns
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setFormatColumns($formatColumns)
+    public function setFormatColumns($pValue)
     {
-        $this->formatColumns = $formatColumns;
+        $this->formatColumns = $pValue;
 
         return $this;
     }
@@ -322,13 +290,13 @@ class Protection
     /**
      * Set FormatRows.
      *
-     * @param bool $formatRows
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setFormatRows($formatRows)
+    public function setFormatRows($pValue)
     {
-        $this->formatRows = $formatRows;
+        $this->formatRows = $pValue;
 
         return $this;
     }
@@ -346,13 +314,13 @@ class Protection
     /**
      * Set InsertColumns.
      *
-     * @param bool $insertColumns
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setInsertColumns($insertColumns)
+    public function setInsertColumns($pValue)
     {
-        $this->insertColumns = $insertColumns;
+        $this->insertColumns = $pValue;
 
         return $this;
     }
@@ -370,13 +338,13 @@ class Protection
     /**
      * Set InsertRows.
      *
-     * @param bool $insertRows
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setInsertRows($insertRows)
+    public function setInsertRows($pValue)
     {
-        $this->insertRows = $insertRows;
+        $this->insertRows = $pValue;
 
         return $this;
     }
@@ -394,13 +362,13 @@ class Protection
     /**
      * Set InsertHyperlinks.
      *
-     * @param bool $insertHyperLinks
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setInsertHyperlinks($insertHyperLinks)
+    public function setInsertHyperlinks($pValue)
     {
-        $this->insertHyperlinks = $insertHyperLinks;
+        $this->insertHyperlinks = $pValue;
 
         return $this;
     }
@@ -418,13 +386,13 @@ class Protection
     /**
      * Set DeleteColumns.
      *
-     * @param bool $deleteColumns
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setDeleteColumns($deleteColumns)
+    public function setDeleteColumns($pValue)
     {
-        $this->deleteColumns = $deleteColumns;
+        $this->deleteColumns = $pValue;
 
         return $this;
     }
@@ -442,13 +410,13 @@ class Protection
     /**
      * Set DeleteRows.
      *
-     * @param bool $deleteRows
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setDeleteRows($deleteRows)
+    public function setDeleteRows($pValue)
     {
-        $this->deleteRows = $deleteRows;
+        $this->deleteRows = $pValue;
 
         return $this;
     }
@@ -466,13 +434,13 @@ class Protection
     /**
      * Set SelectLockedCells.
      *
-     * @param bool $selectLockedCells
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setSelectLockedCells($selectLockedCells)
+    public function setSelectLockedCells($pValue)
     {
-        $this->selectLockedCells = $selectLockedCells;
+        $this->selectLockedCells = $pValue;
 
         return $this;
     }
@@ -490,13 +458,13 @@ class Protection
     /**
      * Set Sort.
      *
-     * @param bool $sort
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setSort($sort)
+    public function setSort($pValue)
     {
-        $this->sort = $sort;
+        $this->sort = $pValue;
 
         return $this;
     }
@@ -514,13 +482,13 @@ class Protection
     /**
      * Set AutoFilter.
      *
-     * @param bool $autoFilter
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setAutoFilter($autoFilter)
+    public function setAutoFilter($pValue)
     {
-        $this->autoFilter = $autoFilter;
+        $this->autoFilter = $pValue;
 
         return $this;
     }
@@ -538,13 +506,13 @@ class Protection
     /**
      * Set PivotTables.
      *
-     * @param bool $pivotTables
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setPivotTables($pivotTables)
+    public function setPivotTables($pValue)
     {
-        $this->pivotTables = $pivotTables;
+        $this->pivotTables = $pValue;
 
         return $this;
     }
@@ -562,19 +530,19 @@ class Protection
     /**
      * Set SelectUnlockedCells.
      *
-     * @param bool $selectUnlockedCells
+     * @param bool $pValue
      *
      * @return $this
      */
-    public function setSelectUnlockedCells($selectUnlockedCells)
+    public function setSelectUnlockedCells($pValue)
     {
-        $this->selectUnlockedCells = $selectUnlockedCells;
+        $this->selectUnlockedCells = $pValue;
 
         return $this;
     }
 
     /**
-     * Get hashed password.
+     * Get Password (hashed).
      *
      * @return string
      */
@@ -586,92 +554,19 @@ class Protection
     /**
      * Set Password.
      *
-     * @param string $password
-     * @param bool $alreadyHashed If the password has already been hashed, set this to true
+     * @param string $pValue
+     * @param bool $pAlreadyHashed If the password has already been hashed, set this to true
      *
      * @return $this
      */
-    public function setPassword($password, $alreadyHashed = false)
+    public function setPassword($pValue, $pAlreadyHashed = false)
     {
-        if (!$alreadyHashed) {
-            $salt = $this->generateSalt();
-            $this->setSalt($salt);
-            $password = PasswordHasher::hashPassword($password, $this->getAlgorithm(), $this->getSalt(), $this->getSpinCount());
+        if (!$pAlreadyHashed) {
+            $pValue = PasswordHasher::hashPassword($pValue);
         }
-
-        $this->password = $password;
+        $this->password = $pValue;
 
         return $this;
-    }
-
-    /**
-     * Create a pseudorandom string.
-     */
-    private function generateSalt(): string
-    {
-        return base64_encode(random_bytes(16));
-    }
-
-    /**
-     * Get algorithm name.
-     */
-    public function getAlgorithm(): string
-    {
-        return $this->algorithm;
-    }
-
-    /**
-     * Set algorithm name.
-     */
-    public function setAlgorithm(string $algorithm): void
-    {
-        $this->algorithm = $algorithm;
-    }
-
-    /**
-     * Get salt value.
-     */
-    public function getSalt(): string
-    {
-        return $this->salt;
-    }
-
-    /**
-     * Set salt value.
-     */
-    public function setSalt(string $salt): void
-    {
-        $this->salt = $salt;
-    }
-
-    /**
-     * Get spin count.
-     */
-    public function getSpinCount(): int
-    {
-        return $this->spinCount;
-    }
-
-    /**
-     * Set spin count.
-     */
-    public function setSpinCount(int $spinCount): void
-    {
-        $this->spinCount = $spinCount;
-    }
-
-    /**
-     * Verify that the given non-hashed password can "unlock" the protection.
-     */
-    public function verify(string $password): bool
-    {
-        if (!$this->isProtectionEnabled()) {
-            return true;
-        }
-
-        $hash = PasswordHasher::hashPassword($password, $this->getAlgorithm(), $this->getSalt(), $this->getSpinCount());
-
-        return $this->getPassword() === $hash;
     }
 
     /**

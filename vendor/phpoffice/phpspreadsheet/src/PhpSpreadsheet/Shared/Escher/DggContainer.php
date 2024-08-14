@@ -61,7 +61,7 @@ class DggContainer
      *
      * @param int $value
      */
-    public function setSpIdMax($value): void
+    public function setSpIdMax($value)
     {
         $this->spIdMax = $value;
     }
@@ -81,7 +81,7 @@ class DggContainer
      *
      * @param int $value
      */
-    public function setCDgSaved($value): void
+    public function setCDgSaved($value)
     {
         $this->cDgSaved = $value;
     }
@@ -101,7 +101,7 @@ class DggContainer
      *
      * @param int $value
      */
-    public function setCSpSaved($value): void
+    public function setCSpSaved($value)
     {
         $this->cSpSaved = $value;
     }
@@ -121,7 +121,7 @@ class DggContainer
      *
      * @param DggContainer\BstoreContainer $bstoreContainer
      */
-    public function setBstoreContainer($bstoreContainer): void
+    public function setBstoreContainer($bstoreContainer)
     {
         $this->bstoreContainer = $bstoreContainer;
     }
@@ -132,7 +132,7 @@ class DggContainer
      * @param int $property The number specifies the option
      * @param mixed $value
      */
-    public function setOPT($property, $value): void
+    public function setOPT($property, $value)
     {
         $this->OPT[$property] = $value;
     }
@@ -166,10 +166,10 @@ class DggContainer
     /**
      * Set identifier clusters. [<drawingId> => <max shape id>, ...].
      *
-     * @param array $IDCLs
+     * @param array $pValue
      */
-    public function setIDCLs($IDCLs): void
+    public function setIDCLs($pValue)
     {
-        $this->IDCLs = $IDCLs;
+        $this->IDCLs = $pValue;
     }
 }

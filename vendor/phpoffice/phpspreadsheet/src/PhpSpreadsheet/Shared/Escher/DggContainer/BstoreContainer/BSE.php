@@ -2,8 +2,6 @@
 
 namespace PhpOffice\PhpSpreadsheet\Shared\Escher\DggContainer\BstoreContainer;
 
-use PhpOffice\PhpSpreadsheet\Shared\Escher\DggContainer\BstoreContainer;
-
 class BSE
 {
     const BLIPTYPE_ERROR = 0x00;
@@ -20,7 +18,7 @@ class BSE
     /**
      * The parent BLIP Store Entry Container.
      *
-     * @var BstoreContainer
+     * @var \PhpOffice\PhpSpreadsheet\Shared\Escher\DggContainer\BstoreContainer
      */
     private $parent;
 
@@ -40,8 +38,10 @@ class BSE
 
     /**
      * Set parent BLIP Store Entry Container.
+     *
+     * @param \PhpOffice\PhpSpreadsheet\Shared\Escher\DggContainer\BstoreContainer $parent
      */
-    public function setParent(BstoreContainer $parent): void
+    public function setParent($parent)
     {
         $this->parent = $parent;
     }
@@ -58,8 +58,10 @@ class BSE
 
     /**
      * Set the BLIP.
+     *
+     * @param BSE\Blip $blip
      */
-    public function setBlip(BSE\Blip $blip): void
+    public function setBlip($blip)
     {
         $this->blip = $blip;
         $blip->setParent($this);
@@ -80,7 +82,7 @@ class BSE
      *
      * @param int $blipType
      */
-    public function setBlipType($blipType): void
+    public function setBlipType($blipType)
     {
         $this->blipType = $blipType;
     }

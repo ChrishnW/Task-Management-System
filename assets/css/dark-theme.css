@@ -1,0 +1,76 @@
+/* Dark mode styles */
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: Arial, sans-serif;
+}
+
+a {
+    color: #bb86fc;
+}
+
+a:hover {
+    color: #ff79c6;
+}
+
+header, footer {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    padding: 10px;
+}
+
+nav {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    padding: 10px;
+}
+
+nav a {
+    color: #bb86fc;
+    text-decoration: none;
+    padding: 5px;
+}
+
+nav a:hover {
+    color: #ff79c6;
+}
+
+section, article {
+    background-color: #1e1e1e;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+input, textarea {
+    background-color: #2e2e2e;
+    color: #e0e0e0;
+    border: 1px solid #3e3e3e;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #a0a0a0;
+}
+
+button {
+    background-color: #bb86fc;
+    color: #121212;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ff79c6;
+}
+
+/* Optional: Set a dark mode for code blocks if you have any */
+pre, code {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    padding: 10px;
+    border-radius: 5px;
+}

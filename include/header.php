@@ -1,208 +1,330 @@
+<?php include('auth.php'); ?>
 <!DOCTYPE html>
 <html lang="en">
-<?php
-	include('../include/connect.php');
-	include('../include/auth.php');
-	date_default_timezone_set('Asia/Manila');
-  $systemtime = date('Y-m-d H:i:s');
-	
-	if($access!='1'){
-		$con->next_result();
-		$systemlog = "INSERT INTO system_log (action, date_created, user) VALUES ('Tries to access admin account.', '$systemtime', '$username')";
-		$result = mysqli_query($con, $systemlog);
-		echo '<script>alert("Error 404")</script>'; 
-		echo '<script>history.back();</script>';
-		exit();
-	}
-?>
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="description" content="">
-		<meta name="author" content="">
-		<title>G-TMS</title>
-		<link rel="shortcut icon" href="../assets/img/gloryicon.png">
-		<!-- Bootstrap Core CSS -->
-		<link href="../vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
-		<!-- MetisMenu CSS -->
-		<link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
-		<!-- Custom CSS -->
-		<link href="../assets/css/sb-admin-2.css" rel="stylesheet">
-		<!-- Morris Charts CSS -->
-		<link href="../vendor/morrisjs/morris.css" rel="stylesheet">
-		<!-- Custom Fonts -->
-		<link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-		<link href="../assets/css/select2.min.css" rel="stylesheet">
-		<link href="../assets/css/jquery-ui.min.css" rel="stylesheet">
-		<link href="../assets/css/dataTables.bootstrap.css" rel="stylesheet">
-		<link rel="stylesheet" href="../assets/css/bootstrap-select.css">
-		<style>
-			#loader {
-			position: fixed;
-			left: 0px;
-			top: 0px;
-			width: 100%;
-			height: 100%;
-			z-index: 9999;
-			background: url('../assets/img/loader.gif') 50% 50% no-repeat rgb(0, 0, 0);
-			}
-		</style>
-		<?php
-			$con->next_result();
-			$query = mysqli_query($con, "SELECT * FROM accounts INNER JOIN  section ON section.sec_id=accounts.sec_id WHERE username='$username' ");
-			if (mysqli_num_rows($query)>0) { 
-			    while ($row = $query->fetch_assoc()) {
-				$fname = $row['fname'];
-				$card = $row['card'];
-				$email = $row['email'];
-				$sec = $row['sec_name'];
-					// Check if file_name is empty
-					if (empty($row["file_name"])) {
-						// Use a default image URL
-						$imageURL = '../assets/img/user-profiles/nologo.png';
-					} else {
-						// Use the image URL from the database
-						$imageURL = '../assets/img/user-profiles/'.$row["file_name"];
-					}
-			    }
-			}
-		?>
-	</head>
-	<script src="../vendor/jquery/jquery-1.9.1.min.js"></script>
-	<script>
-		$(window).on('load', function() {
-		$('#loader').fadeOut('slow');
-		});
-	</script>
-	<div id="loader"></div>
-	<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; margin-top: -5px;">
-		<div class="navbar-header">
-			<button type="button" id="sidebarCollapse" class="pull-left" style="border: none">
-			<i class="fa fa-bars" style="font-size: 30px;"></i>
-			<span class="sr-only">Toggle Menu</span>
-			</button>
-			<a class="navbar-brand" href="index.php">
-				<p class="text-primary" title="Task Management System">GLORY (PHILIPPINES), INC. | <font color="red"> TASK MANAGEMENT SYSTEM</font></p>
-			</a>
-		</div>
-	</nav>
-	<div class="wrapper d-flex align-items-stretch">
-	<nav id="sidebar">
-		<div class="p-4 pt-5">
-			<div class="prof" style="font-family: 'Trebuchet MS', sans-serif;margin-top: 50px;text-align: center;">
-				<div class="logo">
-					<img src="<?php echo $imageURL; ?>" class="avatar img-circle img-thumbnail" alt="">
-				</div>
-				<h5 style="text-align: center; cursor: default"><?php echo $fname?></h5>
-				<h6 style="text-align: center; cursor: default"><?php echo $sec?></h6>
-			</div>
-			<ul class="nav" id="side-menu">
-				<li>
-					<a href="../include/home.php"><i class="fa fa-home fa-fw"></i> Home</a>
-				</li>
-				<li>
-					<a href="index.php"><i class="glyphicon glyphicon-th-large fa-fw"></i> Dashboard</a>
-				</li>
-				<li>
-					<a href="system_logs.php"><i class="fa fa-newspaper-o fa-fw"></i> System Logs</a>
-				</li>
-				<li>
-					<a href="#"><i class="fa fa-user fa-fw"></i> User Management<span class="fa arrow"></span></a>
-					<ul class="nav nav-second-level">
-						<li>
-							<a href="account_list.php"><i class="fa fa-users fa-fw"></i> Accounts</a>
-						</li>
-						<li>
-							<a href="department_list.php"><i class="fa fa-sitemap fa-fw"></i> Department</a>
-						</li>
-						<li>
-							<a href="section_list.php"><i class="fa fa-sitemap fa-fw"></i> Sections</a>
-						</li>
-						<li>
-							<a href="attendancelog.php"><i class="fa fa-check-circle fa-fw"></i> Attendance</a>
-						</li>
-						<li>
-							<a href="dayoff.php" ><i class="fa fa-calendar fa-fw"></i> Day off</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="#"><i class="fa fa-tasks fa-fw"></i> Task Management<span class="fa arrow"></span></a>
-					<ul class="nav nav-second-level">
-						<li>
-							<a href="task_import.php"><i class="fa fa-upload fa-fw"></i> Import Tasks</a>
-						</li>
-						<li>
-							<a href="section_tasks_list.php"><i class="fa fa-table fa-fw"></i> Task List</a>
-						</li>
-						<li>
-							<a href="manage_task_list.php"><i class="fa fa-calendar-plus-o fa-fw"></i> Task Assignment</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="task_details_list.php"><i class="fa fa-archive fa-fw"></i> Task Details</a>
-				</li>
-				<li>
-					<a href="../include/user_profile.php?modal=hide" style="margin-top: 0"><i class="fa fa-cog fa-fw"></i> Configuration</a>
-				</li>
-				<li>
-					<a href="../include/logout.php"><i class="glyphicon glyphicon-log-out fa-fw"></i> Logout</a>
-				</li>
-				<!-- <li>
-					<a href="#"><i class="fa fa-user fa-fw"></i> System Automation<span class="fa arrow"></span></a>
-					<ul class="nav nav-second-level">
-						<li>
-							<a href="../include/expired_tasks.php"><i class="fa fa-cog fa-fw"></i> Overdue Tasks</a>
-						</li>
-						<li>
-							<a href="../include/tasks_daily.php"><i class="fa fa-cog fa-fw"></i> Daily Tasks</a>
-						</li>
-						<li>
-							<a href="../include/tasks_weekly.php"><i class="fa fa-cog fa-fw"></i> Weekly Tasks</a>
-						</li>
-						<li>
-							<a href="../include/tasks_monthly.php"><i class="fa fa-cog fa-fw"></i> Monthly Tasks</a>
-						</li>
-					</ul>
-				</li> -->
-			</ul>
-			<div class="footer">
-				<p>
-					Information System &copy;<script>document.write(new Date().getFullYear());</script> <br></a>
-				</p>
-			</div>
-		</div>
-	</nav>
 
-	<script src="../assets/js/jquery-3.3.1.min.js"></script>
-	<script src="../assets/js/popper.min.js"></script>
-	<script src="../assets/js/bootstrap.min.js"></script>
-	<script src="../assets/js/main.js"></script>
-	<script src="../vendor/jquery/jquery.min.js"></script>
-	<!-- Autocomplete Jquery-->
-	<script src="../vendor/jquery/jquery-ui.min.js"></script>
-	<!-- Flot Charts JavaScript -->
-	<script src="../vendor/flot/excanvas.min.js"></script>
-	<script src="../vendor/flot/jquery.flot.js"></script>
-	<script src="../vendor/flot/jquery.flot.pie.js"></script>
-	<script src="../vendor/flot/jquery.flot.resize.js"></script>
-	<script src="../vendor/flot/jquery.flot.time.js"></script>
-	<script src="../vendor/flot-tooltip/jquery.flot.tooltip.min.js"></script>
-	<script src="../data/flot-data.js"></script>
-	<!-- Metis Menu Plugin Javascript -->
-	<script src="../vendor/metisMenu/metisMenu.min.js"></script>
-	<script src="../assets/js/validator.js"></script>
-	<!-- DataTables Javascript -->
-	<script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
-	<script src="../vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
-	<!-- Morris Charts Javascript -->
-	<script src="../vendor/raphael/raphael.min.js"></script>
-	<script src="../vendor/morrisjs/morris.min.js"></script>
-	<!-- Custom Theme Javascript -->
-	<script src="../assets/js/sb-admin-2.js"></script>
-	<!-- For select multiple tag-->
-	<script src="../assets/js/bootstrap-select.js"></script> 
-	<script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-	<script src="../assets/js/select2.min.js"></script>
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>G-TMS</title>
+
+  <!-- Custom fonts for this template -->
+  <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this page -->
+  <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../vendor/snapappointments/bootstrap-select/dist/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+
+  <!-- Custome scripts for this page -->
+  <script src="../assets/js/moment.min.js"></script>
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <?php
+    if ($access == 1) { ?>
+      <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
+          <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-business-time"></i>
+          </div>
+          <div class="sidebar-brand-text mx-3">G-TMS</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+          <a class="nav-link" href="index.php">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span></a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <i class="fas fa-users-cog"></i>
+            <span>Account Management</span>
+          </a>
+          <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <a class="collapse-item" href="accounts.php">User Account</a>
+              <a class="collapse-item" href="departments.php">Department</a>
+              <a class="collapse-item" href="sections.php">Section</a>
+            </div>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-tasks"></i>
+            <span>Task Management</span>
+          </a>
+          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <a class="collapse-item" href="import.php">Task Import</a>
+              <a class="collapse-item" href="registered_tasks.php">Registered Task</a>
+              <a class="collapse-item" href="assign_tasks.php">Assigned Task</a>
+            </div>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="404.php">
+            <i class="fas fa-chart-bar"></i>
+            <span>Project Management</span></a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+            <i class="fas fa-wrench"></i>
+            <span>System Management</span>
+          </a>
+          <div id="collapseFour" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <a class="collapse-item" href="attendance.php">Attendance Logs</a>
+              <a class="collapse-item" href="calendar.php">Dayoff Calendar</a>
+            </div>
+          </div>
+        </li>
+        
+        <!-- Divider -->
+        <!-- <hr class="sidebar-divider d-none d-md-block"> -->
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <!-- <div class="text-center d-none d-md-inline">
+          <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div> -->
+
+      </ul>
+    <?php } elseif ($access == 2) { ?>
+      <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
+          <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-business-time"></i>
+          </div>
+          <div class="sidebar-brand-text mx-3">G-TMS</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+          <a class="nav-link" href="index.php">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span></a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="tasks.php">
+            <i class="fas fa-calendar-day"></i>
+            <span>My Tasks</span></a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="assign_tasks.php">
+            <i class="fas fa-list-ol"></i>
+            <span>Task List</span></a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="performance.php">
+            <i class="fas fa-chart-bar"></i>
+            <span>Performance</span></a>
+        </li>
+
+        <!-- Divider -->
+        <!-- <hr class="sidebar-divider d-none d-md-block"> -->
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <!-- <div class="text-center d-none d-md-inline">
+          <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div> -->
+
+      </ul>
+    <?php } elseif ($access == 3) { ?>
+      <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
+          <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-business-time"></i>
+          </div>
+          <div class="sidebar-brand-text mx-3">G-TMS</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+          <a class="nav-link" href="index.php">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span></a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-tasks"></i>
+            <span>Task</span>
+          </a>
+          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <a class="collapse-item" href="accounts.php">Assigned Task</a>
+              <a class="collapse-item" href="tasks.php">Deployed Task</a>
+            </div>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="404.php">
+            <i class="fas fa-chart-bar"></i>
+            <span>Project</span></a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="../pages/performance.php">
+            <i class="fas fa-award"></i>
+            <span>Member Perfromance</span></a>
+        </li>
+
+        <!-- Divider -->
+        <!-- <hr class="sidebar-divider d-none d-md-block"> -->
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <!-- <div class="text-center d-none d-md-inline">
+          <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div> -->
+
+      </ul>
+    <?php } ?>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+            <li class="nav-item dropdown no-arrow d-sm-none">
+              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+              </a>
+              <!-- Dropdown - Messages -->
+              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                <form class="form-inline mr-auto w-100 navbar-search">
+                  <div class="input-group">
+                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <button class="btn btn-primary" type="button">
+                        <i class="fas fa-search fa-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </li>
+
+            <!-- Nav Item - Alerts -->
+            <li class="nav-item dropdown no-arrow mx-1">
+              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bell fa-fw"></i>
+                <!-- Counter - Alerts -->
+                <span class="badge badge-danger badge-counter"><?php echo $total_notification ?></span>
+              </a>
+              <!-- Dropdown - Alerts -->
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                <h6 class="dropdown-header">
+                  Notification Center
+                </h6>
+                <?php
+                $con->next_result();
+                $query_check = mysqli_query($con, "SELECT * FROM notification WHERE status=1 AND user='$username' LIMIT 3");
+                if(mysqli_num_rows($query_check) > 0) {
+                  while($row = mysqli_fetch_assoc($query_check)) {
+                  $date_created = date_format(date_create($row['date_created']), "F d, Y @ h:i A");?>
+                  <button class="dropdown-item d-flex align-items-center" onclick="readNotification(this)" value="<?php echo $row['id']; ?>">
+                    <input type="hidden" name="notificationID[]" id="notificationID" value="<?php echo $row['id']; ?>">
+                    <div class="mr-3">
+                      <div class="icon-circle bg-<?php echo $row['type']; ?>">
+                        <i class="<?php echo $row['icon']; ?> text-white"></i>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="small text-gray-500"><?php echo $date_created ?></div>
+                      <?php echo $row['body']; ?>
+                    </div>
+                  </button>
+                <?php } } else { ?>
+                <a class="dropdown-item" href="#">
+                  <div class="small text-gray-500 text-center">No Notification</div>
+                </a>
+                <?php } ?>
+                <?php if($total_notification > 0) {?>
+                <button class="dropdown-item text-center small text-gray-500" onclick="readAllNotification(this)">Mark As Read Shown Notifications</button>
+                <?php } ?>
+              </div>
+            </li>
+
+            <div class="topbar-divider d-none d-sm-block"></div>
+
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $fname ?></span>
+                <img class="img-profile rounded-circle" src="<?php echo $imageURL ?>">
+              </a>
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Profile
+                </a>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Activity Log
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
+              </div>
+            </li>
+
+          </ul>
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->

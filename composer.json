@@ -1,5 +1,12 @@
 {
     "require": {
-        "phpoffice/phpspreadsheet": "^1.25"
+        "phpoffice/phpspreadsheet": "^1.12",
+        "snapappointments/bootstrap-select": "^1.13"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "oomphinc/composer-installers-extender": true
+        }
     }
 }
