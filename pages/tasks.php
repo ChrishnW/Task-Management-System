@@ -176,7 +176,7 @@ include('../include/header.php');
                       <th>Code</th>
                       <th>Title</th>
                       <th>Classification</th>
-                      <th class="col col-md-1">Due Date</th>
+                      <th class="col col-md-2">Due Date</th>
                       <th>Asignee</th>
                       <th>Progress</th>
                       <th>Action</th>
@@ -199,11 +199,11 @@ include('../include/header.php');
                       $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
                       $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
 
-                      $action = (date_create($row['due_date']) <= date_create($current_date))
+                      $action = (date_create($row['due_date']) > date_create($current_date))
                         ? '<button type="button" class="btn btn-circle btn-secondary" disabled><i class="fas fa-ban"></i></button>'
                         : '<button type="button" class="btn btn-circle btn-success" value=' . $row['id'] . ' onclick="startTask(this)"><i class="fas fa-play"></i></button>';
 
-                      $checkbox = (date_create($row['due_date']) <= date_create($current_date))
+                      $checkbox = (date_create($row['due_date']) > date_create($current_date))
                         ? '<input type="checkbox" name="selected_ids[]" class="form-control" value="" disabled>'
                         : '<input type="checkbox" name="selected_ids[]" class="form-control" value=' . $row['id'] . '>';
 
