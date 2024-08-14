@@ -371,6 +371,23 @@ include('../include/header.php');
     </div>
   </div>
 </div>
+<div class="modal fade" id="success" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
+      </div>
+      <div class="modal-body text-center">
+        <i class="far fa-check-circle fa-5x text-success"></i>
+        <br><br>
+        <p id="success_log"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <?php include('../include/footer.php'); ?>
 
@@ -445,34 +462,41 @@ include('../include/header.php');
   }
 
   function addActivity(element) {
-    var taskId    = element.value;
-    var name      = element.getAttribute('data-name');
+    var taskId = element.value;
+    var name = element.getAttribute('data-name');
     var projectId = element.getAttribute('data-id');
     document.getElementById('taskname').innerHTML = name;
     $('#submit').modal('show');
     $('#postButton').off('click').on('click', function() {
-      document.getElementById('postButton').disabled = true;
-      var formDetails = new FormData(document.getElementById('projectActivity'));
-      formDetails.append('task_id', taskId);
-      formDetails.append('project_id', projectId);
-      formDetails.append('createActivity', true);
-      $.ajax({
-        method: "POST",
-        url: "../config/project.php",
-        data: formDetails,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-          if (response === 'Success') {
-            document.getElementById('postButton').disabled = false;
-            $('#submit').modal('hide');
-          } else {
-            document.getElementById('error_found').innerHTML = response;
-            document.getElementById('postButton').disabled = false;
-            $('#error').modal('show');
+      if (document.getElementById('end').value < document.getElementById('start').value || document.getElementById('date').value === '' || document.getElementById('subject').value === '' || document.getElementById('comments').value.trim() === '') {
+        document.getElementById('error_found').innerHTML = 'Unable to complete the operation. Please try again later.';
+        $('#error').modal('show');
+      } else {
+        document.getElementById('postButton').disabled = true;
+        var formDetails = new FormData(document.getElementById('projectActivity'));
+        formDetails.append('task_id', taskId);
+        formDetails.append('project_id', projectId);
+        formDetails.append('createActivity', true);
+        $.ajax({
+          method: "POST",
+          url: "../config/project.php",
+          data: formDetails,
+          contentType: false,
+          processData: false,
+          success: function(response) {
+            if (response === 'Success') {
+              document.getElementById('postButton').disabled = false;
+              document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+              $('#submit').modal('hide');
+              $('#success').modal('show');
+            } else {
+              document.getElementById('error_found').innerHTML = response;
+              document.getElementById('postButton').disabled = false;
+              $('#error').modal('show');
+            }
           }
-        }
-      });
+        });
+      }
     });
   }
 </script>
