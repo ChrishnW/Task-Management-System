@@ -232,5 +232,16 @@ if (isset($_POST['createActivity'])) {
   $start      = $_POST['start'];
   $end        = $_POST['end'];
   $comments   = ucwords(strtolower($_POST['comments']));
+
+  $start_time = new DateTime($start);
+  $end_time   = new DateTime($end);
+  $interval   = $start_time->diff($end_time);
+  $duration   = $interval->format('%h hours, %i minutes');
+  $query_insert = mysqli_query($con, "INSERT INTO `project_productivity` (`project_id`, `task_id`, `comment`, `subject`, `date`, `start`, `end`, `rendered`, `user_id`) VALUES ('$project_id', '$task_id', '$comments', '$subject', '$date', '$start', '$end', '$duration', '$emp_id')");
+  if ($query_insert) {
+    echo "Success";
+  } else {
+    echo "Unable to complete the operation. Please try again later.";
+  }
 }
 ?>
