@@ -82,7 +82,7 @@ include('../include/header.php');
               ?>
                   <tr>
                     <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
-                    <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-circle" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-check"></i></button></td>
+                    <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
                     <td><?php echo $row['task_code'] ?></td>
                     <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                     <td><?php echo $task_class ?></td>
