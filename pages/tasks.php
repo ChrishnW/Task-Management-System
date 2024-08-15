@@ -628,7 +628,7 @@ include('../include/header.php');
 </div>
 
 <div class="modal fade" id="start" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content border-success">
       <div class="modal-header bg-success text-white">
         <h5 class="modal-title" id="exampleModalLongTitle">Start Task</h5>
@@ -744,7 +744,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="success" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header bg-success text-white">
         <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
