@@ -181,7 +181,6 @@ if (isset($_POST['actionView'])) {
             <div class="card-body custom-card">
               <div class="left-content col-3">
                 <div class="display-8 font-weight-bold"><?php echo $row['task']; ?></div>
-                <div class="display-9"><?php echo $row['subject'] ?></div>
                 <span id="span-img" class="mt-1"><img src="<?php echo $imageURL ?>" class="mr-1"><?php echo $name ?></span>
               </div>
               <div class="middle-content col-4">
@@ -190,6 +189,7 @@ if (isset($_POST['actionView'])) {
                 <span><i class="fas fa-stopwatch fa-fw"></i> <?php echo $row['rendered']; ?></span>
               </div>
               <div class="right-content text-left col-5">
+                <div class="display-8 font-weight-bold"><?php echo $row['subject'] ?></div>
                 <h6 class="font-weight-normal">
                   <i class="fas fa-quote-left fa-fw"></i>
                   <?php echo $row['comment']; ?>

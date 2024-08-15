@@ -405,7 +405,13 @@
 
 .input-group-text img {
     border-radius: 50%;
-    height: 20px;
+    height: 15px;
+}
+
+.input-group-text img:hover {
+    transform: scale(5.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
 }
 
 .users-list {
