@@ -82,7 +82,7 @@ include('../include/header.php');
                         <div class="dropdown-menu">
                           <button type="button" class="dropdown-item" onclick="actionView(this)" value="<?php echo $row['project_id'] ?>"><i class="fas fa-eye fa-fw"></i> View</button>
                           <div class="dropdown-divider"></div>
-                          <button type="button" class="dropdown-item" onclick="addActivity(this)" value="<?php echo $row['project_id'] ?>" data-name="<?php echo $row['task']; ?>" data-id="<?php echo $row['project_id']; ?>"><i class="fas fa-reply fa-fw"></i> Add Activity</button>
+                          <button type="button" class="dropdown-item" onclick="addActivity(this)" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task']; ?>" data-id="<?php echo $row['project_id']; ?>"><i class="fas fa-reply fa-fw"></i> Add Activity</button>
                         </div>
                       </div>
                     </td>
