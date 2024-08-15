@@ -166,7 +166,7 @@ if (isset($_POST['actionView'])) {
     </div>
     <div class="card-body">
       <?php $con->next_result();
-      $query_result = mysqli_query($con, "SELECT project_productivity.*, project_task.task, accounts.file_name, concat(accounts.fname,' ',accounts.lname) as name FROM project_productivity JOIN accounts ON accounts.id=project_productivity.user_id JOIN project_task ON project_task.id=project_productivity.task_id WHERE project_productivity.project_id='$id'");
+      $query_result = mysqli_query($con, "SELECT project_productivity.*, project_task.task, accounts.file_name, concat(accounts.fname,' ',accounts.lname) as name FROM project_productivity JOIN accounts ON accounts.id=project_productivity.user_id JOIN project_task ON project_task.id=project_productivity.task_id WHERE project_productivity.project_id='$id' ORDER BY project_productivity.id DESC");
       if (mysqli_num_rows($query_result) > 0) {
         while ($row = $query_result->fetch_assoc()) {
           $name   = ucwords(strtolower($row['name']));
