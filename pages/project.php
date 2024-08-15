@@ -69,7 +69,7 @@ include('../include/header.php');
               </tr>
             </tfoot>
             <tbody id='dataTableBody'>
-              <?php $query_result = mysqli_query($con, "SELECT project_task.*, project_list.title, project_list.leader, project_list.member, project_list.start, project_list.end, project_list.status AS pstatus FROM project_task JOIN project_list ON project_list.id=project_task.project_id WHERE $emp_id IN (project_list.member)");
+              <?php $query_result = mysqli_query($con, "SELECT project_task.*, project_list.title, project_list.leader, project_list.member, project_list.start, project_list.end, project_list.status AS pstatus FROM project_task JOIN project_list ON project_list.id=project_task.project_id WHERE concat('[',REPLACE(project_list.member,',','],['),']') LIKE '%[$emp_id]%' ");
               if (mysqli_num_rows($query_result) > 0) {
                 while ($row = $query_result->fetch_assoc()) {
                   $dateStart = date_format(date_create($row['start']), "F d, Y");

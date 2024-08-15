@@ -448,3 +448,14 @@
   color: #748290;
   font-size: 12px;
 }
+
+#span-img {
+    display: flex;
+    align-items: center;
+}
+
+#span-img img {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+}
