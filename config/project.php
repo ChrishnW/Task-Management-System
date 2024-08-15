@@ -83,7 +83,7 @@ if (isset($_POST['actionView'])) {
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header">
+    <div class="card-header border-left-primary">
       Team Member/s:
     </div>
     <div class="card-body text-center">
@@ -98,7 +98,7 @@ if (isset($_POST['actionView'])) {
             } ?>
             <li>
               <img src="<?php echo $memberAvatar; ?>" alt="User Image">
-              <a class="users-list-name" href="javascript:void(0)"><?php echo ucwords($row['name']) ?></a>
+              <span class="users-list-name"><?php echo ucwords($row['name']) ?></span>
             </li>
         <?php
           endwhile;
@@ -107,8 +107,8 @@ if (isset($_POST['actionView'])) {
     </div>
   </div>
   <div class="card mb-4">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-      <h6 class="m-0">Task List</h6>
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-primary">
+      <h6 class="m-0">Task List:</h6>
       <div class="dropdown no-arrow">
         <button type="button" onclick="createTask(this)" class="btn btn-sm">
           <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create New Task
@@ -145,7 +145,7 @@ if (isset($_POST['actionView'])) {
                     </div>
                   </div>
                 </td>
-                <td><?php echo $row['task'] ?></td>
+                <td><?php echo $row['task'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['details'] ?>"></i></td>
                 <td><?php echo $row['status'] ?></td>
                 <td><?php echo $row['created'] ?></td>
               </tr>
@@ -156,7 +156,7 @@ if (isset($_POST['actionView'])) {
     </div>
   </div>
   <div class="card mb-4">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-primary">
       <h6 class="m-0">Members Progress/Activity:</h6>
       <div class="dropdown no-arrow">
         <button type="button" class="btn btn-sm" onclick="addActivity(this)">
@@ -177,7 +177,7 @@ if (isset($_POST['actionView'])) {
           } else {
             $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
           } ?>
-          <div class="card mb-4 border-left-info">
+          <div class="card mb-4 border-bottom-success">
             <div class="card-body custom-card">
               <div class="left-content col-3">
                 <div class="display-8 font-weight-bold"><?php echo $row['task']; ?></div>

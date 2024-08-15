@@ -416,11 +416,7 @@ include('../include/header.php');
       success: function(response) {
         $('#projectDetails').html(response);
         $('#view').modal('show');
-        $('#taskList').DataTable({
-          "order": [
-            [0, "asc"]
-          ],
-        })
+        $('[data-toggle="tooltip"]').tooltip();
       }
     });
   }
