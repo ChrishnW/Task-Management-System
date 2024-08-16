@@ -110,9 +110,11 @@ if (isset($_POST['actionView'])) {
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-primary">
       <h6 class="m-0">Task List:</h6>
       <div class="dropdown no-arrow">
+        <?php if ($access != 2) { ?>
         <button type="button" onclick="createTask(this)" class="btn btn-sm">
           <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create New Task
         </button>
+        <?php } ?>
       </div>
     </div>
     <div class="card-body">
@@ -159,9 +161,11 @@ if (isset($_POST['actionView'])) {
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-primary">
       <h6 class="m-0">Members Progress/Activity:</h6>
       <div class="dropdown no-arrow">
+        <?php if ($access != 2) { ?>
         <button type="button" class="btn btn-sm" onclick="addActivity(this)">
           <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Add New Activity
         </button>
+        <?php } ?>
       </div>
     </div>
     <div class="card-body">
