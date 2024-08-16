@@ -415,6 +415,7 @@ include('../include/header.php');
       },
       success: function(response) {
         $('#projectDetails').html(response);
+        $('#projectDetails select').selectpicker('refresh');
         $('#view').modal('show');
         $('[data-toggle="tooltip"]').tooltip();
       }

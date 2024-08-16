@@ -11,6 +11,13 @@ if (isset($_POST['actionView'])) {
     $imageURL = '../assets/img/user-profiles/nologo.png';
   } else {
     $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
+  }
+  if ($row['status'] == 'PENDING') {
+    $color  = 'info';
+  } elseif ($row['status'] == 'ON HOLD') {
+    $color  = 'warning';
+  } elseif ($row['status'] == 'DONE') {
+    $color  = 'success';
   } ?>
   <div class="row">
     <div class="col-md-7">
@@ -77,7 +84,11 @@ if (isset($_POST['actionView'])) {
           <div class="input-group-prepend">
             <div class="input-group-text"><i class="fas fa-flag"></i></div>
           </div>
-          <input type="text" class="form-control" value="<?php echo $row['status']; ?>" readonly>
+          <select name="status" id="status" class="form-control selectpicker" title="<?php echo ucwords(strtolower($row['status'])) ?> [Current]" data-style="border-<?php echo $color ?>" onchange="projectStatus()" <?php if( $access == 2) { ?> disabled <?php } ?>>
+            <option value="PENDING">Pending</option>
+            <option value="ON-HOLD">On-hold</option>
+            <option value="DONE">Done</option>
+          </select>
         </div>
       </div>
     </div>
@@ -121,13 +132,17 @@ if (isset($_POST['actionView'])) {
       <div class="table-responsive-sm">
         <table class="table table-striped" id="taskList" width="100%" cellspacing="0">
           <colgroup>
-            <col width="5%">
-            <col width="30%">
-            <col width="10%">
-            <col width="10%">
+            <?php if ($access != 2) { ?>
+            <col width="auto">
+            <?php } ?>
+            <col width="auto">
+            <col width="auto">
+            <col width="auto">
           </colgroup>
           <thead class='table'>
+            <?php if ($access != 2) { ?>
             <th>Action</th>
+            <?php } ?>
             <th>Task</th>
             <th>Status</th>
             <th>Created</th>
@@ -137,6 +152,7 @@ if (isset($_POST['actionView'])) {
             $query_result = mysqli_query($con, "SELECT * FROM project_task WHERE project_id='$id'");
             while ($row = $query_result->fetch_assoc()) { ?>
               <tr>
+                <?php if ($access != 2) { ?>
                 <td>
                   <div class="btn-group dropright">
                     <button type="button" class="btn btn-block btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i> Action</button>
@@ -147,6 +163,7 @@ if (isset($_POST['actionView'])) {
                     </div>
                   </div>
                 </td>
+                <?php } ?>
                 <td><?php echo $row['task'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['details'] ?>"></i></td>
                 <td><?php echo $row['status'] ?></td>
                 <td><?php echo $row['created'] ?></td>
@@ -185,6 +202,7 @@ if (isset($_POST['actionView'])) {
             <div class="card-body custom-card">
               <div class="left-content col-3">
                 <div class="display-8 font-weight-bold"><?php echo $row['task']; ?></div>
+                <hr class="sidebar-divider my-0">
                 <span id="span-img" class="mt-1"><img src="<?php echo $imageURL ?>" class="mr-1"><?php echo $name ?></span>
               </div>
               <div class="middle-content col-4">
