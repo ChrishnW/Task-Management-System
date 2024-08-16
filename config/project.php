@@ -105,8 +105,15 @@ if (isset($_POST['actionView'])) {
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header border-left-primary">
-      Team Member/s:
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-primary">
+      <h6 class="m-0">Team Member/s:</h6>
+      <div class="dropdown no-arrow">
+        <?php if ($access != 2) { ?>
+          <button type="button" onclick="createTask(this)" class="btn btn-sm">
+            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Add New Members
+          </button>
+        <?php } ?>
+      </div>
     </div>
     <div class="card-body text-center">
       <ul class="users-list clearfix">
@@ -188,13 +195,6 @@ if (isset($_POST['actionView'])) {
   <div class="card mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-primary">
       <h6 class="m-0">Members Progress/Activity:</h6>
-      <div class="dropdown no-arrow">
-        <?php if ($access != 2) { ?>
-          <button type="button" class="btn btn-sm" onclick="addActivity(this)">
-            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Add New Activity
-          </button>
-        <?php } ?>
-      </div>
     </div>
     <div class="card-body">
       <?php $con->next_result();
