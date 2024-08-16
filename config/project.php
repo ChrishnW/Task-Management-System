@@ -84,10 +84,21 @@ if (isset($_POST['actionView'])) {
           <div class="input-group-prepend">
             <div class="input-group-text"><i class="fas fa-flag"></i></div>
           </div>
-          <select name="status" id="status" class="form-control selectpicker" title="<?php echo ucwords(strtolower($row['status'])) ?> [Current]" data-style="border-<?php echo $color ?>" onchange="projectStatus()" <?php if( $access == 2) { ?> disabled <?php } ?>>
-            <option value="PENDING">Pending</option>
-            <option value="ON-HOLD">On-hold</option>
-            <option value="DONE">Done</option>
+          <input type="hidden" name="project_id" id="project_id" value="<?php echo $row['id']; ?>">
+          <select name="status" id="status" class="form-control border-<?php echo $color; ?>" onchange="projectStatus(this)">
+            <?php if ($row['status'] == 'PENDING') { ?>
+              <option value="PENDING" selected>Pending</option>
+              <option value="ON HOLD">On-hold</option>
+              <option value="DONE">Done</option>
+            <?php } elseif ($row['status'] == 'ON HOLD') { ?>
+              <option value="PENDING">Pending</option>
+              <option value="ON HOLD" selected>On-hold</option>
+              <option value="DONE">Done</option>
+            <?php } elseif ($row['status'] == 'DONE') { ?>
+              <option value="PENDING">Pending</option>
+              <option value="ON HOLD">On-hold</option>
+              <option value="DONE" selected>Done</option>
+            <?php } ?>
           </select>
         </div>
       </div>
@@ -122,9 +133,9 @@ if (isset($_POST['actionView'])) {
       <h6 class="m-0">Task List:</h6>
       <div class="dropdown no-arrow">
         <?php if ($access != 2) { ?>
-        <button type="button" onclick="createTask(this)" class="btn btn-sm">
-          <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create New Task
-        </button>
+          <button type="button" onclick="createTask(this)" class="btn btn-sm">
+            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create New Task
+          </button>
         <?php } ?>
       </div>
     </div>
@@ -133,7 +144,7 @@ if (isset($_POST['actionView'])) {
         <table class="table table-striped" id="taskList" width="100%" cellspacing="0">
           <colgroup>
             <?php if ($access != 2) { ?>
-            <col width="auto">
+              <col width="auto">
             <?php } ?>
             <col width="auto">
             <col width="auto">
@@ -141,7 +152,7 @@ if (isset($_POST['actionView'])) {
           </colgroup>
           <thead class='table'>
             <?php if ($access != 2) { ?>
-            <th>Action</th>
+              <th>Action</th>
             <?php } ?>
             <th>Task</th>
             <th>Status</th>
@@ -153,16 +164,16 @@ if (isset($_POST['actionView'])) {
             while ($row = $query_result->fetch_assoc()) { ?>
               <tr>
                 <?php if ($access != 2) { ?>
-                <td>
-                  <div class="btn-group dropright">
-                    <button type="button" class="btn btn-block btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i> Action</button>
-                    <div class="dropdown-menu">
-                      <button type="button" class="dropdown-item" onclick="actionEdit(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pencil-alt fa-fw"></i> Edit</button>
-                      <div class="dropdown-divider"></div>
-                      <button type="button" class="dropdown-item" onclick="actionDelete(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-trash fa-fw"></i> Delete</button>
+                  <td>
+                    <div class="btn-group dropright">
+                      <button type="button" class="btn btn-block btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i> Action</button>
+                      <div class="dropdown-menu">
+                        <button type="button" class="dropdown-item" onclick="actionEdit(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pencil-alt fa-fw"></i> Edit</button>
+                        <div class="dropdown-divider"></div>
+                        <button type="button" class="dropdown-item" onclick="actionDelete(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-trash fa-fw"></i> Delete</button>
+                      </div>
                     </div>
-                  </div>
-                </td>
+                  </td>
                 <?php } ?>
                 <td><?php echo $row['task'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['details'] ?>"></i></td>
                 <td><?php echo $row['status'] ?></td>
@@ -179,9 +190,9 @@ if (isset($_POST['actionView'])) {
       <h6 class="m-0">Members Progress/Activity:</h6>
       <div class="dropdown no-arrow">
         <?php if ($access != 2) { ?>
-        <button type="button" class="btn btn-sm" onclick="addActivity(this)">
-          <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Add New Activity
-        </button>
+          <button type="button" class="btn btn-sm" onclick="addActivity(this)">
+            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Add New Activity
+          </button>
         <?php } ?>
       </div>
     </div>
@@ -261,5 +272,11 @@ if (isset($_POST['createActivity'])) {
   } else {
     echo "Unable to complete the operation. Please try again later.";
   }
+}
+
+if (isset($_POST['projectStatus'])) {
+  $id     = $_POST['id'];
+  $status = $_POST['status'];
+  $query_result = mysqli_query($con, "UPDATE `project_list` SET status='$status' WHERE id='$id'");
 }
 ?>

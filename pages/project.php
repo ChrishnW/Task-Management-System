@@ -415,7 +415,6 @@ include('../include/header.php');
       },
       success: function(response) {
         $('#projectDetails').html(response);
-        $('#projectDetails select').selectpicker('refresh');
         $('#view').modal('show');
         $('[data-toggle="tooltip"]').tooltip();
       }
@@ -493,6 +492,23 @@ include('../include/header.php');
             }
           }
         });
+      }
+    });
+  }
+
+  function projectStatus(element) {
+    var prjStatus = element.value;
+    var projectID = document.getElementById('project_id').value;
+    $.ajax({
+      method: "POST",
+      url: "../config/project.php",
+      data: {
+        "projectStatus": true,
+        "status": prjStatus,
+        "id": projectID
+      },
+      success: function(response) {
+        console.log(response);
       }
     });
   }
