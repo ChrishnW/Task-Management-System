@@ -109,7 +109,7 @@ if (isset($_POST['actionView'])) {
       <h6 class="m-0">Team Member/s:</h6>
       <div class="dropdown no-arrow">
         <?php if ($access != 2) { ?>
-          <button type="button" onclick="createTask(this)" class="btn btn-sm">
+          <button type="button" onclick="addMember(this)" class="btn btn-sm">
             <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Add New Members
           </button>
         <?php } ?>

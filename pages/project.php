@@ -277,6 +277,37 @@ include('../include/header.php');
     </div>
   </div>
 </div>
+<div class="modal fade" id="member" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content border-primary">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Project Team Members</h5>
+      </div>
+      <form id="memberDetails" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Member/s:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-font"></i></div>
+                  </div>
+                  <select name="" id="" class="form-control form-control-sm">
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="saveTaskButton">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="submit" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content border-primary">
@@ -511,5 +542,9 @@ include('../include/header.php');
         console.log(response);
       }
     });
+  }
+
+  function addMember(element) {
+    $('#member').modal('show');
   }
 </script>
