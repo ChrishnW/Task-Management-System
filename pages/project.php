@@ -293,7 +293,13 @@ include('../include/header.php');
                   <div class="input-group-prepend">
                     <div class="input-group-text"><i class="fas fa-font"></i></div>
                   </div>
-                  <select name="" id="" class="form-control form-control-sm">
+                  <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-primary" data-size="5" data-actions-box="true" multiple>
+                    <?php
+                    $con->next_result();
+                    $query_result = mysqli_query($con, "SELECT accounts.*, section.dept_id FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2 ORDER BY accounts.fname ASC");
+                    while ($row = mysqli_fetch_array($query_result)) { ?>
+                      <option value="<?php echo $row['id']; ?>" data-subtext="<?php echo $row['username']; ?>"><?php echo ucwords(strtolower($row['fname'] . ' ' . $row['lname'])) ?></option>
+                    <?php } ?>
                   </select>
                 </div>
               </div>
@@ -302,7 +308,7 @@ include('../include/header.php');
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="saveTaskButton">Save</button>
+          <button type="button" class="btn btn-primary" id="saveMember">Save</button>
         </div>
       </form>
     </div>
@@ -546,5 +552,32 @@ include('../include/header.php');
 
   function addMember(element) {
     $('#member').modal('show');
+    $('#saveMember').off('click').on('click', function() {
+      document.getElementById('saveMember').disabled = true;
+      var projectID   = element.value;
+      if(document.getElementById('members').value !== ''){
+        var formDetails = new FormData(document.getElementById('memberDetails'));
+        formDetails.append('id', projectID);
+        formDetails.append('addMember', true);
+        $.ajax({
+          method: "POST",
+          url: "../config/project.php",
+          data: formDetails,
+          contentType: false,
+          processData: false,
+          success: function(response) {
+            if (response === 'Success') {
+              document.getElementById('saveMember').disabled = false;
+              $('#member').modal('hide');
+              $('#success').modal('show');
+            }
+          }
+        });
+      } else {
+        document.getElementById('error_found').innerHTML = 'Empty field has been detected!';
+        $('#error').modal('show');
+        document.getElementById('saveMember').disabled = false;
+      }
+    });
   }
 </script>

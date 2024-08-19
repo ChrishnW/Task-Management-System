@@ -109,7 +109,7 @@ if (isset($_POST['actionView'])) {
       <h6 class="m-0">Team Member/s:</h6>
       <div class="dropdown no-arrow">
         <?php if ($access != 2) { ?>
-          <button type="button" onclick="addMember(this)" class="btn btn-sm">
+          <button type="button" onclick="addMember(this)" class="btn btn-sm" value="<?php echo $row['id']; ?>">
             <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Add New Members
           </button>
         <?php } ?>
@@ -278,5 +278,20 @@ if (isset($_POST['projectStatus'])) {
   $id     = $_POST['id'];
   $status = $_POST['status'];
   $query_result = mysqli_query($con, "UPDATE `project_list` SET status='$status' WHERE id='$id'");
+}
+
+if (isset($_POST['addMember'])) {
+  $id           = $_POST['id'];
+  $members      = $_POST['members'];
+  $query_check  = mysqli_query($con, "SELECT * FROM project_list WHERE id='$id'");
+  $row          = mysqli_fetch_assoc($query_check);
+  $curMember    = $row['member'];
+  $curMember    = explode(',', $curMember);
+  foreach ($members as $member) {
+    if (!in_array($member, $curMember)) {
+      $query_result = mysqli_query($con, "UPDATE `project_list` SET member=CONCAT(member,', ".$member."') WHERE id='$id'");
+    }
+  }
+  echo "Success";
 }
 ?>
