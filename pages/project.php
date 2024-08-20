@@ -281,31 +281,9 @@ include('../include/header.php');
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content border-primary">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">Project Team Members</h5>
+        <h5 class="modal-title">Edit Project</h5>
       </div>
       <form id="memberDetails" enctype="multipart/form-data">
-        <!-- <div class="modal-body">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="form-group">
-                <label>Member/s:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-font"></i></div>
-                  </div>
-                  <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-primary" data-size="5" data-actions-box="true" multiple>
-                    <?php
-                    $con->next_result();
-                    $query_result = mysqli_query($con, "SELECT accounts.*, section.dept_id FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2 ORDER BY accounts.fname ASC");
-                    while ($row = mysqli_fetch_array($query_result)) { ?>
-                      <option value="<?php echo $row['id']; ?>" data-subtext="<?php echo $row['username']; ?>"><?php echo ucwords(strtolower($row['fname'] . ' ' . $row['lname'])) ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
         <div class="modal-body">
           <div class="row">
             <div class="col-md-6">
@@ -333,7 +311,7 @@ include('../include/header.php');
                   <div class="input-group-prepend">
                     <div class="input-group-text"><i class="fas fa-font"></i></div>
                   </div>
-                  <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" multiple>
+                  <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" data-max-options="1" multiple>
                     <?php
                     $con->next_result();
                     $query_result = mysqli_query($con, "SELECT accounts.*, section.dept_id FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2 ORDER BY accounts.fname ASC");
