@@ -405,63 +405,64 @@
 
 .input-group-text img {
     border-radius: 50%;
-    height: 15px;
+    height       : 15px;
 }
 
 .input-group-text img:hover {
-    transform: scale(5.5);
+    transform : scale(5.5);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    z-index: 1;
+    z-index   : 1;
 }
 
 .users-list {
-  padding-left: 0;
-  list-style: none;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+    padding-left   : 0;
+    list-style     : none;
+    display        : flex;
+    justify-content: center;
+    flex-wrap      : wrap;
 }
 
-.users-list > li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 10px;
-  text-align: center;
-  width: 20%;
-  height: 150px; /* You can adjust this height as needed */
+.users-list>li {
+    display        : flex;
+    flex-direction : column;
+    align-items    : center;
+    justify-content: flex-end;
+    padding        : 10px;
+    text-align     : center;
+    width          : 20%;
+    height         : 150px;
+    /* You can adjust this height as needed */
 }
 
-.users-list > li img {
-  border-radius: 50%;
-  object-fit: scale-down;
-  height: 100px;
-  width: 100px;
-  margin-bottom: 5px;
+.users-list>li img {
+    border-radius: 50%;
+    object-fit   : scale-down;
+    height       : 100px;
+    width        : 100px;
+    margin-bottom: 5px;
 }
 
 .users-list-name {
-  color: #495057;
-  font-size: 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  margin-top: auto;
+    color        : #495057;
+    font-size    : 10px;
+    overflow     : hidden;
+    text-overflow: ellipsis;
+    white-space  : nowrap;
+    margin-top   : auto;
 }
 
 .users-list-date {
-  color: #748290;
-  font-size: 12px;
+    color    : #748290;
+    font-size: 12px;
 }
 
 #span-img {
-    display: flex;
+    display    : flex;
     align-items: center;
 }
 
 #span-img img {
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    width        : 30px;
+    height       : 30px;
 }

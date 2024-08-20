@@ -107,13 +107,6 @@ if (isset($_POST['actionView'])) {
   <div class="card mb-3">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-primary">
       <h6 class="m-0">Team Member/s:</h6>
-      <div class="dropdown no-arrow">
-        <?php if ($access != 2) { ?>
-          <button type="button" onclick="addMember(this)" class="btn btn-sm" value="<?php echo $row['id']; ?>">
-            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Add New Members
-          </button>
-        <?php } ?>
-      </div>
     </div>
     <div class="card-body text-center">
       <ul class="users-list clearfix">
@@ -126,7 +119,7 @@ if (isset($_POST['actionView'])) {
               $memberAvatar = '../assets/img/user-profiles/' . $row['file_name'];
             } ?>
             <li>
-              <img src="<?php echo $memberAvatar; ?>" alt="User Image">
+              <img src="<?php echo $memberAvatar; ?>" alt="User Image" class="img-fluid">
               <span class="users-list-name"><?php echo ucwords($row['name']) ?></span>
             </li>
         <?php
@@ -289,7 +282,7 @@ if (isset($_POST['addMember'])) {
   $curMember    = explode(',', $curMember);
   foreach ($members as $member) {
     if (!in_array($member, $curMember)) {
-      $query_result = mysqli_query($con, "UPDATE `project_list` SET member=CONCAT(member,', ".$member."') WHERE id='$id'");
+      $query_result = mysqli_query($con, "UPDATE `project_list` SET member=CONCAT(member,', " . $member . "') WHERE id='$id'");
     }
   }
   echo "Success";

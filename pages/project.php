@@ -278,13 +278,13 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="member" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content border-primary">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">Project Team Members</h5>
       </div>
       <form id="memberDetails" enctype="multipart/form-data">
-        <div class="modal-body">
+        <!-- <div class="modal-body">
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
@@ -301,6 +301,97 @@ include('../include/header.php');
                       <option value="<?php echo $row['id']; ?>" data-subtext="<?php echo $row['username']; ?>"><?php echo ucwords(strtolower($row['fname'] . ' ' . $row['lname'])) ?></option>
                     <?php } ?>
                   </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Task:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-font"></i></div>
+                  </div>
+                  <input type="text" class="form-control" name="task_name" id="task_name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Start Date:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-font"></i></div>
+                  </div>
+                  <input type="date" class="form-control" name="task_name" id="task_name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Project Leader:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-font"></i></div>
+                  </div>
+                  <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" multiple>
+                    <?php
+                    $con->next_result();
+                    $query_result = mysqli_query($con, "SELECT accounts.*, section.dept_id FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2 ORDER BY accounts.fname ASC");
+                    while ($row = mysqli_fetch_array($query_result)) { ?>
+                      <option value="<?php echo $row['id']; ?>" data-subtext="<?php echo $row['username']; ?>"><?php echo ucwords(strtolower($row['fname'] . ' ' . $row['lname'])) ?></option>
+                    <?php } ?>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Status:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-flag"></i></div>
+                  </div>
+                  <select name="task_status" id="task_status" class="form-control">
+                    <option value="PENDING">Pending</option>
+                    <option value="IN PROGRESS">In Progress</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>End Date:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-font"></i></div>
+                  </div>
+                  <input type="date" class="form-control" name="task_name" id="task_name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Project Members:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-font"></i></div>
+                  </div>
+                  <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" multiple>
+                    <?php
+                    $con->next_result();
+                    $query_result = mysqli_query($con, "SELECT accounts.*, section.dept_id FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2 ORDER BY accounts.fname ASC");
+                    while ($row = mysqli_fetch_array($query_result)) { ?>
+                      <option value="<?php echo $row['id']; ?>" data-subtext="<?php echo $row['username']; ?>"><?php echo ucwords(strtolower($row['fname'] . ' ' . $row['lname'])) ?></option>
+                    <?php } ?>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Description:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-info"></i></div>
+                  </div>
+                  <textarea name="task_details" id="task_details" class="form-control"></textarea>
                 </div>
               </div>
             </div>
@@ -456,6 +547,10 @@ include('../include/header.php');
         $('[data-toggle="tooltip"]').tooltip();
       }
     });
+  }
+
+  function actionEdit(element) {
+    $('#member').modal('show');
   }
 
   function createTask(element) {
