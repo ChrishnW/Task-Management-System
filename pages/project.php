@@ -147,24 +147,15 @@ include('../include/header.php');
           <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
             <thead class='table table-success'>
               <tr>
-                <th class="col col-md-1">Action</th>
+                <th>Action</th>
                 <th>Title</th>
                 <th>Date Started</th>
-                <th class="col col-md-1">Due Date</th>
+                <th>Due Date</th>
+                <th>Status</th>
                 <th>Progress</th>
                 <th>Project Leader</th>
               </tr>
             </thead>
-            <tfoot class='table table-success'>
-              <tr>
-                <th class="col col-md-1">Action</th>
-                <th>Title</th>
-                <th>Date Started</th>
-                <th class="col col-md-1">Due Date</th>
-                <th>Progress</th>
-                <th>Project Leader</th>
-              </tr>
-            </tfoot>
             <tbody id='dataTableBody'>
               <?php $con->next_result();
               $result = mysqli_query($con, "SELECT project_list.*, accounts.file_name, accounts.username FROM project_list JOIN department ON department.dept_id=project_list.dept_id JOIN accounts ON accounts.id=project_list.leader WHERE project_list.dept_id='$dept_id'");
@@ -175,6 +166,7 @@ include('../include/header.php');
                   } else {
                     $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
                   }
+                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="'.$row['username'].'">';
               ?>
                   <tr>
                     <td>
@@ -192,9 +184,16 @@ include('../include/header.php');
                     <td><?php echo $row['title'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['details'] ?>"></i></td>
                     <td><?php echo $row['start'] ?></td>
                     <td><?php echo $row['end'] ?></td>
-                    <td><span class="badge badge-info"><?php echo $row['status'] ?></span></td>
-                    <td data-toggle="tooltip" data-placement="top" title="<?php echo $row['username'] ?>">
-                      <center /><img src='<?php echo $imageURL ?>' class="border border-primary img-table-solo">
+                    <td>
+                      <span class="badge badge-info"><?php echo $row['status'] ?></span>
+                    </td>
+                    <td>
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">75%</div>
+                      </div>
+                    </td>
+                    <td>
+                      <center /><?php echo $assignee ?>
                     </td>
                   </tr>
               <?php }
