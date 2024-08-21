@@ -304,11 +304,7 @@ include('../include/header.php');
           </div>
           <div class="form-group">
             <label>Due Date:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
-              </div>
-              <input type="text" name="assignDue" id="assignDue" class="form-control">
+            <div class="input-group mb-2" id="dueDateContainer">
             </div>
           </div>
         </form>
@@ -613,7 +609,7 @@ include('../include/header.php');
                       if (mysqli_num_rows($sql) > 0) {
                         while ($row = mysqli_fetch_assoc($sql)) { ?>
                           <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>'><?php echo ucwords(strtolower($row['dept_name'])) ?></option>
-                        <?php }
+                    <?php }
                       }
                     } ?>
                   </select>
@@ -764,6 +760,8 @@ include('../include/header.php');
   function taskList(element) {
     var task_for = document.getElementById('assigneeSEC').value;
     var task_class = element.value;
+    var dueDateContainer = document.getElementById('dueDateContainer');
+
     if (task_class && task_for) {
       $.ajax({
         method: "POST",
@@ -775,26 +773,43 @@ include('../include/header.php');
         },
         success: function(response) {
           $("select[name='assignList[]']").html(response).selectpicker('refresh');
-          if (task_class === '1') {
-            document.getElementById('assignDue').value = 'Daily';
-            document.getElementById('assignDue').readOnly = true;
-          } else if (task_class === '2') {
-            document.getElementById('assignDue').placeholder = 'Example: Tuesday';
-            document.getElementById('assignDue').value = '';
-            document.getElementById('assignDue').readOnly = false;
-          } else if (task_class === '3') {
-            document.getElementById('assignDue').placeholder = 'Example: 15th day of the month';
-            document.getElementById('assignDue').value = '';
-            document.getElementById('assignDue').readOnly = false;
-          } else if (task_class === '6') {
-            document.getElementById('assignDue').placeholder = 'Example: 30th day of the month';
-            document.getElementById('assignDue').value = '';
-            document.getElementById('assignDue').readOnly = false;
-          }
         }
-      })
+      });
+    }
+
+    if (task_class === '1') {
+      dueDateContainer.innerHTML = `
+    <div class="input-group-prepend">
+      <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+    </div>
+    <input type="text" id="assignDue" name="assignDue" class="form-control" value="Weekdays" readonly>`;
+    } else if (task_class === '2') {
+      dueDateContainer.innerHTML = `
+    <div class="input-group-prepend">
+      <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+    </div>
+    <select class="form-control selectpicker show-tick" data-style="border-secondary" data-actions-box="true" name="dueDate" id="dueDate" title="--Select a Day--" multiple>
+      <option value="Monday">Monday</option>
+      <option value="Tuesday">Tuesday</option>
+      <option value="Wednesday">Wednesday</option>
+      <option value="Thursday">Thursday</option>
+      <option value="Friday">Friday</option>
+    </select>`;
+      $('.selectpicker').selectpicker('refresh');
+    } else if (task_class === '3' || task_class === '6') {
+      let options = '';
+      for (let i = 1; i <= 31; i++) {
+        options += `<option value="${i}">Day ${i} of the Month</option>`;
+      }
+      dueDateContainer.innerHTML = `
+    <div class="input-group-prepend">
+      <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+    </div>
+    <select class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" title="--Select a Date--" name="dueDate" id="dueDate">${options}</select>`;
+      $('.selectpicker').selectpicker('refresh');
     }
   }
+
 
   function assignTask(element) {
     element.disabled = true;
