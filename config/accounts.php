@@ -337,7 +337,8 @@ if (isset($_POST['assignTask'])) {
   $count      = 0;
   if (is_array($due_date)) {
     // The variable is an array of strings
-    echo "The variable is an array.";
+    $due_date = implode(', ', $due_date);
+    echo "The variable is an array. {$due_date}";
   } elseif (is_numeric($due_date) && (int)$due_date == $due_date) {
     // The variable is an integer
     echo "The variable is an integer.";
