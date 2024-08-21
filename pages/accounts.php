@@ -242,7 +242,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="addtask" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content border-primary">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">Assign Task</h5>
