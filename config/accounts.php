@@ -336,17 +336,42 @@ if (isset($_POST['assignTask'])) {
   $result     = 0;
   $count      = 0;
   if (is_array($due_date)) {
-    // The variable is an array of strings
     $due_date = implode(', ', $due_date);
-    echo "The variable is an array. {$due_date}";
   } elseif (is_numeric($due_date) && (int)$due_date == $due_date) {
-    // The variable is an integer
-    echo "The variable is an integer.";
+    $due_date = filter_var($due_date, FILTER_SANITIZE_NUMBER_INT);
   } elseif (is_string($due_date)) {
-    // The variable is a single string
-    echo "The variable is a single string.";
+    $due_date = preg_replace('/[0-9]/', '', $due_date);
   } else {
     echo "The Due Date type format is not recognized.";
+  }
+  foreach ($taskArray as $task_name) {
+    $query_get = mysqli_query($con, "SELECT * FROM task_list WHERE task_name='$task_name'");
+    $row = mysqli_fetch_assoc($query_get);
+    $task_details = $row['task_details'];
+    $query_check = mysqli_query($con, "SELECT * FROM tasks WHERE task_name='$task_name' AND in_charge='$in_charge'");
+    if (mysqli_num_rows($query_check) > 0) {
+      $result = 1;
+    } else {
+      $query_insert = mysqli_query($con, "INSERT INTO tasks (`task_name`, `task_class`, `task_details`, `task_for`, `requirement_status`, `in_charge`, `submission`) VALUES ('$task_name', '$task_class', '$task_details', '$sec_id', '$require', '$in_charge', '$due_date')");
+      if ($query_insert) {
+        $result = 2;
+        $count += 1;
+      } else {
+        $result = 3;
+      }
+    }
+    if ($result == 1) {
+      $result = '<span class="badge badge-warning">Exists</span> ' . $task_name . '<br>';
+    } elseif ($result == 2) {
+      $result = '<span class="badge badge-success">Success</span> ' . $task_name . '<br>';
+    } elseif ($result === 3) {
+      $result = $task_name . ' <span class="badge badge-danger">Failed</span> ' . $task_name . '<br>';
+    }
+    echo $result;
+  }
+  if ($count > 0) {
+    $datetime_current = date('Y-m-d H:i:s');
+    $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$in_charge', 'fas fa-info', 'info', 'The head has assigned you a total of [$count] tasks.', '$datetime_current', '1')");
   }
 }
 ?>
