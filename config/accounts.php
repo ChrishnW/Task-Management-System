@@ -337,10 +337,6 @@ if (isset($_POST['assignTask'])) {
   $count      = 0;
   if (is_array($due_date)) {
     $due_date = implode(', ', $due_date);
-  } elseif (is_numeric($due_date) && (int)$due_date == $due_date) {
-    $due_date = filter_var($due_date, FILTER_SANITIZE_NUMBER_INT);
-  } elseif (is_string($due_date)) {
-    $due_date = preg_replace('/[0-9]/', '', $due_date);
   } else {
     echo "The Due Date type format is not recognized.";
   }

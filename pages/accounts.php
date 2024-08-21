@@ -799,7 +799,7 @@ include('../include/header.php');
     } else if (task_class === '3' || task_class === '6') {
       let options = '';
       for (let i = 1; i <= 31; i++) {
-        options += `<option value="${i}">Day ${i} of the Month</option>`;
+        options += `<option value="Day ${i} of the Month">Day ${i} of the Month</option>`;
       }
       dueDateContainer.innerHTML = `
     <div class="input-group-prepend">
