@@ -135,9 +135,10 @@ if (isset($_POST['accountCreate'])) {
   $lname          = strtoupper($_POST['createLname']);
   $card           = $_POST['createCard'];
   $access         = $_POST['createAccess'];
+  $dep_id         = $_POST['createDepartment'];
   $sec_id         = $_POST['createSection'];
   $email          = strtolower($_POST['createEmail']);
-  if ($username === '' || $fname === '' || $lname === '' || $card === '' || $access === '' || $sec_id === '' || $email === '') {
+  if ($username === '' || $fname === '' || $lname === '' || $card === '' || $access === '' || $dep_id === '' || $sec_id === '' || $email === '') {
     $error = true;
     echo "Please fill in all required fields.";
   }
@@ -349,5 +350,19 @@ if (isset($_GET['taskDownload'])) {
     </div>
   </body>
 
-  </html>
-<?php }
+  </html> <?php 
+}
+if (isset($_POST['selectDepartment'])) {
+  $id = $_POST['departmentSelect'];
+  $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='$id'");
+  if (mysqli_num_rows($query_result) > 0) {
+    while ($row = mysqli_fetch_assoc($query_result)) {
+      $sec_id   = $row['sec_id'];
+      $sec_name = $row['sec_name'];
+      echo "<option value='$sec_id' data-subtext='$sec_id'>" . ucwords(strtolower($sec_name)) . "</option>";
+    }
+  } else {
+    echo "<option value='' selected>No Registered Section</option>";
+  }
+}
+?>

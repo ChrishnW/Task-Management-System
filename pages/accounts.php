@@ -59,7 +59,11 @@ include('../include/header.php');
                     </td>
                     <td><?php echo $row['username']; ?></td>
                     <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
-                    <td><?php echo $row['sec_name']; ?> <p class="form-text text-danger"><?php echo $row['dept_name']; ?></p>
+                    <td>
+                      <?php if ($row['access'] != 'head') {
+                        echo $row['sec_name'];
+                      } ?>
+                      <p class="form-text text-danger"><?php echo $row['dept_name']; ?></p>
                     </td>
                     <td><?php echo strtoupper($row['access']) ?></td>
                     <td><span class="badge badge-<?php echo $btn ?>"><?php echo $status ?></span></td>
@@ -564,14 +568,35 @@ include('../include/header.php');
                   <div class="input-group-prepend">
                     <div class="input-group-text"><i class="fas fa-key"></i></div>
                   </div>
-                  <select class="form-control custom-select" name="create_access" id="create_access">
-                    <option value="" disabled selected>--Select Access Level--</option>
+                  <select class="form-control selectpicker show-tick" data-style="border-secondary" name="create_access" id="create_access" onchange="accessLevel(this)">
+                    <option value="" disabled selected>Select Access</option>
+                    <option data-divider="true"></option>
                     <?php
                     $con->next_result();
                     $sql = mysqli_query($con, "SELECT * FROM access");
                     if (mysqli_num_rows($sql) > 0) {
                       while ($row = mysqli_fetch_assoc($sql)) { ?>
-                        <option value='<?php echo $row['id'] ?>'><?php echo strtoupper($row['access']) ?></option>
+                        <option value='<?php echo $row['id'] ?>'><?php echo ucwords(strtolower($row['access'])) ?></option>
+                    <?php }
+                    } ?>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Department:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-warehouse"></i></div>
+                  </div>
+                  <select name="create_department" id="create_department" class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" data-dropup-auto="false" title="Select Department" onchange="selectDepartment(this)">
+                    <?php
+                    $con->next_result();
+                    $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' ORDER BY dept_name ASC");
+                    if (mysqli_num_rows($sql) > 0) {
+                      while ($row = mysqli_fetch_assoc($sql)) { ?>
+                        <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>'><?php echo ucwords(strtolower($row['dept_name'])) ?></option>
                     <?php }
                     } ?>
                   </select>
@@ -585,16 +610,7 @@ include('../include/header.php');
                   <div class="input-group-prepend">
                     <div class="input-group-text"><i class="fas fa-users"></i></div>
                   </div>
-                  <select name="create_section" id="create_section" class="form-control custom-select">
-                    <option value="" disabled selected>--Select Department Section--</option>
-                    <?php
-                    $con->next_result();
-                    $sql = mysqli_query($con, "SELECT * FROM section WHERE status='1'");
-                    if (mysqli_num_rows($sql) > 0) {
-                      while ($row = mysqli_fetch_assoc($sql)) { ?>
-                        <option value='<?php echo $row['sec_id'] ?>'><?php echo $row['sec_name'] ?></option>
-                    <?php }
-                    } ?>
+                  <select name="create_section" id="create_section" class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" title="Select Section" data-live-search="true" data-dropup-auto="false">
                   </select>
                 </div>
               </div>
@@ -841,7 +857,7 @@ include('../include/header.php');
   function taskDownload() {
     var viewTableID = document.getElementById('viewTableID').value;
     console.log(viewTableID);
-    window.location.href = '../config/accounts.php?taskDownload=true&username='+ viewTableID;
+    window.location.href = '../config/accounts.php?taskDownload=true&username=' + viewTableID;
   }
 
   function EditTaskView(element) {
@@ -1123,6 +1139,7 @@ include('../include/header.php');
       }
     })
   }
+
   $(document).ready(function() {
     const imageInput = document.getElementById('account_image');
     const previewImage = document.getElementById('perview_image');
@@ -1206,6 +1223,7 @@ include('../include/header.php');
     var createNumber = document.getElementById('create_number').value;
     var createCard = document.getElementById('create_card').value;
     var createAccess = document.getElementById('create_access').value;
+    var createDepartment = document.getElementById('create_department').value;
     var createSection = document.getElementById('create_section').value;
     var createEmail = document.getElementById('create_email').value;
     $.ajax({
@@ -1219,6 +1237,7 @@ include('../include/header.php');
         'createNumber': createNumber,
         'createCard': createCard,
         'createAccess': createAccess,
+        'createDepartment': createDepartment,
         'createSection': createSection,
         'createEmail': createEmail,
       },
@@ -1234,5 +1253,46 @@ include('../include/header.php');
         }
       }
     })
+  }
+
+  function selectDepartment(element) {
+    var departmentSelect = element.value;
+    var accessSelect = document.getElementById('create_access').value;
+
+    $.ajax({
+      method: "POST",
+      url: "../config/accounts.php",
+      data: {
+        "selectDepartment": true,
+        "departmentSelect": departmentSelect,
+      },
+      success: function(response) {
+        var $sectionSelect = $("select[name='create_section']");
+        $sectionSelect.html(response).selectpicker('refresh');
+
+        if (accessSelect == 3) {
+          var nextOption = $sectionSelect.find("option").eq(1); // The second option (index 1)
+          var notAvailableValue = nextOption.length ? nextOption.val() : "";
+
+          var newOption = new Option("Not Available", notAvailableValue, true, true);
+
+          $sectionSelect.prepend(newOption).selectpicker('refresh');
+        }
+      }
+    });
+  }
+
+  function accessLevel(element) {
+    var access = element.value;
+    console.log(access);
+
+    if (access != 3) {
+      document.getElementById('create_section').disabled = false;
+    } else {
+      document.getElementById('create_section').disabled = true;
+    }
+
+    $("select[name='create_department']").val('').selectpicker('refresh');
+    $("select[name='create_section']").val('').selectpicker('refresh');
   }
 </script>
