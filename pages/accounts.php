@@ -80,6 +80,11 @@ include('../include/header.php');
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
         <h6 class="m-0 font-weight-bold text-white">Deparment Members</h6>
+        <div class="dropdown no-arrow">
+          <button type="button" onclick="showCreate(this)" class="btn btn-primary">
+            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Register New Member
+          </button>
+        </div>
       </div>
       <div class="card-body">
         <div class="table-responsive">
@@ -571,13 +576,16 @@ include('../include/header.php');
                   <select class="form-control selectpicker show-tick" data-style="border-secondary" name="create_access" id="create_access" onchange="accessLevel(this)">
                     <option value="" disabled selected>Select Access</option>
                     <option data-divider="true"></option>
-                    <?php
-                    $con->next_result();
-                    $sql = mysqli_query($con, "SELECT * FROM access");
-                    if (mysqli_num_rows($sql) > 0) {
-                      while ($row = mysqli_fetch_assoc($sql)) { ?>
-                        <option value='<?php echo $row['id'] ?>'><?php echo ucwords(strtolower($row['access'])) ?></option>
+                    <?php if ($access == 3) {
+                      echo '<option value="2">Member</option>';
+                    } else {
+                      $con->next_result();
+                      $sql = mysqli_query($con, "SELECT * FROM access");
+                      if (mysqli_num_rows($sql) > 0) {
+                        while ($row = mysqli_fetch_assoc($sql)) { ?>
+                          <option value='<?php echo $row['id'] ?>'><?php echo ucwords(strtolower($row['access'])) ?></option>
                     <?php }
+                      }
                     } ?>
                   </select>
                 </div>
@@ -591,13 +599,22 @@ include('../include/header.php');
                     <div class="input-group-text"><i class="fas fa-warehouse"></i></div>
                   </div>
                   <select name="create_department" id="create_department" class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" data-dropup-auto="false" title="Select Department" onchange="selectDepartment(this)">
-                    <?php
-                    $con->next_result();
-                    $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' ORDER BY dept_name ASC");
-                    if (mysqli_num_rows($sql) > 0) {
-                      while ($row = mysqli_fetch_assoc($sql)) { ?>
-                        <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>'><?php echo ucwords(strtolower($row['dept_name'])) ?></option>
-                    <?php }
+                    <?php if ($access == 3) {
+                      $con->next_result();
+                      $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' AND dept_id='$dept_id' ORDER BY dept_name ASC");
+                      if (mysqli_num_rows($sql) > 0) {
+                        while ($row = mysqli_fetch_assoc($sql)) { ?>
+                          <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>'><?php echo ucwords(strtolower($row['dept_name'])) ?></option>
+                        <?php }
+                      }
+                    } else {
+                      $con->next_result();
+                      $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' ORDER BY dept_name ASC");
+                      if (mysqli_num_rows($sql) > 0) {
+                        while ($row = mysqli_fetch_assoc($sql)) { ?>
+                          <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>'><?php echo ucwords(strtolower($row['dept_name'])) ?></option>
+                        <?php }
+                      }
                     } ?>
                   </select>
                 </div>
