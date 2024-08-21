@@ -346,7 +346,7 @@ if (isset($_POST['assignTask'])) {
     // The variable is a single string
     echo "The variable is a single string.";
   } else {
-    echo "The variable type is not recognized.";
+    echo "The Due Date type format is not recognized.";
   }
 }
 ?>
