@@ -788,7 +788,7 @@ include('../include/header.php');
     <div class="input-group-prepend">
       <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
     </div>
-    <select class="form-control selectpicker show-tick" data-style="border-secondary" data-actions-box="true" name="dueDate" id="dueDate" title="--Select a Day--" multiple>
+    <select class="form-control selectpicker show-tick" data-style="border-secondary" data-actions-box="true" name="assignDue[]" id="assignDue" title="--Select a Day--" multiple>
       <option value="Monday">Monday</option>
       <option value="Tuesday">Tuesday</option>
       <option value="Wednesday">Wednesday</option>
@@ -805,11 +805,10 @@ include('../include/header.php');
     <div class="input-group-prepend">
       <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
     </div>
-    <select class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" title="--Select a Date--" name="dueDate" id="dueDate">${options}</select>`;
+    <select class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" title="--Select a Date--" name="assignDue" id="assignDue">${options}</select>`;
       $('.selectpicker').selectpicker('refresh');
     }
   }
-
 
   function assignTask(element) {
     element.disabled = true;
