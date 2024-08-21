@@ -231,11 +231,7 @@ include('../include/header.php');
         </div>
         <div class="form-group">
           <label>Due Date:</label>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
-            </div>
-            <input type="datetime" id="emptask_duedate" class="form-control">
+          <div class="input-group mb-2" id="editdueDateContainer">
           </div>
         </div>
       </div>
@@ -898,25 +894,47 @@ include('../include/header.php');
     var editFor = element.getAttribute('data-for');
     var editClass = element.getAttribute('data-class');
     var editDuedate = element.getAttribute('data-date');
+    var dueDateContainer = document.getElementById('editdueDateContainer');
     $(document).ready(function() {
       document.getElementById('emptask_id').value = editID;
       document.getElementById('emptask_name').value = editName;
       document.getElementById('emptask_file').value = editFile;
       document.getElementById('emptask_for').value = editFor;
       document.getElementById('emptask_class').value = editClass;
-      document.getElementById('emptask_duedate').value = editDuedate;
       if (editClass === 'DAILY ROUTINE') {
-        document.getElementById('emptask_duedate').readOnly = true;
+        dueDateContainer.innerHTML = `
+        <div class="input-group-prepend">
+          <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+        </div>
+        <input type="text" id="emptask_duedate" name="emptask_duedate" class="form-control" value="Weekdays" readonly>`;
       } else if (editClass === 'WEEKLY ROUTINE') {
-        document.getElementById('emptask_duedate').readOnly = false;
-        document.getElementById('emptask_duedate').placeholder = 'Example: Monday';
-      } else if (editClass === 'MONTHLY ROUTINE') {
-        document.getElementById('emptask_duedate').readOnly = false;
-        document.getElementById('emptask_duedate').placeholder = 'Example: 28th day of the month';
+        dueDateContainer.innerHTML = `
+        <div class="input-group-prepend">
+          <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+        </div>
+        <select class="form-control selectpicker show-tick" data-style="border-secondary" data-actions-box="true" name="emptask_duedate[]" id="emptask_duedate" multiple>
+          <option value="Monday">Monday</option>
+          <option value="Tuesday">Tuesday</option>
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thursday">Thursday</option>
+          <option value="Friday">Friday</option>
+        </select>`;
+        document.getElementById('emptask_duedate').title = editDuedate;
+        $('.selectpicker').selectpicker('refresh');
+      } else if (editClass === 'MONTHLY ROUTINE' || editClass === 'MONTHLY REPORT') {
+        let options = '';
+        for (let i = 1; i <= 31; i++) {
+          options += `<option value="Day ${i} of the Month">Day ${i} of the Month</option>`;
+        }
+        dueDateContainer.innerHTML = `
+        <div class="input-group-prepend">
+          <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+        </div>
+        <select class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" name="emptask_duedate" id="emptask_duedate">${options}</select>`;
+        document.getElementById('emptask_duedate').title = editDuedate;
+        $('.selectpicker').selectpicker('refresh');
       } else if (editClass === 'ADDITIONAL TASK') {
-        document.getElementById('emptask_duedate').readOnly = true;
-      } else if (editClass === 'MONTHLY REPORT') {
-        document.getElementById('emptask_duedate').placeholder = 'Example: 30th day of the month';
+        // No format yet
       }
       var fileCheck = document.getElementById('emptask_file').value;
       if (fileCheck === '1') {
