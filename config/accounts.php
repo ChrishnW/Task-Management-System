@@ -208,8 +208,6 @@ if (isset($_POST['editTask'])) {
   }
   if (is_array($editTask_duedate)) {
     $editTask_duedate = implode(', ', $editTask_duedate);
-  } else {
-    echo "The Due Date type format is not recognized.";
   }
   if (!$error) {
     $query_get = mysqli_query($con, "SELECT * FROM tasks WHERE id='$editTask_id'");
@@ -342,8 +340,6 @@ if (isset($_POST['assignTask'])) {
   $count      = 0;
   if (is_array($due_date)) {
     $due_date = implode(', ', $due_date);
-  } else {
-    echo "The Due Date type format is not recognized.";
   }
   foreach ($taskArray as $task_name) {
     $query_get = mysqli_query($con, "SELECT * FROM task_list WHERE task_name='$task_name'");
