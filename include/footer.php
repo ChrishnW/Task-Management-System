@@ -98,7 +98,7 @@
                       <!-- Form Group (phone number)-->
                       <div class="col-md-6">
                         <label class="small mb-1" for="inputCard">ID Number (RFID)</label>
-                        <input class="form-control" id="inputCard" name="inputCard" type="text" placeholder="Enter your phone number" value="<?php echo $card ?? 'N/A' ?>">
+                        <input class="form-control" id="inputCard" name="inputCard" type="text" placeholder="Enter your card number" value="<?php echo $card ?? 'N/A' ?>">
                       </div>
                       <!-- Form Group (birthday)-->
                       <div class="col-md-6">
@@ -109,7 +109,7 @@
                     <!-- Save changes button-->
                     <button class="btn btn-primary" type="button">Change Password</button>
                     <button class="btn btn-danger" type="button">Reset Password</button>
-                    <button class="btn btn-success float-right" type="button" id="updateAccount">Save changes</button>
+                    <button class="btn btn-success float-right" type="button" id="editAccount">Save changes</button>
                   </form>
                 </div>
               </div>
@@ -135,6 +135,25 @@
       <div class="modal-footer">
         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
         <a class="btn btn-primary" href="../include/logout.php">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Error -->
+<div class="modal fade" id="profileError" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLongTitle">Error</h5>
+      </div>
+      <div class="modal-body text-center">
+        <i class="fas fa-sad-cry fa-5x text-danger"></i>
+        <br><br>
+        <p id="error_found"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -209,15 +228,15 @@
     })
   }
 
-  $(document).ready(function(){
-    $('#uploadBtn').click(function(){
+  $(document).ready(function() {
+    $('#uploadBtn').click(function() {
       $('#fileInput').click();
     });
 
-    $('#fileInput').change(function(){
-      var fileData  = new FormData();
-      var file      = $('#fileInput')[0].files[0];
-      var fileUser  = document.getElementById('inputUsername').value;
+    $('#fileInput').change(function() {
+      var fileData = new FormData();
+      var file = $('#fileInput')[0].files[0];
+      var fileUser = document.getElementById('inputUsername').value;
       fileData.append('image', file);
       fileData.append('fileUser', fileUser);
       fileData.append('uploadImage', true);
@@ -227,13 +246,13 @@
         data: fileData,
         processData: false,
         contentType: false,
-        success: function(response){
+        success: function(response) {
           console.log(response);
         }
       })
     });
 
-    $('#deleteBtn').click(function(){
+    $('#deleteBtn').click(function() {
       var fileNameC = document.getElementById('imgSRC').value;
       var fileUserC = document.getElementById('inputUsername').value;
       $.ajax({
@@ -250,31 +269,51 @@
       });
     });
 
-    $('#updateAccount').off('click').on('click', function() {
+    $('#editAccount').off('click').on('click', function() {
       var $button = $(this);
       $button.prop('disabled', true);
+
+      // Check for empty inputs and validate specific fields
+      var isValid = true;
+      var nonStringField = $('#inputCard').val(); // replace with the actual ID of the non-string field
+      var errorMessage = '';
+
+      $('#accountDetails').find('input').each(function() {
+        if (!$(this).val()) {
+          isValid = false;
+          errorMessage = 'Please fill out all required fields.';
+          return false; // Exit each loop if an empty input is found
+        }
+      });
+
+      if (isNaN(nonStringField)) {
+        isValid = false;
+        errorMessage = 'Invalid ID Number (RFID).';
+      }
+
+      if (!isValid) {
+        $button.prop('disabled', false);
+        document.getElementById('error_found').innerHTML = errorMessage;
+        $('#profileError').modal('show');
+        return; // Stop the script from proceeding if validation fails
+      }
+
       var formData = new FormData(document.getElementById('accountDetails'));
-      formData.append('updateAccount', true);
+      formData.append('editAccount', true);
       console.log(formData);
-      // $.ajax({
-      //   method: "POST",
-      //   url: "../config/tasks.php",
-      //   data: formData,
-      //   contentType: false,
-      //   processData: false,
-      //   success: function(response) {
-      //     if (response === 'Success') {
-      //       document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-      //       $('#finish').modal('hide');
-      //       $('#success').modal('show');
-      //     } else {
-      //       document.getElementById('error_found').innerHTML = response;
-      //       $('#error').modal('show');
-      //       $button.prop('disabled', false);
-      //     }
-      //   }
-      // });
-    })
+
+      $.ajax({
+        method: "POST",
+        url: "../config/accounts.php",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+          location.reload();
+        }
+      });
+    });
+
   });
 </script>
 

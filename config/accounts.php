@@ -67,6 +67,42 @@ if (isset($_POST['accountDelete'])) {
     echo "Success";
   }
 }
+if (isset($_POST['editAccount'])) {
+  $username = $_POST['inputUsername'];
+  $update_query = "UPDATE `accounts` SET `username` = ?";
+  $params = [$username];
+
+  if (isset($_POST['inputFirstName'])) {
+    $fname = strtoupper($_POST['inputFirstName']);
+    $update_query .= ", `fname` = ?";
+    $params[] = $fname;
+  }
+
+  if (isset($_POST['inputLastName'])) {
+    $lname = strtoupper($_POST['inputLastName']);
+    $update_query .= ", `lname` = ?";
+    $params[] = $lname;
+  }
+
+  if (isset($_POST['inputEmailAddress'])) {
+    $email = strtolower($_POST['inputEmailAddress']);
+    $update_query .= ", `email` = ?";
+    $params[] = $email;
+  }
+
+  if (isset($_POST['inputCard'])) {
+    $card = $_POST['inputCard'];
+    $update_query .= ", `card` = ?";
+    $params[] = $card;
+  }
+
+  $update_query .= " WHERE `username` = ?";
+  $params[] = $username;
+
+  $stmt = mysqli_prepare($con, $update_query);
+  mysqli_stmt_bind_param($stmt, str_repeat('s', count($params)), ...$params);
+  $query_result = mysqli_stmt_execute($stmt);
+}
 if (isset($_POST['deleteImage'])) {
   $oldFileName  = $_POST['fileName'];
   $username     = $_POST['userName'];
@@ -300,12 +336,20 @@ if (isset($_GET['taskDownload'])) {
                 $requirement = '<span class="badge badge-primary">None</span>';
               } ?>
               <tr>
-                <td><center/><?php echo $count ?></td>
+                <td>
+                  <center /><?php echo $count ?>
+                </td>
                 <td><?php echo $row['task_name'] ?></td>
-                <td><center/><?php echo $task_class ?></td>
+                <td>
+                  <center /><?php echo $task_class ?>
+                </td>
                 <td style="white-space: nowrap;"><?php echo $row['task_details']; ?></td>
-                <td><center/><?php echo $requirement ?></td>
-                <td><center/><?php echo $row['submission'] ?></td>
+                <td>
+                  <center /><?php echo $requirement ?>
+                </td>
+                <td>
+                  <center /><?php echo $row['submission'] ?>
+                </td>
               </tr>
           <?php }
           } ?>
@@ -314,61 +358,61 @@ if (isset($_GET['taskDownload'])) {
     </div>
   </body>
 
-  </html> <?php 
-}
-if (isset($_POST['selectDepartment'])) {
-  $id = $_POST['departmentSelect'];
-  $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='$id'");
-  if (mysqli_num_rows($query_result) > 0) {
-    while ($row = mysqli_fetch_assoc($query_result)) {
-      $sec_id   = $row['sec_id'];
-      $sec_name = $row['sec_name'];
-      echo "<option value='$sec_id' data-subtext='$sec_id'>" . ucwords(strtolower($sec_name)) . "</option>";
-    }
-  } else {
-    echo "<option value='' selected>No Registered Section</option>";
-  }
-}
-if (isset($_POST['assignTask'])) {
-  $in_charge  = $_POST['assigneeID'];
-  $sec_id     = $_POST['assigneeSEC'];
-  $task_class = $_POST['assignClass'];
-  $taskArray  = $_POST['assignList'];
-  $require    = $_POST['assignFile'];
-  $due_date   = $_POST['assignDue'];
-  $result     = 0;
-  $count      = 0;
-  if (is_array($due_date)) {
-    $due_date = implode(', ', $due_date);
-  }
-  foreach ($taskArray as $task_name) {
-    $query_get = mysqli_query($con, "SELECT * FROM task_list WHERE task_name='$task_name'");
-    $row = mysqli_fetch_assoc($query_get);
-    $task_details = $row['task_details'];
-    $query_check = mysqli_query($con, "SELECT * FROM tasks WHERE task_name='$task_name' AND in_charge='$in_charge'");
-    if (mysqli_num_rows($query_check) > 0) {
-      $result = 1;
-    } else {
-      $query_insert = mysqli_query($con, "INSERT INTO tasks (`task_name`, `task_class`, `task_details`, `task_for`, `requirement_status`, `in_charge`, `submission`) VALUES ('$task_name', '$task_class', '$task_details', '$sec_id', '$require', '$in_charge', '$due_date')");
-      if ($query_insert) {
-        $result = 2;
-        $count += 1;
-      } else {
-        $result = 3;
-      }
-    }
-    if ($result == 1) {
-      $result = '<span class="badge badge-warning">Exists</span> ' . $task_name . '<br>';
-    } elseif ($result == 2) {
-      $result = '<span class="badge badge-success">Success</span> ' . $task_name . '<br>';
-    } elseif ($result === 3) {
-      $result = $task_name . ' <span class="badge badge-danger">Failed</span> ' . $task_name . '<br>';
-    }
-    echo $result;
-  }
-  if ($count > 0) {
-    $datetime_current = date('Y-m-d H:i:s');
-    $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$in_charge', 'fas fa-info', 'info', 'The head has assigned you a total of [$count] tasks.', '$datetime_current', '1')");
-  }
-}
-?>
+  </html> <?php
+        }
+        if (isset($_POST['selectDepartment'])) {
+          $id = $_POST['departmentSelect'];
+          $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='$id'");
+          if (mysqli_num_rows($query_result) > 0) {
+            while ($row = mysqli_fetch_assoc($query_result)) {
+              $sec_id   = $row['sec_id'];
+              $sec_name = $row['sec_name'];
+              echo "<option value='$sec_id' data-subtext='$sec_id'>" . ucwords(strtolower($sec_name)) . "</option>";
+            }
+          } else {
+            echo "<option value='' selected>No Registered Section</option>";
+          }
+        }
+        if (isset($_POST['assignTask'])) {
+          $in_charge  = $_POST['assigneeID'];
+          $sec_id     = $_POST['assigneeSEC'];
+          $task_class = $_POST['assignClass'];
+          $taskArray  = $_POST['assignList'];
+          $require    = $_POST['assignFile'];
+          $due_date   = $_POST['assignDue'];
+          $result     = 0;
+          $count      = 0;
+          if (is_array($due_date)) {
+            $due_date = implode(', ', $due_date);
+          }
+          foreach ($taskArray as $task_name) {
+            $query_get = mysqli_query($con, "SELECT * FROM task_list WHERE task_name='$task_name'");
+            $row = mysqli_fetch_assoc($query_get);
+            $task_details = $row['task_details'];
+            $query_check = mysqli_query($con, "SELECT * FROM tasks WHERE task_name='$task_name' AND in_charge='$in_charge'");
+            if (mysqli_num_rows($query_check) > 0) {
+              $result = 1;
+            } else {
+              $query_insert = mysqli_query($con, "INSERT INTO tasks (`task_name`, `task_class`, `task_details`, `task_for`, `requirement_status`, `in_charge`, `submission`) VALUES ('$task_name', '$task_class', '$task_details', '$sec_id', '$require', '$in_charge', '$due_date')");
+              if ($query_insert) {
+                $result = 2;
+                $count += 1;
+              } else {
+                $result = 3;
+              }
+            }
+            if ($result == 1) {
+              $result = '<span class="badge badge-warning">Exists</span> ' . $task_name . '<br>';
+            } elseif ($result == 2) {
+              $result = '<span class="badge badge-success">Success</span> ' . $task_name . '<br>';
+            } elseif ($result === 3) {
+              $result = $task_name . ' <span class="badge badge-danger">Failed</span> ' . $task_name . '<br>';
+            }
+            echo $result;
+          }
+          if ($count > 0) {
+            $datetime_current = date('Y-m-d H:i:s');
+            $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$in_charge', 'fas fa-info', 'info', 'The head has assigned you a total of [$count] tasks.', '$datetime_current', '1')");
+          }
+        }
+          ?>
