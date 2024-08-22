@@ -206,6 +206,11 @@ if (isset($_POST['editTask'])) {
     $error = true;
     echo "Empty field has been detected! Please try again.";
   }
+  if (is_array($editTask_duedate)) {
+    $editTask_duedate = implode(', ', $editTask_duedate);
+  } else {
+    echo "The Due Date type format is not recognized.";
+  }
   if (!$error) {
     $query_get = mysqli_query($con, "SELECT * FROM tasks WHERE id='$editTask_id'");
     $row = mysqli_fetch_assoc($query_get);

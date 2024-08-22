@@ -943,7 +943,6 @@ include('../include/header.php');
         document.getElementById('emptask_file').checked = false;
       }
       $('#edit').modal('show');
-
     })
   }
 
@@ -951,12 +950,18 @@ include('../include/header.php');
     element.disabled = true;
     var edit_task = element.value;
     var edit_requirement = document.getElementById('emptask_file');
-    var edit_duedate = document.getElementById('emptask_duedate').value;
+    var edit_duedate_element = document.getElementById('emptask_duedate');
+    if (edit_duedate_element.multiple) {
+      var edit_duedate = Array.from(edit_duedate_element.selectedOptions).map(option => option.value);
+    } else {
+      var edit_duedate = edit_duedate_element.value;
+    }
     if (edit_requirement.checked) {
       var edit_requirement_value = '1';
     } else {
       var edit_requirement_value = '0';
     }
+    console.log(edit_duedate);
     $.ajax({
       method: "POST",
       url: "../config/accounts.php",
