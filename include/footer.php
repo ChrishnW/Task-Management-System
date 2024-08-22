@@ -42,7 +42,8 @@
                   <!-- Profile picture help block-->
                   <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                   <!-- Profile picture upload button-->
-                  <button class="btn btn-primary mb-1" type="button">Upload new image</button>
+                  <button class="btn btn-primary mb-1" type="button" id="uploadBtn">Upload new image</button>
+                  <input type="file" id="fileInput" hidden>
                   <button class="btn btn-danger" type="button">Remove image</button>
                 </div>
               </div>
@@ -63,12 +64,12 @@
                       <!-- Form Group (first name)-->
                       <div class="col-md-6">
                         <label class="small mb-1" for="inputFirstName">First name</label>
-                        <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" value="<?php echo $fname?>">
+                        <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" value="<?php echo $fname ?>">
                       </div>
                       <!-- Form Group (last name)-->
                       <div class="col-md-6">
                         <label class="small mb-1" for="inputLastName">Last name</label>
-                        <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" value="<?php echo $lname?>">
+                        <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" value="<?php echo $lname ?>">
                       </div>
                     </div>
                     <!-- Form Row        -->
@@ -79,11 +80,11 @@
                         <input class="form-control" id="inputOrgName" type="text" value="<?php echo $dept_name ?>" readonly>
                       </div>
                       <!-- Form Group (location)-->
-                      <?php if ($access != 3){ ?>
-                      <div class="col-md-6">
-                        <label class="small mb-1" for="inputLocation">Section</label>
-                        <input class="form-control" id="inputLocation" type="text" value="<?php echo $sec_name ?>" readonly>
-                      </div>
+                      <?php if ($access != 3) { ?>
+                        <div class="col-md-6">
+                          <label class="small mb-1" for="inputLocation">Section</label>
+                          <input class="form-control" id="inputLocation" type="text" value="<?php echo $sec_name ?>" readonly>
+                        </div>
                       <?php } ?>
                     </div>
                     <!-- Form Group (email address)-->
@@ -204,6 +205,10 @@
       }
     })
   }
+
+  document.getElementById('uploadBtn').addEventListener('click', function() {
+    document.getElementById('fileInput').click();
+  });
 </script>
 
 </body>
