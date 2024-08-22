@@ -33,6 +33,23 @@ if (isset($_POST['updatePassword'])) {
     echo "Unable to complete the operation. Please try again later.";
   }
 }
+if (isset($_POST['passUpdate'])) {
+  $userAcc = $_POST['userAcc'];
+  $actPass = $_POST['actPass'];
+  $curPass = $_POST['curPass'];
+  $conPass = $_POST['conPass'];
+  if (!password_verify($curPass, $actPass)) {
+    echo "Current password is incorrect.";
+  } else {
+    if (password_verify($conPass, $actPass)) {
+      echo "New password cannot be the same as the current password.";
+    } else {
+      $conPass = password_hash($_POST['conPass'], PASSWORD_DEFAULT);
+      $update_query = mysqli_query($con, "UPDATE accounts SET password='$conPass' WHERE username='$userAcc'");
+      echo "Success";
+    }
+  }
+}
 if (isset($_POST['accountReset'])) {
   $id             = $_POST['resetID'];
   $password_temp  = '12345';

@@ -107,8 +107,8 @@
                       </div>
                     </div>
                     <!-- Save changes button-->
-                    <button class="btn btn-primary" type="button">Change Password</button>
-                    <button class="btn btn-danger" type="button">Reset Password</button>
+                    <button class="btn btn-primary" type="button" id="editPassword">Change Password</button>
+                    <button class="btn btn-danger" type="button" id="resetPassword">Reset Password</button>
                     <button class="btn btn-success float-right" type="button" id="editAccount">Save changes</button>
                   </form>
                 </div>
@@ -119,6 +119,38 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Account Password -->
+<div class="modal fade" id="passwordModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="accountUsername">Change Password</h5>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Current Password</label><small class="text-danger d-none" id="incorrect"> Current password is incorrect!</small>
+            <input type="text" class="form-control" id="curPass" placeholder="Current Password">
+          </div>
+          <div class="form-group">
+            <label>New Password</label><small class="text-danger d-none" id="used"> New password cannot be the same as the current password.</small>
+            <input type="text" class="form-control" id="newPass" placeholder="New Password">
+          </div>
+          <div class="form-group">
+            <label>Confirm Password</label><small class="text-danger d-none" id="notmatch"> Passwords do not match!</small>
+            <input type="text" class="form-control" id="conPass" placeholder="Confirm Password">
+          </div>
+          <p class="text-danger font-weight-bold font-italic display-9">Please review your changes. After confirmation, you will be logged out to apply the updates.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="passUpdate">Save</button>
       </div>
     </div>
   </div>
@@ -314,6 +346,66 @@
       });
     });
 
+    $('#editPassword').off('click').on('click', function() {
+      $('#passwordModal').modal('show');
+    });
+
+    $('#passUpdate').off('click').on('click', function() {
+      var userAcc = <?php echo json_encode($username) ?>;
+      var actPass = <?php echo json_encode($pass) ?>;
+      var curPass = document.getElementById('curPass').value;
+      var newPass = document.getElementById('newPass').value;
+      var conPass = document.getElementById('conPass').value;
+      if (curPass === '' || newPass === '' || conPass === '') {
+        document.getElementById('curPass').placeholder = 'Please input here!';
+        document.getElementById('curPass').classList.add('border-danger');
+        document.getElementById('newPass').placeholder = 'Please input here!';
+        document.getElementById('newPass').classList.add('border-danger');
+        document.getElementById('conPass').placeholder = 'Please input here!';
+        document.getElementById('conPass').classList.add('border-danger');
+      } else if (newPass !== conPass) {
+        document.getElementById('conPass').focus();
+        document.getElementById('conPass').classList.add('border-danger');
+        document.getElementById('notmatch').classList.remove('d-none');
+      } else {
+        document.getElementById('curPass').classList.remove('border-danger');
+        document.getElementById('conPass').classList.remove('border-danger');
+        document.getElementById('newPass').classList.remove('border-danger');
+        document.getElementById('notmatch').classList.add('d-none');
+        $.ajax({
+          method: "POST",
+          url: "../config/accounts.php",
+          data: {
+            "passUpdate": true,
+            "userAcc": userAcc,
+            "actPass": actPass,
+            "curPass": curPass,
+            "conPass": conPass,
+          },
+          success: function(response) {
+            if (response === 'Current password is incorrect.') {
+              document.getElementById('curPass').focus();
+              document.getElementById('curPass').classList.add('border-danger');
+              document.getElementById('incorrect').classList.remove('d-none');
+            } else {
+              document.getElementById('curPass').classList.remove('border-danger');
+              document.getElementById('incorrect').classList.add('d-none');
+            }
+            if (response === 'New password cannot be the same as the current password.') {
+              document.getElementById('newPass').focus();
+              document.getElementById('newPass').classList.add('border-danger');
+              document.getElementById('used').classList.remove('d-none');
+            } else {
+              document.getElementById('newPass').classList.remove('border-danger');
+              document.getElementById('used').classList.add('d-none');
+            }
+            if (response === 'Success') {
+              window.location.href = '../include/logout.php';
+            }
+          }
+        })
+      }
+    });
   });
 </script>
 
