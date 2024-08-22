@@ -38,13 +38,14 @@
                 <div class="card-header">Profile Picture</div>
                 <div class="card-body text-center">
                   <!-- Profile picture image-->
-                  <img class="img-account-profile rounded-circle mb-2 w-75" src="<?php echo $imageURL ?>" alt="">
+                  <img class="img-account-profile rounded-circle mb-2 w-75" src="<?php echo $imageURL ?>" alt="<?php echo $username ?>">
+                  <input type="text" id="imgSRC" value="<?php echo $fileSRC ?>" hidden>
                   <!-- Profile picture help block-->
                   <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                   <!-- Profile picture upload button-->
                   <button class="btn btn-primary mb-1" type="button" id="uploadBtn">Upload new image</button>
                   <input type="file" id="fileInput" hidden>
-                  <button class="btn btn-danger" type="button">Remove image</button>
+                  <button class="btn btn-danger" type="button" id="deleteBtn">Remove image</button>
                 </div>
               </div>
             </div>
@@ -231,7 +232,24 @@
         }
       })
     });
-  })
+
+    $('#deleteBtn').click(function(){
+      var fileNameC = document.getElementById('imgSRC').value;
+      var fileUserC = document.getElementById('inputUsername').value;
+      $.ajax({
+        method: "POST",
+        url: "../config/accounts.php",
+        data: {
+          "deleteImage": true,
+          "fileName": fileNameC,
+          "userName": fileUserC,
+        },
+        success: function(response) {
+          location.reload();
+        }
+      });
+    });
+  });
 </script>
 
 </body>

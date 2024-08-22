@@ -14,6 +14,7 @@ if (mysqli_num_rows($query_result) > 0) {
     $dept_id    = $row['dept_id'];
     $dept_name  = ucwords(strtolower($row['dept_name']));
     $sec_name   = ucwords(strtolower($sec));
+    $fileSRC    = $row['file_name'];
     if (empty($row["file_name"])) {
       $imageURL = '../assets/img/user-profiles/nologo.png';
     } else {
