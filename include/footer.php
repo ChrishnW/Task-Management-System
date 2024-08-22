@@ -208,9 +208,30 @@
     })
   }
 
-  document.getElementById('uploadBtn').addEventListener('click', function() {
-    document.getElementById('fileInput').click();
-  });
+  $(document).ready(function(){
+    $('#uploadBtn').click(function(){
+      $('#fileInput').click();
+    });
+
+    $('#fileInput').change(function(){
+      var fileData  = new FormData();
+      var file      = $('#fileInput')[0].files[0];
+      var fileUser  = document.getElementById('inputUsername').value;
+      fileData.append('image', file);
+      fileData.append('fileUser', fileUser);
+      fileData.append('uploadImage', true);
+      $.ajax({
+        type: 'POST',
+        url: '../config/accounts.php',
+        data: fileData,
+        processData: false,
+        contentType: false,
+        success: function(response){
+          console.log(response);
+        }
+      })
+    });
+  })
 </script>
 
 </body>

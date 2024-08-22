@@ -98,7 +98,7 @@ if (isset($_POST['uploadImage'])) {
   if (in_array($fileType, $allowTypes)) {
     $check = getimagesize($_FILES["image"]["tmp_name"]);
     if ($check !== false) {
-      if ($_FILES["image"]["size"] <= 1e+6) {
+      if ($_FILES["image"]["size"] <= 5e+6) {
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFilePath)) {
           $select = "SELECT file_name FROM accounts WHERE username = '$fileUser'";
           $select_result = mysqli_query($con, $select);
@@ -119,7 +119,7 @@ if (isset($_POST['uploadImage'])) {
           echo "The file path directory is not found. Contact the system administrator now.";
         }
       } else {
-        echo "The file size is larger than 1 megabyte.";
+        echo "The file size is larger than 5 megabyte.";
       }
     } else {
       echo "The file is not genuine.";
