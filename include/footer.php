@@ -34,7 +34,7 @@
           <div class="row">
             <div class="col-xl-4">
               <!-- Profile picture card-->
-              <div class="card mb-4 mb-xl-0">
+              <div class="card mb-2">
                 <div class="card-header">Profile Picture</div>
                 <div class="card-body text-center">
                   <!-- Profile picture image-->
@@ -106,7 +106,9 @@
                       </div>
                     </div>
                     <!-- Save changes button-->
-                    <button class="btn btn-primary float-right" type="button">Save changes</button>
+                    <button class="btn btn-primary" type="button">Change Password</button>
+                    <button class="btn btn-danger" type="button">Reset Password</button>
+                    <button class="btn btn-success float-right" type="button">Save changes</button>
                   </form>
                 </div>
               </div>
