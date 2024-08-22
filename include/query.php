@@ -5,12 +5,15 @@ $query_result = mysqli_query($con, "SELECT *, department.dept_name FROM accounts
 if (mysqli_num_rows($query_result) > 0) {
   while ($row = $query_result->fetch_assoc()) {
     $fname_temp = strtolower($row['fname']);
+    $lname_temp = strtolower($row['lname']);
     $fname      = ucwords($fname_temp);
+    $lname      = ucwords($lname_temp);
     $card       = $row['card'];
     $email      = $row['email'];
     $sec        = $row['sec_name'];
     $dept_id    = $row['dept_id'];
     $dept_name  = ucwords(strtolower($row['dept_name']));
+    $sec_name   = ucwords(strtolower($sec));
     if (empty($row["file_name"])) {
       $imageURL = '../assets/img/user-profiles/nologo.png';
     } else {
