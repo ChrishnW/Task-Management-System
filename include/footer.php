@@ -58,58 +58,58 @@
                     <!-- Form Group (username)-->
                     <div class="mb-3">
                       <label class="small mb-1" for="inputUsername">Username</label>
-                      <input class="form-control" id="inputUsername" type="text" placeholder="Enter your username" value="<?php echo $username ?>" readonly>
+                      <input class="form-control" id="inputUsername" name="inputUsername" type="text" placeholder="Enter your username" value="<?php echo $username ?>" readonly>
                     </div>
                     <!-- Form Row-->
                     <div class="row gx-3 mb-3">
                       <!-- Form Group (first name)-->
                       <div class="col-md-6">
                         <label class="small mb-1" for="inputFirstName">First name</label>
-                        <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" value="<?php echo $fname ?>">
+                        <input class="form-control" id="inputFirstName" name="inputFirstName" type="text" placeholder="Enter your first name" value="<?php echo $fname ?>">
                       </div>
                       <!-- Form Group (last name)-->
                       <div class="col-md-6">
                         <label class="small mb-1" for="inputLastName">Last name</label>
-                        <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" value="<?php echo $lname ?>">
+                        <input class="form-control" id="inputLastName" name="inputLastName" type="text" placeholder="Enter your last name" value="<?php echo $lname ?>">
                       </div>
                     </div>
                     <!-- Form Row        -->
                     <div class="row gx-3 mb-3">
                       <!-- Form Group (organization name)-->
                       <div class="col-md-6">
-                        <label class="small mb-1" for="inputOrgName">Department</label>
-                        <input class="form-control" id="inputOrgName" type="text" value="<?php echo $dept_name ?>" readonly>
+                        <label class="small mb-1" for="inputDepartment">Department</label>
+                        <input class="form-control" id="inputDepartment" name="inputDepartment" type="text" value="<?php echo $dept_name ?>" readonly>
                       </div>
                       <!-- Form Group (location)-->
                       <?php if ($access != 3) { ?>
                         <div class="col-md-6">
-                          <label class="small mb-1" for="inputLocation">Section</label>
-                          <input class="form-control" id="inputLocation" type="text" value="<?php echo $sec_name ?>" readonly>
+                          <label class="small mb-1" for="inputSection">Section</label>
+                          <input class="form-control" id="inputSection" name="inputSection" type="text" value="<?php echo $sec_name ?>" readonly>
                         </div>
                       <?php } ?>
                     </div>
                     <!-- Form Group (email address)-->
                     <div class="mb-3">
                       <label class="small mb-1" for="inputEmailAddress">Email address</label>
-                      <input class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" value="<?php echo $email ?>">
+                      <input class="form-control" id="inputEmailAddress" name="inputEmailAddress" type="email" placeholder="Enter your email address" value="<?php echo $email ?>">
                     </div>
                     <!-- Form Row-->
                     <div class="row gx-3 mb-3">
                       <!-- Form Group (phone number)-->
                       <div class="col-md-6">
                         <label class="small mb-1" for="inputCard">ID Number (RFID)</label>
-                        <input class="form-control" id="inputCard" type="text" placeholder="Enter your phone number" value="<?php echo $card ?? 'N/A' ?>">
+                        <input class="form-control" id="inputCard" name="inputCard" type="text" placeholder="Enter your phone number" value="<?php echo $card ?? 'N/A' ?>">
                       </div>
                       <!-- Form Group (birthday)-->
                       <div class="col-md-6">
-                        <label class="small mb-1" for="inputBirthday">Access</label>
-                        <input class="form-control" id="inputBirthday" type="text" name="birthday" value="<?php echo $access == 1 ? 'Admin' : ($access == 2 ? 'Member' : ($access == 3 ? 'Head' : 'Unknown')); ?>" readonly>
+                        <label class="small mb-1" for="inputAccess">Access</label>
+                        <input class="form-control" id="inputAccess" type="text" name="inputAccess" value="<?php echo $access == 1 ? 'Admin' : ($access == 2 ? 'Member' : ($access == 3 ? 'Head' : 'Unknown')); ?>" readonly>
                       </div>
                     </div>
                     <!-- Save changes button-->
                     <button class="btn btn-primary" type="button">Change Password</button>
                     <button class="btn btn-danger" type="button">Reset Password</button>
-                    <button class="btn btn-success float-right" type="button">Save changes</button>
+                    <button class="btn btn-success float-right" type="button" id="updateAccount">Save changes</button>
                   </form>
                 </div>
               </div>
@@ -249,6 +249,32 @@
         }
       });
     });
+
+    $('#updateAccount').off('click').on('click', function() {
+      var $button = $(this);
+      $button.prop('disabled', true);
+      var formData = new FormData(document.getElementById('accountDetails'));
+      formData.append('updateAccount', true);
+      console.log(formData);
+      // $.ajax({
+      //   method: "POST",
+      //   url: "../config/tasks.php",
+      //   data: formData,
+      //   contentType: false,
+      //   processData: false,
+      //   success: function(response) {
+      //     if (response === 'Success') {
+      //       document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+      //       $('#finish').modal('hide');
+      //       $('#success').modal('show');
+      //     } else {
+      //       document.getElementById('error_found').innerHTML = response;
+      //       $('#error').modal('show');
+      //       $button.prop('disabled', false);
+      //     }
+      //   }
+      // });
+    })
   });
 </script>
 
