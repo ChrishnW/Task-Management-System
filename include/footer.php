@@ -22,6 +22,24 @@
   <i class="fas fa-angle-up"></i>
 </a>
 
+<!-- Account Profile -->
+ <div class="modal fade" id="profileModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-secondary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Account Settings</h5>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <a class="btn btn-primary" href="../include/logout.php">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Logout Modal-->
 <div class="modal fade" id="logoutModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered" role="document">
