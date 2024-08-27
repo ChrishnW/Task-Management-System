@@ -605,7 +605,7 @@ include('../include/header.php');
                   $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
               ?>
                   <tr>
-                    <td><button type="button" onclick="viewTask(this)" class="btn btn-warning btn-circle" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye"></i></button></td>
+                    <td><button type="button" onclick="viewTask(this)" class="btn btn-primary" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
                     <td>
                       <center /><?php echo $row['task_code'] ?>
                     </td>
@@ -766,8 +766,9 @@ include('../include/header.php');
 <script>
   $('#dataTable').DataTable({
     "order": [
+      [6, "desc"],
       [4, "desc"],
-      [2, "asc"]
+      [2, "asc"],
     ],
     "pageLength": 5,
     "lengthMenu": [5, 10, 25, 50, 100],
