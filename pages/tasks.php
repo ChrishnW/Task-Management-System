@@ -45,7 +45,7 @@ include('../include/header.php');
       </div>
       <div class="form-group col">
         <br>
-        <button type="button" class="btn btn-success" onclick="filterTable(this)"><i class="fas fa-filter fa-fw"></i> Filter Table</button>
+        <button type="button" class="btn btn-success btn-sm" onclick="filterTable(this)"><i class="fas fa-filter fa-fw"></i> Filter Table</button>
       </div>
     </div>
     <div class="card">
