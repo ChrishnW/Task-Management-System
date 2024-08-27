@@ -812,6 +812,7 @@ include('../include/header.php');
         $('#dataTableBody').append(response);
         $('#dataTable').DataTable({
           "order": [
+            [6, "desc"],
             [4, "desc"],
             [2, "asc"]
           ],

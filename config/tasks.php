@@ -56,7 +56,7 @@ if (isset($_POST['filterTable'])) {
       }
       $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
       $due_date  = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-      $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo">';
+      $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="'.$row['in_charge'].'">';
       $status_badges = [
         'NOT YET STARTED' => 'primary',
         'IN PROGRESS' => 'warning',
@@ -70,7 +70,7 @@ if (isset($_POST['filterTable'])) {
           <?php if ($access == 1) { ?>
           <button type="button" class="btn btn-info btn-circle" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pen"></i></button>
           <?php } ?>
-          <button type="button" onclick="viewTask(this)" class="btn btn-warning btn-circle" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye"></i></button>
+          <button type="button" onclick="viewTask(this)" class="btn btn-primary" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button>
         </td>
         <td>
           <center /><?php echo $row['task_code'] ?>
@@ -78,7 +78,7 @@ if (isset($_POST['filterTable'])) {
         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
         <td><?php echo $task_class ?></td>
         <td><?php echo $due_date ?></td>
-        <td data-toggle="tooltip" data-placement="top" title="<?php echo $row['in_charge'] ?>">
+        <td>
           <center /><?php echo $assignee ?>
         </td>
         <td><?php echo $progress ?></td>
