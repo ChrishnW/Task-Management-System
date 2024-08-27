@@ -318,6 +318,22 @@
       document.getElementById('conPass').classList.remove('border-danger');
       document.getElementById('conPass').classList.add('border-success');
       document.getElementById('notmatch').classList.add('d-none');
+      var userAcc = <?php echo json_encode($username) ?>;
+      var setPass = $('#conPass').val();
+      $.ajax({
+        method: "POST",
+        url: "../config/accounts.php",
+        data: {
+          "passUpdate": true,
+          "userAcc": userAcc,
+          "setPass": setPass,
+        },
+        success: function(response) {
+          if (response === 'success') {
+            window.location.href = '../include/logout.php';
+          }
+        }
+      });
     }
   }
 
