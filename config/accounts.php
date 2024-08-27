@@ -50,6 +50,15 @@ if (isset($_POST['passUpdate'])) {
     }
   }
 }
+if (isset($_POST['checkPassword'])) {
+  $check    = $_POST['check'];
+  $current  = $_POST['current'];
+  if (!password_verify($check, $current)) {
+    echo "Failed";
+  } else {
+    echo "Success";
+  }
+}
 if (isset($_POST['accountReset'])) {
   $id             = $_POST['resetID'];
   $password_temp  = '12345';

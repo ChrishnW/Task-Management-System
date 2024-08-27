@@ -135,21 +135,21 @@
         <div class="col-md-12">
           <div class="form-group">
             <label>Current Password</label><small class="text-danger d-none" id="incorrect"> Current password is incorrect!</small>
-            <input type="text" class="form-control" id="curPass" placeholder="Current Password">
+            <input type="password" class="form-control" id="curPass" placeholder="Current Password" onchange="checkPassword(this)">
           </div>
           <div class="form-group">
             <label>New Password</label><small class="text-danger d-none" id="used"> New password cannot be the same as the current password.</small>
-            <input type="text" class="form-control" id="newPass" placeholder="New Password">
+            <input type="password" class="form-control" id="newPass" placeholder="New Password" readonly>
           </div>
           <div class="form-group">
             <label>Confirm Password</label><small class="text-danger d-none" id="notmatch"> Passwords do not match!</small>
-            <input type="text" class="form-control" id="conPass" placeholder="Confirm Password">
+            <input type="password" class="form-control" id="conPass" placeholder="Confirm Password" readonly>
           </div>
           <p class="text-danger font-weight-bold font-italic display-9">Please review your changes. After confirmation, you will be logged out to apply the updates.</p>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" onclick="location.reload();">Close</button>
         <button type="button" class="btn btn-primary" id="passUpdate">Save</button>
       </div>
     </div>
@@ -260,6 +260,32 @@
     })
   }
 
+  function checkPassword(element) {
+    var icPassowrd = element.value;
+    var ccPassword = <?php echo json_encode($pass); ?>;
+    $.ajax({
+      method: "POST",
+      url: "../config/accounts.php",
+      data: {
+        "checkPassword": true,
+        "check": icPassowrd,
+        "current": ccPassword
+      },
+      success: function(response) {
+        var currentInput = document.getElementById('newPass');
+        if (response === 'Success') {
+          currentInput.readOnly = false;
+          document.getElementById('curPass').classList.remove('border-danger');
+          document.getElementById('incorrect').classList.add('d-none');
+        } else {
+          currentInput.readOnly = true;
+          document.getElementById('curPass').classList.add('border-danger');
+          document.getElementById('incorrect').classList.remove('d-none');
+        }
+      }
+    });
+  }
+
   $(document).ready(function() {
     $('#uploadBtn').click(function() {
       $('#fileInput').click();
@@ -348,63 +374,6 @@
 
     $('#editPassword').off('click').on('click', function() {
       $('#passwordModal').modal('show');
-    });
-
-    $('#passUpdate').off('click').on('click', function() {
-      var userAcc = <?php echo json_encode($username) ?>;
-      var actPass = <?php echo json_encode($pass) ?>;
-      var curPass = document.getElementById('curPass').value;
-      var newPass = document.getElementById('newPass').value;
-      var conPass = document.getElementById('conPass').value;
-      if (curPass === '' || newPass === '' || conPass === '') {
-        document.getElementById('curPass').placeholder = 'Please input here!';
-        document.getElementById('curPass').classList.add('border-danger');
-        document.getElementById('newPass').placeholder = 'Please input here!';
-        document.getElementById('newPass').classList.add('border-danger');
-        document.getElementById('conPass').placeholder = 'Please input here!';
-        document.getElementById('conPass').classList.add('border-danger');
-      } else if (newPass !== conPass) {
-        document.getElementById('conPass').focus();
-        document.getElementById('conPass').classList.add('border-danger');
-        document.getElementById('notmatch').classList.remove('d-none');
-      } else {
-        document.getElementById('curPass').classList.remove('border-danger');
-        document.getElementById('conPass').classList.remove('border-danger');
-        document.getElementById('newPass').classList.remove('border-danger');
-        document.getElementById('notmatch').classList.add('d-none');
-        $.ajax({
-          method: "POST",
-          url: "../config/accounts.php",
-          data: {
-            "passUpdate": true,
-            "userAcc": userAcc,
-            "actPass": actPass,
-            "curPass": curPass,
-            "conPass": conPass,
-          },
-          success: function(response) {
-            if (response === 'Current password is incorrect.') {
-              document.getElementById('curPass').focus();
-              document.getElementById('curPass').classList.add('border-danger');
-              document.getElementById('incorrect').classList.remove('d-none');
-            } else {
-              document.getElementById('curPass').classList.remove('border-danger');
-              document.getElementById('incorrect').classList.add('d-none');
-            }
-            if (response === 'New password cannot be the same as the current password.') {
-              document.getElementById('newPass').focus();
-              document.getElementById('newPass').classList.add('border-danger');
-              document.getElementById('used').classList.remove('d-none');
-            } else {
-              document.getElementById('newPass').classList.remove('border-danger');
-              document.getElementById('used').classList.add('d-none');
-            }
-            if (response === 'Success') {
-              window.location.href = '../include/logout.php';
-            }
-          }
-        })
-      }
     });
   });
 </script>
