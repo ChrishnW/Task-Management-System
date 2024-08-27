@@ -868,17 +868,18 @@ include('../include/header.php');
   }
 
   function editTask(element) {
-    var taskID = element.value;
-    console.log(taskID);
+    var editaskID = element.value;
+    console.log(editaskID);
+    $('#editDetails').html('');
     $.ajax({
       method: "POST",
       url: "../config/tasks.php",
       data: {
         "editTask": true,
-        "taskID": taskID,
+        "taskID": editaskID,
       },
       success: function(response) {
-        document.getElementById('updateButton').value = taskID;
+        document.getElementById('updateButton').value = editaskID;
         $('#editDetails').html(response);
         $('#edit').modal('show');
       }
