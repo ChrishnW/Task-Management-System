@@ -1,15 +1,15 @@
-<?php 
-  include('../include/header.php');
+<?php
+include('../include/header.php');
 ?>
 
 <div class="container-fluid">
-  <?php if($access == 1) {
+  <?php if ($access == 1) {
     $con->next_result();
     $today = date('Y-m-d 16:00:00');
     $query_result = mysqli_query($con, "SELECT COUNT(id) as total_tasks, (SELECT COUNT(id) FROM accounts WHERE status=1) as all_accounts, (SELECT COUNT(id) FROM tasks_details WHERE status='PROJECT' AND task_status=1) as project_tasks FROM tasks_details WHERE task_status=1");
     $row = mysqli_fetch_assoc($query_result);
     $total_tasks      = $row['total_tasks'];
-    $project_tasks    = $row['project_tasks']; 
+    $project_tasks    = $row['project_tasks'];
     $all_accounts     = $row['all_accounts']; ?>
     <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
     <div class="row">
@@ -295,7 +295,7 @@
         </div>
       </div>
     </div>
-  <?php } elseif($access == 2) { 
+  <?php } elseif ($access == 2) {
     $con->next_result();
     $today = date('Y-m-d');
     $query_result = mysqli_query($con, "SELECT COUNT(id) as task_today, (SELECT COUNT(id) FROM tasks WHERE in_charge='$username') as assigned_task, (SELECT COUNT(id) FROM tasks WHERE in_charge='$username' AND task_class=5) as total_project, (SELECT COUNT(id) FROM tasks_details WHERE in_charge='$username' AND task_status=1 AND status='IN PROGRESS' AND MONTH(due_date)='$currentMonth' AND YEAR(due_date)='$currentYear') as task_inprogress FROM tasks_details WHERE in_charge='$username' AND task_status=1 AND status='NOT YET STARTED' AND MONTH(due_date)='$currentMonth' AND YEAR(due_date)='$currentYear'");
@@ -568,13 +568,13 @@
         </div>
       </div>
     </div>
-  <?php } elseif($access == 3) {
+  <?php } elseif ($access == 3) {
     $con->next_result();
     $today = date('Y-m-d 16:00:00');
     $query_result = mysqli_query($con, "SELECT COUNT(tasks_details.id) as total_tasks, (SELECT COUNT(tasks_details.id) FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id='$dept_id') as for_review_tasks, (SELECT COUNT(tasks_details.id) FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND section.dept_id='$dept_id' AND tasks_details.status='PROJECT') as project_tasks, (SELECT COUNT('accounts.id') FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2) as members FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND section.dept_id='$dept_id'");
     $row = mysqli_fetch_assoc($query_result);
     $total_tasks      = $row['total_tasks'];
-    $project_tasks    = $row['project_tasks']; 
+    $project_tasks    = $row['project_tasks'];
     $for_review_tasks = $row['for_review_tasks'];
     $members          = $row['members']; ?>
     <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
@@ -799,8 +799,33 @@
           <div class="card-body scrollable-card-body">
             <?php
             $con->next_result();
-            $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE status='PROJECT' AND task_status=1 AND in_charge='$username'");
+            $query_result = mysqli_query($con, "SELECT project_list.*, accounts.file_name, accounts.username FROM project_list JOIN department ON department.dept_id=project_list.dept_id JOIN accounts ON accounts.id=project_list.leader WHERE project_list.dept_id='$dept_id'");
             if (mysqli_num_rows($query_result) > 0) {
+              while ($row = mysqli_fetch_assoc($query_result)) { ?>
+                <div class="card mb-4 py-3 border-bottom-danger">
+                  <div class="card-body custom-card">
+                    <div class="left-content text-<?php echo $selectBorder ?> col-5">
+                      <div class="display-8 font-weight-bold"><?php echo $row['title']; ?></div>
+                      <div class="font-weight-light font-italic display-8"><?php echo $row['details']; ?></div>
+                    </div>
+                    <div class="middle-content text-center col-7">
+                      <i class="fas fa-user-circle"></i> Project Leader: <?php echo $row['username']; ?><br>
+                      <i class="fas fa-calendar-day fa-fw"></i>Due Date: <?php echo date_format(date_create($row['end']), "F d, Y")?>
+                      <hr class="sidebar-divider d-none d-md-block">
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">
+                          75%
+                        </div>
+                      </div>
+                      <div class="font-weight-bold">
+                        <?php echo $row['status']; ?>
+                      </div>
+                    </div>
+                    <!-- <div class="right-content text-center">
+                    </div> -->
+                  </div>
+                </div>
+              <?php }
             } else { ?>
               <div class="card-body text-center">
                 No current in-progress project.
@@ -866,7 +891,7 @@
 <?php include('../include/footer.php'); ?>
 
 <script>
-  $(function () {
+  $(function() {
     $('[data-toggle="tooltip"]').tooltip()
   })
 </script>
