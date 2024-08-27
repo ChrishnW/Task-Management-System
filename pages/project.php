@@ -101,9 +101,43 @@ include('../include/header.php');
       </div>
     </div>
   <?php } elseif ($access == 3) { ?>
+    <div class="row">
+      <div class="form-group col-md-2">
+        <label>To</label>
+        <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTable()">
+      </div>
+      <div class="form-group col-md-2">
+        <label>From</label>
+        <input type="date" name="date_from" id="date_from" class="form-control" onchange="filterTable()">
+      </div>
+      <div class="form-group col-md-2">
+        <label>Section</label>
+        <select id="section" name="section[]" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" data-live-search="true" onchange="filterTable()">
+          <option value='' data-subtext='Default' selected>All</option>
+          <?php
+          $con->next_result();
+          $sql = mysqli_query($con, "SELECT * FROM section WHERE status='1' AND dept_id='$dept_id'");
+          if (mysqli_num_rows($sql) > 0) {
+            while ($row = mysqli_fetch_assoc($sql)) { ?>
+              <option value='<?php echo $row['sec_id'] ?>' data-subtext='<?php echo $row['sec_id'] ?>' class="text-capitalize"><?php echo strtolower($row['sec_name']) ?></option>
+          <?php }
+          } ?>
+        </select>
+      </div>
+      <div class="form-group col-md-2">
+        <label>Progress</label>
+        <select id="progress" name="progress" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable()">
+          <option value="" data-subtext="Default" selected>All</option>
+          <option value="NOT YET STARTED">Not Yet Started</option>
+          <option value="IN PROGRESS">In-Progress</option>
+          <option value="REVIEW">Review</option>
+          <option value="FINISHED">Finished</option>
+        </select>
+      </div>
+    </div>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-        <h6 class="m-0 font-weight-bold text-white">Deployed Tasks</h6>
+        <h6 class="m-0 font-weight-bold text-white">Project List</h6>
         <button type="button" onclick="showCreate(this)" class="btn btn-primary btn-sm">
           <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create New Project
         </button>
@@ -123,19 +157,47 @@ include('../include/header.php');
               </tr>
             </thead>
             <tbody id='dataTableBody'>
-              <tr>
-                <td><button type="button" onclick="viewTask(this)" class="btn btn-warning btn-circle" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye"></i></button></td>
-                <td>
-                  <center /><?php echo $row['task_code'] ?>
-                </td>
-                <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-                <td><?php echo $task_class ?></td>
-                <td><?php echo $due_date ?></td>
-                <td><?php echo $progress ?></td>
-                <td>
-                  <center /><img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="qwe">
-                </td>
-              </tr>
+              <?php $con->next_result();
+              $result = mysqli_query($con, "SELECT project_list.*, accounts.file_name, accounts.username FROM project_list JOIN department ON department.dept_id=project_list.dept_id JOIN accounts ON accounts.id=project_list.leader WHERE project_list.dept_id='$dept_id'");
+              if (mysqli_num_rows($result) > 0) {
+                while ($row = $result->fetch_assoc()) {
+                  if (empty($row['file_name'])) {
+                    $imageURL = '../assets/img/user-profiles/nologo.png';
+                  } else {
+                    $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
+                  }
+                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="'.$row['username'].'">';
+              ?>
+                  <tr>
+                    <td>
+                      <div class="btn-group dropright">
+                        <button type="button" class="btn btn-block btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i> Action</button>
+                        <div class="dropdown-menu">
+                          <button type="button" class="dropdown-item" onclick="actionView(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-eye fa-fw"></i> View</button>
+                          <div class="dropdown-divider"></div>
+                          <button type="button" class="dropdown-item" onclick="actionEdit(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pencil-alt fa-fw"></i> Edit</button>
+                          <div class="dropdown-divider"></div>
+                          <button type="button" class="dropdown-item" onclick="actionDelete(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-trash fa-fw"></i> Delete</button>
+                        </div>
+                      </div>
+                    </td>
+                    <td><?php echo $row['title'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['details'] ?>"></i></td>
+                    <td><?php echo $row['start'] ?></td>
+                    <td><?php echo $row['end'] ?></td>
+                    <td>
+                      <span class="badge badge-info"><?php echo $row['status'] ?></span>
+                    </td>
+                    <td>
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">75%</div>
+                      </div>
+                    </td>
+                    <td>
+                      <center /><?php echo $assignee ?>
+                    </td>
+                  </tr>
+              <?php }
+              } ?>
             </tbody>
           </table>
         </div>
