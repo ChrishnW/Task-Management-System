@@ -108,7 +108,7 @@ include('../include/header.php');
                   $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
               ?>
                   <tr>
-                    <td><button type="button" class="btn btn-info btn-circle" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pen"></i></button> <button type="button" onclick="viewTask(this)" class="btn btn-warning btn-circle" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye"></i></button></td>
+                    <td><button type="button" class="btn btn-info btn-block" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button> <button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
                     <td>
                       <center /><?php echo $row['task_code'] ?>
                     </td>
@@ -605,7 +605,7 @@ include('../include/header.php');
                   $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
               ?>
                   <tr>
-                    <td><button type="button" onclick="viewTask(this)" class="btn btn-primary" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
+                    <td><button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
                     <td>
                       <center /><?php echo $row['task_code'] ?>
                     </td>
@@ -869,6 +869,7 @@ include('../include/header.php');
 
   function editTask(element) {
     var taskID = element.value;
+    console.log(taskID);
     $.ajax({
       method: "POST",
       url: "../config/tasks.php",

@@ -68,9 +68,9 @@ if (isset($_POST['filterTable'])) {
       <tr>
         <td>
           <?php if ($access == 1) { ?>
-          <button type="button" class="btn btn-info btn-circle" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pen"></i></button>
+          <button type="button" class="btn btn-info btn-block" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button>
           <?php } ?>
-          <button type="button" onclick="viewTask(this)" class="btn btn-primary" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button>
+          <button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button>
         </td>
         <td>
           <center /><?php echo $row['task_code'] ?>
