@@ -44,7 +44,7 @@
                   <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                   <!-- Profile picture upload button-->
                   <button class="btn btn-primary mb-1" type="button" id="uploadBtn">Upload new image</button>
-                  <input type="file" id="fileInput" hidden>
+                  <input type="file" id="fileInput" accept="image/*" hidden>
                   <button class="btn btn-danger" type="button" id="deleteBtn">Remove image</button>
                 </div>
               </div>
@@ -138,12 +138,12 @@
             <input type="password" class="form-control" id="curPass" placeholder="Current Password" onchange="checkPassword(this)">
           </div>
           <div class="form-group">
-            <label>New Password</label><small class="text-danger d-none" id="used"> New password cannot be the same as the current password.</small>
-            <input type="password" class="form-control" id="newPass" placeholder="New Password" readonly>
+            <label>New Password</label><small class="text-danger d-none" id="used"> You already used this password.</small>
+            <input type="password" class="form-control" id="newPass" placeholder="New Password" onchange="newPassword(this)" readonly>
           </div>
           <div class="form-group">
             <label>Confirm Password</label><small class="text-danger d-none" id="notmatch"> Passwords do not match!</small>
-            <input type="password" class="form-control" id="conPass" placeholder="Confirm Password" readonly>
+            <input type="password" class="form-control" id="conPass" placeholder="Confirm Password" onchange="conPassword(this)" readonly>
           </div>
           <p class="text-danger font-weight-bold font-italic display-9">Please review your changes. After confirmation, you will be logged out to apply the updates.</p>
         </div>
@@ -276,6 +276,7 @@
         if (response === 'Success') {
           currentInput.readOnly = false;
           document.getElementById('curPass').classList.remove('border-danger');
+          document.getElementById('curPass').classList.add('border-success');
           document.getElementById('incorrect').classList.add('d-none');
         } else {
           currentInput.readOnly = true;
@@ -284,6 +285,40 @@
         }
       }
     });
+  }
+
+  function newPassword(element) {
+    var newPass = element.value;
+    var chkPass = document.getElementById('curPass').value;
+    if (newPass === '') {
+      document.getElementById('newPass').classList.remove('border-danger', 'border-success');
+      document.getElementById('used').classList.add('d-none');
+      document.getElementById('conPass').readOnly = false;
+    } else if (newPass === chkPass) {
+      document.getElementById('newPass').classList.add('border-danger');
+      document.getElementById('used').classList.remove('d-none');
+      document.getElementById('conPass').readOnly = true;
+    } else {
+      document.getElementById('newPass').classList.remove('border-danger');
+      document.getElementById('newPass').classList.add('border-success');
+      document.getElementById('used').classList.add('d-none');
+      document.getElementById('conPass').readOnly = false;
+    }
+  }
+
+  function conPassword(element) {
+    var confirm = element.value;
+    if (document.getElementById('conPass').value === '') {
+      document.getElementById('conPass').classList.remove('border-danger', 'border-success');
+      document.getElementById('notmatch').classList.add('d-none');
+    } else if (confirm !== document.getElementById('newPass').value) {
+      document.getElementById('conPass').classList.add('border-danger');
+      document.getElementById('notmatch').classList.remove('d-none');
+    } else {
+      document.getElementById('conPass').classList.remove('border-danger');
+      document.getElementById('conPass').classList.add('border-success');
+      document.getElementById('notmatch').classList.add('d-none');
+    }
   }
 
   $(document).ready(function() {
