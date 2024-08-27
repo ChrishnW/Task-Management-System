@@ -33,16 +33,12 @@
         <div class="container-xl px-4 mt-4">
           <div class="row">
             <div class="col-xl-4">
-              <!-- Profile picture card-->
               <div class="card mb-2">
                 <div class="card-header">Profile Picture</div>
                 <div class="card-body text-center">
-                  <!-- Profile picture image-->
                   <img class="img-account-profile rounded-circle mb-2 w-75" src="<?php echo $imageURL ?>" alt="<?php echo $username ?>">
                   <input type="text" id="imgSRC" value="<?php echo $fileSRC ?>" hidden>
-                  <!-- Profile picture help block-->
                   <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
-                  <!-- Profile picture upload button-->
                   <button class="btn btn-primary mb-1" type="button" id="uploadBtn">Upload new image</button>
                   <input type="file" id="fileInput" accept="image/*" hidden>
                   <button class="btn btn-danger" type="button" id="deleteBtn">Remove image</button>
@@ -50,37 +46,29 @@
               </div>
             </div>
             <div class="col-xl-8">
-              <!-- Account details card-->
               <div class="card mb-4">
                 <div class="card-header">Account Details</div>
                 <div class="card-body">
                   <form id="accountDetails" enctype="multipart/form-data">
-                    <!-- Form Group (username)-->
                     <div class="mb-3">
                       <label class="small mb-1" for="inputUsername">Username</label>
                       <input class="form-control" id="inputUsername" name="inputUsername" type="text" placeholder="Enter your username" value="<?php echo $username ?>" readonly>
                     </div>
-                    <!-- Form Row-->
                     <div class="row gx-3 mb-3">
-                      <!-- Form Group (first name)-->
                       <div class="col-md-6">
                         <label class="small mb-1" for="inputFirstName">First name</label>
                         <input class="form-control" id="inputFirstName" name="inputFirstName" type="text" placeholder="Enter your first name" value="<?php echo $fname ?>">
                       </div>
-                      <!-- Form Group (last name)-->
                       <div class="col-md-6">
                         <label class="small mb-1" for="inputLastName">Last name</label>
                         <input class="form-control" id="inputLastName" name="inputLastName" type="text" placeholder="Enter your last name" value="<?php echo $lname ?>">
                       </div>
                     </div>
-                    <!-- Form Row        -->
                     <div class="row gx-3 mb-3">
-                      <!-- Form Group (organization name)-->
                       <div class="col-md-6">
                         <label class="small mb-1" for="inputDepartment">Department</label>
                         <input class="form-control" id="inputDepartment" name="inputDepartment" type="text" value="<?php echo $dept_name ?>" readonly>
                       </div>
-                      <!-- Form Group (location)-->
                       <?php if ($access != 3) { ?>
                         <div class="col-md-6">
                           <label class="small mb-1" for="inputSection">Section</label>
@@ -88,27 +76,21 @@
                         </div>
                       <?php } ?>
                     </div>
-                    <!-- Form Group (email address)-->
                     <div class="mb-3">
                       <label class="small mb-1" for="inputEmailAddress">Email address</label>
                       <input class="form-control" id="inputEmailAddress" name="inputEmailAddress" type="email" placeholder="Enter your email address" value="<?php echo $email ?>">
                     </div>
-                    <!-- Form Row-->
                     <div class="row gx-3 mb-3">
-                      <!-- Form Group (phone number)-->
                       <div class="col-md-6">
                         <label class="small mb-1" for="inputCard">ID Number (RFID)</label>
                         <input class="form-control" id="inputCard" name="inputCard" type="text" placeholder="Enter your card number" value="<?php echo $card ?? 'N/A' ?>">
                       </div>
-                      <!-- Form Group (birthday)-->
                       <div class="col-md-6">
                         <label class="small mb-1" for="inputAccess">Access</label>
                         <input class="form-control" id="inputAccess" type="text" name="inputAccess" value="<?php echo $access == 1 ? 'Admin' : ($access == 2 ? 'Member' : ($access == 3 ? 'Head' : 'Unknown')); ?>" readonly>
                       </div>
                     </div>
-                    <!-- Save changes button-->
                     <button class="btn btn-primary" type="button" id="editPassword">Change Password</button>
-                    <button class="btn btn-danger" type="button" id="resetPassword">Reset Password</button>
                     <button class="btn btn-success float-right" type="button" id="editAccount">Save changes</button>
                   </form>
                 </div>
@@ -318,24 +300,27 @@
       document.getElementById('conPass').classList.remove('border-danger');
       document.getElementById('conPass').classList.add('border-success');
       document.getElementById('notmatch').classList.add('d-none');
-      var userAcc = <?php echo json_encode($username) ?>;
-      var setPass = $('#conPass').val();
-      $.ajax({
-        method: "POST",
-        url: "../config/accounts.php",
-        data: {
-          "passUpdate": true,
-          "userAcc": userAcc,
-          "setPass": setPass,
-        },
-        success: function(response) {
-          if (response === 'success') {
-            window.location.href = '../include/logout.php';
-          }
-        }
-      });
     }
   }
+
+  $('#passUpdate').off('click').on('click', function() {
+    var userAcc = <?php echo json_encode($username) ?>;
+    var setPass = $('#conPass').val();
+    $.ajax({
+      method: "POST",
+      url: "../config/accounts.php",
+      data: {
+        "passUpdate": true,
+        "userAcc": userAcc,
+        "setPass": setPass,
+      },
+      success: function(response) {
+        if (response === 'Success') {
+          window.location.href = '../include/logout.php';
+        }
+      }
+    });
+  });
 
   $(document).ready(function() {
     $('#uploadBtn').click(function() {
