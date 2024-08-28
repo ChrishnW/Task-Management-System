@@ -282,7 +282,7 @@ include('../include/header.php');
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">Edit Project</h5>
       </div>
-      <div class="modal-body" id="EditProjectDetails">
+      <div class="modal-body" id="EditProjectBody">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="saveEdit">Save</button>
@@ -437,7 +437,7 @@ include('../include/header.php');
         "prjDept": prjDept,
       },
       success: function(response){
-        $('#EditProjectDetails').html(response);
+        $('#EditProjectBody').html(response);
         $('.selectpicker').selectpicker('refresh');
         $('#edit').modal('show');
       }
@@ -535,4 +535,8 @@ include('../include/header.php');
       }
     });
   }
+
+  document.getElementById('saveEdit').addEventListener('click', function() {
+    alert('Button clicked!');
+  });
 </script>

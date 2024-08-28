@@ -282,7 +282,7 @@ if (isset($_POST['actionEdit'])) {
   $leader = $row['leader'];
   $member = explode(',', $row['member']);
 ?>
-  <form id="memberDetails" enctype="multipart/form-data">
+  <form id="editProjectDetails" enctype="multipart/form-data">
     <div class="row">
       <div class="col-md-6">
         <div class="form-group">
@@ -291,7 +291,7 @@ if (isset($_POST['actionEdit'])) {
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-font"></i></div>
             </div>
-            <input type="text" class="form-control" name="task_name" id="task_name" value="<?php echo $row['title']; ?>">
+            <input type="text" class="form-control" name="projectTitle" id="projectTitle" value="<?php echo $row['title']; ?>">
           </div>
         </div>
         <div class="form-group">
@@ -300,7 +300,7 @@ if (isset($_POST['actionEdit'])) {
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-calendar-day"></i></div>
             </div>
-            <input type="date" class="form-control" name="task_name" id="task_name" value="<?php echo $start; ?>">
+            <input type="date" class="form-control" name="projectStart" id="projectStart" value="<?php echo $start; ?>">
           </div>
         </div>
         <div class="form-group">
@@ -309,7 +309,7 @@ if (isset($_POST['actionEdit'])) {
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-user"></i></div>
             </div>
-            <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" data-max-options="1" multiple>
+            <select name="projectLeader" id="projectLeader" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" data-max-options="1" multiple>
               <?php
               $con->next_result();
               $query_result = mysqli_query($con, "SELECT accounts.*, section.dept_id FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2 ORDER BY accounts.fname ASC");
@@ -330,7 +330,7 @@ if (isset($_POST['actionEdit'])) {
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-flag"></i></div>
             </div>
-            <select name="task_status" id="task_status" class="form-control">
+            <select name="projectStatus" id="projectStatus" class="form-control">
               <option value="PENDING" <?php echo ($status == 'PENDING') ? 'selected' : ''; ?>>Pending</option>
               <option value="ON HOLD" <?php echo ($status == 'ON HOLD') ? 'selected' : ''; ?>>On-Hold</option>
               <option value="DONE" <?php echo ($status == 'DONE') ? 'selected' : ''; ?>>Done</option>
@@ -343,7 +343,7 @@ if (isset($_POST['actionEdit'])) {
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-calendar-check"></i></div>
             </div>
-            <input type="date" class="form-control" name="task_name" id="task_name" value="<?php echo $end; ?>">
+            <input type="date" class="form-control" name="projectEnd" id="projectEnd" value="<?php echo $end; ?>">
           </div>
         </div>
         <div class="form-group">
@@ -371,7 +371,7 @@ if (isset($_POST['actionEdit'])) {
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-info"></i></div>
             </div>
-            <textarea name="task_details" id="task_details" class="form-control"><?php echo $desc; ?></textarea>
+            <textarea name="projectDesc" id="projectDesc" class="form-control"><?php echo $desc; ?></textarea>
           </div>
         </div>
       </div>
