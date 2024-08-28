@@ -162,11 +162,11 @@ include('../include/header.php');
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
                   if (empty($row['file_name'])) {
-                    $imageURL = '../assets/img/user-profiles/nologo.png';
+                    $leaderURL = '../assets/img/user-profiles/nologo.png';
                   } else {
-                    $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
+                    $leaderURL = '../assets/img/user-profiles/' . $row['file_name'];
                   }
-                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="' . $row['username'] . '">';
+                  $assignee  = '<img src=' . $leaderURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="' . $row['username'] . '">';
               ?>
                   <tr>
                     <td>
