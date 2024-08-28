@@ -166,7 +166,7 @@ include('../include/header.php');
                   } else {
                     $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
                   }
-                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="'.$row['username'].'">';
+                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="' . $row['username'] . '">';
               ?>
                   <tr>
                     <td>
@@ -282,8 +282,8 @@ include('../include/header.php');
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">Edit Project</h5>
       </div>
-      <form id="memberDetails" enctype="multipart/form-data">
-        <div class="modal-body">
+      <div class="modal-body">
+        <form id="memberDetails" enctype="multipart/form-data">
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
@@ -373,12 +373,12 @@ include('../include/header.php');
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="saveMember">Save</button>
-        </div>
-      </form>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveMember">Save</button>
+      </div>
     </div>
   </div>
 </div>
@@ -498,6 +498,7 @@ include('../include/header.php');
 
 <script>
   $('[data-toggle="tooltip"]').tooltip();
+
   function actionView(element) {
     var prj_id = element.value;
     $.ajax({
@@ -615,8 +616,8 @@ include('../include/header.php');
     $('#member').modal('show');
     $('#saveMember').off('click').on('click', function() {
       document.getElementById('saveMember').disabled = true;
-      var projectID   = element.value;
-      if(document.getElementById('members').value !== ''){
+      var projectID = element.value;
+      if (document.getElementById('members').value !== '') {
         var formDetails = new FormData(document.getElementById('memberDetails'));
         formDetails.append('id', projectID);
         formDetails.append('addMember', true);
