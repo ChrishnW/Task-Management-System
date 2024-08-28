@@ -156,7 +156,7 @@ include('../include/header.php');
                 <th>Project Leader</th>
               </tr>
             </thead>
-            <tbody id='dataTableBody'>
+            <tbody id='dataTableBody' class="text-center">
               <?php $con->next_result();
               $result = mysqli_query($con, "SELECT project_list.*, accounts.file_name, accounts.username FROM project_list JOIN department ON department.dept_id=project_list.dept_id JOIN accounts ON accounts.id=project_list.leader WHERE project_list.dept_id='$dept_id'");
               if (mysqli_num_rows($result) > 0) {
@@ -171,7 +171,7 @@ include('../include/header.php');
                   <tr>
                     <td>
                       <div class="btn-group dropright">
-                        <button type="button" class="btn btn-block btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i> Action</button>
+                        <button type="button" class="btn btn-block btn-outline-primary dropdown-toggle" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i> Action</button>
                         <div class="dropdown-menu">
                           <button type="button" class="dropdown-item" onclick="actionView(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-eye fa-fw"></i> View</button>
                           <div class="dropdown-divider"></div>
