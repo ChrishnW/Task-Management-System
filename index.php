@@ -72,7 +72,7 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
       </div>
 
       <div class="credits">
-        &copy; Copyright <strong><span>GPI - Information System</span></strong> All Rights Reserved.
+        &copy; Copyright <strong><span>ICT - Information System</span></strong> All Rights Reserved.
       </div>
 
     </div>
