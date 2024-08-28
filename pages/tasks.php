@@ -97,7 +97,7 @@ include('../include/header.php');
                   }
                   $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
                   $due_date  = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo">';
+                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="' . $row['in_charge'] . '">';
                   $status_badges = [
                     'NOT YET STARTED' => 'primary',
                     'IN PROGRESS' => 'warning',
@@ -115,7 +115,7 @@ include('../include/header.php');
                     <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                     <td><?php echo $task_class ?></td>
                     <td><?php echo $due_date ?></td>
-                    <td data-toggle="tooltip" data-placement="top" title="<?php echo $row['in_charge'] ?>">
+                    <td>
                       <center /><?php echo $assignee ?>
                     </td>
                     <td><?php echo $progress ?></td>
@@ -594,7 +594,7 @@ include('../include/header.php');
                   }
                   $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
                   $due_date  = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="'.$row['in_charge'].'">';
+                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="' . $row['in_charge'] . '">';
                   $status_badges = [
                     'NOT YET STARTED' => 'primary',
                     'IN PROGRESS' => 'warning',
@@ -665,7 +665,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="view" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content border-primary">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">View Task</h5>
@@ -673,6 +673,7 @@ include('../include/header.php');
       <div class="modal-body" id="taskDetails">
       </div>
       <div class="modal-footer">
+        <button type="button" onclick="updateTask(this)" class="btn btn-success" id="updateButton" style="display: none;">Update</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -693,7 +694,7 @@ include('../include/header.php');
     </div>
   </div>
 </div>
-<div class="modal fade" id="edit" tabindex="-1" data-backdrop="static" data-keyboard="false">
+<!-- <div class="modal fade" id="edit" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-md" role="document">
     <div class="modal-content border-info">
       <div class="modal-header bg-info text-white">
@@ -707,7 +708,7 @@ include('../include/header.php');
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <div class="modal fade" id="danger" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -777,6 +778,15 @@ include('../include/header.php');
     }
   });
 
+  function openSpecificModal(modalId, size) {
+    var modalDialog = document.querySelector(`#${modalId} .modal-dialog`);
+    modalDialog.classList.remove('modal-sm', 'modal-lg', 'modal-xl');
+    if (size) {
+      modalDialog.classList.add(size);
+    }
+    $(`#${modalId}`).modal('show');
+  }
+
   function filterTable() {
     var date_to = document.getElementById('date_to').value;
     var date_from = document.getElementById('date_from').value;
@@ -843,7 +853,6 @@ include('../include/header.php');
 
   function viewTask(element) {
     var taskID = element.value;
-    $('#taskDetails').html('');
     $.ajax({
       method: "POST",
       url: "../config/tasks.php",
@@ -852,26 +861,15 @@ include('../include/header.php');
         "taskID": taskID,
       },
       success: function(response) {
+        document.getElementById('updateButton').style.display = 'none';
         $('#taskDetails').html(response);
-        $('#view').modal('show');
-        $('#taskView_table').DataTable({
-          order: [
-            [0, 'asc']
-          ],
-          pageLength: 3,
-          lengthMenu: [3, 10, 25, 50, 100],
-          "drawCallback": function(settings) {
-            $('[data-toggle="tooltip"]').tooltip();
-          }
-        });
+        openSpecificModal('view', 'modal-xl');
       }
     });
   }
 
   function editTask(element) {
     var editaskID = element.value;
-    console.log(editaskID);
-    $('#editDetails').html('');
     $.ajax({
       method: "POST",
       url: "../config/tasks.php",
@@ -881,18 +879,19 @@ include('../include/header.php');
       },
       success: function(response) {
         document.getElementById('updateButton').value = editaskID;
-        $('#editDetails').html(response);
-        $('#edit').modal('show');
+        document.getElementById('updateButton').style.display = 'block';
+        $('#taskDetails').html(response);
+        openSpecificModal('view', 'modal-md');
       }
     });
   }
 
   function updateTask(element) {
     element.disabled = true;
-    var taskID    = document.getElementById('taskDetailsID').value;
-    var progress  = document.getElementById('update_progress').value;
-    var datetime  = document.getElementById('update_datetime').value;
-    var status    = document.getElementById('update_status').value;
+    var taskID = document.getElementById('taskDetailsID').value;
+    var progress = document.getElementById('update_progress').value;
+    var datetime = document.getElementById('update_datetime').value;
+    var status = document.getElementById('update_status').value;
     $.ajax({
       method: "POST",
       url: "../config/tasks.php",
@@ -907,7 +906,7 @@ include('../include/header.php');
         console.log(response);
         if (response === 'Success') {
           document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-          $('#edit').modal('hide');
+          $('#view').modal('hide');
           $('#success').modal('show');
         } else {
           document.getElementById('error_found').innerHTML = response;

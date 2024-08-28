@@ -293,24 +293,28 @@ if (isset($_POST['editTask'])) {
     $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
     $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
     <div class="row">
-      <div class="form-group col-md-12">
+      <div class="form-group col-md-4">
         <label>Assignee:</label>
         <input type="hidden" value="<?php echo $row['id'] ?>" name="taskDetailsID" id="taskDetailsID" readonly>
         <input type="text" value="<?php echo $row['in_charge'] ?>" class="form-control" disabled>
       </div>
-      <div class="form-group col-md-12">
+      <div class="form-group col-md-5">
         <label>Code:</label>
         <input type="text" value="<?php echo $row['task_code'] ?>" class="form-control" disabled>
+      </div>
+      <div class="form-group col-md-3">
+        <label>Achievement:</label>
+        <input type="number" value="<?php echo $row['achievement'] ?? "0" ?>" class="form-control" name="update_score" id="update_score">
       </div>
       <div class="form-group col-md-12">
         <label>Title:</label>
         <input type="text" value="<?php echo $row['task_name'] ?>" class="form-control" disabled>
       </div>
-      <div class="form-group col-md-12">
+      <div class="form-group col-md-5">
         <label>Classification:</label>
         <input type="text" value="<?php echo $task_class ?>" class="form-control" disabled>
       </div>
-      <div class="form-group col-md-12">
+      <div class="form-group col-md-4">
         <label>Current Progress:</label>
         <select name="update_progress" id="update_progress" class="form-control" <?php if ($row['status'] == 'FINISHED' || $row['status'] == 'REVIEW') { echo "disabled"; } ?>>
           <?php if ($row['status'] == 'NOT YET STARTED') { ?>
@@ -324,11 +328,7 @@ if (isset($_POST['editTask'])) {
           <?php } ?>
         </select>
       </div>
-      <div class="form-group col-md-12">
-        <label>Set Due Date:</label>
-        <input name="update_datetime" id="update_datetime" type="datetime-local" value="<?php echo $row['due_date'] ?>" class="form-control">
-      </div>
-      <div class="form-group col-md-12">
+      <div class="form-group col-md-3">
         <label>Status:</label>
         <select name="update_status" id="update_status" class="form-control">
           <?php if ($row['task_status'] == 1) { ?>
@@ -339,6 +339,14 @@ if (isset($_POST['editTask'])) {
             <option value="0" selected>In-Active</option>
           <?php } ?>
         </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Set Due Date:</label>
+        <input name="update_datetime" id="update_datetime" type="datetime-local" value="<?php echo $row['due_date'] ?>" class="form-control">
+      </div>
+      <div class="form-group col-md-6">
+        <label>Accomplished Date:</label>
+        <input type="datetime-local" value="<?php echo $row['date_accomplished'] ?>" class="form-control" disabled>
       </div>
     </div>
   <?php }
