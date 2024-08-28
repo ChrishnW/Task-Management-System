@@ -156,7 +156,7 @@ include('../include/header.php');
                 <th>Project Leader</th>
               </tr>
             </thead>
-            <tbody id='dataTableBody' class="text-center">
+            <tbody id='dataTableBody'>
               <?php $con->next_result();
               $result = mysqli_query($con, "SELECT project_list.*, accounts.file_name, accounts.username FROM project_list JOIN department ON department.dept_id=project_list.dept_id JOIN accounts ON accounts.id=project_list.leader WHERE project_list.dept_id='$dept_id'");
               if (mysqli_num_rows($result) > 0) {

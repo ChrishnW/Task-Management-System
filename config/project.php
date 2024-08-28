@@ -298,7 +298,7 @@ if (isset($_POST['actionEdit'])) {
           <label>Start Date:</label>
           <div class="input-group mb-2">
             <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fas fa-font"></i></div>
+              <div class="input-group-text"><i class="fas fa-calendar-day"></i></div>
             </div>
             <input type="date" class="form-control" name="task_name" id="task_name" value="<?php echo $start; ?>">
           </div>
@@ -307,7 +307,7 @@ if (isset($_POST['actionEdit'])) {
           <label>Project Leader:</label>
           <div class="input-group mb-2">
             <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fas fa-font"></i></div>
+              <div class="input-group-text"><i class="fas fa-user"></i></div>
             </div>
             <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" data-max-options="1" multiple>
               <?php
@@ -341,7 +341,7 @@ if (isset($_POST['actionEdit'])) {
           <label>End Date:</label>
           <div class="input-group mb-2">
             <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fas fa-font"></i></div>
+              <div class="input-group-text"><i class="fas fa-calendar-check"></i></div>
             </div>
             <input type="date" class="form-control" name="task_name" id="task_name" value="<?php echo $end; ?>">
           </div>
@@ -350,7 +350,7 @@ if (isset($_POST['actionEdit'])) {
           <label>Project Members:</label>
           <div class="input-group mb-2">
             <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fas fa-font"></i></div>
+              <div class="input-group-text"><i class="fas fa-users"></i></div>
             </div>
             <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" multiple>
               <?php
