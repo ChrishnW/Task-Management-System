@@ -229,8 +229,8 @@ if (isset($_POST['actionView'])) {
       } ?>
     </div>
   </div>
-<?php }
-
+<?php
+}
 if (isset($_POST['createTask'])) {
   $project_id   = $_POST['project_id'];
   $task_name    = ucwords(strtolower($_POST['task_name']));
@@ -245,7 +245,6 @@ if (isset($_POST['createTask'])) {
     echo "Unable to complete the operation. Please try again later.";
   }
 }
-
 if (isset($_POST['createActivity'])) {
   $task_id    = $_POST['task_id'];
   $project_id = $_POST['project_id'];
@@ -266,25 +265,118 @@ if (isset($_POST['createActivity'])) {
     echo "Unable to complete the operation. Please try again later.";
   }
 }
-
 if (isset($_POST['projectStatus'])) {
   $id     = $_POST['id'];
   $status = $_POST['status'];
   $query_result = mysqli_query($con, "UPDATE `project_list` SET status='$status' WHERE id='$id'");
 }
-
-if (isset($_POST['addMember'])) {
-  $id           = $_POST['id'];
-  $members      = $_POST['members'];
-  $query_check  = mysqli_query($con, "SELECT * FROM project_list WHERE id='$id'");
-  $row          = mysqli_fetch_assoc($query_check);
-  $curMember    = $row['member'];
-  $curMember    = explode(',', $curMember);
-  foreach ($members as $member) {
-    if (!in_array($member, $curMember)) {
-      $query_result = mysqli_query($con, "UPDATE `project_list` SET member=CONCAT(member,', " . $member . "') WHERE id='$id'");
-    }
-  }
-  echo "Success";
+if (isset($_POST['actionEdit'])) {
+  $id       = $_POST['prjID'];
+  $dept_id  = $_POST['prjDept'];
+  $query_result = mysqli_query($con, "SELECT project_list.*, accounts.file_name, accounts.username FROM project_list JOIN department ON department.dept_id=project_list.dept_id JOIN accounts ON accounts.id=project_list.leader WHERE project_list.id='$id' AND project_list.dept_id='$dept_id'");
+  $row = mysqli_fetch_assoc($query_result);
+  $start  = $row['start'];
+  $end    = $row['end'];
+  $status = $row['status'];
+  $desc   = $row['details'];
+  $leader = $row['leader'];
+  $member = explode(',', $row['member']);
+?>
+  <form id="memberDetails" enctype="multipart/form-data">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Task:</label>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="fas fa-font"></i></div>
+            </div>
+            <input type="text" class="form-control" name="task_name" id="task_name" value="<?php echo $row['title']; ?>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Start Date:</label>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="fas fa-font"></i></div>
+            </div>
+            <input type="date" class="form-control" name="task_name" id="task_name" value="<?php echo $start; ?>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Project Leader:</label>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="fas fa-font"></i></div>
+            </div>
+            <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" data-max-options="1" multiple>
+              <?php
+              $con->next_result();
+              $query_result = mysqli_query($con, "SELECT accounts.*, section.dept_id FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2 ORDER BY accounts.fname ASC");
+              while ($row = mysqli_fetch_array($query_result)) {
+                $selected = ($row['id'] == $leader) ? 'selected' : ''; ?>
+                <option value="<?php echo $row['id']; ?>" data-subtext="<?php echo $row['username']; ?>" <?php echo $selected; ?>>
+                  <?php echo ucwords(strtolower($row['fname'] . ' ' . $row['lname'])) ?>
+                </option>
+              <?php } ?>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Status:</label>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="fas fa-flag"></i></div>
+            </div>
+            <select name="task_status" id="task_status" class="form-control">
+              <option value="PENDING" <?php echo ($status == 'PENDING') ? 'selected' : ''; ?>>Pending</option>
+              <option value="ON HOLD" <?php echo ($status == 'ON HOLD') ? 'selected' : ''; ?>>On-Hold</option>
+              <option value="DONE" <?php echo ($status == 'DONE') ? 'selected' : ''; ?>>Done</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>End Date:</label>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="fas fa-font"></i></div>
+            </div>
+            <input type="date" class="form-control" name="task_name" id="task_name" value="<?php echo $end; ?>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Project Members:</label>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="fas fa-font"></i></div>
+            </div>
+            <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" multiple>
+              <?php
+              $con->next_result();
+              $query_result = mysqli_query($con, "SELECT accounts.*, section.dept_id FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2 ORDER BY accounts.fname ASC");
+              while ($row = mysqli_fetch_array($query_result)) {
+                $selected = in_array($row['id'], $member) ? 'selected' : ''; ?> ?>
+                <option value="<?php echo $row['id']; ?>" data-subtext="<?php echo $row['username']; ?>" <?php echo $selected; ?>><?php echo ucwords(strtolower($row['fname'] . ' ' . $row['lname'])) ?></option>
+              <?php } ?>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>Description:</label>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="fas fa-info"></i></div>
+            </div>
+            <textarea name="task_details" id="task_details" class="form-control"><?php echo $desc; ?></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+<?php
 }
 ?>

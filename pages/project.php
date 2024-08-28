@@ -269,115 +269,24 @@ include('../include/header.php');
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-primary" id="saveTaskButton">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         </div>
       </form>
     </div>
   </div>
 </div>
-<div class="modal fade" id="member" tabindex="-1" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="edit" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content border-primary">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">Edit Project</h5>
       </div>
-      <div class="modal-body">
-        <form id="memberDetails" enctype="multipart/form-data">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Task:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-font"></i></div>
-                  </div>
-                  <input type="text" class="form-control" name="task_name" id="task_name">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Start Date:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-font"></i></div>
-                  </div>
-                  <input type="date" class="form-control" name="task_name" id="task_name">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Project Leader:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-font"></i></div>
-                  </div>
-                  <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" data-max-options="1" multiple>
-                    <?php
-                    $con->next_result();
-                    $query_result = mysqli_query($con, "SELECT accounts.*, section.dept_id FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2 ORDER BY accounts.fname ASC");
-                    while ($row = mysqli_fetch_array($query_result)) { ?>
-                      <option value="<?php echo $row['id']; ?>" data-subtext="<?php echo $row['username']; ?>"><?php echo ucwords(strtolower($row['fname'] . ' ' . $row['lname'])) ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Status:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-flag"></i></div>
-                  </div>
-                  <select name="task_status" id="task_status" class="form-control">
-                    <option value="PENDING">Pending</option>
-                    <option value="IN PROGRESS">In Progress</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label>End Date:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-font"></i></div>
-                  </div>
-                  <input type="date" class="form-control" name="task_name" id="task_name">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Project Members:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-font"></i></div>
-                  </div>
-                  <select name="members[]" id="members" class="form-control form-control-sm selectpicker show-tick" data-live-search="true" data-style="border-secondary" data-size="5" data-actions-box="true" multiple>
-                    <?php
-                    $con->next_result();
-                    $query_result = mysqli_query($con, "SELECT accounts.*, section.dept_id FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2 ORDER BY accounts.fname ASC");
-                    while ($row = mysqli_fetch_array($query_result)) { ?>
-                      <option value="<?php echo $row['id']; ?>" data-subtext="<?php echo $row['username']; ?>"><?php echo ucwords(strtolower($row['fname'] . ' ' . $row['lname'])) ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12">
-              <div class="form-group">
-                <label>Description:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-info"></i></div>
-                  </div>
-                  <textarea name="task_details" id="task_details" class="form-control"></textarea>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
+      <div class="modal-body" id="EditProjectDetails">
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="saveEdit">Save</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="saveMember">Save</button>
       </div>
     </div>
   </div>
@@ -517,7 +426,22 @@ include('../include/header.php');
   }
 
   function actionEdit(element) {
-    $('#member').modal('show');
+    var prjID   = element.value;
+    var prjDept = <?php echo json_encode($dept_id); ?>;
+    $.ajax({
+      method: "POST",
+      url: "../config/project.php",
+      data: {
+        "actionEdit": true,
+        "prjID": prjID,
+        "prjDept": prjDept,
+      },
+      success: function(response){
+        $('#EditProjectDetails').html(response);
+        $('.selectpicker').selectpicker('refresh');
+        $('#edit').modal('show');
+      }
+    });
   }
 
   function createTask(element) {
@@ -608,37 +532,6 @@ include('../include/header.php');
       },
       success: function(response) {
         console.log(response);
-      }
-    });
-  }
-
-  function addMember(element) {
-    $('#member').modal('show');
-    $('#saveMember').off('click').on('click', function() {
-      document.getElementById('saveMember').disabled = true;
-      var projectID = element.value;
-      if (document.getElementById('members').value !== '') {
-        var formDetails = new FormData(document.getElementById('memberDetails'));
-        formDetails.append('id', projectID);
-        formDetails.append('addMember', true);
-        $.ajax({
-          method: "POST",
-          url: "../config/project.php",
-          data: formDetails,
-          contentType: false,
-          processData: false,
-          success: function(response) {
-            if (response === 'Success') {
-              document.getElementById('saveMember').disabled = false;
-              $('#member').modal('hide');
-              $('#success').modal('show');
-            }
-          }
-        });
-      } else {
-        document.getElementById('error_found').innerHTML = 'Empty field has been detected!';
-        $('#error').modal('show');
-        document.getElementById('saveMember').disabled = false;
       }
     });
   }
