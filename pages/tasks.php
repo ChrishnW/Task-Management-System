@@ -843,6 +843,7 @@ include('../include/header.php');
 
   function viewTask(element) {
     var taskID = element.value;
+    $('#taskDetails').html('');
     $.ajax({
       method: "POST",
       url: "../config/tasks.php",
