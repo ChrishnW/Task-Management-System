@@ -36,21 +36,21 @@
   <div id="wrapper">
 
     <!-- Sidebar -->
-    <?php
-    if ($access == 1) { ?>
-      <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
-        <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
-          <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-business-time"></i>
-          </div>
-          <div class="sidebar-brand-text mx-3">G-TMS</div>
-        </a>
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
+        <div class="sidebar-brand-icon">
+          <!-- <i class="fas fa-business-time"></i> -->
+          <img src="../assets/img/Logo.png" class=" w-100">
+        </div>
+        <div class="sidebar-brand-text mx-3">G-TMS</div>
+      </a>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
-
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+      <?php
+      if ($access == 1) { ?>
         <!-- Nav Item - Dashboard -->
         <li class="nav-item">
           <a class="nav-link" href="index.php">
@@ -104,30 +104,7 @@
             </div>
           </div>
         </li>
-        
-        <!-- Divider -->
-        <!-- <hr class="sidebar-divider d-none d-md-block"> -->
-
-        <!-- Sidebar Toggler (Sidebar) -->
-        <!-- <div class="text-center d-none d-md-inline">
-          <button class="rounded-circle border-0" id="sidebarToggle"></button>
-        </div> -->
-
-      </ul>
-    <?php } elseif ($access == 2) { ?>
-      <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
-
-        <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
-          <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-business-time"></i>
-          </div>
-          <div class="sidebar-brand-text mx-3">G-TMS</div>
-        </a>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
-
+      <?php } elseif ($access == 2) { ?>
         <!-- Nav Item - Dashboard -->
         <li class="nav-item">
           <a class="nav-link" href="index.php">
@@ -152,30 +129,7 @@
             <i class="fas fa-chart-bar"></i>
             <span>Performance</span></a>
         </li>
-
-        <!-- Divider -->
-        <!-- <hr class="sidebar-divider d-none d-md-block"> -->
-
-        <!-- Sidebar Toggler (Sidebar) -->
-        <!-- <div class="text-center d-none d-md-inline">
-          <button class="rounded-circle border-0" id="sidebarToggle"></button>
-        </div> -->
-
-      </ul>
-    <?php } elseif ($access == 3) { ?>
-      <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
-
-        <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
-          <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-business-time"></i>
-          </div>
-          <div class="sidebar-brand-text mx-3">G-TMS</div>
-        </a>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
-
+      <?php } elseif ($access == 3) { ?>
         <!-- Nav Item - Dashboard -->
         <li class="nav-item">
           <a class="nav-link" href="index.php">
@@ -207,17 +161,16 @@
             <i class="fas fa-award"></i>
             <span>Member Perfromance</span></a>
         </li>
+      <?php } ?>
 
-        <!-- Divider -->
-        <!-- <hr class="sidebar-divider d-none d-md-block"> -->
+      <!-- Divider -->
+      <!-- <hr class="sidebar-divider d-none d-md-block"> -->
 
-        <!-- Sidebar Toggler (Sidebar) -->
-        <!-- <div class="text-center d-none d-md-inline">
-          <button class="rounded-circle border-0" id="sidebarToggle"></button>
-        </div> -->
-
-      </ul>
-    <?php } ?>
+      <!-- Sidebar Toggler (Sidebar) -->
+      <!-- <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div> -->
+    </ul>
     <!-- End of Sidebar -->
 
     <!-- Content Wrapper -->
@@ -272,28 +225,29 @@
                 <?php
                 $con->next_result();
                 $query_check = mysqli_query($con, "SELECT * FROM notification WHERE status=1 AND user='$username' LIMIT 3");
-                if(mysqli_num_rows($query_check) > 0) {
-                  while($row = mysqli_fetch_assoc($query_check)) {
-                  $date_created = date_format(date_create($row['date_created']), "F d, Y @ h:i A");?>
-                  <button class="dropdown-item d-flex align-items-center" onclick="readNotification(this)" value="<?php echo $row['id']; ?>">
-                    <input type="hidden" name="notificationID[]" id="notificationID" value="<?php echo $row['id']; ?>">
-                    <div class="mr-3">
-                      <div class="icon-circle bg-<?php echo $row['type']; ?>">
-                        <i class="<?php echo $row['icon']; ?> text-white"></i>
+                if (mysqli_num_rows($query_check) > 0) {
+                  while ($row = mysqli_fetch_assoc($query_check)) {
+                    $date_created = date_format(date_create($row['date_created']), "F d, Y @ h:i A"); ?>
+                    <button class="dropdown-item d-flex align-items-center" onclick="readNotification(this)" value="<?php echo $row['id']; ?>">
+                      <input type="hidden" name="notificationID[]" id="notificationID" value="<?php echo $row['id']; ?>">
+                      <div class="mr-3">
+                        <div class="icon-circle bg-<?php echo $row['type']; ?>">
+                          <i class="<?php echo $row['icon']; ?> text-white"></i>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <div class="small text-gray-500"><?php echo $date_created ?></div>
-                      <?php echo $row['body']; ?>
-                    </div>
-                  </button>
-                <?php } } else { ?>
-                <a class="dropdown-item" href="#">
-                  <div class="small text-gray-500 text-center">No Notification</div>
-                </a>
+                      <div>
+                        <div class="small text-gray-500"><?php echo $date_created ?></div>
+                        <?php echo $row['body']; ?>
+                      </div>
+                    </button>
+                  <?php }
+                } else { ?>
+                  <a class="dropdown-item" href="#">
+                    <div class="small text-gray-500 text-center">No Notification</div>
+                  </a>
                 <?php } ?>
-                <?php if($total_notification > 0) {?>
-                <button class="dropdown-item text-center small text-gray-500" onclick="readAllNotification(this)">Mark As Read Shown Notifications</button>
+                <?php if ($total_notification > 0) { ?>
+                  <button class="dropdown-item text-center small text-gray-500" onclick="readAllNotification(this)">Mark As Read Shown Notifications</button>
                 <?php } ?>
               </div>
             </li>
