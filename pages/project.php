@@ -521,7 +521,7 @@ include('../include/header.php');
 
   document.getElementById('saveEdit').addEventListener('click', function() {
     this.disabled = true;
-    var projectData   = new FormData(document.getElementById('editProjectDetails'));
+    var projectData = new FormData(document.getElementById('editProjectDetails'));
     var hasEmptyValue = false;
     projectData.append('saveEdit', true);
 
