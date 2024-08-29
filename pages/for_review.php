@@ -40,26 +40,26 @@ include('../include/header.php');
           <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
             <thead class='table table-danger'>
               <tr>
-                <th><input type="checkbox" id='selectAll' class="form-control"></th>
-                <th class="col col-md-1">Action</th>
-                <th>Code</th>
-                <th>Title</th>
-                <th>Classification</th>
-                <th class="col col-md-1">Accomplished</th>
-                <th>Asignee</th>
-                <th>Progress</th>
+                <th class="col-auto"><input type="checkbox" id='selectAll' class="form-control"></th>
+                <th class="col-auto">Action</th>
+                <th class="col-auto">Code</th>
+                <th class="col-auto">Title</th>
+                <th class="col-auto">Classification</th>
+                <th class="col-auto">Accomplished</th>
+                <th class="col-auto">Asignee</th>
+                <th class="col-auto">Progress</th>
               </tr>
             </thead>
             <tbody id='dataTableBody'>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id = '$dept_id'");
+              $result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id = '$dept_id'");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
                   if (empty($row['file_name'])) {
-                    $imageURL = '../assets/img/user-profiles/nologo.png';
+                    $assigneeURL = '../assets/img/user-profiles/nologo.png';
                   } else {
-                    $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-                  }
+                    $assigneeURL = '../assets/img/user-profiles/' . $row['file_name'];
+                  } 
                   $task_classes = [1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'], 2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'], 3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'], 4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'], 5 => ['name' => 'PROJECT', 'badge' => 'info'], 6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']];
                   if (isset($task_classes[$row['task_class']])) {
                     $class = $task_classes[$row['task_class']]['name'];
@@ -78,16 +78,16 @@ include('../include/header.php');
                   $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
                   $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
                   $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo">';
+                  $assignee  = '<img src='.$assigneeURL.' class="img-table-solo"> '.ucwords(strtolower($row['Mname'])).'';
               ?>
                   <tr>
                     <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
                     <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
                     <td><?php echo $row['task_code'] ?></td>
-                    <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+                    <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i> <i class="fas fa-registered text-success" data-toggle="tooltip" data-placement="right" title="<?php echo $row['remarks'] ?>"></i></td>
                     <td><?php echo $task_class ?></td>
                     <td><?php echo $date_accomplished ?></td>
-                    <td data-toggle="tooltip" data-placement="right" title="<?php echo $row['in_charge'] ?>"><center /><?php echo $assignee ?></td>
+                    <td><?php echo $assignee ?></td>
                     <td><?php echo $progress ?></td>
                   </tr>
               <?php }
@@ -113,8 +113,8 @@ include('../include/header.php');
         Do you want to approve this selected task?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-success" data-dismiss="modal" id="confirmButton">Confirm</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -128,8 +128,8 @@ include('../include/header.php');
       <div class="modal-body" id="taskDetails">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-success" data-dismiss="modal" id="approveTask">Approve</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -146,8 +146,8 @@ include('../include/header.php');
         You're about to delete this file, <br> do you still want to proceed?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" id="delete_id">Proceed</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
