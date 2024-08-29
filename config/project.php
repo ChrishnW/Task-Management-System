@@ -265,11 +265,6 @@ if (isset($_POST['createActivity'])) {
     echo "Unable to complete the operation. Please try again later.";
   }
 }
-if (isset($_POST['projectStatus'])) {
-  $id     = $_POST['id'];
-  $status = $_POST['status'];
-  $query_result = mysqli_query($con, "UPDATE `project_list` SET status='$status' WHERE id='$id'");
-}
 if (isset($_POST['actionEdit'])) {
   $id       = $_POST['prjID'];
   $dept_id  = $_POST['prjDept'];
@@ -280,8 +275,7 @@ if (isset($_POST['actionEdit'])) {
   $status = $row['status'];
   $desc   = $row['details'];
   $leader = $row['leader'];
-  $member = explode(',', $row['member']);
-?>
+  $member = explode(',', $row['member']); ?>
   <form id="editProjectDetails" enctype="multipart/form-data">
     <div class="row">
       <div class="col-md-6">
@@ -377,6 +371,9 @@ if (isset($_POST['actionEdit'])) {
       </div>
     </div>
   </form>
-<?php
+  <?php
+}
+if (isset($_POST['saveEdit'])) {
+  echo "success";
 }
 ?>

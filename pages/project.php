@@ -537,11 +537,11 @@ include('../include/header.php');
   }
 
   document.getElementById('saveEdit').addEventListener('click', function() {
-    var formData = new FormData(document.getElementById('editProjectDetails'));
+    var projectData = new FormData(document.getElementById('editProjectDetails'));
     var hasEmptyValue = false;
-    formData.append('saveEdit', true);
+    projectData.append('saveEdit', true);
 
-    for (var [key, value] of formData.entries()) {
+    for (var [key, value] of projectData.entries()) {
       if (value.trim() === '' || document.getElementById('members').value === '') {
         hasEmptyValue = true;
         break;
@@ -554,12 +554,12 @@ include('../include/header.php');
       $.ajax({
         method: "POST",
         url: "../config/project.php",
-        data: formData,
+        data: projectData,
         processData: false,
         contentType: false,
         success: function(response) {
-          if (response === 'success') {
-            $('#editProjectDetails').modal('hide');
+          if (response === 'Success') {
+            alert('Success');
           } else {
             alert('Error: ' + response);
           }
