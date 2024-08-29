@@ -27,13 +27,26 @@ if (isset($_POST['approveTask'])) {
 
 if (isset($_POST['viewTask'])) {
   $id = $_POST['taskID'];
-  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details FROM tasks_details JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE tasks_details.id='$id'");
+  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name WHERE tasks_details.id='$id'");
   while ($row = mysqli_fetch_assoc($query_result)) {
     $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
     $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
     $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
     $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
     <form id="checkDetails" enctype="multipart/form-data">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="form-group">
+            <label>Assignee:</label>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
+              </div>
+              <input type="text" class="form-control" name="approveCode" id="approveCode" value="<?php echo $row['task_code'] ?>" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="row">
         <input type="hidden" name="approveID" id="approveID" value="<?php echo $row['id'] ?>">
         <input type="hidden" name="approveHead" id="approveHead" value="<?php echo $full_name ?>">
