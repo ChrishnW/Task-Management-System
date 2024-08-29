@@ -561,6 +561,7 @@ include('../include/header.php');
         contentType: false,
         success: function(response) {
           if (response === 'Success') {
+            $('#edit').modal('hide');
             document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
             $('#success').modal('show');
           } else {
