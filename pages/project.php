@@ -539,6 +539,7 @@ include('../include/header.php');
   document.getElementById('saveEdit').addEventListener('click', function() {
     var formData = new FormData(document.getElementById('editProjectDetails'));
     var hasEmptyValue = false;
+    formData.append('saveEdit', true);
 
     for (var [key, value] of formData.entries()) {
       if (value.trim() === '' || document.getElementById('members').value === '') {
@@ -550,7 +551,20 @@ include('../include/header.php');
     if (hasEmptyValue) {
       alert('Please fill out all the fields.');
     } else {
-      alert('Success :)');
+      $.ajax({
+        method: "POST",
+        url: "../config/project.php",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          if (response === 'success') {
+            $('#editProjectDetails').modal('hide');
+          } else {
+            alert('Error: ' + response);
+          }
+        }
+      });
     }
   });
 </script>
