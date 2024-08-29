@@ -519,23 +519,6 @@ include('../include/header.php');
     });
   }
 
-  function projectStatus(element) {
-    var prjStatus = element.value;
-    var projectID = document.getElementById('project_id').value;
-    $.ajax({
-      method: "POST",
-      url: "../config/project.php",
-      data: {
-        "projectStatus": true,
-        "status": prjStatus,
-        "id": projectID
-      },
-      success: function(response) {
-        console.log(response);
-      }
-    });
-  }
-
   document.getElementById('saveEdit').addEventListener('click', function() {
     var projectData = new FormData(document.getElementById('editProjectDetails'));
     var hasEmptyValue = false;

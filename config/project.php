@@ -11,13 +11,6 @@ if (isset($_POST['actionView'])) {
     $imageURL = '../assets/img/user-profiles/nologo.png';
   } else {
     $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-  }
-  if ($row['status'] == 'PENDING') {
-    $color  = 'info';
-  } elseif ($row['status'] == 'ON HOLD') {
-    $color  = 'warning';
-  } elseif ($row['status'] == 'DONE') {
-    $color  = 'success';
   } ?>
   <div class="row">
     <div class="col-md-7">
@@ -85,21 +78,7 @@ if (isset($_POST['actionView'])) {
             <div class="input-group-text"><i class="fas fa-flag"></i></div>
           </div>
           <input type="hidden" name="project_id" id="project_id" value="<?php echo $row['id']; ?>">
-          <select name="status" id="status" class="form-control border-<?php echo $color; ?>" onchange="projectStatus(this)">
-            <?php if ($row['status'] == 'PENDING') { ?>
-              <option value="PENDING" selected>Pending</option>
-              <option value="ON HOLD">On-hold</option>
-              <option value="DONE">Done</option>
-            <?php } elseif ($row['status'] == 'ON HOLD') { ?>
-              <option value="PENDING">Pending</option>
-              <option value="ON HOLD" selected>On-hold</option>
-              <option value="DONE">Done</option>
-            <?php } elseif ($row['status'] == 'DONE') { ?>
-              <option value="PENDING">Pending</option>
-              <option value="ON HOLD">On-hold</option>
-              <option value="DONE" selected>Done</option>
-            <?php } ?>
-          </select>
+          <input type="text" class="form-control" value="<?php echo ucwords(strtolower($row['status'])) ?>" readonly>
         </div>
       </div>
     </div>
@@ -229,7 +208,7 @@ if (isset($_POST['actionView'])) {
       } ?>
     </div>
   </div>
-<?php
+  <?php
 }
 if (isset($_POST['createTask'])) {
   $project_id   = $_POST['project_id'];
