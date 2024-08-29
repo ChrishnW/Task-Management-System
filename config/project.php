@@ -367,7 +367,7 @@ if (isset($_POST['saveEdit'])) {
   $end      = $_POST['projectEnd'];
   $status   = $_POST['projectStatus'];
   $leader   = $_POST['projectLeader'];
-  $members  = implode(', ', $_POST['projectMembers']);
+  $members  = implode(',', $_POST['projectMembers']);
   $descrip  = ucwords(strtolower($_POST['projectDesc']));
 
   $query_update = mysqli_query($con, "UPDATE `project_list` SET `title`='$title', `details`='$descrip', `start`='$start', `end`='$end', `status`='$status', `leader`='$leader', `member`='$members' WHERE id='$id'");
