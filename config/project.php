@@ -355,12 +355,19 @@ if (isset($_POST['actionEdit'])) {
 }
 if (isset($_POST['saveEdit'])) {
   $id       = $_POST['projectID'];
-  $title    = $_POST['projectTitle'];
+  $title    = ucwords(strtolower($_POST['projectTitle']));
   $start    = $_POST['projectStart'];
   $end      = $_POST['projectEnd'];
+  $status   = $_POST['projectStatus'];
   $leader   = $_POST['projectLeader'];
   $members  = implode(', ', $_POST['projectMembers']);
-  $descrip  = $_POST['projectDesc'];
-  echo $members;
+  $descrip  = ucwords(strtolower($_POST['projectDesc']));
+
+  $query_update = mysqli_query($con, "UPDATE `project_list` SET `title`='$title', `details`='$descrip', `start`='$start', `end`='$end', `status`='$status', `leader`='$leader', `member`='$members' WHERE id='$id'");
+  if($query_update){
+    echo "Success";
+  } else {
+    echo "Unable to process your request. Please try again later.";
+  }
 }
 ?>

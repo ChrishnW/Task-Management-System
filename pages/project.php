@@ -369,7 +369,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="error" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header bg-danger text-white">
         <h5 class="modal-title" id="exampleModalLongTitle">Error</h5>
@@ -386,7 +386,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="success" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header bg-success text-white">
         <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
@@ -520,7 +520,8 @@ include('../include/header.php');
   }
 
   document.getElementById('saveEdit').addEventListener('click', function() {
-    var projectData = new FormData(document.getElementById('editProjectDetails'));
+    this.disabled = true;
+    var projectData   = new FormData(document.getElementById('editProjectDetails'));
     var hasEmptyValue = false;
     projectData.append('saveEdit', true);
 
@@ -533,6 +534,7 @@ include('../include/header.php');
         if (value.trim() === '') {
           field.classList.add('border-danger');
           hasEmptyValue = true;
+          this.disabled = false;
           break;
         }
       }
@@ -541,12 +543,15 @@ include('../include/header.php');
     if (document.getElementById('projectMembers').value === '') {
       document.getElementById('label1').classList.remove('d-none');
       hasEmptyValue = true;
+      this.disabled = false;
     } else {
       document.getElementById('label1').classList.add('d-none');
     }
 
     if (hasEmptyValue) {
-      alert('Please fill out all the fields.');
+      document.getElementById('error_found').innerHTML = 'Please fill out all the fields.';
+      $('#error').modal('show');
+      this.disabled = false;
     } else {
       $.ajax({
         method: "POST",
@@ -556,9 +561,12 @@ include('../include/header.php');
         contentType: false,
         success: function(response) {
           if (response === 'Success') {
-            alert('Success');
+            document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+            $('#success').modal('show');
           } else {
-            alert('Error: ' + response);
+            document.getElementById('error_found').innerHTML = response;
+            $('#error').modal('show');
+            this.disabled = false;
           }
         }
       });
