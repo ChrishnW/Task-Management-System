@@ -321,7 +321,7 @@ if (isset($_POST['actionEdit'])) {
           </div>
         </div>
         <div class="form-group">
-          <label>Project Members:</label>
+          <label>Project Members: <small class="text-danger d-none" id="label1">Cannot leave this blank.</small></label>
           <div class="input-group mb-2">
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-users"></i></div>
@@ -359,10 +359,8 @@ if (isset($_POST['saveEdit'])) {
   $start    = $_POST['projectStart'];
   $end      = $_POST['projectEnd'];
   $leader   = $_POST['projectLeader'];
-  $members  = $_POST['projectMembers'];
+  $members  = implode(', ', $_POST['projectMembers']);
   $descrip  = $_POST['projectDesc'];
-  foreach ($members as $member) {
-    echo $member;
-  }
+  echo $members;
 }
 ?>

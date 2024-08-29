@@ -291,7 +291,7 @@ include('../include/header.php');
     </div>
   </div>
 </div>
-<div class="modal fade" id="submit" tabindex="-1" data-backdrop="static" data-keyboard="false">
+<div class="modal fade font-" id="submit" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content border-primary">
       <div class="modal-header bg-primary text-white">
@@ -523,13 +523,26 @@ include('../include/header.php');
     var projectData = new FormData(document.getElementById('editProjectDetails'));
     var hasEmptyValue = false;
     projectData.append('saveEdit', true);
-    console.log(projectData);
+
+    var elements = document.getElementById('editProjectDetails').querySelectorAll('input, textarea');
+    elements.forEach(element => element.classList.remove('border-danger'));
 
     for (var [key, value] of projectData.entries()) {
-      if (value.trim() === '' || document.getElementById('projectMembers').value === '') {
-        hasEmptyValue = true;
-        break;
+      var field = document.getElementById('editProjectDetails').querySelector(`[name="${key}"]`);
+      if (field) {
+        if (value.trim() === '') {
+          field.classList.add('border-danger');
+          hasEmptyValue = true;
+          break;
+        }
       }
+    }
+
+    if (document.getElementById('projectMembers').value === '') {
+      document.getElementById('label1').classList.remove('d-none');
+      hasEmptyValue = true;
+    } else {
+      document.getElementById('label1').classList.add('d-none');
     }
 
     if (hasEmptyValue) {
