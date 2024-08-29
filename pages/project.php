@@ -426,7 +426,7 @@ include('../include/header.php');
   }
 
   function actionEdit(element) {
-    var prjID   = element.value;
+    var prjID = element.value;
     var prjDept = <?php echo json_encode($dept_id); ?>;
     $.ajax({
       method: "POST",
@@ -436,7 +436,7 @@ include('../include/header.php');
         "prjID": prjID,
         "prjDept": prjDept,
       },
-      success: function(response){
+      success: function(response) {
         $('#EditProjectBody').html(response);
         $('.selectpicker').selectpicker('refresh');
         $('#edit').modal('show');
@@ -537,6 +537,20 @@ include('../include/header.php');
   }
 
   document.getElementById('saveEdit').addEventListener('click', function() {
-    alert('Button clicked!');
+    var formData = new FormData(document.getElementById('editProjectDetails'));
+    var hasEmptyValue = false;
+
+    for (var [key, value] of formData.entries()) {
+      if (value.trim() === '' || document.getElementById('members').value === '') {
+        hasEmptyValue = true;
+        break;
+      }
+    }
+
+    if (hasEmptyValue) {
+      alert('Please fill out all the fields.');
+    } else {
+      alert('Success :)');
+    }
   });
 </script>
