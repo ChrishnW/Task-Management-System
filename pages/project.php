@@ -523,9 +523,10 @@ include('../include/header.php');
     var projectData = new FormData(document.getElementById('editProjectDetails'));
     var hasEmptyValue = false;
     projectData.append('saveEdit', true);
+    console.log(projectData);
 
     for (var [key, value] of projectData.entries()) {
-      if (value.trim() === '' || document.getElementById('members').value === '') {
+      if (value.trim() === '' || document.getElementById('projectMembers').value === '') {
         hasEmptyValue = true;
         break;
       }
