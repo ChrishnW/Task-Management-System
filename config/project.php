@@ -128,11 +128,13 @@ if (isset($_POST['actionView'])) {
             <col width="auto">
             <col width="auto">
             <col width="auto">
+            <col width="auto">
           </colgroup>
           <thead class='table'>
             <?php if ($access != 2) { ?>
               <th>Action</th>
             <?php } ?>
+            <th>#</th>
             <th>Task</th>
             <th>Status</th>
             <th>Created</th>
@@ -140,20 +142,25 @@ if (isset($_POST['actionView'])) {
           <tbody>
             <?php $con->next_result();
             $query_result = mysqli_query($con, "SELECT * FROM project_task WHERE project_id='$id'");
-            while ($row = $query_result->fetch_assoc()) { ?>
+            $count = 0;
+            while ($row = $query_result->fetch_assoc()) { 
+              $count += 1;?>
               <tr>
                 <?php if ($access != 2) { ?>
                   <td>
                     <div class="btn-group dropright">
                       <button type="button" class="btn btn-block btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i> Action</button>
                       <div class="dropdown-menu">
-                        <button type="button" class="dropdown-item" onclick="actionEdit(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pencil-alt fa-fw"></i> Edit</button>
+                        <button type="button" class="dropdown-item" onclick="taskView(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-eye fa-fw"></i> View</button>
                         <div class="dropdown-divider"></div>
-                        <button type="button" class="dropdown-item" onclick="actionDelete(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-trash fa-fw"></i> Delete</button>
+                        <button type="button" class="dropdown-item" onclick="taskEdit(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pencil-alt fa-fw"></i> Edit</button>
+                        <div class="dropdown-divider"></div>
+                        <button type="button" class="dropdown-item" onclick="taskDelete(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-trash fa-fw"></i> Delete</button>
                       </div>
                     </div>
                   </td>
                 <?php } ?>
+                <td><?php echo $count; ?></td>
                 <td><?php echo $row['task'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['details'] ?>"></i></td>
                 <td><?php echo $row['status'] ?></td>
                 <td><?php echo $row['created'] ?></td>
