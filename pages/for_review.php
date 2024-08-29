@@ -84,7 +84,7 @@ include('../include/header.php');
                     <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
                     <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
                     <td><?php echo $row['task_code'] ?></td>
-                    <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i> <i class="fas fa-registered text-success" data-toggle="tooltip" data-placement="right" title="<?php echo $row['remarks'] ?>"></i></td>
+                    <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i> <i class="fas fa-envelope text-success" data-toggle="tooltip" data-placement="right" title="<?php echo $row['remarks'] ?>"></i></td>
                     <td><?php echo $task_class ?></td>
                     <td><?php echo $date_accomplished ?></td>
                     <td><?php echo $assignee ?></td>
