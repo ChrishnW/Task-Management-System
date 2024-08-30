@@ -638,8 +638,8 @@ include('../include/header.php');
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
           <button type="button" onclick="accountCreate(this)" class="btn btn-success" name="create_update">Create Account</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
         </div>
       </form>
     </div>
