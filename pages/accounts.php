@@ -466,7 +466,7 @@ include('../include/header.php');
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
           <button type="button" onclick="accountUpdate(this)" class="btn btn-primary" name="account_update">Update Account</button>
         </div>
       </form>
@@ -638,7 +638,7 @@ include('../include/header.php');
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
           <button type="button" onclick="accountCreate(this)" class="btn btn-primary" name="create_update">Create Account</button>
         </div>
       </form>
