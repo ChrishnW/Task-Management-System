@@ -511,3 +511,7 @@
 #username::placeholder {
     text-transform: none;
 }
+
+.system-logo {
+    width: 50px;
+}

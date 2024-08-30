@@ -42,9 +42,9 @@
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
         <div class="sidebar-brand-icon">
           <!-- <i class="fas fa-business-time"></i> -->
-          <img src="../assets/img/Logo.png" class=" w-75">
+          <img src="../assets/img/Logo.png" class="system-logo">
         </div>
-        <div class="sidebar-brand-text mx-3">G-TMS</div>
+        <div class="sidebar-brand-text mx-3">TMS</div>
       </a>
 
       <!-- Divider -->
@@ -167,9 +167,9 @@
       <!-- <hr class="sidebar-divider d-none d-md-block"> -->
 
       <!-- Sidebar Toggler (Sidebar) -->
-      <!-- <div class="text-center d-none d-md-inline">
+      <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
-      </div> -->
+      </div>
     </ul>
     <!-- End of Sidebar -->
 
