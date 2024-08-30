@@ -377,7 +377,7 @@ include('../include/header.php');
               </div>
             </div>
             <div class="row mt-3">
-              <div class="col"><a href="assign_tasks.php" class="btn btn-success btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
+              <div class="col"><a href="files.php" class="btn btn-success btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
           </div>
