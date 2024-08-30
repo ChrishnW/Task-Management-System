@@ -236,7 +236,7 @@ include('../include/header.php');
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="editTask(this)" class="btn btn-primary" id="emptask_id">Update</button>
+        <button type="button" onclick="editTask(this)" class="btn btn-success" id="emptask_id">Update</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -467,7 +467,7 @@ include('../include/header.php');
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-          <button type="button" onclick="accountUpdate(this)" class="btn btn-primary" name="account_update">Update Account</button>
+          <button type="button" onclick="accountUpdate(this)" class="btn btn-success" name="account_update">Update Account</button>
         </div>
       </form>
     </div>
@@ -488,7 +488,7 @@ include('../include/header.php');
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="updatePassword(this);" class="btn btn-primary" name="account_update">Change Password</button>
+        <button type="button" onclick="updatePassword(this);" class="btn btn-success" name="account_update">Change Password</button>
         <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -639,7 +639,7 @@ include('../include/header.php');
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-          <button type="button" onclick="accountCreate(this)" class="btn btn-primary" name="create_update">Create Account</button>
+          <button type="button" onclick="accountCreate(this)" class="btn btn-success" name="create_update">Create Account</button>
         </div>
       </form>
     </div>
@@ -689,7 +689,7 @@ include('../include/header.php');
         You're about to delete this assignee's task, <br> do you still want to proceed?
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="RemoveTask(this)" class="btn btn-primary">Proceed</button>
+        <button type="button" onclick="RemoveTask(this)" class="btn btn-success">Proceed</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -708,7 +708,7 @@ include('../include/header.php');
         You're about to delete this account, <br> do you still want to proceed?
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="accountDelete(this)" class="btn btn-primary">Proceed</button>
+        <button type="button" onclick="accountDelete(this)" class="btn btn-success">Proceed</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
