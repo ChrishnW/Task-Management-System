@@ -131,16 +131,16 @@ include('../include/header.php');
     <div class="row">
       <div class="form-group col-md-2">
         <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control">
+        <input type="date" name="date_to" id="date_to" class="form-control" onchange="checkDateInputs(this)">
       </div>
       <div class="form-group col-md-2">
         <label>From</label>
-        <input type="date" name="date_from" id="date_from" class="form-control">
+        <input type="date" name="date_from" id="date_from" class="form-control" onchange="checkDateInputs(this)">
       </div>
       <div class="form-group col">
         <br>
-        <button type="button" class="btn btn-success" onclick="filterTableTask(this)"><i class="fas fa-filter fa-fw"></i> Filter Table</button>
-        <button type="button" class="btn btn-danger" onclick="location.reload();"><i class="fas fa-eraser fa-fw"></i> Remove Filter</button>
+        <button type="button" class="btn btn-success btn-sm d-none" id="filterButton" onclick="filterTableTask(this)"><i class="fas fa-filter fa-fw"></i> Filter Table</button>
+        <button type="button" class="btn btn-danger btn-sm d-none" id="removeFilterButton" onclick="location.reload();"><i class="fas fa-eraser fa-fw"></i> Remove Filter</button>
       </div>
     </div>
     <div class="card">
@@ -1126,7 +1126,7 @@ include('../include/header.php');
     var date_from = $('#date_from').val();
     var progress = localStorage.getItem('activeTab').replace('#', '').toUpperCase();
     var currentTab = progress.charAt(0).toUpperCase() + progress.slice(1).toLowerCase();
-    console.log(date_to, date_from, progress, currentTab);
+    // console.log(date_to, date_from, progress, currentTab);
     $('#myTasksTable' + currentTab).DataTable().destroy();
     $('#myTasks' + currentTab).empty();
     $.ajax({
@@ -1256,4 +1256,21 @@ include('../include/header.php');
     }
 
   });
+
+  function checkDateInputs() {
+    var dateFrom = document.getElementById('date_from').value;
+    var dateTo = document.getElementById('date_to').value;
+    var filterButton = document.getElementById('filterButton');
+    var removeFilterButton = document.getElementById('removeFilterButton');
+
+    if (dateFrom && dateTo) {
+      filterButton.classList.remove('d-none');
+      removeFilterButton.classList.remove('d-none');
+    } else {
+      filterButton.classList.add('d-none');
+      removeFilterButton.classList.add('d-none');
+    }
+  }
+
+  checkDateInputs(); // Initial check
 </script>
