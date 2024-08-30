@@ -24,60 +24,82 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
 
   <!-- Custom styles for this template-->
   <link href="assets/css/sb-admin-2.min.css" rel="stylesheet">
+  <link rel="shortcut icon" href="./assets/img/tms logo 3.png">
 
+  <style>
+        body {
+          background-image: url('./assets/img/BackgroundImage  1.png');
+          
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+height : 100vh;
+    }
+    .element::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(270deg, #0a0f3a, #015c72eb); /* Black color with 50% opacity */
+ 
+}
+.navbar{
+  display: inline-flex;
+}
+.btn-gradient {
+  background: linear-gradient(to right, #1BCFD0, #0D6BC2);
+    border: none; 
+    color: white;
+}
+.btn-gradient:hover {
+    background: linear-gradient(to right, #007B7F, #0047AB); /* Darker shades on hover */
+  }
+  </style>
 </head>
 
 <body>
-
-  <div class="container">
-
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
-
-      <div class="col-xl-10 col-lg-12 col-md-9">
-
-        <div class="card o-hidden border-0 shadow-lg my-5">
-          <div class="card-body p-0">
-            <!-- Nested Row within Card Body -->
-            <div class="row">
-              <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-              <div class="col-lg-6">
-                <div class="p-5">
-                  <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
-                  </div>
-                  <small class="form-text text-danger text-center"><?php echo $error; ?></small>
-                  <br>
-                  <form class="user" data-toggle="validator" method="POST">
-                    <div class="form-group">
-                      <input type="text" class="form-control form-control-user" id="username" name="username" placeholder="Please enter your username." autofocus>
-                    </div>
-                    <div class="form-group">
-                      <input type="password" class="form-control form-control-user" id="password" name="password" placeholder="Please enter your password.">
-                    </div>
-                    <small class="form-text text-danger d-none text-center" id="password-caps-warning">Warning: Caps lock enabled</small>
-                    <br>
-                    <button class="btn btn-primary btn-block" name="submit" type="submit" value="submit">Login</button>
-                  </form>
-                  <hr>
-                  <div class="text-center">
-                    <a class="small" href="forgot-password.html">Forgot Password?</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="credits">
-        &copy; Copyright <strong><span>ICT - Information System</span></strong> All Rights Reserved.
-      </div>
-
-    </div>
+  <div class="element">
 
   </div>
+<nav class="navbar navbar-light  px-5 font-weight-bolder w-100">
+  <!-- <a class="navbar-brand fs-3" href="#">
+    <img src="./assets/img/tms logo 4.png" width="60" height="60" class=" d-inline-block align-top" alt="">
+  </a> -->
+  <h2 class="font-weight-bold" style="color: white">Task <span style="color: #40FFFD">Management System</span></h2>
+</nav>
+<div style="z-index: 1; position: relative; padding-left: 200px; padding-right: 100px; height: 90%"class="d-flex justify-content-center align-items-center flex-wrap  ">
+  <!-- Your content here -->
+  <div class="px-5 w-50 w-md-66 w-lg-50 mb-sm-3 mb-md-0">
+  <img src="./assets/img/tms logo 3 metalic 1.png" style="width: 65%"class=" logo-container" alt="Login image" />
+</div>
+<div style= "padding-left: 100px;
+  padding-right: 100px;
+}"class=" w-50 w-md-66 w-lg-50 mb-sm-3 mb-md-0 ">
+<form  data-toggle="validator" method="POST">
+
+  <h2 class=" text-white text-center mb-5 display-6 font-weight-bold" style="color: white">LOG <span style="color: #40FFFD">IN</span></h2>
+  <small class="form-text text-danger text-center"><?php echo $error; ?></small>
+  <div class="mb-3 ">
+    <input type="text"  class=" form-control form-control-lg text-gray-700" id="username" name="username" placeholder="Please enter your username." autofocus />
+  </div>
+  
+  <div class="mb-3 ">
+    <input type="password" id="password" name="password" placeholder="Please enter your password." class=" form-control form-control-lg text-gray-700"  />
+  </div>
+  <button class="btn btn-primary w-100 form-control-lg btn-gradient" name="submit" type="submit" value="submit"  >
+ <i class="fas fa-arrow-alt-circle-right fa-fw"></i> Button</button>
+ <div class="text-center mt-4">
+                    <a class="small text-white" href="forgot-password.html">Forgot Password?</a>
+                  </div>
+</form>
+
+</div>
+<div class="credits">
+         <strong><span>Developed by ICT - Information System</span></strong>
+      </div>
+</div>
 
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>
