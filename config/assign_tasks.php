@@ -105,8 +105,8 @@ if (isset($_POST['viewTaskEmp'])) {
     }
     $id = $row['id'];
     $action = '
-      <button type="button" class="btn btn-danger btn-circle" onclick="RemoveTaskView(this)" value="' . $id . '"><i class="fas fa-trash"></i></button>
-      <button type="button" class="btn btn-info btn-circle" onclick="EditTaskView(this)" value="' . $id . '" data-name="' . $row['task_name'] . '" data-date="' . $row['submission'] . '" data-condition="' . $row['requirement_status'] . '" data-for="' . $row['in_charge'] . '" data-class="' . $class . '"><i class="fas fa-pencil-alt"></i></button>
+      <button type="button" class="btn btn-danger btn-sm btn-block" onclick="RemoveTaskView(this)" value="' . $id . '"><i class="fas fa-trash fa-fw"></i> Remove</button>
+      <button type="button" class="btn btn-info btn-sm btn-block" onclick="EditTaskView(this)" value="' . $id . '" data-name="' . $row['task_name'] . '" data-date="' . $row['submission'] . '" data-condition="' . $row['requirement_status'] . '" data-for="' . $row['in_charge'] . '" data-class="' . $class . '"><i class="fas fa-pencil-alt fa-fw"></i> Edit</button>
     ';
     $dataList[] = [
       'counter' => $counter,
