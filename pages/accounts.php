@@ -131,8 +131,8 @@ include('../include/header.php');
                   } ?>
                   <tr>
                     <td>
-                      <center /><button type="button" class="btn btn-info btn-circle" value="<?php echo $row['username']; ?>" onclick="checkTasks(this)"><i class="fas fa-eye"></i></button>
-                      <button type="button" class="btn btn-success btn-circle" value="<?php echo $row['username']; ?>" data-for="<?php echo $row['sec_id']; ?>" onclick="addTasks(this)"><i class="fas fa-plus"></i></button>
+                      <center /><button type="button" class="btn btn-info btn-block" value="<?php echo $row['username']; ?>" onclick="checkTasks(this)"><i class="fas fa-eye fa-fw"></i> View</button>
+                      <button type="button" class="btn btn-success btn-block" value="<?php echo $row['username']; ?>" data-for="<?php echo $row['sec_id']; ?>" onclick="addTasks(this)"><i class="fas fa-plus fa-fw"></i> Add Task</button>
                     </td>
                     <td><?php echo $row['username']; ?></td>
                     <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
