@@ -42,7 +42,7 @@
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
         <div class="sidebar-brand-icon">
           <!-- <i class="fas fa-business-time"></i> -->
-          <img src="../assets/img/Logo.png" class=" w-100">
+          <img src="../assets/img/Logo.png" class=" w-75">
         </div>
         <div class="sidebar-brand-text mx-3">G-TMS</div>
       </a>
