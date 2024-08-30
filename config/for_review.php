@@ -40,9 +40,9 @@ if (isset($_POST['viewTask'])) {
             <label>Assignee:</label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
+                <div class="input-group-text"><i class="fas fa-user"></i></div>
               </div>
-              <input type="text" class="form-control" name="approveCode" id="approveCode" value="<?php echo $row['task_code'] ?>" readonly>
+              <input type="text" class="form-control" value="<?php echo ucwords(strtolower($row['Mname'])) ?>" readonly>
             </div>
           </div>
         </div>
