@@ -185,7 +185,7 @@ include('../include/header.php');
 <script>
   $('#dataTable').DataTable({
     "order": [
-      [5, "desc"],
+      [6, "desc"],
       [3, "asc"]
     ],
     "pageLength": 5,
