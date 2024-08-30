@@ -470,3 +470,44 @@
 .text-cyan {
     color: #40FFFD;
 }
+
+.btn-gradient-cyan {
+  color           : #fff;
+  background:      linear-gradient(to right, #1BCFD0, #0D6BC2);
+  border-color    : #0D6BC2;
+}
+
+.btn-gradient-cyan:hover {
+  color           : #fff;
+  background      : linear-gradient(to right, #007B7F, #0047AB);
+  border-color    : #0047AB;
+}
+
+.login-height {
+    height: 100vh;
+}
+
+.bg-image {
+    background-image   : url('/assets/img/background.png');
+    background-position: center;
+    background-size    : cover;
+}
+
+.element::before {
+    content   : "";
+    position  : absolute;
+    top       : 0;
+    left      : 0;
+    width     : 100%;
+    height    : 100%;
+    background: linear-gradient(270deg, #0a0f3a, #015c72eb);
+    /* Black color with 50% opacity */
+}
+
+#username {
+    text-transform: uppercase;
+}
+
+#username::placeholder {
+    text-transform: none;
+}
