@@ -234,8 +234,8 @@ if (isset($_POST['viewTaskEmp'])) {
     }
     $id = $row['id'];
     $action = '
-      <button type="button" class="btn btn-danger btn-circle" onclick="RemoveTaskView(this)" value="' . $id . '"><i class="fas fa-trash"></i></button>
-      <button type="button" class="btn btn-info btn-circle" onclick="EditTaskView(this)" value="' . $id . '" data-name="' . $row['task_name'] . '" data-date="' . $row['submission'] . '" data-condition="' . $row['requirement_status'] . '" data-for="' . $row['in_charge'] . '" data-class="' . $class . '"><i class="fas fa-pencil-alt"></i></button>
+      <button type="button" class="btn btn-danger btn-block" onclick="RemoveTaskView(this)" value="' . $id . '"><i class="fas fa-trash fa-fw"></i> Remove</button>
+      <button type="button" class="btn btn-info btn-block" onclick="EditTaskView(this)" value="' . $id . '" data-name="' . $row['task_name'] . '" data-date="' . $row['submission'] . '" data-condition="' . $row['requirement_status'] . '" data-for="' . $row['in_charge'] . '" data-class="' . $class . '"><i class="fas fa-pencil-alt fa-fw"></i> Edit</button>
     ';
     $dataList[] = [
       'counter' => $counter,
@@ -376,60 +376,60 @@ if (isset($_GET['taskDownload'])) {
   </body>
 
   </html> <?php
-        }
-        if (isset($_POST['selectDepartment'])) {
-          $id = $_POST['departmentSelect'];
-          $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='$id'");
-          if (mysqli_num_rows($query_result) > 0) {
-            while ($row = mysqli_fetch_assoc($query_result)) {
-              $sec_id   = $row['sec_id'];
-              $sec_name = $row['sec_name'];
-              echo "<option value='$sec_id' data-subtext='$sec_id'>" . ucwords(strtolower($sec_name)) . "</option>";
-            }
-          } else {
-            echo "<option value='' selected>No Registered Section</option>";
-          }
-        }
-        if (isset($_POST['assignTask'])) {
-          $in_charge  = $_POST['assigneeID'];
-          $sec_id     = $_POST['assigneeSEC'];
-          $task_class = $_POST['assignClass'];
-          $taskArray  = $_POST['assignList'];
-          $require    = $_POST['assignFile'];
-          $due_date   = $_POST['assignDue'];
-          $result     = 0;
-          $count      = 0;
-          if (is_array($due_date)) {
-            $due_date = implode(', ', $due_date);
-          }
-          foreach ($taskArray as $task_name) {
-            $query_get = mysqli_query($con, "SELECT * FROM task_list WHERE task_name='$task_name'");
-            $row = mysqli_fetch_assoc($query_get);
-            $task_details = $row['task_details'];
-            $query_check = mysqli_query($con, "SELECT * FROM tasks WHERE task_name='$task_name' AND in_charge='$in_charge'");
-            if (mysqli_num_rows($query_check) > 0) {
-              $result = 1;
-            } else {
-              $query_insert = mysqli_query($con, "INSERT INTO tasks (`task_name`, `task_class`, `task_details`, `task_for`, `requirement_status`, `in_charge`, `submission`) VALUES ('$task_name', '$task_class', '$task_details', '$sec_id', '$require', '$in_charge', '$due_date')");
-              if ($query_insert) {
-                $result = 2;
-                $count += 1;
-              } else {
-                $result = 3;
-              }
-            }
-            if ($result == 1) {
-              $result = '<span class="badge badge-warning">Exists</span> ' . $task_name . '<br>';
-            } elseif ($result == 2) {
-              $result = '<span class="badge badge-success">Success</span> ' . $task_name . '<br>';
-            } elseif ($result === 3) {
-              $result = $task_name . ' <span class="badge badge-danger">Failed</span> ' . $task_name . '<br>';
-            }
-            echo $result;
-          }
-          if ($count > 0) {
-            $datetime_current = date('Y-m-d H:i:s');
-            $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$in_charge', 'fas fa-info', 'info', 'The head has assigned you a total of [$count] tasks.', '$datetime_current', '1')");
-          }
-        }
-          ?>
+}
+if (isset($_POST['selectDepartment'])) {
+  $id = $_POST['departmentSelect'];
+  $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='$id'");
+  if (mysqli_num_rows($query_result) > 0) {
+    while ($row = mysqli_fetch_assoc($query_result)) {
+      $sec_id   = $row['sec_id'];
+      $sec_name = $row['sec_name'];
+      echo "<option value='$sec_id' data-subtext='$sec_id'>" . ucwords(strtolower($sec_name)) . "</option>";
+    }
+  } else {
+    echo "<option value='' selected>No Registered Section</option>";
+  }
+}
+if (isset($_POST['assignTask'])) {
+  $in_charge  = $_POST['assigneeID'];
+  $sec_id     = $_POST['assigneeSEC'];
+  $task_class = $_POST['assignClass'];
+  $taskArray  = $_POST['assignList'];
+  $require    = $_POST['assignFile'];
+  $due_date   = $_POST['assignDue'];
+  $result     = 0;
+  $count      = 0;
+  if (is_array($due_date)) {
+    $due_date = implode(', ', $due_date);
+  }
+  foreach ($taskArray as $task_name) {
+    $query_get = mysqli_query($con, "SELECT * FROM task_list WHERE task_name='$task_name'");
+    $row = mysqli_fetch_assoc($query_get);
+    $task_details = $row['task_details'];
+    $query_check = mysqli_query($con, "SELECT * FROM tasks WHERE task_name='$task_name' AND in_charge='$in_charge'");
+    if (mysqli_num_rows($query_check) > 0) {
+      $result = 1;
+    } else {
+      $query_insert = mysqli_query($con, "INSERT INTO tasks (`task_name`, `task_class`, `task_details`, `task_for`, `requirement_status`, `in_charge`, `submission`) VALUES ('$task_name', '$task_class', '$task_details', '$sec_id', '$require', '$in_charge', '$due_date')");
+      if ($query_insert) {
+        $result = 2;
+        $count += 1;
+      } else {
+        $result = 3;
+      }
+    }
+    if ($result == 1) {
+      $result = '<span class="badge badge-warning">Exists</span> ' . $task_name . '<br>';
+    } elseif ($result == 2) {
+      $result = '<span class="badge badge-success">Success</span> ' . $task_name . '<br>';
+    } elseif ($result === 3) {
+      $result = $task_name . ' <span class="badge badge-danger">Failed</span> ' . $task_name . '<br>';
+    }
+    echo $result;
+  }
+  if ($count > 0) {
+    $datetime_current = date('Y-m-d H:i:s');
+    $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$in_charge', 'fas fa-info', 'info', 'The head has assigned you a total of [$count] tasks.', '$datetime_current', '1')");
+  }
+}
+?>
