@@ -44,10 +44,10 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
               <br>
               <form class="user" data-toggle="validator" method="POST">
                 <div class="form-group">
-                  <input type="text" class="form-control form-control-user" id="username" name="username" placeholder="Please enter your username." autofocus>
+                  <input type="text" class="form-control form-control-user" id="username" name="username" placeholder="Please enter your username." autocomplete="off" autofocus>
                 </div>
                 <div class="form-group">
-                  <input type="password" class="form-control form-control-user" id="password" name="password" placeholder="Please enter your password.">
+                  <input type="password" class="form-control form-control-user" id="password" name="password" placeholder="Please enter your password." autocomplete="off">
                   <small class="form-text text-danger d-none text-center" id="password-caps-warning">Warning: Caps lock enabled</small>
                 </div>
                 <button class="btn btn-block btn-gradient-cyan" name="submit" type="submit" value="submit"><i class="fas fa-arrow-alt-circle-right fa-fw"></i> Login</button>
