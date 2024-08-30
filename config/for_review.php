@@ -210,7 +210,8 @@ if (isset($_POST['filterTable'])) {
       } else {
         $class = 'Unknown';
         $badge = 'secondary';
-      }      $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+      }
+      $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
       $due_date   = date_format(date_create($row['due_date']), "Y-m-d h:i a");
       $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
       $assignee   = '<img src='.$assigneeURL.' class="img-table-solo"> '.ucwords(strtolower($row['Mname'])).''; ?>
@@ -226,7 +227,7 @@ if (isset($_POST['filterTable'])) {
           <?php echo $assignee ?>
         </td>
       </tr>
-<?php }
+    <?php }
   }
 }
 ?>
