@@ -694,21 +694,6 @@ include('../include/header.php');
     </div>
   </div>
 </div>
-<!-- <div class="modal fade" id="edit" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-    <div class="modal-content border-info">
-      <div class="modal-header bg-info text-white">
-        <h5 class="modal-title">Edit Task</h5>
-      </div>
-      <div class="modal-body" id="editDetails">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        <button type="button" onclick="updateTask(this)" class="btn btn-success" id="updateButton">Update</button>
-      </div>
-    </div>
-  </div>
-</div> -->
 <div class="modal fade" id="danger" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
