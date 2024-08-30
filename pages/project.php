@@ -269,8 +269,8 @@ include('../include/header.php');
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success" id="saveTaskButton">Save</button>
           <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-success" id="saveTaskButton">Save</button>
         </div>
       </form>
     </div>
@@ -361,8 +361,8 @@ include('../include/header.php');
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-success" id="postButton">Post</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
         </div>
       </form>
     </div>
