@@ -131,8 +131,8 @@
         </div>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-success" id="passUpdate">Save</button>
         <button type="button" class="btn btn-danger" onclick="location.reload();">Close</button>
-        <button type="button" class="btn btn-primary" id="passUpdate">Save</button>
       </div>
     </div>
   </div>
@@ -306,20 +306,25 @@
   $('#passUpdate').off('click').on('click', function() {
     var userAcc = <?php echo json_encode($username) ?>;
     var setPass = $('#conPass').val();
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        "passUpdate": true,
-        "userAcc": userAcc,
-        "setPass": setPass,
-      },
-      success: function(response) {
-        if (response === 'Success') {
-          window.location.href = '../include/logout.php';
+    if (setPass !== '') {
+      $.ajax({
+        method: "POST",
+        url: "../config/accounts.php",
+        data: {
+          "passUpdate": true,
+          "userAcc": userAcc,
+          "setPass": setPass,
+        },
+        success: function(response) {
+          if (response === 'Success') {
+            window.location.href = '../include/logout.php';
+          }
         }
-      }
-    });
+      });
+    } else {
+        document.getElementById('error_found').innerHTML = 'Empty field has been detected!';
+        $('#profileError').modal('show');
+    }
   });
 
   $(document).ready(function() {
