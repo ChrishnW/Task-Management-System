@@ -163,7 +163,7 @@ if (isset($_POST['actionView'])) {
                 <td><?php echo $count; ?></td>
                 <td><?php echo $row['task'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['details'] ?>"></i></td>
                 <td><?php echo $row['status'] ?></td>
-                <td><?php echo $row['created'] ?></td>
+                <td><?php echo date('F d, Y', strtotime($row['created'])); ?></td>
               </tr>
             <?php } ?>
           </tbody>
