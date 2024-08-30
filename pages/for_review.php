@@ -45,9 +45,9 @@ include('../include/header.php');
                 <th class="col-auto">Code</th>
                 <th class="col-auto">Title</th>
                 <th class="col-auto">Classification</th>
+                <th class="col-auto">Due Date</th>
                 <th class="col-auto">Accomplished</th>
                 <th class="col-auto">Asignee</th>
-                <th class="col-auto">Progress</th>
               </tr>
             </thead>
             <tbody id='dataTableBody'>
@@ -68,17 +68,10 @@ include('../include/header.php');
                     $class = 'Unknown';
                     $badge = 'secondary';
                   }
-                  $status_badges = [
-                    'NOT YET STARTED' => 'primary',
-                    'IN PROGRESS' => 'warning',
-                    'REVIEW' => 'danger',
-                    'FINISHED' => 'success',
-                    'RESCHEDULE' => 'secondary'
-                  ];
-                  $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
-                  $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+                  $task_class         = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+                  $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
                   $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-                  $assignee  = '<img src='.$assigneeURL.' class="img-table-solo"> '.ucwords(strtolower($row['Mname'])).'';
+                  $assignee           = '<img src='.$assigneeURL.' class="img-table-solo"> '.ucwords(strtolower($row['Mname'])).'';
               ?>
                   <tr>
                     <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
@@ -86,9 +79,9 @@ include('../include/header.php');
                     <td><?php echo $row['task_code'] ?></td>
                     <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i> <i class="fas fa-envelope text-success" data-toggle="tooltip" data-placement="right" title="<?php echo $row['remarks'] ?>"></i></td>
                     <td><?php echo $task_class ?></td>
+                    <td><?php echo $due_date ?></td>
                     <td><?php echo $date_accomplished ?></td>
                     <td><?php echo $assignee ?></td>
-                    <td><?php echo $progress ?></td>
                   </tr>
               <?php }
               } ?>

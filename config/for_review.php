@@ -188,7 +188,7 @@ if (isset($_POST['filterTable'])) {
   $date_to    = $_POST['date_to'];
   $date_from  = $_POST['date_from'];
 
-  $query = "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id = '$dept_id'";
+  $query = "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id = '$dept_id'";
   if ($date_to != NULL && $date_from != NULL) {
     $query .= " AND DATE(tasks_details.date_accomplished) >= '$date_to' AND DATE(tasks_details.date_accomplished) <= '$date_from'";
   }
@@ -199,9 +199,9 @@ if (isset($_POST['filterTable'])) {
   if (mysqli_num_rows($result) > 0) {
     while ($row = $result->fetch_assoc()) {
       if (empty($row['file_name'])) {
-        $imageURL = '../assets/img/user-profiles/nologo.png';
+        $assigneeURL = '../assets/img/user-profiles/nologo.png';
       } else {
-        $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
+        $assigneeURL = '../assets/img/user-profiles/' . $row['file_name'];
       }
       $task_classes = [1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'], 2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'], 3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'], 4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'], 5 => ['name' => 'PROJECT', 'badge' => 'info'], 6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']];
       if (isset($task_classes[$row['task_class']])) {
@@ -210,29 +210,21 @@ if (isset($_POST['filterTable'])) {
       } else {
         $class = 'Unknown';
         $badge = 'secondary';
-      }
-      $status_badges = [
-        'NOT YET STARTED' => 'primary',
-        'IN PROGRESS' => 'warning',
-        'REVIEW' => 'danger',
-        'FINISHED' => 'success',
-        'RESCHEDULE' => 'secondary'
-      ];
-      $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
-      $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+      }      $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+      $due_date   = date_format(date_create($row['due_date']), "Y-m-d h:i a");
       $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-      $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo">'; ?>
+      $assignee   = '<img src='.$assigneeURL.' class="img-table-solo"> '.ucwords(strtolower($row['Mname'])).''; ?>
       <tr>
         <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
-        <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-circle" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-check"></i></button></td>
+        <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
         <td><?php echo $row['task_code'] ?></td>
         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
         <td><?php echo $task_class ?></td>
+        <td><?php echo $due_date ?></td>
         <td><?php echo $date_accomplished ?></td>
-        <td data-toggle="tooltip" data-placement="right" title="<?php echo $row['in_charge'] ?>">
-          <center /><?php echo $assignee ?>
+        <td>
+          <?php echo $assignee ?>
         </td>
-        <td><?php echo $progress ?></td>
       </tr>
 <?php }
   }
