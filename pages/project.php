@@ -90,8 +90,8 @@ include('../include/header.php');
                     <td><?php echo $row['task']; ?></td>
                     <td><?php echo $dateStart; ?></td>
                     <td><?php echo $dateEnd; ?></td>
-                    <td><span class="badge"><?php echo $row['pstatus']; ?></span></td>
-                    <td><span class="badge"><?php echo $row['status']; ?></span></td>
+                    <td><span class="badge badge-info"><?php echo $row['pstatus']; ?></span></td>
+                    <td><span class="badge badge-info"><?php echo $row['status']; ?></span></td>
                   </tr>
               <?php }
               } ?>
