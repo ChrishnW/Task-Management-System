@@ -89,3 +89,9 @@ $con->next_result();
 $query_result = mysqli_query($con, "SELECT COUNT(id) AS total_notification FROM notification WHERE user='$username' AND status=1");
 $row = mysqli_fetch_assoc($query_result);
 $total_notification = $row['total_notification'];
+
+// Count User Files
+$con->next_result();
+$query_result = mysqli_query($con, "SELECT COUNT(id) AS file_counter FROM task_files WHERE file_owner='$username'");
+$row = mysqli_fetch_assoc($query_result);
+$file_counter = $row['file_counter'];
