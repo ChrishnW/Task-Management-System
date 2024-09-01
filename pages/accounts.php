@@ -466,8 +466,8 @@ include('../include/header.php');
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
           <button type="button" onclick="accountUpdate(this)" class="btn btn-success" name="account_update">Update Account</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
         </div>
       </form>
     </div>
