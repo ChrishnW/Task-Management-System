@@ -15,6 +15,7 @@ while ($row = $query_tasks->fetch_assoc()) {
   $submission = $row['submission'];
   $getFile    = $row['requirement_status'];
   $taskStatus = 'NOT YET STARTED';
+  
   $submission = explode(', ', $row['submission']);
   foreach ($submission as $day) {
     $day = ucfirst(strtolower($day));

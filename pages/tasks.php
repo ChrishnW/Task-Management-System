@@ -637,11 +637,11 @@ include('../include/header.php');
         <input type="hidden" id="taskID">
         <i class="fas fa-question fa-5x text-success"></i>
         <br><br>
-        Do you want to start this task?
+        Do you want to start this task/s?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-success" data-dismiss="modal" id="confirmButton">Confirm</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -657,8 +657,8 @@ include('../include/header.php');
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-success" data-dismiss="modal" id="submitTask">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         </div>
       </form>
     </div>
@@ -688,8 +688,8 @@ include('../include/header.php');
       <div class="modal-body" id="reviewDetails">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         <button type="button" onclick="updateDetails(this)" class="btn btn-success" id="updateButton">Update</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -706,8 +706,8 @@ include('../include/header.php');
         You're about to delete this file, <br> do you still want to proceed?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" id="delete_id">Proceed</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
