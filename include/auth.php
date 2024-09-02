@@ -7,7 +7,6 @@ if (!isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) ==
 	exit();
 }
 else {
-	date_default_timezone_set('Asia/Manila');
 	$emp_id 	= $_SESSION['SESS_MEMBER_ID'];
 	$username = $_SESSION['SESS_MEMBER_USERNAME'];
 	$access 	= $_SESSION['SESS_MEMBER_ACCESS'];
@@ -15,5 +14,4 @@ else {
 
 	// Query in the background of every pages
 	include("query.php");
-	include("log.php");
 }

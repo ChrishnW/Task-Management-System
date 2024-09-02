@@ -3,15 +3,13 @@ include('include/connect.php');
 date_default_timezone_set('Asia/Manila');
 
 $date_today = date('Y-m-d');
-$day_off    = false;
-$weekend    = false;
-$success    = false;
+$taskCount  = 0;
 
 if (date('N') >= 1 && date('N') <= 5) {
   $query_dayoff = mysqli_query($con, "SELECT * FROM day_off WHERE status=1 AND date_off='$date_today'");
   $dayoff_count = mysqli_num_rows($query_dayoff);
   if ($dayoff_count > 0) {
-    $day_off = true;
+    $systemAction = "Today's date is set as a day off; no tasks have been generated.";
   } else {
     $query_tasks  = mysqli_query($con, "SELECT * FROM tasks WHERE task_class=1 ORDER BY task_name ASC");
     while ($row = $query_tasks->fetch_assoc()) {
@@ -29,8 +27,16 @@ if (date('N') >= 1 && date('N') <= 5) {
 
       $insert_task = "INSERT INTO tasks_details (`task_code`, `task_name`, `task_class`, `task_for`, `in_charge`, `status`, `date_created`, `due_date`, `requirement_status`, `task_status`) VALUES ('$taskCode', '$taskName', '$taskClass', '$taskFor', '$inCharge', '$taskStatus', '$date_today', '$dueDate', '$getFile', 1)";
       $result_task = mysqli_query($con, $insert_task);
+      $taskCount += 1;
+    }
+    if($result_task){
+      $systemAction = "Successfully generated $taskCount tasks.";
     }
   }
 } elseif (date('N') == 6 || date('N') == 7) {
-  $weekend = true;
+  $systemAction = "Today is a weekend; no tasks have been generated.";
+}
+
+if ($systemAction != '') {
+  $query_log = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$systemAction', '$systemTime', '$username')");
 }
