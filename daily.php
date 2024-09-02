@@ -31,6 +31,8 @@ if (date('N') >= 1 && date('N') <= 5) {
     }
     if($result_task){
       $systemAction = "Successfully generated $taskCount tasks.";
+    } else {
+      $systemAction = "Failed to generate tasks.";
     }
   }
 } elseif (date('N') == 6 || date('N') == 7) {
@@ -38,5 +40,6 @@ if (date('N') >= 1 && date('N') <= 5) {
 }
 
 if ($systemAction != '') {
-  $query_log = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$systemAction', '$systemTime', '$username')");
+	$systemTime	= date('Y-m-d H:i:s');
+  $query_log  = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$systemAction', '$systemTime', 'SYSTEM')");
 }
