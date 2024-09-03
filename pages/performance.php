@@ -47,35 +47,31 @@ include('../include/header.php');
                       return 0;
                     }
                   }
-                  $count_task   = mysqli_query($con, "SELECT DISTINCT *, (SELECT DISTINCT COUNT(id) FROM tasks_details WHERE in_charge='$username' AND task_status=1 AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.task_class != 5 AND tasks_details.task_class != 6) AS task_total, (SELECT DISTINCT COUNT(id) FROM tasks_details WHERE in_charge='$username' AND task_status=1 AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.task_class = 6) AS report_total FROM tasks_details WHERE tasks_details.task_status=1 AND tasks_details.status='FINISHED' AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.in_charge='$username'");
-                  $routine_total    = 0;
-                  $routine_sum      = 0;
-                  $report_sum       = 0;
-                  $routine_average  = 0;
-                  $report_average   = 0;
+                  $count_task = mysqli_query($con, "SELECT *, (SELECT COUNT(id) FROM tasks_details WHERE in_charge='$username' AND task_status=1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class NOT IN (5, 6)) AS task_total, (SELECT COUNT(id) FROM tasks_details WHERE task_status=1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS report_total FROM tasks_details WHERE task_status=1 AND status='FINISHED' AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND in_charge='$username'");
+                  $routine_sum = 0;
+                  $report_sum = 0;
+                  $routine_total = 0;
+                  $report_total = 0;
                   while ($count_row = $count_task->fetch_assoc()) {
                     if ($count_row['task_class'] != 5 && $count_row['task_class'] != 6) {
-                      $routine_sum  += $count_row['achievement'];
+                      $routine_sum += $count_row['achievement'];
                     }
                     if ($count_row['task_class'] == 6) {
                       $report_sum += $count_row['achievement'];
                     }
-                    $routine_total    = $count_row['task_total'];
-                    $report_total     = $count_row['report_total'];
-
-                    if ($routine_total != 0) {
-                      $routine_average  = number_format(($routine_sum / $routine_total), 2);
-                      $routine_percentage = number_format(getPercentage($routine_average), 2);
-                    }
-                    if ($report_total != 0) {
-                      $report_average   = number_format(($report_sum / $report_total), 2);
-                      $report_percentage  = number_format(getPercentage($report_average), 2);
-                    }
+                    $routine_total = $count_row['task_total'];
+                    $report_total = $count_row['report_total'];
                   }
+
+                  $routine_average = $routine_total > 0 ? number_format(($routine_sum / $routine_total), 2) : 0;
+                  $routine_percentage = $routine_total > 0 ? number_format(getPercentage($routine_average), 2) : 0;
+
+                  $report_average = $report_total > 0 ? number_format(($report_sum / $report_total), 2) : 0;
+                  $report_percentage = $report_total > 0 ? number_format(getPercentage($report_average), 2) : 0;
                   ?>
                   <li class="list-group-item"><b>Completed Tasks</b><a class="float-right"><?php echo $completed_tasks ?> out of <?php echo $total_tasks ?></a></li>
-                  <li class="list-group-item"><b>Average</b><a class="float-right"> <?php echo $routine_average ?? '0' ?> for Routine | <?php echo $report_average ?? '0' ?> for Report</a></li>
-                  <li class="list-group-item"><b>Rating</b><a class="float-right"> <?php echo $routine_percentage ?? '0' ?>% | <?php echo $report_percentage ?? '0' ?>% </a></li>
+                  <li class="list-group-item"><b>Average</b><a class="float-right"> <?php echo $routine_average ?> for Routine | <?php echo $report_average ?> for Report</a></li>
+                  <li class="list-group-item"><b>Rating</b><a class="float-right"> <?php echo $routine_percentage ?>% | <?php echo $report_percentage ?>% </a></li>
                 </ul>
               </div>
             </div>
