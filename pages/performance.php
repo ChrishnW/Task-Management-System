@@ -127,7 +127,9 @@ include('../include/header.php');
               </tr>
             </thead>
             <tbody id='dataTableBody'>
-              <?php $con->next_result();
+              <?php
+              $con->next_result();
+
               function getPercentage($average)
               {
                 if ($average == 5.0) {
@@ -144,40 +146,38 @@ include('../include/header.php');
                   return 0;
                 }
               }
-              $result = mysqli_query($con, "SELECT accounts.*, section.dept_id, section.sec_name FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE section.dept_id='$dept_id' AND accounts.access=2");
+
+              $query = "SELECT accounts.*, section.dept_id, section.sec_name FROM accounts JOIN section ON section.sec_id = accounts.sec_id WHERE section.dept_id = '$dept_id' AND accounts.access = 2";
+              $result = mysqli_query($con, $query);
               while ($row = $result->fetch_assoc()) {
-                if (empty($row['file_name'])) {
-                  $imageURL = '../assets/img/user-profiles/nologo.png';
-                } else {
-                  $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-                }
-                $assignee     = $row['username'];
-                $count_task   = mysqli_query($con, "SELECT DISTINCT *, (SELECT DISTINCT COUNT(id) FROM tasks_details WHERE in_charge='$assignee' AND task_status=1 AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.task_class != 5 AND tasks_details.task_class != 6) AS task_total, (SELECT DISTINCT COUNT(id) FROM tasks_details WHERE in_charge='$assignee' AND task_status=1 AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.task_class = 6) AS report_total FROM tasks_details WHERE tasks_details.task_status=1 AND tasks_details.status='FINISHED' AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.in_charge='$assignee'");
-                $routine_total    = 0;
-                $routine_sum      = 0;
-                $report_sum       = 0;
-                $routine_average  = 0;
-                $report_average   = 0;
+                $imageURL = empty($row['file_name'])
+                  ? '../assets/img/user-profiles/nologo.png'
+                  : '../assets/img/user-profiles/' . $row['file_name'];
+                $assignee = $row['username'];
+                $task_query = "SELECT *, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class NOT IN (5, 6)) AS task_total, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS report_total FROM tasks_details WHERE task_status = 1 AND status = 'FINISHED' AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND in_charge = '$assignee'";
+                $count_task = mysqli_query($con, $task_query);
+                $routine_sum = 0;
+                $report_sum = 0;
+                $routine_total = 0;
+                $report_total = 0;
                 while ($count_row = $count_task->fetch_assoc()) {
                   if ($count_row['task_class'] != 5 && $count_row['task_class'] != 6) {
-                    $routine_sum  += $count_row['achievement'];
+                    $routine_sum += $count_row['achievement'];
                   }
                   if ($count_row['task_class'] == 6) {
                     $report_sum += $count_row['achievement'];
                   }
-                  $routine_total    = $count_row['task_total'];
-                  $report_total     = $count_row['report_total'];
-
-                  if ($routine_total != 0) {
-                    $routine_average  = number_format(($routine_sum / $routine_total), 2);
-                    $routine_percentage = number_format(getPercentage($routine_average), 2);
-                  }
-                  if ($report_total != 0) {
-                    $report_average   = number_format(($report_sum / $report_total), 2);
-                    $report_percentage  = number_format(getPercentage($report_average), 2);
-                  }
+                  $routine_total = $count_row['task_total'];
+                  $report_total = $count_row['report_total'];
                 }
+
+                $routine_average = $routine_total > 0 ? number_format(($routine_sum / $routine_total), 2) : 0;
+                $routine_percentage = $routine_total > 0 ? number_format(getPercentage($routine_average), 2) : 0;
+
+                $report_average = $report_total > 0 ? number_format(($report_sum / $report_total), 2) : 0;
+                $report_percentage = $report_total > 0 ? number_format(getPercentage($report_average), 2) : 0;
               ?>
+
                 <tr>
                   <td></td>
                   <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
