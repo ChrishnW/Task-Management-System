@@ -186,6 +186,11 @@ include('../include/header.php');
                     <?php
                     $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='NOT YET STARTED' AND tasks_details.in_charge='$username'");
                     while ($row = $query_result->fetch_assoc()) {
+                      if (empty($row['file_name'])) {
+                        $imageURL = '../assets/img/user-profiles/nologo.png';
+                      } else {
+                        $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
+                      }
                       $current_date = date('Y-m-d');
                       $task_classes = [
                         1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
@@ -581,7 +586,7 @@ include('../include/header.php');
                   }
                   $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
                   $due_date   = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                  $assignee   = '<img src='.$assigneeURL.' class="img-table-solo"> '.ucwords(strtolower($row['Mname'])).'';
+                  $assignee   = '<img src=' . $assigneeURL . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
                   $status_badges = [
                     'NOT YET STARTED' => 'primary',
                     'IN PROGRESS' => 'warning',

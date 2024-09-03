@@ -205,7 +205,7 @@ include('../include/header.php');
 <script>
   $('#dataTable').DataTable({
     "order": [
-      [3, "desc"]
+      [5, "desc"]
     ],
     "pageLength": 5,
     "lengthMenu": [5, 10, 25, 50, 100],
@@ -258,7 +258,7 @@ include('../include/header.php');
         $('#dataTableBody').append(response);
         $('#dataTable').DataTable({
           "order": [
-            [3, "desc"]
+            [5, "desc"]
           ],
           "pageLength": 5,
           "lengthMenu": [5, 10, 25, 50, 100],
