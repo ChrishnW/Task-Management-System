@@ -126,6 +126,7 @@ include('../include/header.php');
                 <th>Section</th>
                 <th class="col col-md-2">Average</th>
                 <th class="col col-md-2">Percentage</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody id='dataTableBody'>
@@ -184,10 +185,9 @@ include('../include/header.php');
                   <td></td>
                   <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
                   <td><?php echo $row['sec_name']; ?></td>
-                  <td><?php echo $routine_average ?> (Routine) <p class="text-danger"><?php echo $report_average ?> (Report)</p>
-                  </td>
-                  <td><?php echo $routine_percentage ?? '0'; ?> (Routine) <p class="text-danger"><?php echo $report_percentage ?? '0' ?> (Report)</p>
-                  </td>
+                  <td><?php echo $routine_average ?> (Routine) <p class="text-danger"><?php echo $report_average ?> (Report)</p></td>
+                  <td><?php echo $routine_percentage ?? '0'; ?> (Routine) <p class="text-danger"><?php echo $report_percentage ?? '0' ?> (Report)</p></td>
+                  <td><button class="btn btn-block btn-primary btn-sm"><i class="fas fa-eye fa-fw"></i> View</button></td>
                 </tr>
               <?php } ?>
             </tbody>
