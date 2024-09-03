@@ -507,19 +507,6 @@ include('../include/header.php');
         <label>From</label>
         <input type="date" name="date_from" id="date_from" class="form-control" onchange="filterTable()">
       </div>
-      <!-- <div class="form-group col-md-2">
-        <label>Department</label>
-        <select id="department" name="department" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5">
-          <?php
-          $con->next_result();
-          $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' AND dept_id='$dept_id'");
-          if (mysqli_num_rows($sql) > 0) {
-            while ($row = mysqli_fetch_assoc($sql)) { ?>
-              <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>' class="text-capitalize"><?php echo strtolower($row['dept_name']) ?></option>
-          <?php }
-          } ?>
-        </select>
-      </div> -->
       <div class="form-group col-md-2">
         <label>Section</label>
         <select id="section" name="section[]" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" data-live-search="true" onchange="filterTable()">
@@ -576,13 +563,13 @@ include('../include/header.php');
             </tfoot>
             <tbody id='dataTableBody'>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE task_status=1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND section.dept_id='$dept_id'");
+              $result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE task_status=1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND section.dept_id='$dept_id'");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
                   if (empty($row['file_name'])) {
-                    $imageURL = '../assets/img/user-profiles/nologo.png';
+                    $assigneeURL = '../assets/img/user-profiles/nologo.png';
                   } else {
-                    $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
+                    $assigneeURL = '../assets/img/user-profiles/' . $row['file_name'];
                   }
                   $task_classes = [1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'], 2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'], 3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'], 4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'], 5 => ['name' => 'PROJECT', 'badge' => 'info'], 6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']];
                   if (isset($task_classes[$row['task_class']])) {
@@ -593,8 +580,8 @@ include('../include/header.php');
                     $badge = 'secondary';
                   }
                   $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
-                  $due_date  = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="' . $row['in_charge'] . '">';
+                  $due_date   = date_format(date_create($row['due_date']), "Y-m-d h:i a");
+                  $assignee   = '<img src='.$assigneeURL.' class="img-table-solo"> '.ucwords(strtolower($row['Mname'])).'';
                   $status_badges = [
                     'NOT YET STARTED' => 'primary',
                     'IN PROGRESS' => 'warning',
@@ -612,9 +599,7 @@ include('../include/header.php');
                     <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                     <td><?php echo $task_class ?></td>
                     <td><?php echo $due_date ?></td>
-                    <td>
-                      <center /><?php echo $assignee ?>
-                    </td>
+                    <td><?php echo $assignee ?></td>
                     <td><?php echo $progress ?></td>
                   </tr>
               <?php }
