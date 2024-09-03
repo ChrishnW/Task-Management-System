@@ -16,9 +16,9 @@ if (mysqli_num_rows($query_result) > 0) {
     $sec_name   = ucwords(strtolower($sec));
     $fileSRC    = $row['file_name'];
     if (empty($row["file_name"])) {
-      $imageURL = '../assets/img/user-profiles/nologo.png';
+      $profileURL = '../assets/img/user-profiles/nologo.png';
     } else {
-      $imageURL = '../assets/img/user-profiles/' . $row["file_name"];
+      $profileURL = '../assets/img/user-profiles/' . $row["file_name"];
     }
   }
 }
