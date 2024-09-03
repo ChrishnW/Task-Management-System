@@ -304,20 +304,25 @@
   }
 
   $('#passUpdate').off('click').on('click', function() {
-    var userAcc = <?php echo json_encode($username) ?>;
-    var setPass = $('#conPass').val();
-    if (setPass !== '') {
+    var userAcc       = <?php echo json_encode($username) ?>;
+    var checkSetPass  = $('#newPass').val();
+    var checkConPass  = $('#conPass').val();
+    if (checkSetPass != '' && checkConPass != '') {
       $.ajax({
         method: "POST",
         url: "../config/accounts.php",
         data: {
           "passUpdate": true,
           "userAcc": userAcc,
-          "setPass": setPass,
+          "setPass": checkSetPass,
+          "conPass": checkConPass
         },
         success: function(response) {
           if (response === 'Success') {
             window.location.href = '../include/logout.php';
+          } else {
+            document.getElementById('error_found').innerHTML = response;
+            $('#profileError').modal('show');
           }
         }
       });

@@ -36,9 +36,13 @@ if (isset($_POST['updatePassword'])) {
 if (isset($_POST['passUpdate'])) {
   $userAcc = $_POST['userAcc'];
   $setPass = password_hash($_POST['setPass'], PASSWORD_DEFAULT);
-  $update_query = mysqli_query($con, "UPDATE accounts SET password='$setPass' WHERE username='$userAcc'");
-  if ($update_query) {
-    echo "Success";
+  if ($_POST['setPass'] != $_POST['conPass']) {
+    echo "Passwords do not match.";
+  } else {
+    $update_query = mysqli_query($con, "UPDATE accounts SET password='$setPass' WHERE username='$userAcc'");
+    if ($update_query) {
+      echo "Success";
+    }
   }
 }
 if (isset($_POST['checkPassword'])) {
