@@ -15,6 +15,9 @@ include('../include/header.php');
             <h6 class="m-0 font-weight-bold text-primary">Performance</h6>
             <div class="dropdown no-arrow">
               <button type="button" onclick="showCreate(this)" class="btn">
+                <i class="fas fa-eye fa-fw text-primary"></i> View
+              </button>
+              <button type="button" onclick="showCreate(this)" class="btn">
                 <i class="fas fa-file-pdf fa-fw text-danger"></i> Download
               </button>
             </div>
