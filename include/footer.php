@@ -36,7 +36,7 @@
               <div class="card mb-2">
                 <div class="card-header">Profile Picture</div>
                 <div class="card-body text-center">
-                  <img class="img-account-profile rounded-circle mb-2 w-75" src="<?php echo $imageURL ?>" alt="<?php echo $username ?>">
+                  <img class="img-account-profile rounded-circle mb-2 w-75" src="<?php echo $profileURL ?>" alt="<?php echo $username ?>">
                   <input type="text" id="imgSRC" value="<?php echo $fileSRC ?>" hidden>
                   <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                   <button class="btn btn-primary mb-1" type="button" id="uploadBtn">Upload new image</button>
