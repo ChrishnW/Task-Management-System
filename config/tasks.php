@@ -159,6 +159,11 @@ if (isset($_POST['filterTableTask'])) {
       <?php }
     } elseif ($status == 'IN PROGRESS') {
       while ($row = $query_result->fetch_assoc()) {
+        if (empty($row['file_name'])) {
+          $imageURL = '../assets/img/user-profiles/nologo.png';
+        } else {
+          $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
+        }
         $current_date = date('Y-m-d');
         $task_classes = [
           1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
@@ -201,6 +206,11 @@ if (isset($_POST['filterTableTask'])) {
       <?php }
     } elseif ($status == 'REVIEW') {
       while ($row = $query_result->fetch_assoc()) {
+        if (empty($row['file_name'])) {
+          $imageURL = '../assets/img/user-profiles/nologo.png';
+        } else {
+          $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
+        }
         $current_date = date('Y-m-d');
         $task_classes = [
           1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
@@ -243,6 +253,11 @@ if (isset($_POST['filterTableTask'])) {
       <?php }
     } elseif ($status == 'FINISHED') {
       while ($row = $query_result->fetch_assoc()) {
+        if (empty($row['file_name'])) {
+          $imageURL = '../assets/img/user-profiles/nologo.png';
+        } else {
+          $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
+        }
         $current_date = date('Y-m-d');
         $task_classes = [
           1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],

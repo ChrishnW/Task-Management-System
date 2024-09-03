@@ -86,10 +86,10 @@ if (isset($_POST['calculate'])) {
       <td></td>
       <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
       <td><?php echo $row['sec_name']; ?></td>
-      <td><?php echo $routine_average ?? '0' ?> (Routine) <p class="text-danger"><?php echo $report_average ?? '0' ?> (Report)</p>
-      </td>
-      <td><?php echo $routine_percentage ?? '0' ?> (Routine) <p class="text-danger"><?php echo $report_percentage ?? '0' ?> (Report)</p>
-      </td>
+      <td><center/><span class="badge badge-info"><?php echo $routine_total ?> Total</span></td>
+      <td><?php echo $routine_average ?? '0' ?> (Routine) <p class="text-danger"><?php echo $report_average ?? '0' ?> (Report)</p></td>
+      <td><?php echo $routine_percentage ?? '0' ?> (Routine) <p class="text-danger"><?php echo $report_percentage ?? '0' ?> (Report)</p></td>
+      <td><button class="btn btn-block btn-primary btn-sm"><i class="fas fa-eye fa-fw"></i> View</button></td>
     </tr>
 <?php }
 }

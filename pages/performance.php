@@ -25,7 +25,7 @@ include('../include/header.php');
           <div class="card-body">
             <div class="card card-primary card-outline">
               <div class="card-body box-profile">
-                <div class="text-center"><img class="profile-user-img img-fluid img-circle" src="<?php echo $imageURL ?>" alt="User profile picture">
+                <div class="text-center"><img class="profile-user-img img-fluid img-circle" src="<?php echo $profileURL ?>" alt="User profile picture">
                 </div>
                 <h3 class="profile-username text-center"><?php echo $full_name ?></h3>
                 <p class="text-muted text-center"><?php echo $section ?></p>
@@ -156,7 +156,7 @@ include('../include/header.php');
                   $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
                 }
                 $assignee     = $row['username'];
-                $count_task   = mysqli_query($con, "SELECT DISTINCT *, (SELECT DISTINCT COUNT(id) FROM tasks_details WHERE in_charge='$assignee' AND task_status=1 AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.task_class != 5 AND tasks_details.task_class != 6) AS task_total, (SELECT DISTINCT COUNT(id) FROM tasks_details WHERE in_charge='$assignee' AND task_status=1 AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.task_class = 6) AS report_total FROM tasks_details WHERE tasks_details.task_status=1 AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.in_charge='$assignee'");
+                $count_task   = mysqli_query($con, "SELECT DISTINCT *, (SELECT DISTINCT COUNT(id) FROM tasks_details WHERE in_charge='$assignee' AND task_status=1 AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.task_class != 5 AND tasks_details.task_class != 6) AS task_total, (SELECT DISTINCT COUNT(id) FROM tasks_details WHERE in_charge='$assignee' AND task_status=1 AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.task_class = 6) AS report_total FROM tasks_details WHERE tasks_details.task_status=1 AND tasks_details.status='FINISHED' AND MONTH(tasks_details.due_date) = MONTH(CURRENT_DATE) AND YEAR(tasks_details.due_date) = YEAR(CURRENT_DATE) AND tasks_details.in_charge='$assignee'");
                 $routine_total    = 0;
                 $routine_sum      = 0;
                 $report_sum       = 0;
@@ -186,9 +186,13 @@ include('../include/header.php');
                   <td></td>
                   <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
                   <td><?php echo $row['sec_name']; ?></td>
-                  <td><center/><span class="badge badge-info"><?php echo $routine_total ?> Total</span></td>
-                  <td><?php echo $routine_average ?> (Routine) <p class="text-danger"><?php echo $report_average ?> (Report)</p></td>
-                  <td><?php echo $routine_percentage ?? '0'; ?> (Routine) <p class="text-danger"><?php echo $report_percentage ?? '0' ?> (Report)</p></td>
+                  <td>
+                    <center /><span class="badge badge-info"><?php echo $routine_total ?> Total</span>
+                  </td>
+                  <td><?php echo $routine_average ?> (Routine) <p class="text-danger"><?php echo $report_average ?> (Report)</p>
+                  </td>
+                  <td><?php echo $routine_percentage ?? '0'; ?> (Routine) <p class="text-danger"><?php echo $report_percentage ?? '0' ?> (Report)</p>
+                  </td>
                   <td><button class="btn btn-block btn-primary btn-sm"><i class="fas fa-eye fa-fw"></i> View</button></td>
                 </tr>
               <?php } ?>
@@ -205,6 +209,7 @@ include('../include/header.php');
 <script>
   $('#dataTable').DataTable({
     "order": [
+      [3, "desc"],
       [5, "desc"]
     ],
     "pageLength": 5,
@@ -258,6 +263,7 @@ include('../include/header.php');
         $('#dataTableBody').append(response);
         $('#dataTable').DataTable({
           "order": [
+            [3, "desc"],
             [5, "desc"]
           ],
           "pageLength": 5,
