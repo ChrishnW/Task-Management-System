@@ -195,6 +195,22 @@ include('../include/header.php');
   <?php } ?>
 </div>
 
+<div class="modal fade" id="view" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-primary">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">View Task</h5>
+      </div>
+      <div class="modal-body" id="taskDetails">
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="updateTask(this)" class="btn btn-success" id="updateButton" style="display: none;">Update</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php include('../include/footer.php'); ?>
 
 <script>
@@ -287,6 +303,6 @@ include('../include/header.php');
     var account_id  = element.value;
     var date_to     = document.getElementById('date_to').value;
     var date_from   = document.getElementById('date_from').value;
-    console.log(date_to);
+    $('#view').modal('show');
   }
 </script>

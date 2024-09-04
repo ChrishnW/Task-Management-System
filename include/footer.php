@@ -198,6 +198,15 @@
 
 <!-- Custom Scripts Global -->
 <script>
+  function openSpecificModal(modalId, size) {
+    var modalDialog = document.querySelector(`#${modalId} .modal-dialog`);
+    modalDialog.classList.remove('modal-sm', 'modal-lg', 'modal-xl');
+    if (size) {
+      modalDialog.classList.add(size);
+    }
+    $(`#${modalId}`).modal('show');
+  }
+
   function readNotification(element) {
     var id = element.value;
     $.ajax({

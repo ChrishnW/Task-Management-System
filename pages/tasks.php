@@ -758,15 +758,6 @@ include('../include/header.php');
     }
   });
 
-  function openSpecificModal(modalId, size) {
-    var modalDialog = document.querySelector(`#${modalId} .modal-dialog`);
-    modalDialog.classList.remove('modal-sm', 'modal-lg', 'modal-xl');
-    if (size) {
-      modalDialog.classList.add(size);
-    }
-    $(`#${modalId}`).modal('show');
-  }
-
   function filterTable() {
     var date_to = document.getElementById('date_to').value;
     var date_from = document.getElementById('date_from').value;
