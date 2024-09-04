@@ -132,13 +132,13 @@ include('../include/header.php');
               function getPercentage($average)
               {
                 if ($average == 5.0) {
-                  return 120;
+                  return 105;
                 } elseif ($average >= 4.0 && $average <= 4.99) {
-                  return 105 + (($average - 4.0) / (4.99 - 4.0)) * (119 - 105);
+                  return 100 + (($average - 4.0) / (4.99 - 4.0)) * (104 - 100);
                 } elseif ($average >= 3.0 && $average <= 3.99) {
-                  return 95 + (($average - 3.0) / (3.99 - 3.0)) * (104 - 95);
+                  return 90 + (($average - 3.0) / (3.99 - 3.0)) * (99 - 90);
                 } elseif ($average >= 2.0 && $average <= 2.99) {
-                  return 80 + (($average - 2.0) / (2.99 - 2.0)) * (94 - 80);
+                  return 80 + (($average - 2.0) / (2.99 - 2.0)) * (89 - 80);
                 } elseif ($average >= 0.0 && $average <= 1.99) {
                   return 70 + (($average - 0.0) / (1.99 - 0.0)) * (79 - 70);
                 } else {
@@ -244,29 +244,24 @@ include('../include/header.php');
   });
 
   function calculate(element) {
-    var section = document.getElementById('section').value;
-    var date_to = document.getElementById('date_to').value;
+    var section   = document.getElementById('section').value;
+    var date_to   = document.getElementById('date_to').value;
     var date_from = document.getElementById('date_from').value;
-    if (section.value === '') {
-      section.value = null;
+    var sortdata = {
+      "calculate": true,
+      "section": section,
+    };
+    if (date_to && date_from !== '') {
+      sortdata.date_to    = date_to;
+      sortdata.date_from  = date_from;
     }
-    if (date_to.value === '') {
-      date_to.value = null;
-    }
-    if (date_from.value === '') {
-      date_from.value = null;
-    }
+
     $('#dataTable').DataTable().destroy();
     $('#dataTableBody').empty();
     $.ajax({
       method: "POST",
       url: "../config/performance.php",
-      data: {
-        "calculate": true,
-        "section": section,
-        "date_to": date_to,
-        "date_from": date_from,
-      },
+      data: sortdata,
       success: function(response) {
         $('#dataTableBody').append(response);
         $('#dataTable').DataTable({
@@ -318,7 +313,6 @@ include('../include/header.php');
       url: "../config/performance.php",
       data: data,
       success: function(response) {
-        console.log(response);
         $('#ajaxContents').html(response);
         $('#ViewFinishedTaskTable').DataTable({
           "order": [[4, "asc"],[6, "desc"]]
