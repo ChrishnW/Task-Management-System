@@ -129,9 +129,7 @@ include('../include/header.php');
             <tbody id='dataTableBody'>
               <?php
               $con->next_result();
-
-              function getPercentage($average)
-              {
+              function getPercentage($average) {
                 if ($average == 5.0) {
                   return 120;
                 } elseif ($average >= 4.0 && $average <= 4.99) {
