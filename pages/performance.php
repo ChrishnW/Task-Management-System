@@ -320,7 +320,9 @@ include('../include/header.php');
       success: function(response) {
         console.log(response);
         $('#ajaxContents').html(response);
-        $('#ViewFinishedTaskTable').DataTable();
+        $('#ViewFinishedTaskTable').DataTable({
+          "order": [[4, "asc"],[6, "desc"]]
+        });
         openSpecificModal('view', 'modal-xl');
       }
     });
