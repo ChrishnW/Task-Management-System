@@ -17,8 +17,8 @@ include('../include/header.php');
               <button type="button" onclick="showCreate(this)" class="btn">
                 <i class="fas fa-eye fa-fw text-primary"></i> View
               </button>
-              <button type="button" onclick="showCreate(this)" class="btn">
-                <i class="fas fa-file-pdf fa-fw text-danger"></i> Download
+              <button type="button" id="print" class="btn">
+                <i class="fas fa-print fa-fw text-success"></i> Print
               </button>
             </div>
           </div>
