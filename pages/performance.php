@@ -129,7 +129,8 @@ include('../include/header.php');
             <tbody id='dataTableBody'>
               <?php
               $con->next_result();
-              function getPercentage($average) {
+              function getPercentage($average)
+              {
                 if ($average == 5.0) {
                   return 120;
                 } elseif ($average >= 4.0 && $average <= 4.99) {
@@ -201,7 +202,7 @@ include('../include/header.php');
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">View Task</h5>
       </div>
-      <div class="modal-body" id="taskDetails">
+      <div class="modal-body" id="contents">
       </div>
       <div class="modal-footer">
         <button type="button" onclick="updateTask(this)" class="btn btn-success" id="updateButton" style="display: none;">Update</button>
@@ -298,11 +299,27 @@ include('../include/header.php');
       }
     })
   }
-  
+
   function viewTask(element) {
     var account_id  = element.value;
     var date_to     = document.getElementById('date_to').value;
     var date_from   = document.getElementById('date_from').value;
-    $('#view').modal('show');
+    var data = {
+      "viewTask": true,
+      "account_id": account_id,
+    };
+    if (date_to && date_from !== '') {
+      data.date_to    = date_to;
+      data.date_from  = date_from;
+    }
+    $.ajax({
+      method: "POST",
+      url: "../config/performance.php",
+      date: data,
+      success: function(response) {
+        $('#contents').html(response);
+        openSpecificModal('view', 'modal-xl');
+      }
+    });
   }
 </script>
