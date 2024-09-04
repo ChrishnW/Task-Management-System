@@ -197,10 +197,10 @@ include('../include/header.php');
 </div>
 
 <div class="modal fade" id="view" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content border-primary">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">View Task</h5>
+        <h5 class="modal-title">View</h5>
       </div>
       <div class="modal-body" id="ajaxContents">
       </div>
@@ -320,6 +320,7 @@ include('../include/header.php');
       success: function(response) {
         console.log(response);
         $('#ajaxContents').html(response);
+        $('#ViewFinishedTaskTable').DataTable();
         openSpecificModal('view', 'modal-xl');
       }
     });
