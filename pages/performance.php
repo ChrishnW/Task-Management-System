@@ -307,7 +307,6 @@ include('../include/header.php');
       data.date_to    = date_to;
       data.date_from  = date_from;
     }
-    console.log(data);
     $.ajax({
       method: "POST",
       url: "../config/performance.php",
@@ -317,6 +316,7 @@ include('../include/header.php');
         $('#ViewFinishedTaskTable').DataTable({
           "order": [[4, "asc"],[6, "desc"]]
         });
+        $('[data-toggle="tooltip"]').tooltip();
         openSpecificModal('view', 'modal-xl');
       }
     });
