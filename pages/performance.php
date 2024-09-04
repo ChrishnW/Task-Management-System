@@ -153,10 +153,10 @@ include('../include/header.php');
                 $assignee = $row['username'];
                 $task_query = "SELECT *, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class NOT IN (5, 6)) AS task_total, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS report_total FROM tasks_details WHERE task_status = 1 AND status = 'FINISHED' AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND in_charge = '$assignee'";
                 $count_task = mysqli_query($con, $task_query);
-                $routine_sum = 0;
-                $report_sum = 0;
-                $routine_total = 0;
-                $report_total = 0;
+                $routine_sum    = 0;
+                $report_sum     = 0;
+                $routine_total  = 0;
+                $report_total   = 0;
                 while ($count_row = $count_task->fetch_assoc()) {
                   if ($count_row['task_class'] != 5 && $count_row['task_class'] != 6) {
                     $routine_sum += $count_row['achievement'];
