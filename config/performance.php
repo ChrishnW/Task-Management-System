@@ -75,7 +75,6 @@ if (isset($_POST['calculate'])) {
       if ($routine_total != 0) {
         $routine_average  = number_format(($routine_sum / $routine_total), 2);
         $routine_percentage = number_format(getPercentage($routine_average), 2);
-        
       }
       if ($report_total != 0) {
         $report_average   = number_format(($report_sum / $report_total), 2);
@@ -86,11 +85,22 @@ if (isset($_POST['calculate'])) {
       <td></td>
       <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
       <td><?php echo $row['sec_name']; ?></td>
-      <td><center/><span class="badge badge-info"><?php echo $routine_total ?> Total</span></td>
-      <td><?php echo $routine_average ?? '0' ?> (Routine) <p class="text-danger"><?php echo $report_average ?? '0' ?> (Report)</p></td>
-      <td><?php echo $routine_percentage ?? '0' ?> (Routine) <p class="text-danger"><?php echo $report_percentage ?? '0' ?> (Report)</p></td>
+      <td>
+        <center /><span class="badge badge-info"><?php echo $routine_total ?> Total</span>
+      </td>
+      <td><?php echo $routine_average ?? '0' ?> (Routine) <p class="text-danger"><?php echo $report_average ?? '0' ?> (Report)</p>
+      </td>
+      <td><?php echo $routine_percentage ?? '0' ?> (Routine) <p class="text-danger"><?php echo $report_percentage ?? '0' ?> (Report)</p>
+      </td>
       <td><button class="btn btn-block btn-primary btn-sm" value="<?php echo $row['id']; ?>" onclick="viewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
     </tr>
 <?php }
+}
+if (isset($_POST['viewTask'])) {
+  $id         = $_POST['account_id'];
+  if (isset($_POST['date_to']) && isset($_POST['date_from'])) {
+    $date_to   = $_POST['date_to'];
+    $date_from = $_POST['date_from'];
+  }
 }
 ?>

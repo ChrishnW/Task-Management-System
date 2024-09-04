@@ -202,7 +202,7 @@ include('../include/header.php');
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">View Task</h5>
       </div>
-      <div class="modal-body" id="contents">
+      <div class="modal-body" id="ajaxContents">
       </div>
       <div class="modal-footer">
         <button type="button" onclick="updateTask(this)" class="btn btn-success" id="updateButton" style="display: none;">Update</button>
@@ -312,12 +312,14 @@ include('../include/header.php');
       data.date_to    = date_to;
       data.date_from  = date_from;
     }
+    console.log(data);
     $.ajax({
       method: "POST",
       url: "../config/performance.php",
-      date: data,
+      data: data,
       success: function(response) {
-        $('#contents').html(response);
+        console.log(response);
+        $('#ajaxContents').html(response);
         openSpecificModal('view', 'modal-xl');
       }
     });
