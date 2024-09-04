@@ -148,9 +148,7 @@ include('../include/header.php');
               $query = "SELECT accounts.*, section.dept_id, section.sec_name FROM accounts JOIN section ON section.sec_id = accounts.sec_id WHERE section.dept_id = '$dept_id' AND accounts.access = 2";
               $result = mysqli_query($con, $query);
               while ($row = $result->fetch_assoc()) {
-                $imageURL = empty($row['file_name'])
-                  ? '../assets/img/user-profiles/nologo.png'
-                  : '../assets/img/user-profiles/' . $row['file_name'];
+                $imageURL = empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name'];
                 $assignee = $row['username'];
                 $task_query = "SELECT *, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class NOT IN (5, 6)) AS task_total, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS report_total FROM tasks_details WHERE task_status = 1 AND status = 'FINISHED' AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND in_charge = '$assignee'";
                 $count_task = mysqli_query($con, $task_query);
