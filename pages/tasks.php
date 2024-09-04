@@ -186,11 +186,7 @@ include('../include/header.php');
                     <?php
                     $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='NOT YET STARTED' AND tasks_details.in_charge='$username'");
                     while ($row = $query_result->fetch_assoc()) {
-                      if (empty($row['file_name'])) {
-                        $imageURL = '../assets/img/user-profiles/nologo.png';
-                      } else {
-                        $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-                      }
+                      $imageURL = empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name'];
                       $current_date = date('Y-m-d');
                       $task_classes = [
                         1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
@@ -200,18 +196,14 @@ include('../include/header.php');
                         5 => ['name' => 'PROJECT', 'badge' => 'info'],
                         6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']
                       ];
-
                       $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
                       $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
-
                       $action = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date))
                         ? '<button type="button" class="btn btn-circle btn-secondary" disabled><i class="fas fa-ban"></i></button>'
                         : '<button type="button" class="btn btn-circle btn-success" value=' . $row['id'] . ' onclick="startTask(this)"><i class="fas fa-play"></i></button>';
-
                       $checkbox = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date))
                         ? '<input type="checkbox" name="selected_ids[]" class="form-control" value="" disabled>'
                         : '<input type="checkbox" name="selected_ids[]" class="form-control" value=' . $row['id'] . '>';
-
                       $status_badges = [
                         'NOT YET STARTED' => 'primary',
                         'IN PROGRESS' => 'warning',
@@ -220,7 +212,6 @@ include('../include/header.php');
                         'RESCHEDULE' => 'secondary'
                       ];
                       $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
-
                       $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
                       $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
                       $assignee = '<img src=' . $imageURL . ' class="border border-primary img-table-solo">';
@@ -262,11 +253,7 @@ include('../include/header.php');
                     <?php
                     $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='IN PROGRESS' AND tasks_details.in_charge='$username'");
                     while ($row = $query_result->fetch_assoc()) {
-                      if (empty($row['file_name'])) {
-                        $imageURL = '../assets/img/user-profiles/nologo.png';
-                      } else {
-                        $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-                      }
+                      $imageURL = empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name'];
                       $current_date = date('Y-m-d');
                       $task_classes = [
                         1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
@@ -276,12 +263,9 @@ include('../include/header.php');
                         5 => ['name' => 'PROJECT', 'badge' => 'info'],
                         6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']
                       ];
-
                       $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
                       $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
-
                       $action = '<button type="button" class="btn btn-circle btn-danger" value=' . $row['id'] . ' onclick="endTask(this)"><i class="fas fa-stop"></i></button>';
-
                       $status_badges = [
                         'NOT YET STARTED' => 'primary',
                         'IN PROGRESS' => 'warning',
@@ -331,6 +315,7 @@ include('../include/header.php');
                     <?php
                     $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='REVIEW' AND tasks_details.in_charge='$username'");
                     while ($row = $query_result->fetch_assoc()) {
+                      $imageURL = empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name'];
                       $current_date = date('Y-m-d');
                       $task_classes = [
                         1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
@@ -395,6 +380,7 @@ include('../include/header.php');
                     <?php
                     $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='FINISHED' AND tasks_details.in_charge='$username'");
                     while ($row = $query_result->fetch_assoc()) {
+                      $imageURL = empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name'];
                       $current_date = date('Y-m-d');
                       $task_classes = [
                         1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
@@ -459,6 +445,7 @@ include('../include/header.php');
                     <?php
                     $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='RESCHEDULE' AND tasks_details.in_charge='$username'");
                     while ($row = $query_result->fetch_assoc()) {
+                      $imageURL = empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name'];
                       $current_date = date('Y-m-d');
                       $task_classes = [
                         1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
