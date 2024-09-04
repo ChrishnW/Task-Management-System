@@ -34,7 +34,7 @@ if (isset($_POST['calculate'])) {
     $assignee  = $row['username'];
 
     if ($date_to != NULL && $date_from != NULL) {
-      $query     = "SELECT DISTINCT * FROM tasks_details WHERE tasks_details.task_status=1 AND tasks_details.status='FINISHED' AND tasks_details.in_charge='$assignee' AND DATE(due_date) >= '$date_to' AND DATE(due_date) <= '$date_from'";
+      $query     = "SELECT DISTINCT * FROM tasks_details WHERE tasks_details.task_status=1 AND tasks_details.in_charge='$assignee' AND DATE(due_date) >= '$date_to' AND DATE(due_date) <= '$date_from'";
       $count_task = mysqli_query($con, $query);
 
       $task_total       = "SELECT DISTINCT COUNT(id) AS task_total FROM tasks_details WHERE in_charge='$assignee' AND task_status=1 AND tasks_details.task_class != 5 AND tasks_details.task_class != 6 AND DATE(due_date) >= '$date_to' AND DATE(due_date) <= '$date_from'";
