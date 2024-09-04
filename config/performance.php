@@ -154,7 +154,7 @@ if (isset($_POST['viewTask'])) {
           }
           $task_class         = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
           $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-          $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
+          $date_accomplished  = !empty($row['date_accomplished']) ? date_format(date_create($row['date_accomplished']), "Y-m-d h:i a") : "TO BE DETERMINED";
           $assignee           = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="' . $row['in_charge'] . '">';
           $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>'; ?>
           <tr>
@@ -166,7 +166,7 @@ if (isset($_POST['viewTask'])) {
             <td><?php echo $progress ?></td>
             <td><?php echo $due_date ?></td>
             <td><?php echo $date_accomplished ?></td>
-            <td><center/><span class="d-block display-8"><?php echo $row['achievement']; ?></span></td>
+            <td><center/><span class="d-block display-8"><?php echo $row['achievement'] ?? 'N/A'; ?></span></td>
           </tr>
       <?php }
       } ?>
