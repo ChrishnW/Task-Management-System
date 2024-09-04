@@ -526,8 +526,33 @@ include('../include/header.php');
           <div class="card-body scrollable-card-body">
             <?php
             $con->next_result();
-            $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE status='PROJECT' AND task_status=1 AND in_charge='$username'");
+            $query_result = mysqli_query($con, "SELECT project_list.*, accounts.file_name, accounts.username FROM project_list JOIN department ON department.dept_id=project_list.dept_id JOIN accounts ON accounts.id=project_list.leader WHERE FIND_IN_SET('$emp_id', project_list.member) > 0");
             if (mysqli_num_rows($query_result) > 0) {
+              while ($row = mysqli_fetch_assoc($query_result)) { ?>
+                <div class="card mb-4 py-3 border-bottom-danger">
+                  <div class="card-body custom-card">
+                    <div class="left-content text-<?php echo $selectBorder ?> col-5">
+                      <div class="display-8 font-weight-bold"><?php echo $row['title']; ?></div>
+                      <div class="font-weight-light font-italic display-8"><?php echo $row['details']; ?></div>
+                    </div>
+                    <div class="middle-content text-center col-7">
+                      <i class="fas fa-user-circle"></i> Project Leader: <?php echo $row['username']; ?><br>
+                      <i class="fas fa-calendar-day fa-fw"></i>Due Date: <?php echo date_format(date_create($row['end']), "F d, Y")?>
+                      <hr class="sidebar-divider d-none d-md-block">
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">
+                          75%
+                        </div>
+                      </div>
+                      <div class="font-weight-bold">
+                        <?php echo $row['status']; ?>
+                      </div>
+                    </div>
+                    <!-- <div class="right-content text-center">
+                    </div> -->
+                  </div>
+                </div>
+              <?php }
             } else { ?>
               <div class="card-body text-center">
                 No current in-progress project.
