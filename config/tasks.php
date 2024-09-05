@@ -760,13 +760,13 @@ if (isset($_POST['reviewTask'])) {
                     $task_code  = $row['task_code'];
                     $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code'");
                     while ($row = mysqli_fetch_assoc($query_result)) {
-                      $size = number_format($row['file_size'] / (1024 * 1024), 2);
+                      $size   = formatSize($row['file_size']);
                       $action = '<button type="button" class="btn btn-circle btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download"></i></button> <button type="button" class="btn btn-circle btn-danger" value="' . $row['id'] . '" onclick="deleteFile(this)"><i class="fas fa-trash"></i></button>';
-                      $date = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
+                      $date   = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
                     ?>
                       <tr>
                         <td><?php echo $row['file_name'] ?></td>
-                        <td><?php echo $size ?> mb</td>
+                        <td><?php echo $size ?></td>
                         <td><?php echo $date ?></td>
                         <td><?php echo $action ?></td>
                       </tr>

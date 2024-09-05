@@ -939,7 +939,6 @@ include('../include/header.php');
         "taskID": taskID,
       },
       success: function(response) {
-        document.getElementById("updateButton").disabled = true;
         $('#reviewDetails').html(response);
         $('#re-view').modal('show');
         $('#taskReview_table').DataTable({
@@ -952,12 +951,6 @@ include('../include/header.php');
             $('[data-toggle="tooltip"]').tooltip();
           }
         });
-
-        function showUpdateButton() {
-          document.getElementById("updateButton").disabled = false;
-        }
-        document.getElementById('taskReview_remarks').addEventListener('input', showUpdateButton);
-        document.getElementById('taskReview_upload').addEventListener('change', showUpdateButton);
       }
     });
   }
