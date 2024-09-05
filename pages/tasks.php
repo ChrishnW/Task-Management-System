@@ -910,7 +910,7 @@ include('../include/header.php');
       success: function(response) {
         console.log(response);
         $('#taskDetails').html(response);
-        $('#view').modal('show');
+        openSpecificModal('view', 'modal-xl');
         $('#taskView_table').DataTable({
           order: [[0, 'asc']],
           pageLength: 3,
