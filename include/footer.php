@@ -329,9 +329,9 @@
   }
 
   $('#passUpdate').off('click').on('click', function() {
-    var userAcc = <?php echo json_encode($username) ?>;
-    var checkSetPass = $('#newPass').val();
-    var checkConPass = $('#conPass').val();
+    var userAcc       = <?php echo json_encode($username) ?>;
+    var checkSetPass  = $('#newPass').val();
+    var checkConPass  = $('#conPass').val();
     if (checkSetPass != '' && checkConPass != '') {
       $.ajax({
         method: "POST",
@@ -352,8 +352,8 @@
         }
       });
     } else {
-      document.getElementById('error_found').innerHTML = 'Empty field has been detected!';
-      $('#profileError').modal('show');
+        document.getElementById('error_found').innerHTML = 'Empty field has been detected!';
+        $('#profileError').modal('show');
     }
   });
 

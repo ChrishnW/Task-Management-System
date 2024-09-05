@@ -44,7 +44,7 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
               <br>
               <form class="user" data-toggle="validator" method="POST">
                 <div class="form-group">
-                  <input type="text" class="form-control form-control-user" id="username" name="username" placeholder="Please enter your username." autocomplete="off" autofocus>
+                  <input type="text" class="form-control form-control-user" id="username" name="username" placeholder="Please enter your username." autocomplete="off">
                 </div>
                 <div class="form-group">
                   <input type="password" class="form-control form-control-user" id="password" name="password" placeholder="Please enter your password." autocomplete="off">
