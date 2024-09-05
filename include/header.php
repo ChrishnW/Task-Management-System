@@ -16,7 +16,6 @@
 
   <!-- Custom styles for this template -->
   <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
   <!-- Custom styles for this page -->
   <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -25,7 +24,6 @@
 
   <!-- Custome scripts for this page -->
   <script src="../assets/js/moment.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 <body id="page-top">

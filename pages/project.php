@@ -519,6 +519,12 @@ include('../include/header.php');
     });
   }
 
+  $(document).ready(function(){
+    $('#projectLeader').on('change', function(){
+      $('#projectMembers').selectpicker('refresh');
+    })
+  })
+
   document.getElementById('saveEdit').addEventListener('click', function() {
     this.disabled = true;
     var projectData = new FormData(document.getElementById('editProjectDetails'));
