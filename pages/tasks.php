@@ -959,25 +959,31 @@ include('../include/header.php');
     element.disabled = true;
     var formDetails = new FormData(document.getElementById('editDetails'));
     formDetails.append('updateDetails', true);
-    console.log(formDetails);
-    $.ajax({
-      method: "POST",
-      url: "../config/tasks.php",
-      data: formDetails,
-      contentType: false,
-      processData: false,
-      success: function(response) {
-        if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-          $('#re-view').modal('hide');
-          $('#success').modal('show');
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#error').modal('show');
-          element.disabled = false;
+    var checkEditRemarks = formDetails.get('taskReview_remarks').replace(/\s+/g, ' ').trim();
+    if (checkEditRemarks === '' || checkEditRemarks.length <= 30) {
+      element.disabled = false;
+      document.getElementById('error_found').innerHTML = 'Text must be more than 30 characters and cannot be empty.';
+      $('#error').modal('show');
+    } else {
+      $.ajax({
+        method: "POST",
+        url: "../config/tasks.php",
+        data: formDetails,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+          if (response === 'Success') {
+            document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+            $('#re-view').modal('hide');
+            $('#success').modal('show');
+          } else {
+            document.getElementById('error_found').innerHTML = response;
+            $('#error').modal('show');
+            element.disabled = false;
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   function deleteFile(element) {
