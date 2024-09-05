@@ -14,7 +14,7 @@ include('../include/header.php');
           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Performance</h6>
             <div class="dropdown no-arrow">
-              <button type="button" onclick="showCreate(this)" class="btn">
+              <button type="button" onclick="showPerformance(this)" class="btn">
                 <i class="fas fa-eye fa-fw text-primary"></i> View
               </button>
               <button type="button" id="print" class="btn">
