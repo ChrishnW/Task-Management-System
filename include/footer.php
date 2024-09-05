@@ -117,7 +117,7 @@
         <div class="col-md-12">
           <div class="form-group">
             <label>Current Password</label><small class="text-danger d-none" id="incorrect"> Current password is incorrect!</small>
-            <!-- <input type="password" class="form-control" id="curPass" placeholder="Current Password" onchange="checkPassword(this)"> -->
+            <input type="password" class="form-control" id="curPass" placeholder="Current Password" onchange="checkPassword(this)" autocomplete="new-password">
           </div>
           <div class="form-group">
             <label>New Password</label><small class="text-danger d-none" id="used"> You already used this password.</small>
