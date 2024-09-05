@@ -175,12 +175,22 @@
 
 <!-- Profile Activity Logs -->
 <div class="modal fade" id="activityLogs" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title" id="exampleModalLongTitle">Activity Log</h5>
       </div>
       <div class="modal-body" id="activityDetails">
+        <table class="table table-striped" id="activityTable" width="100%" cellspacing="0">
+          <thead class='table table-success'>
+            <tr>
+              <th>Date & Time</th>
+              <th>Activity</th>
+            </tr>
+          </thead>
+          <tbody id='dataTableBody'>
+          </tbody>
+        </table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -329,9 +339,9 @@
   }
 
   $('#passUpdate').off('click').on('click', function() {
-    var userAcc       = <?php echo json_encode($username) ?>;
-    var checkSetPass  = $('#newPass').val();
-    var checkConPass  = $('#conPass').val();
+    var userAcc = <?php echo json_encode($username) ?>;
+    var checkSetPass = $('#newPass').val();
+    var checkConPass = $('#conPass').val();
     if (checkSetPass != '' && checkConPass != '') {
       $.ajax({
         method: "POST",
@@ -352,8 +362,8 @@
         }
       });
     } else {
-        document.getElementById('error_found').innerHTML = 'Empty field has been detected!';
-        $('#profileError').modal('show');
+      document.getElementById('error_found').innerHTML = 'Empty field has been detected!';
+      $('#profileError').modal('show');
     }
   });
 
@@ -445,6 +455,19 @@
 
     $('#editPassword').off('click').on('click', function() {
       $('#passwordModal').modal('show');
+    });
+
+    $('#activityLogs').on('shown.bs.modal', function() {
+      if (!$.fn.DataTable.isDataTable('#activityTable')) {
+        $('#activityTable').DataTable({
+          "paging": true,
+          "searching": true,
+          "ordering": true,
+          "info": true,
+          "autoWidth": false,
+          "responsive": true,
+        });
+      }
     });
   });
 </script>
