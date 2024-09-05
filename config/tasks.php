@@ -930,7 +930,7 @@ if (isset($_POST['viewTask'])) {
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-trophy"></i></div>
               </div>
-              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['achievement'] ?>" readonly>
+              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['achievement'] ?? 'TO BE DETERMINED' ?>" readonly>
             </div>
           </div>
         </div>
@@ -963,7 +963,7 @@ if (isset($_POST['viewTask'])) {
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
               </div>
-              <textarea class="form-control" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['remarks'] ?></textarea>
+              <textarea class="form-control" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['remarks'] ?? 'TO BE DETERMINED' ?></textarea>
             </div>
           </div>
         </div>
@@ -974,7 +974,7 @@ if (isset($_POST['viewTask'])) {
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-user"></i></div>
               </div>
-              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['head_name'] ?>" readonly>
+              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['head_name'] ?? 'TO BE DETERMINED' ?>" readonly>
             </div>
           </div>
         </div>
