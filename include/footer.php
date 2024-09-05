@@ -24,7 +24,7 @@
 
 <!-- Account Profile -->
 <div class="modal fade" id="profileModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title" id="exampleModalLabel">Account Settings</h5>
@@ -117,7 +117,7 @@
         <div class="col-md-12">
           <div class="form-group">
             <label>Current Password</label><small class="text-danger d-none" id="incorrect"> Current password is incorrect!</small>
-            <input type="password" class="form-control" id="curPass" placeholder="Current Password" onchange="checkPassword(this)">
+            <!-- <input type="password" class="form-control" id="curPass" placeholder="Current Password" onchange="checkPassword(this)"> -->
           </div>
           <div class="form-group">
             <label>New Password</label><small class="text-danger d-none" id="used"> You already used this password.</small>
