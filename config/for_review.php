@@ -135,9 +135,9 @@ if (isset($_POST['viewTask'])) {
                     $task_code  = $row['task_code'];
                     $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code'");
                     while ($row = mysqli_fetch_assoc($query_result)) {
-                      $size = number_format($row['file_size'] / (1024 * 1024), 2);
+                      $size   = formatSize($row['file_size']);
                       $action = '<button type="button" class="btn btn-circle btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download"></i></button>';
-                      $date = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
+                      $date   = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
                     ?>
                       <tr>
                         <td><?php echo $row['file_name'] ?></td>
