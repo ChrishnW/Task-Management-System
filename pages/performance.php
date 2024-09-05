@@ -321,4 +321,20 @@ include('../include/header.php');
       }
     });
   }
+
+  function showPerformance(element) {
+    var account_id = <?php echo json_encode($username) ?>;
+    $.ajax({
+      method: "POST",
+      url: "../config/performance.php",
+      data: {
+        "showPerformance": true,
+        "account_id": account_id
+      },
+      success: function(response) {
+        $('#ajaxContents').html(response);
+        openSpecificModal('view', 'modal-lg');
+      }
+    })
+  }
 </script>
