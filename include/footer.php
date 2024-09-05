@@ -189,6 +189,15 @@
             </tr>
           </thead>
           <tbody id='dataTableBody'>
+          <?php
+          $query_activity = mysqli_query($con, "SELECT * FROM system_log WHERE user='$username'");
+            while ($row = $query_activity->fetch_assoc()) { ?>
+            <tr>
+              <td><?php echo date_format(date_create($row['date_created']), "Y-m-d h:i a"); ?></td>
+              <td><?php echo $row['action']; ?></td>
+            </tr>
+            <?php }
+          ?>
           </tbody>
         </table>
       </div>
@@ -466,6 +475,9 @@
           "info": true,
           "autoWidth": false,
           "responsive": true,
+          "order": [[0, "desc"]],
+          "pageLength": 5,
+          "lengthMenu": [5, 10, 25, 50, 100]
         });
       }
     });
