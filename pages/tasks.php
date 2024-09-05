@@ -692,7 +692,7 @@ include('../include/header.php');
     "lengthMenu": [5, 10, 25, 50, 100],
     "drawCallback": function(settings) {
       $('[data-toggle="tooltip"]').tooltip();
-    }
+    },
   });
 
   function filterTable() {
