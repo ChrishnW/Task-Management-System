@@ -793,54 +793,43 @@ if (isset($_POST['updateDetails'])) {
     $require = $row['requirement_status'];
   }
   if ($require == 1) {
-    if (empty($remarks)) {
-      echo "Unable to complete the operation, Remarks cannot be left empty.";
+    $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE id='$id'");
+    $files      = $_FILES['taskReview_upload'];
+    $upload_dir = '../files/' . $assignee;
+    $targetDir  = "../files/$assignee/";
+    if (!file_exists($upload_dir)) {
+      mkdir($upload_dir, 0777, true);
     }
-    if (!empty($_FILES['taskReview_upload']['name'][0]) || !empty($remarks)) {
-      $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE id='$id'");
-      $files      = $_FILES['taskReview_upload'];
-      $upload_dir = '../files/' . $assignee;
-      $targetDir  = "../files/$assignee/";
-      if (!file_exists($upload_dir)) {
-        mkdir($upload_dir, 0777, true);
-      }
-      for ($i = 0; $i < count($files['name']); $i++) {
-        $original_filename  = $files['name'][$i];
-        $filetype           = $files['type'][$i];
-        $filesize           = $files['size'][$i];
-        $tmpname            = $files['tmp_name'][$i];
+    for ($i = 0; $i < count($files['name']); $i++) {
+      $original_filename  = $files['name'][$i];
+      $filetype           = $files['type'][$i];
+      $filesize           = $files['size'][$i];
+      $tmpname            = $files['tmp_name'][$i];
 
-        $query = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code' AND file_name='$original_filename' AND file_owner='$assignee'");
-        $check = mysqli_num_rows($query);
-        if ($check > 0) {
-          echo "File upload error, Duplicate file detected!<br>Please upload a different file or filename.";
-          $success = false;
-          break;
-        } else {
-          $file_extension     = pathinfo($original_filename, PATHINFO_EXTENSION);
+      $query = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code' AND file_name='$original_filename' AND file_owner='$assignee'");
+      $check = mysqli_num_rows($query);
+      if ($check > 0) {
+        echo "File upload error, Duplicate file detected!<br>Please upload a different file or filename.";
+        $success = false;
+        break;
+      } else {
+        $file_extension     = pathinfo($original_filename, PATHINFO_EXTENSION);
 
-          $new_filename       = '[' . $task_code . '] ' . $original_filename;
-          $destination        = $upload_dir . '/' . $new_filename;
+        $new_filename       = '[' . $task_code . '] ' . $original_filename;
+        $destination        = $upload_dir . '/' . $new_filename;
 
-          if (move_uploaded_file($tmpname, $destination)) {
-            $query_insert = mysqli_query($con, "INSERT INTO `task_files`(`task_code`, `file_name`, `file_size`, `file_type`, `file_dated`, `file_owner`, `file_target`) VALUES ('$task_code', '$original_filename', '$filesize', '$file_extension', '$currentDateTime', '$assignee', '$new_filename')");
-          }
+        if (move_uploaded_file($tmpname, $destination)) {
+          $query_insert = mysqli_query($con, "INSERT INTO `task_files`(`task_code`, `file_name`, `file_size`, `file_type`, `file_dated`, `file_owner`, `file_target`) VALUES ('$task_code', '$original_filename', '$filesize', '$file_extension', '$currentDateTime', '$assignee', '$new_filename')");
         }
       }
-      if ($success) {
-        echo "Success";
-      }
-    } else {
-      echo "The system has failed to progress on this request; contact the system administrator now.";
+    }
+    if ($success) {
+      echo "Success";
     }
   } else {
-    if (empty($remarks)) {
-      echo "An empty field has been detected!<br>Please ensure to include your remarks for this task.";
-    } else {
-      $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE id='$id'");
-      if ($query_update) {
-        echo "Success";
-      }
+    $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE id='$id'");
+    if ($query_update) {
+      echo "Success";
     }
   }
 }
