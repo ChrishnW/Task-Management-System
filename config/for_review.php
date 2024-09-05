@@ -141,7 +141,7 @@ if (isset($_POST['viewTask'])) {
                     ?>
                       <tr>
                         <td><?php echo $row['file_name'] ?></td>
-                        <td><?php echo $size ?> mb</td>
+                        <td><?php echo $size ?></td>
                         <td><?php echo $date ?></td>
                         <td><?php echo $action ?></td>
                       </tr>
