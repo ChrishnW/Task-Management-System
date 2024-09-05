@@ -177,7 +177,7 @@
 <div class="modal fade" id="activityLogs" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
+      <div class="modal-header bg-primary text-white">
         <h5 class="modal-title" id="exampleModalLongTitle">Activity Log</h5>
       </div>
       <div class="modal-body" id="activityDetails">
