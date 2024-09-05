@@ -333,7 +333,11 @@ include('../include/header.php');
       },
       success: function(response) {
         $('#ajaxContents').html(response);
-        openSpecificModal('view', 'modal-lg');
+        $('#ViewFinishedTaskTable').DataTable({
+          "order": [[4, "asc"],[6, "desc"]]
+        });
+        $('[data-toggle="tooltip"]').tooltip();
+        openSpecificModal('view', 'modal-xl');
       }
     })
   }

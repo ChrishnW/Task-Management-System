@@ -151,5 +151,84 @@ if (isset($_POST['viewTask'])) {
 <?php
 }
 
-
+if (isset($_POST['showPerformance'])) {
+  $id = $_POST['account_id']; ?>
+  <table class="table table-striped" id="ViewFinishedTaskTable" width="100%" cellspacing="0">
+    <thead class='table table-success'>
+      <tr>
+        <th>Code</th>
+        <th>Title</th>
+        <th>Classification</th>
+        <th>Status</th>
+        <th>Due Date</th>
+        <th>Date Accomplished</th>
+        <th>Achievement</th>
+      </tr>
+    </thead>
+    <tfoot class='table table-success'>
+      <tr>
+        <th>Code</th>
+        <th>Title</th>
+        <th>Classification</th>
+        <th>Status</th>
+        <th>Due Date</th>
+        <th>Date Accomplished</th>
+        <th>Achievement</th>
+      </tr>
+    </tfoot>
+    <tbody id='dataTableBody'>
+      <?php
+      $query = "SELECT tasks_details.*, accounts.file_name, accounts.id, tasks.task_details FROM tasks_details JOIN accounts ON tasks_details.in_charge=accounts.username JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE accounts.id='$id'";
+      if (isset($_POST['date_to']) && isset($_POST['date_from'])) {
+        $date_to   = $_POST['date_to'];
+        $date_from = $_POST['date_from'];
+        $query .= " AND DATE(due_date) >= '$date_to' AND DATE(due_date) <= '$date_from'";
+      }
+      $result = mysqli_query($con, $query);
+      if (mysqli_num_rows($result) > 0) {
+        while ($row = $result->fetch_assoc()) {
+          if (empty($row['file_name'])) {
+            $imageURL = '../assets/img/user-profiles/nologo.png';
+          } else {
+            $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
+          }
+          $status_badges = [
+            'NOT YET STARTED' => 'primary',
+            'IN PROGRESS' => 'warning',
+            'REVIEW' => 'danger',
+            'FINISHED' => 'success',
+            'RESCHEDULE' => 'secondary'
+          ];
+          $task_classes = [1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'], 2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'], 3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'], 4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'], 5 => ['name' => 'PROJECT', 'badge' => 'info'], 6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']];
+          if (isset($task_classes[$row['task_class']])) {
+            $class = $task_classes[$row['task_class']]['name'];
+            $badge = $task_classes[$row['task_class']]['badge'];
+          } else {
+            $class = 'Unknown';
+            $badge = 'secondary';
+          }
+          $task_class         = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+          $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
+          $date_accomplished  = !empty($row['date_accomplished']) ? date_format(date_create($row['date_accomplished']), "Y-m-d h:i a") : "TO BE DETERMINED";
+          $assignee           = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="' . $row['in_charge'] . '">';
+          $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>'; ?>
+          <tr>
+            <td>
+              <center /><?php echo $row['task_code'] ?>
+            </td>
+            <td><?php echo $row['task_name']; ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+            <td><?php echo $task_class ?></td>
+            <td><?php echo $progress ?></td>
+            <td><?php echo $due_date ?></td>
+            <td><?php echo $date_accomplished ?></td>
+            <td>
+              <center /><span class="d-block display-8"><?php echo $row['achievement'] ?? 'N/A'; ?></span>
+            </td>
+          </tr>
+      <?php }
+      } ?>
+    </tbody>
+  </table>
+  <?php
+}
 ?>
