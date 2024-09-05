@@ -323,7 +323,7 @@ include('../include/header.php');
   }
 
   function showPerformance(element) {
-    var account_id = <?php echo json_encode($id) ?>;
+    var account_id = <?php echo json_encode($emp_id) ?>;
     $.ajax({
       method: "POST",
       url: "../config/performance.php",
