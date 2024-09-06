@@ -1,6 +1,7 @@
 {
     "require": {
-        "snapappointments/bootstrap-select": "^1.13"
+        "snapappointments/bootstrap-select": "^1.13",
+        "phpoffice/phpspreadsheet": "^1.12"
     },
     "config": {
         "allow-plugins": {
