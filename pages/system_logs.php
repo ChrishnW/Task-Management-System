@@ -6,12 +6,12 @@ include('../include/header.php');
   <?php if ($access == 1) { ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-        <h6 class="m-0 font-weight-bold text-white">Account Attendance</h6>
+        <h6 class="m-0 font-weight-bold text-white">System Logs</h6>
       </div>
       <div class="card-body">
         <div class="table-responsive">
           <table class="table table-striped table-hover" id="attendanceTable" width="100%" cellspacing="0">
-            <thead class='table table-success'>
+            <thead class='table table-primary'>
               <tr>
                 <th>#</th>
                 <th>Action</th>
@@ -98,20 +98,4 @@ include('../include/header.php');
       }
     });
   });
-
-  function viewRecord(element){
-    var id = element.value;
-    $.ajax({
-      method: "POST",
-      url: "../config/attendance.php",
-      data: {
-        "viewRecord": true,
-        "id": id,
-      },
-      success: function(response){
-        $('#details').html(response);
-        $('#view').modal('show');
-      }
-    });
-  }
 </script>
