@@ -403,17 +403,18 @@ if (isset($_POST['startTask'])) {
   }
 }
 if (isset($_POST['startTaskMultiple'])) {
-  $count          = 0;
+  $count = 0;
   $taskIDmultiple = $_POST['checkedIds'];
   foreach ($taskIDmultiple as $taskID) {
     $query_result = mysqli_query($con, "UPDATE tasks_details SET status='IN PROGRESS' WHERE id='$taskID'");
-    $count += 1;
+    if ($query_result) {
+      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$taskID'");
+      $row = mysqli_fetch_assoc($query_code);
+      log_action("Task {$row['task_code']} started.");
+      $count++;
+    }
   }
-  if ($count != 0) {
-    echo "Success";
-  } else {
-    echo "Unable to complete the operation. Please try again later.";
-  }
+  echo $count > 0 ? "Success" : "Unable to complete the operation. Please try again later.";
 }
 if (isset($_POST['endTaskDeatails'])) {
   $id = $_POST['taskID'];
