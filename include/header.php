@@ -95,7 +95,7 @@
           </a>
           <div id="collapseFour" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="attendance.php">Attendance Logs</a>
+              <a class="collapse-item" href="system_logs.php">System Logs</a>
               <a class="collapse-item" href="calendar.php">Dayoff Calendar</a>
             </div>
           </div>
