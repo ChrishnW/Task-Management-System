@@ -394,6 +394,9 @@ if (isset($_POST['startTask'])) {
   $id = $_POST['id'];
   $query_result = mysqli_query($con, "UPDATE tasks_details SET status='IN PROGRESS' WHERE id='$id'");
   if ($query_result) {
+    $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+    $row = mysqli_fetch_assoc($query_code);
+    log_action("Task {$row['task_code']} started.");
     echo "Success";
   } else {
     echo "Unable to complete the operation. Please try again later.";
