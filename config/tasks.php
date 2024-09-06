@@ -495,6 +495,9 @@ if (isset($_POST['endTask'])) {
             $query_update = mysqli_query($con, "UPDATE tasks_details SET status='REVIEW', date_accomplished='$currentDateTime', achievement='$achievement', remarks='$remarks' WHERE id='$id'");
             $query_insert = mysqli_query($con, "INSERT INTO `task_files`(`task_code`, `file_name`, `file_size`, `file_type`, `file_dated`, `file_owner`, `file_target`) VALUES ('$task_code', '$original_filename', '$filesize', '$file_extension', '$currentDateTime', '$assignee', '$new_filename')");
             if ($query_update && $query_insert) {
+              $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+              $row = mysqli_fetch_assoc($query_code);
+              log_action("Task {$row['task_code']} completed and sent for review.");
               echo "Success";
             } else {
               unlink($targetDir . $new_filename);
@@ -518,6 +521,9 @@ if (isset($_POST['endTask'])) {
       // Update Task
       $query_update = mysqli_query($con, "UPDATE tasks_details SET status='REVIEW', date_accomplished='$currentDateTime', achievement='$achievement', remarks='$remarks' WHERE id='$id'");
       if ($query_update) {
+        $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+        $row = mysqli_fetch_assoc($query_code);
+        log_action("Task {$row['task_code']} completed and sent for review.");
         echo "Success";
       }
     }
@@ -828,11 +834,17 @@ if (isset($_POST['updateDetails'])) {
       }
     }
     if ($success) {
+      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+      $row = mysqli_fetch_assoc($query_code);
+      log_action("Task {$row['task_code']} remarks/files have been edited.");
       echo "Success";
     }
   } else {
     $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE id='$id'");
     if ($query_update) {
+      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+      $row = mysqli_fetch_assoc($query_code);
+      log_action("Task {$row['task_code']} remarks have been edited.");
       echo "Success";
     }
   }
@@ -849,6 +861,7 @@ if (isset($_POST['deleteFile'])) {
       if ($fileName != "" && file_exists($targetDir . $fileName)) {
         unlink($targetDir . $fileName);
       }
+      log_action("File {$row['file_name']} deleted from task {$row['task_code']}.");
       echo "Success";
     } else {
       echo "Unable to complete the operation. Please try again later.";
