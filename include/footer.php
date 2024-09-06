@@ -182,7 +182,7 @@
       </div>
       <div class="modal-body" id="activityDetails">
         <table class="table table-striped" id="activityTable" width="100%" cellspacing="0">
-          <thead class='table table-success'>
+          <thead class='table table-primary'>
             <tr>
               <th>Date & Time</th>
               <th>Activity</th>
