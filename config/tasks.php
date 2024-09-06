@@ -877,7 +877,7 @@ if (isset($_GET['downloadFile'])) {
     $filePath =  "../files/$assignee/$file";
 
     if (file_exists($filePath)) {
-      // Set headers to download the file
+      log_action("File {$row['file_name']} downloaded from task {$row['task_code']}.");
       header('Content-Description: File Transfer');
       header('Content-Type: application/octet-stream');
       header('Content-Disposition: attachment; filename=' . basename($filePath));
@@ -885,7 +885,7 @@ if (isset($_GET['downloadFile'])) {
       header('Cache-Control: must-revalidate');
       header('Pragma: public');
       header('Content-Length: ' . filesize($filePath));
-      flush(); // Flush system output buffer
+      flush();
       readfile($filePath);
       exit;
     } else {
