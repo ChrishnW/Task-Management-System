@@ -22,6 +22,7 @@ if (isset($_POST['submit'])) {
 		if (!password_verify($password, $hash_password)) {
 			$error = "Invalid Password!";
 		} else {
+			$query_insert = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('Account Login.', '$datetime_current', '$username')");
 			session_regenerate_id();
 			$_SESSION['SESS_MEMBER_ID'] = $emp_id;
 			$_SESSION['SESS_MEMBER_USERNAME'] = $username;
