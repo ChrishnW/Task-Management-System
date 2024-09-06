@@ -272,7 +272,6 @@ if (isset($_POST['editTask'])) {
     $username         = $row['in_charge'];
     $task_name        = $row['task_name'];
     $datetime_current = date('Y-m-d H:i:s');
-    $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$username', 'fas fa-exclamation', 'warning', 'The head has updated the details of [$task_name] from your task.', '$datetime_current', '1')");
     $query_result = mysqli_query($con, "UPDATE tasks SET requirement_status='$editTask_requirement', submission='$editTask_duedate' WHERE id='$editTask_id'");
     if ($query_result) {
       echo "Success";
@@ -286,7 +285,6 @@ if (isset($_POST['taskDelete'])) {
   $username         = $row['in_charge'];
   $task_name        = $row['task_name'];
   $datetime_current = date('Y-m-d H:i:s');
-  $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$username', 'fas fa-trash', 'danger', 'The head has removed [$task_name] from your assigned tasks.', '$datetime_current', '1')");
   $query_result = mysqli_query($con, "DELETE FROM `tasks` WHERE id='$taskID'");
   if ($query_result) {
     echo "Success";
@@ -430,10 +428,6 @@ if (isset($_POST['assignTask'])) {
       $result = $task_name . ' <span class="badge badge-danger">Failed</span> ' . $task_name . '<br>';
     }
     echo $result;
-  }
-  if ($count > 0) {
-    $datetime_current = date('Y-m-d H:i:s');
-    $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$in_charge', 'fas fa-info', 'info', 'The head has assigned you a total of [$count] tasks.', '$datetime_current', '1')");
   }
 }
 ?>
