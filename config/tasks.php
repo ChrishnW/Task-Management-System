@@ -467,6 +467,8 @@
         echo "An empty field has been detected!<br>Please ensure to include your remarks for this task.";
       } elseif (empty($_FILES['file-1']['name'][0])) {
         echo "An empty field has been detected!<br>File attachments are required for this task.";
+      } elseif (strlen(trim($remarks)) <= 30) {
+        echo "The remarks contains fewer than 30 characters (excluding excess whitespace).";
       } else {
         $files      = $_FILES['file-1'];
         $upload_dir = '../files/' . $assignee;
@@ -512,6 +514,8 @@
     } else {
       if (empty($remarks)) {
         echo "An empty field has been detected!<br>Please ensure to include your remarks for this task.";
+      } elseif (strlen(trim($remarks)) <= 30) {
+        echo "The remarks contains fewer than 30 characters (excluding excess whitespace).";
       } else {
         $query_update = mysqli_query($con, "UPDATE tasks_details SET status='REVIEW', date_accomplished='$currentDateTime', achievement='$achievement', remarks='$remarks' WHERE id='$id'");
         if ($query_update) {

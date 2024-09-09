@@ -875,32 +875,24 @@ include('../include/header.php');
       $button.prop('disabled', true);
       var formData = new FormData(document.getElementById('submitDetails'));
       formData.append('endTask', true);
-      var checkRemarks = formData.get('taskRemarks').replace(/\s+/g, ' ').trim();
-      if (checkRemarks === '' || checkRemarks.length <= 30) {
-        $button.prop('disabled', false);
-        document.getElementById('error_found').innerHTML = 'Text must be more than 30 characters and cannot be empty.';
-        $('#error').modal('show');
-      } else {
-        $.ajax({
-          method: "POST",
-          url: "../config/tasks.php",
-          data: formData,
-          contentType: false,
-          processData: false,
-          success: function(response) {
-            if (response === 'Success') {
-              document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-              $('#finish').modal('hide');
-              $('#success').modal('show');
-            } else {
-              document.getElementById('error_found').innerHTML = response;
-              $('#error').modal('show');
-              $button.prop('disabled', false);
-            }
+      $.ajax({
+        method: "POST",
+        url: "../config/tasks.php",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+          if (response === 'Success') {
+            document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+            $('#finish').modal('hide');
+            $('#success').modal('show');
+          } else {
+            document.getElementById('error_found').innerHTML = response;
+            $('#error').modal('show');
+            $button.prop('disabled', false);
           }
-        });
-      }
-
+        }
+      });
     })
   }
 
