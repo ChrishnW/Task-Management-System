@@ -19,6 +19,7 @@ if (isset($_POST['approveTask'])) {
   }
   $query_result = mysqli_query($con, "UPDATE tasks_details SET status='FINISHED', achievement='$score', head_name='$head_name', head_note='$head_comment' WHERE id='$id'");
   if ($query_result) {
+    log_action("You reviewed and approved task {$task_code} for user {$row['in_charge']} successfully.");
     echo "Success";
   } else {
     echo "Unable to complete the operation. Please try again later.";
@@ -44,7 +45,8 @@ if (isset($_POST['viewTask'])) {
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-user"></i></div>
               </div>
-              <input type="text" class="form-control" value="<?php echo ucwords(strtolower($row['Mname'])) ?>" readonly>
+              <input type="hidden" name="approveIncharge" id="approveIncharge" value="<?php echo $row['in_charge']; ?>" readonly>
+              <input type="text" class="form-control" value="<?php echo ucwords(strtolower($row['Mname'])) ?>" name="approveFname" id="approveFname" readonly>
             </div>
           </div>
         </div>
