@@ -9,7 +9,7 @@ if (isset($_POST['approveTask'])) {
   $score        = $_POST['approveScore'];
   $inCharge     = $_POST['approveIncharge'];
   $taskCode     = $_POST['approveCode'];
-  if ($score >= 5 || $score == 0 || $score != floor($score)) {
+  if ($score > 5 || $score == 0 || $score != floor($score)) {
     echo "Please provide a whole number score between 1 and 5, with 5 being the highest and 1 being the lowest.<br><b><i>Decimal scores are not allowed.</i></b>";
   } else {
     if ($head_comment == '' || $head_comment == NULL) {
