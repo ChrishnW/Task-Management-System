@@ -275,7 +275,7 @@ include('../include/header.php');
         processData: false,
         success: function(response) {
           if (response === 'Success') {
-            document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+            document.getElementById('success_log').innerHTML = 'Task '+ document.getElementById('approveCode').value +' reviewed and approved successfully.';
             $('#review').modal('hide');
             $('#success').modal('show');
           } else {
