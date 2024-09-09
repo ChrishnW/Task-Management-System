@@ -7,6 +7,8 @@ if (isset($_POST['approveTask'])) {
   $head_name    = $_POST['approveHead'];
   $head_comment = $_POST['approveComment'];
   $score        = $_POST['approveScore'];
+  $inCharge     = $_POST['approveIncharge'];
+  $taskCode     = $_POST['approveCode'];
   if ($head_comment == '' || $head_comment == NULL) {
     $head_comment = NULL;
   } else {
@@ -19,7 +21,7 @@ if (isset($_POST['approveTask'])) {
   }
   $query_result = mysqli_query($con, "UPDATE tasks_details SET status='FINISHED', achievement='$score', head_name='$head_name', head_note='$head_comment' WHERE id='$id'");
   if ($query_result) {
-    log_action("You reviewed and approved task {$task_code} for user {$row['in_charge']} successfully.");
+    log_action("You reviewed and approved task {$taskCode} for user {$inCharge} successfully.");
     echo "Success";
   } else {
     echo "Unable to complete the operation. Please try again later.";
