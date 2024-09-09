@@ -141,7 +141,7 @@ if (isset($_POST['viewTask'])) {
             <td><?php echo $due_date ?></td>
             <td><?php echo $date_accomplished ?></td>
             <td>
-              <center /><span class="d-block display-8"><?php echo $row['achievement'] ?? 'N/A'; ?></span>
+              <center /><span class="d-block display-8"><?php echo $row['achievement'] ?? '0'; ?></span>
             </td>
           </tr>
       <?php }
@@ -222,7 +222,7 @@ if (isset($_POST['showPerformance'])) {
             <td><?php echo $due_date ?></td>
             <td><?php echo $date_accomplished ?></td>
             <td>
-              <center /><span class="d-block display-8"><?php echo $row['achievement'] ?? 'N/A'; ?></span>
+              <center /><span class="d-block display-8"><?php echo $row['achievement'] ?? '0'; ?></span>
             </td>
           </tr>
       <?php }
