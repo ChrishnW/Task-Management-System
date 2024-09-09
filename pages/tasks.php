@@ -954,7 +954,7 @@ include('../include/header.php');
     var checkEditRemarks = formDetails.get('taskReview_remarks').replace(/\s+/g, ' ').trim();
     if (checkEditRemarks === '' || checkEditRemarks.length <= 30) {
       element.disabled = false;
-      document.getElementById('error_found').innerHTML = 'Text must be more than 30 characters and cannot be empty.';
+      document.getElementById('error_found').innerHTML = 'The remarks contains fewer than 30 characters (excluding excess whitespace).';
       $('#error').modal('show');
     } else {
       $.ajax({
