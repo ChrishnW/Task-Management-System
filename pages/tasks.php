@@ -1176,6 +1176,7 @@ include('../include/header.php');
 
   });
 
+  <?php if ($access == 2) { ?>
   function checkDateInputs() {
     var dateFrom = document.getElementById('date_from').value;
     var dateTo = document.getElementById('date_to').value;
@@ -1192,4 +1193,5 @@ include('../include/header.php');
   }
 
   checkDateInputs(); // Initial check
+  <?php } ?>
 </script>
