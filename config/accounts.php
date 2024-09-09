@@ -412,4 +412,22 @@
       echo $result;
     }
   }
+  if (isset($_POST['getBody'])) { ?>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Current Password</label><small class="text-danger d-none" id="incorrect"> Current password is incorrect!</small>
+        <input type="password" class="form-control" id="curPass" placeholder="Current Password" onchange="checkPassword(this)" autocomplete="new-password">
+      </div>
+      <div class="form-group">
+        <label>New Password</label><small class="text-danger d-none" id="used"> You already used this password.</small>
+        <input type="password" class="form-control" id="newPass" placeholder="New Password" onchange="newPassword(this)" readonly>
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label><small class="text-danger d-none" id="notmatch"> Passwords do not match!</small>
+        <input type="password" class="form-control" id="conPass" placeholder="Confirm Password" onchange="conPassword(this)" readonly>
+      </div>
+      <p class="text-danger font-weight-bold font-italic display-9">Please review your changes. After confirmation, you will be logged out to apply the updates.</p>
+    </div>
+    <?php 
+  }
 ?>

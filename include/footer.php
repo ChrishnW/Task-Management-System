@@ -113,26 +113,11 @@
       <div class="modal-header bg-danger text-white">
         <h5 class="modal-title" id="accountUsername">Change Password</h5>
       </div>
-      <div class="modal-body">
-        <div class="col-md-12">
-          <div class="form-group">
-            <label>Current Password</label><small class="text-danger d-none" id="incorrect"> Current password is incorrect!</small>
-            <input type="password" class="form-control" id="curPass" placeholder="Current Password" onchange="checkPassword(this)" autocomplete="new-password">
-          </div>
-          <div class="form-group">
-            <label>New Password</label><small class="text-danger d-none" id="used"> You already used this password.</small>
-            <input type="password" class="form-control" id="newPass" placeholder="New Password" onchange="newPassword(this)" readonly>
-          </div>
-          <div class="form-group">
-            <label>Confirm Password</label><small class="text-danger d-none" id="notmatch"> Passwords do not match!</small>
-            <input type="password" class="form-control" id="conPass" placeholder="Confirm Password" onchange="conPassword(this)" readonly>
-          </div>
-          <p class="text-danger font-weight-bold font-italic display-9">Please review your changes. After confirmation, you will be logged out to apply the updates.</p>
-        </div>
+      <div class="modal-body" id="passBody">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" id="passUpdate">Save</button>
-        <button type="button" class="btn btn-danger" onclick="location.reload();">Close</button>
+        <button type="button" class="btn btn-success d-none" id="passUpdate">Save</button>
+        <button class="btn btn-danger" type="button" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -317,15 +302,20 @@
     var newPass = element.value;
     var chkPass = document.getElementById('curPass').value;
     if (newPass === '') {
-      document.getElementById('newPass').classList.remove('border-danger', 'border-success');
+      document.getElementById('newPass').classList.remove('border-danger', 'border-success', 'border-warning');
       document.getElementById('used').classList.add('d-none');
-      document.getElementById('conPass').readOnly = false;
+      document.getElementById('conPass').readOnly = true;
     } else if (newPass === chkPass) {
       document.getElementById('newPass').classList.add('border-danger');
       document.getElementById('used').classList.remove('d-none');
       document.getElementById('conPass').readOnly = true;
+    } else if (newPass.length <= 7) {
+      document.getElementById('used').innerHTML = ' Password is too short.';
+      document.getElementById('newPass').classList.add('border-warning');
+      document.getElementById('used').classList.remove('d-none');
+      document.getElementById('conPass').readOnly = true;
     } else {
-      document.getElementById('newPass').classList.remove('border-danger');
+      document.getElementById('newPass').classList.remove('border-danger', 'border-warning');
       document.getElementById('newPass').classList.add('border-success');
       document.getElementById('used').classList.add('d-none');
       document.getElementById('conPass').readOnly = false;
@@ -334,6 +324,7 @@
 
   function conPassword(element) {
     var confirm = element.value;
+    document.getElementById('passUpdate').classList.add('d-none');
     if (document.getElementById('conPass').value === '') {
       document.getElementById('conPass').classList.remove('border-danger', 'border-success');
       document.getElementById('notmatch').classList.add('d-none');
@@ -344,6 +335,7 @@
       document.getElementById('conPass').classList.remove('border-danger');
       document.getElementById('conPass').classList.add('border-success');
       document.getElementById('notmatch').classList.add('d-none');
+      document.getElementById('passUpdate').classList.remove('d-none');
     }
   }
 
@@ -365,6 +357,7 @@
           if (response === 'Success') {
             window.location.href = '../include/logout.php';
           } else {
+            document.getElementById('passUpdate').classList.add('d-none');
             document.getElementById('textError').innerHTML = response;
             $('#profileError').modal('show');
           }
@@ -463,7 +456,18 @@
     });
 
     $('#editPassword').off('click').on('click', function() {
-      $('#passwordModal').modal('show');
+      let getBody = true;
+      $.ajax({
+        method: "POST",
+        url: "../config/accounts.php",
+        data: {
+          "getBody": getBody
+        },
+        success: function(response) {
+          $('#passBody').html(response);
+          $('#passwordModal').modal('show');
+        }
+      });
     });
 
     $('#activityLogs').on('shown.bs.modal', function() {
