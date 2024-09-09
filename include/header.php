@@ -61,9 +61,9 @@
           </a>
           <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="accounts.php">User Account</a>
               <a class="collapse-item" href="departments.php">Department</a>
               <a class="collapse-item" href="sections.php">Section</a>
+              <a class="collapse-item" href="accounts.php">User Account</a>
             </div>
           </div>
         </li>
