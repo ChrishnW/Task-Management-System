@@ -164,7 +164,7 @@
       <div class="modal-body text-center">
         <i class="fas fa-sad-cry fa-5x text-danger"></i>
         <br><br>
-        <p id="error_found"></p>
+        <p id="textError"></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -365,13 +365,13 @@
           if (response === 'Success') {
             window.location.href = '../include/logout.php';
           } else {
-            document.getElementById('error_found').innerHTML = response;
+            document.getElementById('textError').innerHTML = response;
             $('#profileError').modal('show');
           }
         }
       });
     } else {
-      document.getElementById('error_found').innerHTML = 'Empty field has been detected!';
+      document.getElementById('textError').innerHTML = 'Empty field has been detected!';
       $('#profileError').modal('show');
     }
   });
@@ -441,7 +441,7 @@
 
       if (!isValid) {
         $button.prop('disabled', false);
-        document.getElementById('error_found').innerHTML = errorMessage;
+        document.getElementById('textError').innerHTML = errorMessage;
         $('#profileError').modal('show');
         return; // Stop the script from proceeding if validation fails
       }
