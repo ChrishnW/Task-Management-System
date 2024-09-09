@@ -32,9 +32,11 @@ if (isset($_POST['viewTask'])) {
     $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
     $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
     $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
-    $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
+    $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); 
+    $dueDated           = new DateTime($row['due_date']);
+    $finDated           = new DateTime($row['date_accomplished']);?>
     <form id="checkDetails" enctype="multipart/form-data">
-      <div class="row">
+      <div class="row justify-content-between">
         <div class="col-md-5">
           <div class="form-group">
             <label>Assignee:</label>
@@ -46,6 +48,14 @@ if (isset($_POST['viewTask'])) {
             </div>
           </div>
         </div>
+        <?php if ($finDated > $dueDated) { ?>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>Findings:</label>
+              <span class="badge badge-danger">Late Submitted</span>
+          </div>
+        </div>
+        <?php } ?>
       </div>
       <div class="row">
         <input type="hidden" name="approveID" id="approveID" value="<?php echo $row['id'] ?>">
