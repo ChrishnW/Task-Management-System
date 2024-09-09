@@ -173,7 +173,7 @@ if (isset($_POST['viewTask'])) {
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-comments"></i></div>
               </div>
-              <textarea class="form-control" name="approveComment" id="approveComment" placeholder="Put something here..."></textarea>
+              <textarea class="form-control" name="approveComment" id="approveComment" placeholder="Write your comments here if needed..."></textarea>
             </div>
           </div>
         </div>
