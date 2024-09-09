@@ -19,12 +19,16 @@ if (isset($_POST['approveTask'])) {
     $datetime_current = date('Y-m-d H:i:s');
     $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$username', 'fas fa-exclamation', 'warning', 'You have received a note from the head regarding your completed $task_code task.', '$datetime_current', '1')");
   }
-  $query_result = mysqli_query($con, "UPDATE tasks_details SET status='FINISHED', achievement='$score', head_name='$head_name', head_note='$head_comment' WHERE id='$id'");
-  if ($query_result) {
-    log_action("You reviewed and approved task {$taskCode} for user {$inCharge} successfully.");
-    echo "Success";
+  if ($score >= 5 || $score == 0 || $score != floor($score)) {
+    echo "Please provide a whole number score between 1 and 5, with 5 being the highest and 1 being the lowest.<br><b><i>Decimal scores are not allowed.</i></b>";
   } else {
-    echo "Unable to complete the operation. Please try again later.";
+    $query_result = mysqli_query($con, "UPDATE tasks_details SET status='FINISHED', achievement='$score', head_name='$head_name', head_note='$head_comment' WHERE id='$id'");
+    if ($query_result) {
+      log_action("You reviewed and approved task {$taskCode} for user {$inCharge} successfully.");
+      echo "Success";
+    } else {
+      echo "Unable to complete the operation. Please try again later.";
+    }
   }
 }
 
