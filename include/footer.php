@@ -178,7 +178,7 @@
           $query_activity = mysqli_query($con, "SELECT * FROM system_log WHERE user='$username'");
             while ($row = $query_activity->fetch_assoc()) { ?>
             <tr>
-              <td><?php echo date_format(date_create($row['date_created']), "Y-m-d h:i a"); ?></td>
+              <td><?php echo date_format(date_create($row['date_created']), "Y-m-d H:i a"); ?></td>
               <td><?php echo $row['action']; ?></td>
             </tr>
             <?php }
