@@ -165,7 +165,7 @@ include('../include/header.php');
         <div class="tab-content" id="myTabContent">
           <div class="tab-pane fade" id="todo">
             <div class="card">
-              <div class="card-header" id="actionButton" style="display: none;">
+              <div class="card-header d-none" id="actionButton">
                 <button id="submitButton" onclick="getCheckedValue(this)" class="btn btn-success pull-right"><i class="fas fa-play"></i> Start All Selected</button>
               </div>
               <div class="card-body table-responsive">
@@ -620,7 +620,7 @@ include('../include/header.php');
       <div class="modal-body" id="reviewDetails">
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="updateDetails(this)" class="btn btn-success" id="updateButton">Update</button>
+        <button type="button" onclick="updateDetails(this)" class="btn btn-success d-none" id="updateButton">Update</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -910,7 +910,9 @@ include('../include/header.php');
         $('#taskDetails').html(response);
         openSpecificModal('view', 'modal-xl');
         $('#taskView_table').DataTable({
-          order: [[0, 'asc']],
+          order: [
+            [0, 'asc']
+          ],
           pageLength: 3,
           lengthMenu: [3, 10, 25, 50, 100],
           "drawCallback": function(settings) {
@@ -1101,97 +1103,102 @@ include('../include/header.php');
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    var activeTab = localStorage.getItem('activeTab');
-    if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
-      document.querySelector(`a[href="${activeTab}"]`).classList.add('active');
-      document.querySelector(activeTab).classList.add('show', 'active');
-    } else {
-      document.querySelector('.nav-link').classList.add('active');
-      document.querySelector('.tab-pane').classList.add('show', 'active');
-    }
-
-    function initializeDataTable(tableId) {
-      if (tableId === 'myTasksTableTodo') {
-        $('#' + tableId).DataTable({
-          "order": [
-            [4, "asc"],
-            [2, "asc"]
-          ],
-          pageLength: 5,
-          lengthMenu: [5, 10, 25, 50, 100],
-          "drawCallback": function(settings) {
-            $('[data-toggle="tooltip"]').tooltip();
-          }
-        });
+    <?php if ($access == 2) { ?>
+      var activeTab = localStorage.getItem('activeTab');
+      if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
+        document.querySelector(`a[href="${activeTab}"]`).classList.add('active');
+        document.querySelector(activeTab).classList.add('show', 'active');
       } else {
-        $('#' + tableId).DataTable({
-          "order": [
-            [3, "desc"],
-            [1, "asc"]
-          ],
-          pageLength: 5,
-          lengthMenu: [5, 10, 25, 50, 100],
-          "drawCallback": function(settings) {
-            $('[data-toggle="tooltip"]').tooltip();
-          }
-        });
+        document.querySelector('.nav-link').classList.add('active');
+        document.querySelector('.tab-pane').classList.add('show', 'active');
       }
-    }
 
-    $('#myTabs a').on('shown.bs.tab', function(e) {
-      var href = $(e.target).attr('href');
-      localStorage.setItem('activeTab', href);
-
-      var tableId = $(href).find('table').attr('id');
-      if (tableId && !$.fn.DataTable.isDataTable('#' + tableId)) {
-        initializeDataTable(tableId);
+      function initializeDataTable(tableId) {
+        if (tableId === 'myTasksTableTodo') {
+          $('#' + tableId).DataTable({
+            "order": [
+              [4, "asc"],
+              [2, "asc"]
+            ],
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50, 100],
+            "drawCallback": function(settings) {
+              $('[data-toggle="tooltip"]').tooltip();
+            }
+          });
+        } else {
+          $('#' + tableId).DataTable({
+            "order": [
+              [3, "desc"],
+              [1, "asc"]
+            ],
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50, 100],
+            "drawCallback": function(settings) {
+              $('[data-toggle="tooltip"]').tooltip();
+            }
+          });
+        }
       }
-    });
 
-    var initialTableId = $('.tab-pane.show.active').find('table').attr('id');
-    if (initialTableId && !$.fn.DataTable.isDataTable('#' + initialTableId)) {
-      initializeDataTable(initialTableId);
-    }
+      $('#myTabs a').on('shown.bs.tab', function(e) {
+        var href = $(e.target).attr('href');
+        localStorage.setItem('activeTab', href);
 
-    document.getElementById('selectAll').addEventListener('click', function() {
-      var checkboxes = document.querySelectorAll('input[type="checkbox"][name="selected_ids[]"]');
-      var actionButton = document.getElementById('actionButton');
-      checkboxes.forEach(function(checkbox) {
-        if (checkbox.value !== "" && !checkbox.disabled) {
-          checkbox.checked = document.getElementById('selectAll').checked;
+        var tableId = $(href).find('table').attr('id');
+        if (tableId && !$.fn.DataTable.isDataTable('#' + tableId)) {
+          initializeDataTable(tableId);
         }
       });
-      actionButton.style.display = checkboxesChecked() ? 'block' : 'none';
-    });
 
-    function checkboxesChecked() {
-      var checkboxes = document.querySelectorAll('input[type="checkbox"][name="selected_ids[]"]');
-      for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
-          return true;
+      var initialTableId = $('.tab-pane.show.active').find('table').attr('id');
+      if (initialTableId && !$.fn.DataTable.isDataTable('#' + initialTableId)) {
+        initializeDataTable(initialTableId);
+      }
+
+      const selectAllCheckbox = document.getElementById('selectAll');
+      const actionButton = document.getElementById('actionButton');
+      const checkboxes = document.querySelectorAll('input[name="selected_ids[]"]');
+
+      function updateActionButton() {
+        const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+        if (anyChecked) {
+          actionButton.classList.remove('d-none');
+        } else {
+          actionButton.classList.add('d-none');
         }
       }
-      return false;
-    }
 
+      selectAllCheckbox.addEventListener('change', function() {
+        checkboxes.forEach(checkbox => {
+          checkbox.checked = selectAllCheckbox.checked;
+        });
+        updateActionButton();
+      });
+
+      checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          updateActionButton();
+        });
+      });
+    <?php } ?>
   });
 
   <?php if ($access == 2) { ?>
-  function checkDateInputs() {
-    var dateFrom = document.getElementById('date_from').value;
-    var dateTo = document.getElementById('date_to').value;
-    var filterButton = document.getElementById('filterButton');
-    var removeFilterButton = document.getElementById('removeFilterButton');
+    function checkDateInputs() {
+      var dateFrom = document.getElementById('date_from').value;
+      var dateTo = document.getElementById('date_to').value;
+      var filterButton = document.getElementById('filterButton');
+      var removeFilterButton = document.getElementById('removeFilterButton');
 
-    if (dateFrom && dateTo) {
-      filterButton.classList.remove('d-none');
-      removeFilterButton.classList.remove('d-none');
-    } else {
-      filterButton.classList.add('d-none');
-      removeFilterButton.classList.add('d-none');
+      if (dateFrom && dateTo) {
+        filterButton.classList.remove('d-none');
+        removeFilterButton.classList.remove('d-none');
+      } else {
+        filterButton.classList.add('d-none');
+        removeFilterButton.classList.add('d-none');
+      }
     }
-  }
-
-  checkDateInputs(); // Initial check
+    checkDateInputs();
   <?php } ?>
 </script>
