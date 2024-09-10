@@ -83,7 +83,8 @@
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
             </div>
-            <input type="text" id="register_department_code" class="form-control">
+            <?php $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT dept_id FROM department ORDER BY dept_id DESC LIMIT 1")); ?>
+            <input type="text" id="register_department_code" class="form-control" value="<?php echo $row['dept_id'] + 1 ?>" readonly>
           </div>
         </div>
         <div class="form-group">
