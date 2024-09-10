@@ -620,7 +620,7 @@ include('../include/header.php');
       <div class="modal-body" id="reviewDetails">
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="updateDetails(this)" class="btn btn-success d-none" id="updateButton">Update</button>
+        <button type="button" onclick="updateDetails(this)" class="btn btn-success" id="updateButtonEmp">Update</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -1185,6 +1185,7 @@ include('../include/header.php');
   });
 
   <?php if ($access == 2) { ?>
+
     function checkDateInputs() {
       var dateFrom = document.getElementById('date_from').value;
       var dateTo = document.getElementById('date_to').value;
