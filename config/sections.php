@@ -27,6 +27,9 @@ if (isset($_POST['sectionUpdate'])) {
   if($sec_code === '' || $sec_name === '' || $sec_department === '' || $sec_status === ''){
     $error = true;
     echo "Empty field has been detected! Please try again.";
+  } elseif (strpos($sec_code, ' ') !== false) {
+    $error = true;
+    echo "Section ID should not contain spaces between characters.";
   }
   if(!$error){
     $query_result = mysqli_query($con, "UPDATE section SET sec_id='$sec_code', sec_name='$sec_name', dept_id='$sec_department', status='$sec_status' WHERE id='$sec_id'");
