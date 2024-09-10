@@ -69,6 +69,9 @@ if (isset($_POST['sectionCreate'])) {
   if($section_name === '' || $section_code === '' || $section_dep === ''){
     $error = true;
     echo "Empty field has been detected! Please try again.";
+  } elseif (strpos($section_code, ' ') !== false) {
+    $error = true;
+    echo "Section ID should not contain spaces between characters.";
   }
   if(!$error){
     $query_result = mysqli_query($con, "INSERT INTO section (`sec_id`, `sec_name`, `dept_id`, `status`) VALUES ('$section_code', '$section_name', '$section_dep', '1')");
