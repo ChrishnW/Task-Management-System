@@ -15,25 +15,14 @@ include('../include/header.php');
               <tr>
                 <th>#</th>
                 <th>Action</th>
-                <th>User ID</th>
-                <th>Name</th>
+                <th class="col-4">Name</th>
                 <th>Section & Department</th>
                 <th>Date Record</th>
               </tr>
             </thead>
-            <tfoot class='table table-success'>
-              <tr>
-                <th>#</th>
-                <th>Action</th>
-                <th>User ID</th>
-                <th>Name</th>
-                <th>Section & Department</th>
-                <th>Date Record</th>
-              </tr>
-            </tfoot>
             <tbody>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT attendance.*, accounts.file_name, attendance.date, accounts.fname, accounts.lname, accounts.sec_id, accounts.status, section.sec_name, department.dept_name FROM attendance JOIN accounts ON attendance.card=accounts.card JOIN section ON section.sec_id=accounts.sec_id JOIN department ON department.dept_id=section.dept_id WHERE accounts.status=1");
+              $result = mysqli_query($con, "SELECT system_log.*, accounts.file_name, accounts.fname, accounts.lname, accounts.sec_id, accounts.status, section.sec_name, department.dept_name FROM system_log JOIN accounts ON system_log.user=accounts.username JOIN section ON section.sec_id=accounts.sec_id JOIN department ON department.dept_id=section.dept_id WHERE accounts.status=1");
               if (mysqli_num_rows($result) > 0) {
                 $count = 0;
                 while ($row = $result->fetch_assoc()) {
@@ -43,14 +32,11 @@ include('../include/header.php');
                   } else {
                     $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
                   }
-                  $date_time = date_format(date_create($row['date']), "F d, Y h:i a");
+                  $date_time = date_format(date_create($row['date_created']), "F d, Y h:i a");
               ?>
                   <tr>
                     <td><?php echo $count; ?></td>
-                    <td>
-                      <center /><button type="button" class="btn btn-info btn-circle btn-md" value="<?php echo $row['id']; ?>" onclick="viewRecord(this)"><i class="fas fa-eye"></i></button>
-                    </td>
-                    <td><?php echo $row['card']; ?></td>
+                    <td><?php echo $row['action']; ?></td>
                     <td><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
                     <td><?php echo $row['sec_name']; ?> <p class="form-text text-danger"><?php echo $row['dept_name']; ?></p>
                     </td>
