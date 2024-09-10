@@ -938,7 +938,7 @@ include('../include/header.php');
       <div class="modal-header bg-success text-white">
         <h5 class="modal-title" id="exampleModalLongTitle">System Usage</h5>
       </div>
-      <div class="modal-body text-center">
+      <div class="modal-body">
         <table class="table table-striped" id="systemTable" width="100%" cellspacing="0">
           <thead class='table table-primary'>
             <tr>
