@@ -118,7 +118,7 @@
               <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
             </div>
             <input type="hidden" name="department_oldcode" id="department_oldcode">
-            <input type="text" id="department_code" class="form-control">
+            <input type="text" id="department_code" class="form-control" readonly>
           </div>
         </div>
         <div class="form-group">
