@@ -16,7 +16,7 @@
             <form method="POST">
               <input type="file" class="form-control-file" id="UploadedFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" required />
               <br>
-              <a href="task_import_template.php" class="pull-left">Download Excel Template For Import</a>
+              <a onclick="downloadTemplate()" class="pull-left">Download Excel Template For Import</a>
               <br>
               <button type="button" onclick="uploadFile(this)" id="import_tasks" class="btn btn-success mt-3"><i class="fas fa-fw fa-file-import"></i> Import</button>
             </form>
@@ -109,5 +109,9 @@
         }
       }
     });
+  }
+
+  function downloadTemplate() {
+    window.open('../files/for_import_tasks_excel_template.xlsx', '_blank');
   }
 </script>
