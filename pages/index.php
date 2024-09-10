@@ -27,7 +27,7 @@ include('../include/header.php');
               </div>
             </div>
             <div class="row mt-3">
-              <div class="col"><a href="#" class="btn btn-success btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
+              <div class="col"><a href="#" data-toggle="modal" data-target="#systemInfo" class="btn btn-success btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
           </div>
@@ -537,7 +537,7 @@ include('../include/header.php');
                     </div>
                     <div class="middle-content text-center col-7">
                       <i class="fas fa-user-circle"></i> Project Leader: <?php echo $row['username']; ?><br>
-                      <i class="fas fa-calendar-day fa-fw"></i>Due Date: <?php echo date_format(date_create($row['end']), "F d, Y")?>
+                      <i class="fas fa-calendar-day fa-fw"></i>Due Date: <?php echo date_format(date_create($row['end']), "F d, Y") ?>
                       <hr class="sidebar-divider d-none d-md-block">
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">
@@ -854,7 +854,7 @@ include('../include/header.php');
                     </div>
                     <div class="middle-content text-center col-7">
                       <i class="fas fa-user-circle"></i> Project Leader: <?php echo $row['username']; ?><br>
-                      <i class="fas fa-calendar-day fa-fw"></i>Due Date: <?php echo date_format(date_create($row['end']), "F d, Y")?>
+                      <i class="fas fa-calendar-day fa-fw"></i>Due Date: <?php echo date_format(date_create($row['end']), "F d, Y") ?>
                       <hr class="sidebar-divider d-none d-md-block">
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">
@@ -932,10 +932,61 @@ include('../include/header.php');
   <?php } ?>
 </div>
 
+<div class="modal fade" id="systemInfo" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="exampleModalLongTitle">System Usage</h5>
+      </div>
+      <div class="modal-body text-center">
+        <table class="table table-striped" id="systemTable" width="100%" cellspacing="0">
+          <thead class='table table-primary'>
+            <tr>
+              <th>Table</th>
+              <th>Size</th>
+            </tr>
+          </thead>
+          <tbody id='dataTableBody'>
+            <?php $query_info = mysqli_query($con, "SELECT table_name AS `Table`, (data_length + index_length) AS `Size (Bytes)` FROM information_schema.tables WHERE table_schema = '$db_database' ORDER BY (data_length + index_length) DESC");
+            while ($row = $query_info->fetch_assoc()) { ?>
+              <tr>
+                <td><?php echo htmlspecialchars($row['Table']) ?></td>
+                <td><?php echo htmlspecialchars(formatSize($row['Size (Bytes)'])) ?></td>
+              </tr>
+            <?php } ?>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php include('../include/footer.php'); ?>
 
 <script>
   $(function() {
     $('[data-toggle="tooltip"]').tooltip()
   })
+
+  $('#systemInfo').on('shown.bs.modal', function() {
+    if (!$.fn.DataTable.isDataTable('#systemTable')) {
+      $('#systemTable').DataTable({
+        "paging": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+        "order": [
+          [1, "desc"],
+          [0, "asc"]
+        ],
+        "pageLength": 5,
+        "lengthMenu": [5, 10, 25, 50, 100]
+      });
+    }
+  });
 </script>
