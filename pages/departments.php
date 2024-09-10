@@ -51,7 +51,7 @@
                   }
                   ?>
                   <tr>
-                    <td><button type="button" class="btn btn-info btn-circle" onclick="editDepartment(this)" value="<?php echo $row['id'] ?>" data-id="<?php echo $row['dept_id']?>" data-name="<?php echo $row['dept_name'] ?>" data-status="<?php echo $row['status']?>"><i class="fas fa-pen"></i></button> <button type="button" onclick="deleteDepartmentView(this)" class="btn btn-danger btn-circle" value="<?php echo $row['id'] ?>"><i class="fas fa-trash"></i></button></td>
+                    <td><button type="button" class="btn btn-info btn-block" onclick="editDepartment(this)" value="<?php echo $row['id'] ?>" data-id="<?php echo $row['dept_id']?>" data-name="<?php echo $row['dept_name'] ?>" data-status="<?php echo $row['status']?>"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
                     <td><span class="badge badge-primary"><?php echo $row['dept_id'] ?></span></td>
                     <td><?php echo $row['dept_name'] ?></td>
                     <td><span class="badge badge-primary"><?php echo $total_section ?> Registered</span></td>
