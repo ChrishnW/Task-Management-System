@@ -79,48 +79,61 @@ if (isset($_POST['viewTaskEmp'])) {
   $userID = $_POST['assignee_id'];
   $query_result = mysqli_query($con, "SELECT * FROM tasks WHERE in_charge='$userID'");
   $dataList = [];
-  $counter  = 0;
-  while ($row = mysqli_fetch_assoc($query_result)) {
-    $counter += 1;
-    $task_classes = [
-      1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
-      2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'],
-      3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'],
-      4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'],
-      5 => ['name' => 'PROJECT', 'badge' => 'info'],
-      6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger'],
-    ];
-    if (isset($task_classes[$row['task_class']])) {
-      $class = $task_classes[$row['task_class']]['name'];
-      $badge = $task_classes[$row['task_class']]['badge'];
-    } else {
-      $class = 'Unknown';
-      $badge = 'secondary';
-    }
-    $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
-    if ($row['requirement_status'] == 1) {
-      $requirement  = '<span class="badge badge-primary">File Attachment</span>';
-    } else {
-      $requirement  = '<span class="badge badge-secondary">None</span>';
-    }
-    $id = $row['id'];
-    $action = '
+  $counter  = 0; ?>
+  <table id="viewList" class="table table-striped">
+    <thead class="table-success">
+      <tr>
+        <th>#</th>
+        <th>Task Name</th>
+        <th>Task Class</th>
+        <th>Task Details</th>
+        <th>Condition</th>
+        <th>Due Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="viewTasklist">
+      <?php while ($row = mysqli_fetch_assoc($query_result)) {
+        $counter += 1;
+        $task_classes = [
+          1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
+          2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'],
+          3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'],
+          4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'],
+          5 => ['name' => 'PROJECT', 'badge' => 'info'],
+          6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger'],
+        ];
+        if (isset($task_classes[$row['task_class']])) {
+          $class = $task_classes[$row['task_class']]['name'];
+          $badge = $task_classes[$row['task_class']]['badge'];
+        } else {
+          $class = 'Unknown';
+          $badge = 'secondary';
+        }
+        $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+        if ($row['requirement_status'] == 1) {
+          $requirement  = '<span class="badge badge-primary">File Attachment</span>';
+        } else {
+          $requirement  = '<span class="badge badge-secondary">None</span>';
+        }
+        $id = $row['id'];
+        $action = '
       <button type="button" class="btn btn-danger btn-sm btn-block" onclick="RemoveTaskView(this)" value="' . $id . '"><i class="fas fa-trash fa-fw"></i> Remove</button>
       <button type="button" class="btn btn-info btn-sm btn-block" onclick="EditTaskView(this)" value="' . $id . '" data-name="' . $row['task_name'] . '" data-date="' . $row['submission'] . '" data-condition="' . $row['requirement_status'] . '" data-for="' . $row['in_charge'] . '" data-class="' . $class . '"><i class="fas fa-pencil-alt fa-fw"></i> Edit</button>
-    ';
-    $dataList[] = [
-      'counter' => $counter,
-      'id' => $action,
-      'task_name' => $row['task_name'],
-      'task_class' => $task_class,
-      'task_details' => $row['task_details'],
-      'requirement_status' => $requirement,
-      'due_date' => $row['submission'],
-    ];
-  }
-  mysqli_close($con);
-  echo json_encode($dataList);
-}
+    '; ?>
+        <tr>
+          <td><?php echo $counter ?></td>
+          <td><?php echo $action ?></td>
+          <td><?php echo $row['task_name'] ?></td>
+          <td><?php echo $task_class ?></td>
+          <td id='td-table-shrink'><?php echo $row['task_details'] ?></td>
+          <td><?php echo $requirement ?></td>
+          <td><?php echo $row['submission'] ?></td>
+        </tr>
+<?php } ?>
+</tbody>
+</table>
+<?php }
 if (isset($_POST['editTask'])) {
   $error                = false;
   $editTask_id          = $_POST['edit_task'];
