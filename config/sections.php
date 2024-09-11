@@ -1,21 +1,5 @@
 <?php
 include('../include/auth.php');
-if (isset($_POST['deleteSection'])) {
-  $id       = $_POST['delete_id'];
-  $section  = $_POST['delete_sec'];
-  $query_result = mysqli_query($con, "DELETE FROM `section` WHERE id='$id'");
-  if ($query_result) {
-    $con->next_result();
-    $query_result = mysqli_query($con, "UPDATE `accounts` SET status='0' WHERE sec_id='$section'");
-    if ($query_result) {
-      echo "Success";
-    } else {
-      echo "An unexpected error has occurred while removing the deleted section from each registered account.";
-    }
-  } else {
-    echo "There's a problem that occurred during the process request; please try again.";
-  }
-}
 if (isset($_POST['sectionUpdate'])) {
   $error          = false;
   $sec_id         = $_POST['sec_id'];
