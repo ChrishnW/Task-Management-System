@@ -153,7 +153,7 @@
               <option value="" selected disabled>--Select Department--</option>
               <?php
               $con->next_result();
-              $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1'");
+              $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' ORDER BY dept_name");
               if (mysqli_num_rows($sql) > 0) {
                 while ($row = mysqli_fetch_assoc($sql)) { ?>
                   <option value='<?php echo $row['dept_id'] ?>' data-subtext='Department ID <?php echo $row['dept_id'] ?>'><?php echo $row['dept_name'] ?></option>
@@ -239,42 +239,6 @@
     "pageLength": 5,
     "lengthMenu": [5, 10, 25, 50, 100]
   });
-
-  function deleteSectionView(element){
-    var view_delete_id  = element.value;
-    var view_delete_sec = element.getAttribute('data-section');
-    document.getElementById('delete_id').value  = view_delete_id;
-    document.getElementById('delete_sec').value = view_delete_sec;
-    $('#danger').modal('show');
-  }
-
-  function deleteSection(element){
-    element.disabled = true;
-    var delete_id   = element.value;
-    var delete_sec  = document.getElementById('delete_sec').value; 
-    console.log(delete_id);
-    $.ajax({
-      method: "POST",
-      url: "../config/sections.php",
-      data: {
-        "deleteSection": true,
-        "delete_id": delete_id,
-        "delete_sec": delete_sec,
-      },
-      success: function(response){
-        if (response === "Success"){
-          document.getElementById('success_log').innerHTML = 'The selected section has been deleted successfully.';
-          $('#danger').modal('hide');
-          $('#success').modal('show');
-        }
-        else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#error').modal('show');
-          element.disabled = false;
-        }
-      }
-    })
-  }
 
   function editSection(element) {
     var section_id          = element.value;
