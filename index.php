@@ -38,7 +38,7 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
           <div class="col-lg-6">
             <div class="p-5">
               <div class="text-center">
-                <h1 class="h3 text-white font-weight-bold mb-4">Welcome back!</h1>
+                <h1 class="h4 text-white font-weight-bold mb-4">Task Management System</h1>
               </div>
               <small class="form-text text-danger text-center"><?php echo $error; ?></small>
               <br>
