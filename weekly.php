@@ -14,7 +14,6 @@ while ($row = $query_tasks->fetch_assoc()) {
   $inCharge   = $row['in_charge'];
   $submission = $row['submission'];
   $getFile    = $row['requirement_status'];
-  $taskStatus = 'NOT YET STARTED';
   
   $submission = explode(', ', $row['submission']);
   foreach ($submission as $day) {
@@ -23,6 +22,13 @@ while ($row = $query_tasks->fetch_assoc()) {
     $date = date('Y-m-d', strtotime("$weekStart $day"));
 
     if ($date >= $date_today) {
+      $query_dayoff = mysqli_query($con, "SELECT * FROM day_off WHERE status=1 AND date_off='$date'");
+      $dayoff_count = mysqli_num_rows($query_dayoff);
+      if ($dayoff_count > 0) {
+        $taskStatus = 'RESCHEDULE';
+      } else {
+        $taskStatus = 'NOT YET STARTED';
+      }
       $dueDate          = $date;
       $latestcode       = mysqli_fetch_assoc(mysqli_query($con, "SELECT MAX(task_code) AS latest_task_code FROM tasks_details WHERE task_class='$taskClass' AND task_for='$taskFor'"))['latest_task_code'];
       $numeric_portion  = intval(substr($latestcode, -6)) + 1;
