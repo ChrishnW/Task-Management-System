@@ -104,7 +104,6 @@
         contentType: false,
         processData: false,
         success: function(response) {
-          console.log(response);
           if (response === 'Success') {
             $('#success').modal('show');
           } else {
