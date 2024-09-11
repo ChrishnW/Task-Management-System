@@ -412,7 +412,7 @@ include('../include/header.php');
                       $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
                       $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
 
-                      $action = '<button type="button" class="btn btn-circle btn-warning" value=' . $row['id'] . ' onclick="startTask(this)"><i class="fas fa-eye"></i></button>';
+                      $action = '<button type="button" class="btn btn-circle btn-secondary" value='.$row['id'].' onclick="startTask(this)"><i class="fas fa-question"></i></button>';
 
                       $status_badges = [
                         'NOT YET STARTED' => 'primary',

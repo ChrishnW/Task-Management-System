@@ -98,7 +98,7 @@
       $status     = $_POST['progress'];
       $status     = $statusMap[$status] ?? $status;
 
-      if ($status == 'NOT YET STARTED' || $status == 'IN PROGRESS') {
+      if ($status == 'NOT YET STARTED' || $status == 'IN PROGRESS' || $status == 'RESCHEDULE') {
         $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='$status' AND tasks_details.in_charge='$username' AND DATE(due_date) >= '$date_to' AND DATE(due_date) <= '$date_from'");
       } else {
         $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='$status' AND tasks_details.in_charge='$username' AND DATE(date_accomplished) >= '$date_to' AND DATE(date_accomplished) <= '$date_from'");
@@ -298,6 +298,53 @@
             <td><?php echo $action ?></td>
           </tr>
       <?php }
+      } elseif ($status == 'RESCHEDULE') {
+        while ($row = $query_result->fetch_assoc()) {
+          if (empty($row['file_name'])) {
+            $imageURL = '../assets/img/user-profiles/nologo.png';
+          } else {
+            $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
+          }
+          $current_date = date('Y-m-d');
+          $task_classes = [
+            1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
+            2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'],
+            3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'],
+            4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'],
+            5 => ['name' => 'PROJECT', 'badge' => 'info'],
+            6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']
+          ];
+
+          $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
+          $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
+
+          $action = '<button type="button" class="btn btn-circle btn-secondary" value='.$row['id'].' onclick="startTask(this)"><i class="fas fa-question"></i></button>';
+
+          $status_badges = [
+            'NOT YET STARTED' => 'primary',
+            'IN PROGRESS' => 'warning',
+            'REVIEW' => 'danger',
+            'FINISHED' => 'success',
+            'RESCHEDULE' => 'secondary'
+          ];
+          $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
+
+          $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+          $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
+          $assignee = '<img src=' . $imageURL . ' class="border border-primary img-table-solo">';
+        ?>
+          <tr>
+            <td><?php echo $row['task_code'] ?></td>
+            <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+            <td><?php echo $task_class ?></td>
+            <td><?php echo $due_date ?></td>
+            <td data-toggle="tooltip" data-placement="top" title="<?php echo $row['in_charge'] ?>">
+              <center /><?php echo $assignee ?>
+            </td>
+            <td><?php echo $progress ?></td>
+            <td><?php echo $action ?></td>
+          </tr>
+        <?php }
       }
     }
   }
