@@ -115,6 +115,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
   }
 
   function downloadTemplate() {
+    <?php log_action("Downloaded task import template file."); ?>
     window.open('../files/for_import_tasks_excel_template.xlsx', '_blank');
   }
 
