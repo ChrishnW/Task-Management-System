@@ -60,7 +60,7 @@
         <p id="error_found"></p>
       </div>
       <div class="modal-footer">
-        <button type="button"  class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" onclick="location.reload();">Close</button>
       </div>
     </div>
   </div>
@@ -90,28 +90,38 @@
     element.disabled = true;
     var formData = new FormData();
     var fileInput = document.getElementById('UploadedFile');
-    formData.append('file', fileInput.files[0]);
-    formData.append('taskImport', true);
-
-    $.ajax({
-      type: 'POST',
-      url: "../config/import.php",
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function(response) {
-        console.log('File uploaded successfully:', response);
-        if (response === 'Duplicated') {
-          $('#exists').modal('show');
+    if (fileInput.files.length === 0) {
+      element.disabled = false;
+      document.getElementById('error_found').innerHTML = 'No Excel file selected.';
+      $('#error').modal('show');
+    } else {
+      formData.append('file', fileInput.files[0]);
+      formData.append('taskImport', true);
+      $.ajax({
+        type: 'POST',
+        url: "../config/import.php",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+          console.log(response);
+          if (response === 'Success') {
+            $('#success').modal('show');
+          } else {
+            element.disabled = false;
+            document.getElementById('error_found').innerHTML = response;
+            $('#error').modal('show');
+          }
         }
-        else if (response === 'Success') {
-          $('#success').modal('show');
-        }
-      }
-    });
+      });
+    }
   }
 
   function downloadTemplate() {
     window.open('../files/for_import_tasks_excel_template.xlsx', '_blank');
+  }
+
+  function generateReport() {
+    window.open('../config/import.php?importReport=true');
   }
 </script>
