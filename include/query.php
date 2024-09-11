@@ -1,4 +1,5 @@
 <?php
+  date_default_timezone_set('Asia/Manila');
   // Account Profile Picture
   $con->next_result();
   $query_result = mysqli_query($con, "SELECT *, department.dept_name FROM accounts JOIN section ON section.sec_id=accounts.sec_id JOIN department ON department.dept_id=section.dept_id WHERE accounts.username='$username'");
