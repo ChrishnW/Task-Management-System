@@ -7,8 +7,9 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 if (isset($_POST['taskImport'])) {
   $fileName     = $_FILES['file']['name'];
+  log_action("Performed bulk import of tasks using Excel file {$fileName}.");
   $file_ext     = pathinfo($fileName, PATHINFO_EXTENSION);
-  $allowed_ext  = ['xls', 'xlsx'];
+  $allowed_ext  = ['xlsx'];
   if (in_array($file_ext, $allowed_ext)) {
     $filePath     = $_FILES['file']['tmp_name'];
     $spreadsheet  = \PhpOffice\PhpSpreadsheet\IOFactory::load($filePath);
@@ -112,7 +113,7 @@ if (isset($_POST['taskImport'])) {
       }
     }
   } else {
-    die("Unsupported file extension. Please select .xls or .xlsx files only.");
+    die("Unsupported file extension. Please select .xlsx files only.");
   }
 }
 
