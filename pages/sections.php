@@ -164,9 +164,13 @@
         </div>
         <div class="form-group">
           <label>Status:</label>
-          <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="sec_status_check" name="sec_status_check">
-            <label class="custom-control-label" for="sec_status_check" id="status_text">Active</label>
+          <div class="input-group mb-2">
+            <label class="toggle-switchy" for="sec_status_check" data-size="lg">
+              <input checked type="checkbox" id="sec_status_check" name="sec_status_check">
+              <span class="toggle">
+                <span class="switch"></span>
+              </span>
+            </label>
           </div>
         </div>
       </div>
@@ -251,10 +255,9 @@
     $(document).ready(function() {
       if (section_status === '1'){
         document.getElementById('sec_status_check').checked = true;
-        status_check.textContent  = 'Active';
       }
       else{
-        status_check.textContent  = 'Inactive';
+        document.getElementById('sec_status_check').checked = false;
       }
       document.getElementById('section_id').value         = section_id;
       document.getElementById('section_code').value       = section_code;
