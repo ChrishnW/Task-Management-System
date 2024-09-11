@@ -111,8 +111,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
         <button type="button" onclick="sectionCreate(this)" class="btn btn-primary">Register</button>
+        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -171,8 +171,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
         <button type="button" onclick="sectionUpdate(this)" class="btn btn-primary" id="section_id">Update</button>
+        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -190,8 +190,8 @@
         You're about to delete this section, <br> do you still want to proceed?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         <button type="button" onclick="deleteSection(this)" class="btn btn-primary" id="delete_id">Proceed</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
