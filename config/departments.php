@@ -28,22 +28,23 @@
     $dept_code    = $_POST['dept_code'];
     $dept_oldcode = $_POST['dept_oldcode'];
     $dept_status  = $_POST['dept_status'];
+    $statusFlag     = false;
     if ($dept_id === '' || $dept_name === '') {
       $error = true;
       echo "Empty field has been detected! Please try again.";
     }
     if(!$error) {
-      $query_result = mysqli_query($con, "UPDATE department SET dept_id='$dept_code', dept_name='$dept_name', status='$dept_status' WHERE id='$dept_id'");
-      if ($query_result) {
-        $con->next_result();
-        $query_result = mysqli_query($con, "UPDATE section SET dept_id='$dept_code', status='$dept_status' WHERE dept_id='$dept_oldcode'");
-        if ($query_result) {
-          echo "Success";
+      $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM department WHERE id='$dept_id'"));
+      if ($row['dept_name'] !== $dept_name) {
+        log_action("Updated Department Name from {$row['dept_name']} to {$dept_name}.");
+      }
+      if ($row['status'] !== $dept_status) {
+        $statusFlag = true;
+        if ($dept_status == 1) {
+          log_action("Updated Department Status of {$dept_name} from Inactive to Active.");
         } else {
-          echo "Failed to update the department section's information, please try again.";
+          log_action("Updated Department Status of {$dept_name} from Active to Inactive.");
         }
-      } else {
-        echo "Failed to update the department information, please try again.";
       }
     }
   }
