@@ -107,15 +107,17 @@ if (isset($_POST['taskImport'])) {
         }
       }
       if ($success) {
-        echo "Success";
+        log_action("Bulk tasks imported successfully.");
+        die("Success");
       }
     }
   } else {
-    echo "Unsupported file extension. Please select .xls or .xlsx files only.";
+    die("Unsupported file extension. Please select .xls or .xlsx files only.");
   }
 }
 
 if (isset($_GET['importReport'])) {
+  log_action("Downloaded generated report for failed bulk import.");
   header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
   header("Content-Disposition: attachment; filename=Task-Import-Report.xls");
   header("Expires: 0");
