@@ -81,7 +81,7 @@ if (isset($_POST['taskImport'])) {
       die("There's a problem deploying tasks!<br>Download the error report <span onclick='generateReport()' style='cursor: pointer;'><font color='red'>here</font>.</span>");
     } else {
       $success = true;
-      $query_fetch = mysqli_query($con, "SELECT * FROM task_temp WHERE status='CLEAR'");
+      $query_fetch = mysqli_query($con, "SELECT * FROM task_temp WHERE status='CLEAR' ORDER BY task_name ASC");
       while ($row = mysqli_fetch_assoc($query_fetch)) {
         $task_name    = $row['task_name'];
         $task_class   = $row['task_class'];
