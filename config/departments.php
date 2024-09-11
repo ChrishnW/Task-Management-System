@@ -21,13 +21,6 @@
       }
     }
   }
-  if (isset($_POST['deleteDepartment'])) {
-    $id = $_POST['delete_id'];
-    $query_result = mysqli_query($con, "DELETE FROM `department` WHERE id='$id'");
-    if ($query_result) {
-      echo "Success";
-    }
-  }
   if (isset($_POST['deparmentUpdate'])) {
     $error        = false;
     $dept_id      = $_POST['dept_id'];
