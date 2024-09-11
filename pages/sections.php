@@ -78,7 +78,7 @@
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
             </div>
-            <input type="text" id="register_section_code" class="form-control">
+            <input type="text" id="register_section_code" class="form-control" placeholder="Example: INFOSEC">
           </div>
         </div>
         <div class="form-group">
@@ -87,7 +87,7 @@
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-users"></i></div>
             </div>
-            <input type="text" id="register_section_name" class="form-control">
+            <input type="text" id="register_section_name" class="form-control" placeholder="Example: Infomation Security">
           </div>
         </div>
         <div class="form-group">
@@ -96,7 +96,7 @@
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-warehouse"></i></div>
             </div>
-            <select name="section_department" id="register_section_department" class="form-control selectpicker" data-live-search="true">
+            <select name="section_department" id="register_section_department" class="form-control selectpicker" data-live-search="true" data-dropup-auto="false">
               <option value="" selected disabled>--Select Department--</option>
               <?php
               $con->next_result();
