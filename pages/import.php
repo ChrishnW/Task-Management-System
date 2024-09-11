@@ -15,7 +15,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           <form method="POST">
             <input type="file" class="form-control-file" id="UploadedFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" required />
             <br>
-            <a onclick="downloadTemplate()" class="pull-left">Download Excel Template For Import</a>
+            <a onclick="downloadTemplate()" class="pull-left" style='cursor: pointer;'>Download Excel Template For Import</a>
             <br>
             <button type="button" onclick="uploadFile(this)" id="import_tasks" class="btn btn-success mt-3"><i class="fas fa-fw fa-file-import"></i> Import</button>
           </form>
@@ -115,7 +115,6 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
   }
 
   function downloadTemplate() {
-    <?php log_action("Downloaded task import template file."); ?>
     window.open('../files/for_import_tasks_excel_template.xlsx', '_blank');
   }
 
