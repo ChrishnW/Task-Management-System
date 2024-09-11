@@ -1,9 +1,9 @@
-<?php 
-  include('../include/header.php');
+<?php
+include('../include/header.php');
 ?>
 
 <div class="container-fluid">
-  <?php if($access == 1) { ?>
+  <?php if ($access == 1) { ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
         <h6 class="m-0 font-weight-bold text-white">Registered Department</h6>
@@ -38,20 +38,19 @@
               <?php $con->next_result();
               $result = mysqli_query($con, "SELECT * FROM department");
               if (mysqli_num_rows($result) > 0) {
-                while ($row = $result->fetch_assoc()) { 
+                while ($row = $result->fetch_assoc()) {
                   $dept_id  = $row['dept_id'];
                   $count_section = mysqli_query($con, "SELECT COUNT(id) as total_section FROM section WHERE dept_id='$dept_id'");
                   $count_section_row = $count_section->fetch_assoc();
                   $total_section = $count_section_row['total_section'];
-                  if ($row['status'] == 1){
+                  if ($row['status'] == 1) {
                     $status = "<span class='badge badge-success'>Active</span>";
-                  }
-                  else{
+                  } else {
                     $status = "<span class='badge badge-danger'>Inactive</span>";
                   }
-                  ?>
+              ?>
                   <tr>
-                    <td><button type="button" class="btn btn-info btn-block" onclick="editDepartment(this)" value="<?php echo $row['id'] ?>" data-id="<?php echo $row['dept_id']?>" data-name="<?php echo $row['dept_name'] ?>" data-status="<?php echo $row['status']?>"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
+                    <td><button type="button" class="btn btn-info btn-block" onclick="editDepartment(this)" value="<?php echo $row['id'] ?>" data-id="<?php echo $row['dept_id'] ?>" data-name="<?php echo $row['dept_name'] ?>" data-status="<?php echo $row['status'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
                     <td><span class="badge badge-primary"><?php echo $row['dept_id'] ?></span></td>
                     <td><?php echo $row['dept_name'] ?></td>
                     <td><span class="badge badge-primary"><?php echo $total_section ?> Registered</span></td>
@@ -64,9 +63,9 @@
         </div>
       </div>
     </div>
-  <?php } elseif($access == 2) { ?>
-  <?php } elseif($access == 3) { ?>
-  
+  <?php } elseif ($access == 2) { ?>
+  <?php } elseif ($access == 3) { ?>
+
   <?php } ?>
 </div>
 
@@ -132,9 +131,13 @@
         </div>
         <div class="form-group">
           <label>Status:</label>
-          <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="dept_status_check" name="dept_status_check">
-            <label class="custom-control-label" for="dept_status_check" id="status_text">Active</label>
+          <div class="input-group mb-2">
+            <label class="toggle-switchy" for="dept_status_check" data-size="lg">
+              <input checked type="checkbox" id="dept_status_check" name="dept_status_check">
+              <span class="toggle">
+                <span class="switch"></span>
+              </span>
+            </label>
           </div>
         </div>
       </div>
@@ -203,19 +206,21 @@
 
 <script>
   $('#dataTable').DataTable({
-    "order": [[2, "asc"]],
+    "order": [
+      [2, "asc"]
+    ],
     "pageLength": 5,
     "lengthMenu": [5, 10, 25, 50, 100]
   });
 
-  function showCreate(element){
+  function showCreate(element) {
     $('#createDepartment').modal('show');
   }
 
-  function deparmentCreate(element){
+  function deparmentCreate(element) {
     element.disabled = true;
-    var regdept_name  = document.getElementById('register_department_name').value;
-    var regdept_code  = document.getElementById('register_department_code').value;
+    var regdept_name = document.getElementById('register_department_name').value;
+    var regdept_code = document.getElementById('register_department_code').value;
     $.ajax({
       method: "POST",
       url: "../config/departments.php",
@@ -224,14 +229,13 @@
         "regdept_name": regdept_name,
         "regdept_code": regdept_code,
       },
-      success: function(response){
-      console.log(response);
-        if (response === "Success"){
+      success: function(response) {
+        console.log(response);
+        if (response === "Success") {
           document.getElementById('success_log').innerHTML = regdept_name + ' has been created successfully.';
           $('#createDepartment').modal('hide');
           $('#success').modal('show');
-        }
-        else {
+        } else {
           document.getElementById('error_found').innerHTML = response;
           $('#error').modal('show');
           element.disabled = false;
@@ -240,13 +244,13 @@
     })
   }
 
-  function deleteDepartmentView(element){
-    var view_delete_id  = element.value;
+  function deleteDepartmentView(element) {
+    var view_delete_id = element.value;
     document.getElementById('delete_id').value = view_delete_id;
     $('#danger').modal('show');
   }
 
-  function deleteDepartment(element){
+  function deleteDepartment(element) {
     element.disabled = true;
     var delete_id = element.value;
     $.ajax({
@@ -267,38 +271,35 @@
   }
 
   function editDepartment(element) {
-    var department_id     = element.value;
-    var department_code   = element.getAttribute('data-id');
-    var department_name   = element.getAttribute('data-name');
+    var department_id = element.value;
+    var department_code = element.getAttribute('data-id');
+    var department_name = element.getAttribute('data-name');
     var department_status = element.getAttribute('data-status');
-    var status_check      = document.getElementById('status_text');
+    var status_check = document.getElementById('status_text');
     $(document).ready(function() {
-      if (department_status === '1'){
+      if (department_status === '1') {
         document.getElementById('dept_status_check').checked = true;
-        status_check.textContent  = 'Active';
+      } else {
+        document.getElementById('dept_status_check').checked = false;
       }
-      else{
-        status_check.textContent  = 'Inactive';
-      }
-      document.getElementById('department_id').value      = department_id;
-      document.getElementById('department_code').value    = department_code;
+      document.getElementById('department_id').value = department_id;
+      document.getElementById('department_code').value = department_code;
       document.getElementById('department_oldcode').value = department_code;
-      document.getElementById('department_name').value    = department_name;
+      document.getElementById('department_name').value = department_name;
       $('#editDepartment').modal('show');
     })
   }
 
   function deparmentUpdate(element) {
     element.disabled = true;
-    var dept_id           = element.value;
-    var dept_code         = document.getElementById('department_code').value;
-    var dept_oldcode      = document.getElementById('department_oldcode').value;
-    var dept_name         = document.getElementById('department_name').value;
+    var dept_id = element.value;
+    var dept_code = document.getElementById('department_code').value;
+    var dept_oldcode = document.getElementById('department_oldcode').value;
+    var dept_name = document.getElementById('department_name').value;
     var dept_status_check = document.getElementById('dept_status_check');
-    if (dept_status_check.checked){
+    if (dept_status_check.checked) {
       var dept_status = '1';
-    }
-    else {
+    } else {
       var dept_status = '0';
     }
     $.ajax({
@@ -317,8 +318,7 @@
           document.getElementById('success_log').innerHTML = dept_name + ' information has been updated successfully.';
           $('#editDepartment').modal('hide');
           $('#success').modal('show');
-        }
-        else {
+        } else {
           document.getElementById('error_found').innerHTML = response;
           $('#error').modal('show');
           element.disabled = false;

@@ -22,6 +22,7 @@
   <!-- Custom styles for this page -->
   <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../vendor/snapappointments/bootstrap-select/dist/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="../assets/css/toggle-switchy.css">
   <link rel="stylesheet" href="../assets/css/style.css">
 
   <!-- Custome scripts for this page -->

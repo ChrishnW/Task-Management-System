@@ -34,7 +34,7 @@
       echo "Empty field has been detected! Please try again.";
     }
     if(!$error) {
-      $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM department WHERE id='$dept_id'"));
+      $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM department WHERE dept_id='$dept_id'"));
       if ($row['dept_name'] !== $dept_name) {
         log_action("Updated Department Name from {$row['dept_name']} to {$dept_name}.");
       }
@@ -45,6 +45,14 @@
         } else {
           log_action("Updated Department Status of {$dept_name} from Active to Inactive.");
         }
+      }
+      $update_query = mysqli_query($con, "UPDATE department SET `dept_name`='$dept_name', `status`='$dept_status' WHERE id='$dept_id'");
+      if ($statusFlag) {
+        $updateQuery  = "UPDATE accounts JOIN section ON section.sec_id = accounts.sec_id SET accounts.status='$dept_status' WHERE section.dept_id='$dept_code' AND accounts.username!='ADMIN'; UPDATE section SET status='$dept_status' WHERE dept_id='$dept_code'";
+        $updateStatus = mysqli_multi_query($con, $updateQuery);
+      }
+      if ($update_query) {
+        echo "Success";
       }
     }
   }
