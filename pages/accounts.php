@@ -163,22 +163,7 @@ include('../include/header.php');
           <input type="hidden" name="viewTableID" id="viewTableID">
         </div>
       </div>
-      <div class="modal-body">
-        <table id="viewList" class="table table-striped">
-          <thead class="table-success">
-            <tr>
-              <th>#</th>
-              <th>Task Name</th>
-              <th>Task Class</th>
-              <th>Task Details</th>
-              <th>Condition</th>
-              <th>Due Date</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="viewTasklist">
-          </tbody>
-        </table>
+      <div class="modal-body" id="viewAssignedTaskTable">
       </div>
       <div class="modal-footer">
         <button type="button" id="destroyTable" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -835,6 +820,7 @@ include('../include/header.php');
   }
 
   function checkTasks(element) {
+    element.disabled = true;
     var assignee_id = element.value;
     // console.log(assignee_view);
     $.ajax({
@@ -845,40 +831,16 @@ include('../include/header.php');
         "assignee_id": assignee_id,
       },
       success: function(response) {
-        var listData = JSON.parse(response);
-        populateDataTable(listData);
-        document.getElementById('viewTableID').value = assignee_id;
-        $('#viewTable').modal('show');
+        $('#viewAssignedTaskTable').html(response);
+        $('#viewList').DataTable({
+          "pageLength": 5,
+          "lengthMenu": [5, 10, 25, 50, 100],
+          "responsive": true
+        });
+        openSpecificModal('viewTable', 'modal-xl');
         element.disabled = false;
       }
     })
-  }
-
-  function populateDataTable(listData) {
-    var table = document.getElementById('viewTasklist');
-    table.innerHTML = '';
-    listData.forEach(task => {
-      table.innerHTML += `
-      <tr>
-        <td> ${task.counter} </td>
-        <td> ${task.task_name} </td>
-        <td> ${task.task_class} </td>
-        <td id='td-table-shrink'> ${task.task_details} </td>
-        <td> ${task.requirement_status} </td>
-        <td> ${task.due_date} </td>
-        <td> ${task.id} </td>
-      </tr>`;
-    });
-    $(document).ready(function() {
-      var dataTable = $('#viewList').DataTable({
-        "pageLength": 5,
-        "lengthMenu": [5, 10, 25, 50, 100],
-        "responsive": true
-      });
-      $('#destroyTable').on('click', function() {
-        dataTable.destroy();
-      });
-    });
   }
 
   function taskDownload() {
