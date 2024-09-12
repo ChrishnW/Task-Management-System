@@ -186,16 +186,21 @@ include('../include/header.php');
             if (mysqli_num_rows($query_result) > 0) {
               while ($row = $query_result->fetch_assoc()) {
                 $currentDate = new DateTime();
-                $dueDateTime = new DateTime($row['due_date']);
-                $interval = $currentDate->diff($dueDateTime);
-                if ($interval->days > 0) {
-                  $remainingTime = $interval->format('%a days');
-                } elseif ($interval->h > 0) {
-                  $remainingTime = $interval->format('%h hours');
+                $dueDate     = new DateTime($row['due_date']);
+                $interval    = $currentDate->diff($dueDate);
+                if ($currentDate < $dueDate) {
+                  if ($interval->days > 0 && $interval->days >= 1) {
+                    $remainingTime = $interval->days . ' days remaining';
+                  } elseif ($interval->days == 0) {
+                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes remaining';
+                  }
                 } else {
-                  $remainingTime = $interval->format('%i minutes');
+                  if ($interval->days > 0 && $interval->days >= 1) {
+                    $remainingTime = $interval->days . ' days overdue';
+                  } elseif ($interval->days == 0) {
+                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes overdue';
+                  }
                 }
-
                 $border         = array('primary', 'danger', 'info', 'success');
                 $randomBorder   = array_rand($border);
                 $selectBorder   = $border[$randomBorder];
@@ -478,14 +483,20 @@ include('../include/header.php');
             if (mysqli_num_rows($query_result) > 0) {
               while ($row = $query_result->fetch_assoc()) {
                 $currentDate = new DateTime();
-                $dueDateTime = new DateTime($row['due_date']);
-                $interval = $currentDate->diff($dueDateTime);
-                if ($interval->days > 0) {
-                  $remainingTime = $interval->format('%a days');
-                } elseif ($interval->h > 0) {
-                  $remainingTime = $interval->format('%h hours');
+                $dueDate     = new DateTime($row['due_date']);
+                $interval    = $currentDate->diff($dueDate);
+                if ($currentDate < $dueDate) {
+                  if ($interval->days > 0 && $interval->days >= 1) {
+                    $remainingTime = $interval->days . ' days remaining';
+                  } elseif ($interval->days == 0) {
+                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes remaining';
+                  }
                 } else {
-                  $remainingTime = $interval->format('%i minutes');
+                  if ($interval->days > 0 && $interval->days >= 1) {
+                    $remainingTime = $interval->days . ' days overdue';
+                  } elseif ($interval->days == 0) {
+                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes overdue';
+                  }
                 }
 
                 $border         = array('primary', 'danger', 'info', 'success');
@@ -795,16 +806,21 @@ include('../include/header.php');
             if (mysqli_num_rows($query_result) > 0) {
               while ($row = $query_result->fetch_assoc()) {
                 $currentDate = new DateTime();
-                $dueDateTime = new DateTime($row['due_date']);
-                $interval = $currentDate->diff($dueDateTime);
-                if ($interval->days > 0) {
-                  $remainingTime = $interval->format('%a days');
-                } elseif ($interval->h > 0) {
-                  $remainingTime = $interval->format('%h hours');
+                $dueDate     = new DateTime($row['due_date']);
+                $interval    = $currentDate->diff($dueDate);
+                if ($currentDate < $dueDate) {
+                  if ($interval->days > 0 && $interval->days >= 1) {
+                    $remainingTime = $interval->days . ' days remaining';
+                  } elseif ($interval->days == 0) {
+                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes remaining';
+                  }
                 } else {
-                  $remainingTime = $interval->format('%i minutes');
+                  if ($interval->days > 0 && $interval->days >= 1) {
+                    $remainingTime = $interval->days . ' days overdue';
+                  } elseif ($interval->days == 0) {
+                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes overdue';
+                  }
                 }
-
                 $border         = array('primary', 'danger', 'info', 'success');
                 $randomBorder   = array_rand($border);
                 $selectBorder   = $border[$randomBorder];
