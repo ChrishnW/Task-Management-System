@@ -412,7 +412,7 @@ include('../include/header.php');
                       $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
                       $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
 
-                      $action = '<button type="button" class="btn btn-circle btn-secondary" value='.$row['id'].' onclick="startTask(this)"><i class="fas fa-question"></i></button>';
+                      $action = '<button type="button" class="btn btn-circle btn-secondary" value='.$row['id'].' onclick="rescheduleTask(this)"><i class="fas fa-question"></i></button>';
 
                       $status_badges = [
                         'NOT YET STARTED' => 'primary',
@@ -574,6 +574,26 @@ include('../include/header.php');
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal" id="confirmButton">Confirm</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="resched" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content border-secondary">
+      <div class="modal-header bg-secondary text-white">
+        <h5 class="modal-title" id="exampleModalLongTitle">Reschedule Task</h5>
+      </div>
+      <div class="modal-body text-center">
+        <input type="hidden" id="taskID">
+        <i class="fas fa-flag fa-5x text-secondary"></i>
+        <br><br>
+        This task is past due or has a conflict with its due date.<br>
+        Do you want to request a reschedule?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal" id="requestButton" disabled>Request</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -823,6 +843,34 @@ include('../include/header.php');
         }
       }
     });
+  }
+
+  function rescheduleTask(element) {
+    let id = element.value;
+    $('#taskID').val(id);
+    $('#resched').modal('show');
+
+    // $('#requestButton').off('click').on('click', function() {
+    //   var taskId = $('#taskID').val();
+    //   $.ajax({
+    //     url: '../config/tasks.php',
+    //     method: 'POST',
+    //     data: {
+    //       "rescheduleTask": true,
+    //       "id": id
+    //     },
+    //     success: function(response) {
+    //       if (response === 'Success') {
+    //         document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+    //         $('#start').modal('hide');
+    //         $('#success').modal('show');
+    //       } else {
+    //         document.getElementById('error_found').innerHTML = response;
+    //         $('#error').modal('show');
+    //       }
+    //     },
+    //   });
+    // });
   }
 
   function startTask(element) {
