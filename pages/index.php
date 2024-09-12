@@ -802,7 +802,7 @@ include('../include/header.php');
             <?php
             $con->next_result();
             $today = date('Y-m-d 16:00:00');
-            $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE task_status=1 AND in_charge='$username' AND due_date!='$today' AND status='NOT YET STARTED' ORDER BY due_date ASC");
+            $query_result = mysqli_query($con, "SELECT td.*, s.dept_id, s.dept_id, CONCAT(ac.fname,' ',ac.lname) AS Mname FROM tasks_details td JOIN section s ON s.sec_id = td.task_for JOIN accounts ac ON td.in_charge = ac.username WHERE td.task_status=1 AND s.dept_id='$dept_id' AND td.due_date!='$today' AND td.status='NOT YET STARTED' ORDER BY td.due_date ASC");
             if (mysqli_num_rows($query_result) > 0) {
               while ($row = $query_result->fetch_assoc()) {
                 $currentDate = new DateTime();
@@ -836,9 +836,10 @@ include('../include/header.php');
                     <div class="middle-content text-center">
                       <div class="font-weight-bold display-7"><?php echo $row['task_name'] ?></div>
                       <div class="text-<?php echo $selectBorder ?> font-weight-bold">Monthly Report</div>
+                      <?php echo $row['Mname']; ?>
                     </div>
                     <div class="right-content text-center">
-                      <i class="far fa-clock fa-spin display-5"></i>
+                      <i class="far fa-clock display-5"></i>
                       <h6 class="font-weight-bold text-<?php echo $selectBorder ?>"><?php echo $remainingTime ?></h6>
                     </div>
                   </div>
