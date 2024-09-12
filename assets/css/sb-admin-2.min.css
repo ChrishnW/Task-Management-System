@@ -12102,7 +12102,7 @@ a:focus {
 }
 
 .bg-login-image {
-  background         : url(../img/illustrations/Index-Logo.gif);
+  background         : url(../img/Logo.png);
   background-position: center;
   background-size    :contain;
   background-repeat  : no-repeat;
