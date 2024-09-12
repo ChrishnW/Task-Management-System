@@ -775,22 +775,22 @@ include('../include/header.php');
 
     if (task_class === '1') {
       dueDateContainer.innerHTML = `
-    <div class="input-group-prepend">
-      <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
-    </div>
-    <input type="text" id="assignDue" name="assignDue" class="form-control" value="Weekdays" readonly>`;
+      <div class="input-group-prepend">
+        <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+      </div>
+      <input type="text" id="assignDue" name="assignDue" class="form-control" value="Weekdays" readonly>`;
     } else if (task_class === '2') {
       dueDateContainer.innerHTML = `
-    <div class="input-group-prepend">
-      <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
-    </div>
-    <select class="form-control selectpicker show-tick" data-style="border-secondary" data-actions-box="true" name="assignDue[]" id="assignDue" title="--Select a Day--" multiple>
-      <option value="Monday">Monday</option>
-      <option value="Tuesday">Tuesday</option>
-      <option value="Wednesday">Wednesday</option>
-      <option value="Thursday">Thursday</option>
-      <option value="Friday">Friday</option>
-    </select>`;
+      <div class="input-group-prepend">
+        <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+      </div>
+      <select class="form-control selectpicker show-tick" data-style="border-secondary" data-actions-box="true" name="assignDue[]" id="assignDue" title="--Select a Day--" multiple>
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+      </select>`;
       $('.selectpicker').selectpicker('refresh');
     } else if (task_class === '3' || task_class === '6') {
       let options = '';
@@ -798,10 +798,10 @@ include('../include/header.php');
         options += `<option value="Day ${i} of the Month">Day ${i} of the Month</option>`;
       }
       dueDateContainer.innerHTML = `
-    <div class="input-group-prepend">
-      <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
-    </div>
-    <select class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" title="--Select a Date--" name="assignDue" id="assignDue">${options}</select>`;
+      <div class="input-group-prepend">
+        <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+      </div>
+      <select class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" title="--Select a Date--" name="assignDue" id="assignDue">${options}</select>`;
       $('.selectpicker').selectpicker('refresh');
     }
   }
