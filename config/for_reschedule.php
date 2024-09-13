@@ -34,32 +34,42 @@ if (isset($_POST['approveTask'])) {
 
 if (isset($_POST['viewTask'])) {
   $id = $_POST['taskID'];
-  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name WHERE tasks_details.id='$id'");
-  while ($row = mysqli_fetch_assoc($query_result)) {
-    $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
-    $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
-    $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
-    $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a");
-    $dueDated           = new DateTime($row['due_date']);
-    $finDated           = new DateTime($row['date_accomplished']); ?>
-    <form id="submitDetails" enctype="multipart/form-data">
-      <input type="hidden" id="reschedID" value="<?php echo $row['']; ?>">
-      <label for="">Request Due Date:</label>
-      <div class="input-group mb-2">
-        <div class="input-group-prepend">
-          <div class="input-group-text"><i class="fas fa-calendar"></i></div>
-        </div>
-        <input type="date" id="resched_date" name="resched_date" class="form-control" value="<?php echo date('Y-m-d', strtotime($row['old_date'])); ?>">
+  $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name WHERE tasks_details.id='$id'")); ?>
+  <form id="submitDetails" enctype="multipart/form-data">
+    <input type="hidden" id="reschedID" value="<?php echo $row['id']; ?>">
+    <label for="">Assignee:</label>
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><i class="fas fa-user"></i></div>
       </div>
-      <label for="">Reason:</label>
-      <div class="input-group mb-2">
-        <div class="input-group-prepend">
-          <div class="input-group-text"><i class="fas fa-comment"></i></div>
-        </div>
-        <textarea name="resched_reason" id="resched_reason" class="form-control" placeholder="Please write your reason for rescheduling here."><?php echo $row['reason']; ?></textarea>
+      <input type="text" id="resched_user" name="resched_user" class="form-control" value="<?php echo ucwords(strtolower($row['Mname'])); ?>" readonly>
+    </div>
+    <label for="">Task Name:</label>
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><i class="fas fa-tasks"></i></div>
       </div>
-    </form>
-    <?php }
+      <input type="text" id="resched_taskName" name="resched_taskName" class="form-control" value="<?php echo $row['task_name']; ?>" readonly>
+    </div>
+    <label for="">Requested Due Date:</label>
+    <?php if (new DateTime(date('Y-m-d H:i:s')) > new DateTime($row['old_date'])) {
+      echo '<br><small class="text-danger font-italic">The requested date is already in the past. Please choose a new date.</small>';
+    } ?>
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+      </div>
+      <input type="date" id="resched_date" name="resched_date" class="form-control" value="<?php echo date('Y-m-d', strtotime($row['old_date'])); ?>">
+    </div>
+    <label for="">Reason:</label>
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><i class="fas fa-comment"></i></div>
+      </div>
+      <textarea name="resched_reason" id="resched_reason" class="form-control" placeholder="Please write your reason for rescheduling here." readonly><?php echo $row['reason']; ?></textarea>
+    </div>
+  </form>
+  <?php
 }
 
 if (isset($_POST['approveMultiple'])) {
