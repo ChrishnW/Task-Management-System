@@ -24,7 +24,7 @@ include('../include/header.php');
     </div>
   </div>
   <div class="card">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-secondary">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
       <h6 class="m-0 font-weight-bold text-white">Rescheduling Tasks</h6>
       <div class="dropdown no-arrow">
         <button type="button" class="btn btn-success btn-sm" id="approveButton" onclick="approveIDs(this)" style="display: none;">
@@ -35,7 +35,7 @@ include('../include/header.php');
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
-          <thead class='table table-secondary'>
+          <thead class='table table-primary'>
             <tr>
               <th class="col-auto"><input type="checkbox" id='selectAll' class="form-control"></th>
               <th class="col-auto">Action</th>
@@ -53,16 +53,15 @@ include('../include/header.php');
               $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
               return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
             }
-            $result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id = '$dept_id'");
+            $result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='RESCHEDULE' AND section.dept_id = '$dept_id'");
             if (mysqli_num_rows($result) > 0) {
               while ($row = $result->fetch_assoc()) {
                 $due_date = date_format(date_create($row['due_date']), "Y-m-d");
                 $old_date = date_format(date_create($row['old_date']), "Y-m-d");
                 $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
-                ?>
                 <tr>
                   <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
-                  <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
+                  <td><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
                   <td><?php echo $row['task_code'] ?></td>
                   <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                   <td><?php echo getTaskClass($row['task_class']); ?></td>
@@ -99,9 +98,9 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="review" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
-    <div class="modal-content border-success">
-      <div class="modal-header bg-success text-white">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-primary">
+      <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">Review Task</h5>
       </div>
       <div class="modal-body" id="taskDetails">
@@ -272,11 +271,6 @@ include('../include/header.php');
         }
       })
     })
-  }
-
-  function downloadFile(element) {
-    var id = element.value;
-    window.location.href = '../config/tasks.php?downloadFile=true&id=' + id;
   }
 
   function approveIDs(element) {
