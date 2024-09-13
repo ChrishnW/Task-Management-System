@@ -512,7 +512,7 @@ include('../include/header.php');
           <label for="">Reason:</label>
           <div class="input-group mb-2">
             <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+              <div class="input-group-text"><i class="fas fa-comment"></i></div>
             </div>
             <textarea name="resched_reason" id="resched_reason" class="form-control" placeholder="Please write your reason for rescheduling here."></textarea>
           </div>
