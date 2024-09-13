@@ -37,7 +37,6 @@ include('../include/header.php');
         <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
           <thead class='table table-primary'>
             <tr>
-              <th class="col-auto"><input type="checkbox" id='selectAll' class="form-control"></th>
               <th class="col-auto">Action</th>
               <th class="col-auto">Code</th>
               <th class="col-auto">Title</th>
@@ -60,7 +59,6 @@ include('../include/header.php');
                 $old_date = date_format(date_create($row['old_date']), "Y-m-d");
                 $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
                 <tr>
-                  <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
                   <td><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
                   <td><?php echo $row['task_code'] ?></td>
                   <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
@@ -170,8 +168,8 @@ include('../include/header.php');
 <script>
   $('#dataTable').DataTable({
     "order": [
-      [6, "desc"],
-      [3, "asc"]
+      [5, "desc"],
+      [2, "asc"]
     ],
     "pageLength": 10,
     "lengthMenu": [10, 25, 50, 100],
@@ -209,7 +207,7 @@ include('../include/header.php');
         $('#dataTable').DataTable({
           "order": [
             [5, "desc"],
-            [3, "asc"]
+            [2, "asc"]
           ],
           "pageLength": 5,
           "lengthMenu": [5, 10, 25, 50, 100],
@@ -271,60 +269,4 @@ include('../include/header.php');
       })
     })
   }
-
-  function approveIDs(element) {
-    var head_name = <?php echo json_encode($full_name); ?>;
-    var checkboxes = document.querySelectorAll('input[type="checkbox"][name="selected_ids[]"]');
-    var checkedIds = [];
-    checkboxes.forEach(function(checkbox) {
-      if (checkbox.checked) {
-        checkedIds.push(checkbox.value);
-      }
-    });
-    console.log(head_name);
-    $('#approve').modal('show');
-    $('#confirmButton').off('click').on('click', function() {
-      $.ajax({
-        url: '../config/for_reschedule.php',
-        method: 'POST',
-        data: {
-          "approveMultiple": true,
-          "checkedIds": checkedIds,
-          "head_name": head_name
-        },
-        success: function(response) {
-          if (response === 'Success') {
-            document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-            $('#start').modal('hide');
-            $('#success').modal('show');
-          } else {
-            document.getElementById('error_found').innerHTML = response;
-            $('#error').modal('show');
-          }
-        },
-      });
-    });
-  }
-
-  $(document).ready(function() {
-    $('#selectAll').click(function() {
-      var isChecked = this.checked;
-      $('input[name="selected_ids[]"]').prop('checked', isChecked);
-      toggleApproveButton();
-    });
-
-    $('input[name="selected_ids[]"]').click(function() {
-      var allChecked = $('input[name="selected_ids[]"]:checked').length == $('input[name="selected_ids[]"]').length;
-      $('#selectAll').prop('checked', allChecked);
-      toggleApproveButton();
-    });
-
-    function toggleApproveButton() {
-      if ($('input[name="selected_ids[]"]:checked').length > 0) {
-        $('#approveButton').show();
-      } else {
-        $('#approveButton').hide();
-      }
-    }
-  });
 </script>

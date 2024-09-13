@@ -63,27 +63,15 @@ if (isset($_POST['viewTask'])) {
   <?php
 }
 
-if (isset($_POST['approveMultiple'])) {
-  $count          = 0;
-  $taskIDmultiple = $_POST['checkedIds'];
-  $head_name      = $_POST['head_name'];
-  foreach ($taskIDmultiple as $taskID) {
-    $query_result = mysqli_query($con, "UPDATE tasks_details SET status='FINISHED', head_name='$head_name' WHERE id='$taskID'");
-    $count += 1;
-  }
-  if ($count != 0) {
-    echo "Success";
-  } else {
-    echo "Unable to complete the operation. Please try again later.";
-  }
-}
-
 if (isset($_POST['filterTable'])) {
   $taskClass  = $_POST['taskClass'];
   $date_to    = $_POST['date_to'];
   $date_from  = $_POST['date_from'];
-
-  $query = "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id = '$dept_id'";
+  function getTaskClass($taskClassNumber) {
+    $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
+    return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
+  }
+  $query = "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='RESCHEDULE' AND section.dept_id = '$dept_id'";
   if ($date_to != NULL && $date_from != NULL) {
     $query .= " AND DATE(tasks_details.date_accomplished) >= '$date_to' AND DATE(tasks_details.date_accomplished) <= '$date_from'";
   }
@@ -93,34 +81,17 @@ if (isset($_POST['filterTable'])) {
   $result = mysqli_query($con, $query);
   if (mysqli_num_rows($result) > 0) {
     while ($row = $result->fetch_assoc()) {
-      if (empty($row['file_name'])) {
-        $assigneeURL = '../assets/img/user-profiles/nologo.png';
-      } else {
-        $assigneeURL = '../assets/img/user-profiles/' . $row['file_name'];
-      }
-      $task_classes = [1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'], 2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'], 3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'], 4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'], 5 => ['name' => 'PROJECT', 'badge' => 'info'], 6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']];
-      if (isset($task_classes[$row['task_class']])) {
-        $class = $task_classes[$row['task_class']]['name'];
-        $badge = $task_classes[$row['task_class']]['badge'];
-      } else {
-        $class = 'Unknown';
-        $badge = 'secondary';
-      }
-      $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
-      $due_date   = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-      $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-      $assignee   = '<img src=' . $assigneeURL . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
+      $due_date = date_format(date_create($row['due_date']), "Y-m-d");
+      $old_date = date_format(date_create($row['old_date']), "Y-m-d");
+      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
       <tr>
-        <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
-        <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
+        <td><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
         <td><?php echo $row['task_code'] ?></td>
         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-        <td><?php echo $task_class ?></td>
+        <td><?php echo getTaskClass($row['task_class']); ?></td>
         <td><?php echo $due_date ?></td>
-        <td><?php echo $date_accomplished ?></td>
-        <td>
-          <?php echo $assignee ?>
-        </td>
+        <td><?php echo $old_date ?></td>
+        <td><?php echo $assignee ?></td>
       </tr>
 <?php }
   }
