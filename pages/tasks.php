@@ -190,11 +190,10 @@ include('../include/header.php');
                     $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='NOT YET STARTED' AND tasks_details.in_charge='$username'");
                     while ($row = $query_result->fetch_assoc()) {
                       $current_date = date('Y-m-d');
+                      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
                       $action = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) ? '<button type="button" class="btn btn-block btn-secondary fa-fw" disabled><i class="fas fa-ban"></i> Pending</button>' : '<button type="button" class="btn btn-block btn-success" value="' . $row['id'] . '" onclick="startTask(this)"><i class="fas fa-play fa-fw"></i> Start</button>';
                       $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
                       $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                      // Global Variable
-                      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
                       <tr>
                         <td><?php echo $checkbox ?></td>
                         <td><?php echo $row['task_code'] ?></td>
