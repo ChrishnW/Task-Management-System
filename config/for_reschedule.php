@@ -3,31 +3,15 @@ include('../include/auth.php');
 date_default_timezone_set('Asia/Manila');
 
 if (isset($_POST['approveTask'])) {
-  $id           = $_POST['approveID'];
-  $head_name    = $_POST['approveHead'];
-  $head_comment = $_POST['approveComment'];
-  $score        = $_POST['approveScore'];
-  $inCharge     = $_POST['approveIncharge'];
-  $taskCode     = $_POST['approveCode'];
-  if ($score > 5 || $score == 0 || $score != floor($score)) {
-    echo "Please provide a whole number score between 1 and 5, with 5 being the highest and 1 being the lowest.<br><b><i>Decimal scores are not allowed.</i></b>";
+  $id           = $_POST['reschedID'];
+  $approveDate  = $_POST['resched_date'];
+  $oldDue       = $_POST['resched_dateog'];
+  if ($approveDate == '') {
+    die('Please fill in the required fields.');
   } else {
-    if ($head_comment == '' || $head_comment == NULL) {
-      $head_comment = NULL;
-    } else {
-      $query_get = mysqli_query($con, "SELECT * FROM tasks_details WHERE id='$id'");
-      $row = mysqli_fetch_assoc($query_get);
-      $username         = $row['in_charge'];
-      $task_code        = $row['task_code'];
-      $datetime_current = date('Y-m-d H:i:s');
-      $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$username', 'fas fa-exclamation', 'warning', 'You have received a note from the head regarding your completed $task_code task.', '$datetime_current', '1')");
-    }
-    $query_result = mysqli_query($con, "UPDATE tasks_details SET status='FINISHED', achievement='$score', head_name='$head_name', head_note='$head_comment' WHERE id='$id'");
-    if ($query_result) {
-      log_action("You reviewed and approved task {$taskCode} for user {$inCharge} successfully.");
+    $query_update = mysqli_query($con, "UPDATE `tasks_details` SET `status`='NOT YET STARTED', `due_date`='$approveDate 16:00:00', `old_date`='$oldDue 16:00:00' WHERE `id`='$id'");
+    if ($query_update) {
       echo "Success";
-    } else {
-      echo "Unable to complete the operation. Please try again later.";
     }
   }
 }
@@ -35,8 +19,8 @@ if (isset($_POST['approveTask'])) {
 if (isset($_POST['viewTask'])) {
   $id = $_POST['taskID'];
   $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name WHERE tasks_details.id='$id'")); ?>
-  <form id="submitDetails" enctype="multipart/form-data">
-    <input type="hidden" id="reschedID" value="<?php echo $row['id']; ?>">
+  <form id="approveRequest" enctype="multipart/form-data">
+    <input type="hidden" id="reschedID" name="reschedID" value="<?php echo $row['id']; ?>">
     <label for="">Assignee:</label>
     <div class="input-group mb-2">
       <div class="input-group-prepend">
@@ -50,6 +34,13 @@ if (isset($_POST['viewTask'])) {
         <div class="input-group-text"><i class="fas fa-tasks"></i></div>
       </div>
       <input type="text" id="resched_taskName" name="resched_taskName" class="form-control" value="<?php echo $row['task_name']; ?>" readonly>
+    </div>
+    <label for="">Original Due Date:</label>
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+      </div>
+      <input type="date" id="resched_dateog" name="resched_dateog" class="form-control" value="<?php echo date('Y-m-d', strtotime($row['due_date'])); ?>" readonly>
     </div>
     <label for="">Requested Due Date:</label>
     <?php if (new DateTime(date('Y-m-d H:i:s')) > new DateTime($row['old_date'])) {

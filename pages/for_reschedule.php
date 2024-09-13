@@ -249,9 +249,8 @@ include('../include/header.php');
     $('#approveTask').off('click').on('click', function() {
       var $button = $(this);
       $button.prop('disabled', true);
-      var formData = new FormData(document.getElementById('checkDetails'));
+      var formData = new FormData(document.getElementById('approveRequest'));
       formData.append('approveTask', true);
-      console.log(formData);
       $.ajax({
         method: "POST",
         url: "../config/for_reschedule.php",
