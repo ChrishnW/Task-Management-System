@@ -86,6 +86,12 @@ if (isset($_POST['filterTable'])) {
 if (isset($_POST['filterTableTask'])) {
   if ($_POST['date_to'] == NULL || $_POST['date_from'] == NULL) {
   } else {
+    function getTaskClass($taskClassNumber)
+    {
+      $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
+      return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
+    }
+    $current_date = date('Y-m-d');
     $statusMap  = [
       'TODO' => 'NOT YET STARTED',
       'INPROGRESS' => 'IN PROGRESS',
@@ -99,250 +105,83 @@ if (isset($_POST['filterTableTask'])) {
     $status     = $statusMap[$status] ?? $status;
 
     if ($status == 'NOT YET STARTED' || $status == 'IN PROGRESS' || $status == 'RESCHEDULE') {
-      $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='$status' AND tasks_details.in_charge='$username' AND DATE(due_date) >= '$date_to' AND DATE(due_date) <= '$date_from'");
+      $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='$status' AND tasks_details.in_charge='$username' AND DATE(due_date) >= '$date_to' AND DATE(due_date) <= '$date_from'");
     } else {
-      $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='$status' AND tasks_details.in_charge='$username' AND DATE(date_accomplished) >= '$date_to' AND DATE(date_accomplished) <= '$date_from'");
+      $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='$status' AND tasks_details.in_charge='$username' AND DATE(date_accomplished) >= '$date_to' AND DATE(date_accomplished) <= '$date_from'");
     }
     if ($status == 'NOT YET STARTED') {
       while ($row = $query_result->fetch_assoc()) {
-        if (empty($row['file_name'])) {
-          $imageURL = '../assets/img/user-profiles/nologo.png';
-        } else {
-          $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-        }
-        $current_date = date('Y-m-d');
-        $task_classes = [
-          1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
-          2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'],
-          3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'],
-          4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'],
-          5 => ['name' => 'PROJECT', 'badge' => 'info'],
-          6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']
-        ];
-
-        $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
-        $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
-
-        $action = (date_create($row['due_date']) > date_create($current_date))
-          ? '<button type="button" class="btn btn-circle btn-secondary" disabled><i class="fas fa-ban"></i></button>'
-          : '<button type="button" class="btn btn-circle btn-success" value=' . $row['id'] . ' onclick="startTask(this)"><i class="fas fa-play"></i></button>';
-
-        $checkbox = (date_create($row['due_date']) > date_create($current_date))
-          ? '<input type="checkbox" name="selected_ids[]" class="form-control" value="" disabled>'
-          : '<input type="checkbox" name="selected_ids[]" class="form-control" value=' . $row['id'] . '>';
-
-        $status_badges = [
-          'NOT YET STARTED' => 'primary',
-          'IN PROGRESS' => 'warning',
-          'REVIEW' => 'danger',
-          'FINISHED' => 'success',
-          'RESCHEDULE' => 'secondary'
-        ];
-        $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
-
-        $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+        $action = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) ? '<button type="button" class="btn btn-block btn-secondary fa-fw" disabled><i class="fas fa-ban"></i> Pending</button>' : '<button type="button" class="btn btn-block btn-success" value="' . $row['id'] . '" onclick="startTask(this)"><i class="fas fa-play fa-fw"></i> Start</button>';
+        $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
         $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-        $assignee = '<img src=' . $imageURL . ' class="border border-primary img-table-solo">';
-      ?>
+        $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
         <tr>
           <td><?php echo $checkbox ?></td>
           <td><?php echo $row['task_code'] ?></td>
           <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-          <td><?php echo $task_class ?></td>
+          <td><?php echo getTaskClass($row['task_class']); ?></td>
           <td><?php echo $due_date ?></td>
-          <td data-toggle="tooltip" data-placement="top" title="<?php echo $row['in_charge'] ?>">
-            <center /><?php echo $assignee ?>
-          </td>
-          <td><?php echo $progress ?></td>
-          <td><?php echo $action ?></td>
+          <td><?php echo $assignee ?></td>
+          <td><?php echo $action ?><button type="button" class="btn btn-block btn-secondary" value="<?php echo $row['id']; ?>" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button></td>
         </tr>
       <?php }
     } elseif ($status == 'IN PROGRESS') {
       while ($row = $query_result->fetch_assoc()) {
-        if (empty($row['file_name'])) {
-          $imageURL = '../assets/img/user-profiles/nologo.png';
-        } else {
-          $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-        }
-        $current_date = date('Y-m-d');
-        $task_classes = [
-          1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
-          2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'],
-          3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'],
-          4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'],
-          5 => ['name' => 'PROJECT', 'badge' => 'info'],
-          6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']
-        ];
-
-        $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
-        $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
-
-        $action = '<button type="button" class="btn btn-circle btn-danger" value=' . $row['id'] . ' onclick="endTask(this)"><i class="fas fa-stop"></i></button>';
-
-        $status_badges = [
-          'NOT YET STARTED' => 'primary',
-          'IN PROGRESS' => 'warning',
-          'REVIEW' => 'danger',
-          'FINISHED' => 'success',
-          'RESCHEDULE' => 'secondary'
-        ];
-        $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
-
-        $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
         $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-        $assignee = '<img src=' . $imageURL . ' class="border border-primary img-table-solo">';
-      ?>
+        $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
         <tr>
           <td><?php echo $row['task_code'] ?></td>
           <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-          <td><?php echo $task_class ?></td>
+          <td><?php echo getTaskClass($row['task_class']); ?></td>
           <td><?php echo $due_date ?></td>
-          <td data-toggle="tooltip" data-placement="top" title="<?php echo $row['in_charge'] ?>">
-            <center /><?php echo $assignee ?>
-          </td>
-          <td><?php echo $progress ?></td>
-          <td><?php echo $action ?></td>
+          <td><?php echo $assignee ?></td>
+          <td><button type="button" class="btn btn-block btn-danger" value='<?php echo $row['id']; ?>' onclick="endTask(this)"><i class="fas fa-stop fa-fw"></i> Finish</button></td>
         </tr>
       <?php }
     } elseif ($status == 'REVIEW') {
       while ($row = $query_result->fetch_assoc()) {
-        if (empty($row['file_name'])) {
-          $imageURL = '../assets/img/user-profiles/nologo.png';
-        } else {
-          $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-        }
-        $current_date = date('Y-m-d');
-        $task_classes = [
-          1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
-          2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'],
-          3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'],
-          4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'],
-          5 => ['name' => 'PROJECT', 'badge' => 'info'],
-          6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']
-        ];
-
-        $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
-        $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
-
-        $action = '<button type="button" class="btn btn-circle btn-warning" value=' . $row['id'] . ' onclick="reviewTask(this)"><i class="fas fa-eye"></i></button>';
-
-        $status_badges = [
-          'NOT YET STARTED' => 'primary',
-          'IN PROGRESS' => 'warning',
-          'REVIEW' => 'danger',
-          'FINISHED' => 'success',
-          'RESCHEDULE' => 'secondary'
-        ];
-        $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
-
-        $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+        $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
         $date_accomplished = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-        $assignee = '<img src=' . $imageURL . ' class="border border-primary img-table-solo">';
-      ?>
+        $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
         <tr>
           <td><?php echo $row['task_code'] ?></td>
           <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-          <td><?php echo $task_class ?></td>
+          <td><?php echo getTaskClass($row['task_class']); ?></td>
+          <td><?php echo $due_date ?></td>
           <td><?php echo $date_accomplished ?></td>
-          <td data-toggle="tooltip" data-placement="top" title="<?php echo $row['in_charge'] ?>">
-            <center /><?php echo $assignee ?>
-          </td>
-          <td><?php echo $progress ?></td>
-          <td><?php echo $action ?></td>
+          <td><?php echo $assignee ?></td>
+          <td><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
         </tr>
       <?php }
     } elseif ($status == 'FINISHED') {
       while ($row = $query_result->fetch_assoc()) {
-        if (empty($row['file_name'])) {
-          $imageURL = '../assets/img/user-profiles/nologo.png';
-        } else {
-          $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-        }
-        $current_date = date('Y-m-d');
-        $task_classes = [
-          1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
-          2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'],
-          3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'],
-          4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'],
-          5 => ['name' => 'PROJECT', 'badge' => 'info'],
-          6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']
-        ];
-
-        $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
-        $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
-
-        $action = '<button type="button" class="btn btn-circle btn-primary" value=' . $row['id'] . ' onclick="checkTask(this)"><i class="fas fa-history"></i></button>';
-
-        $status_badges = [
-          'NOT YET STARTED' => 'primary',
-          'IN PROGRESS' => 'warning',
-          'REVIEW' => 'danger',
-          'FINISHED' => 'success',
-          'RESCHEDULE' => 'secondary'
-        ];
-        $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
-
-        $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+        $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
         $date_accomplished = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-        $assignee = '<img src=' . $imageURL . ' class="border border-primary img-table-solo">';
-      ?>
+        $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
         <tr>
           <td><?php echo $row['task_code'] ?></td>
           <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-          <td><?php echo $task_class ?></td>
+          <td><?php echo getTaskClass($row['task_class']); ?></td>
+          <td><?php echo $due_date ?></td>
           <td><?php echo $date_accomplished ?></td>
-          <td data-toggle="tooltip" data-placement="top" title="<?php echo $row['in_charge'] ?>">
-            <center /><?php echo $assignee ?>
-          </td>
-          <td><?php echo $progress ?></td>
-          <td><?php echo $action ?></td>
+          <td><span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span></td>
+          <td><?php echo $assignee ?></td>
+          <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="checkTask(this)"><i class="fas fa-history fa-fw"></i> Details</button></td>
         </tr>
       <?php }
     } elseif ($status == 'RESCHEDULE') {
       while ($row = $query_result->fetch_assoc()) {
-        if (empty($row['file_name'])) {
-          $imageURL = '../assets/img/user-profiles/nologo.png';
-        } else {
-          $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-        }
-        $current_date = date('Y-m-d');
-        $task_classes = [
-          1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
-          2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'],
-          3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'],
-          4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'],
-          5 => ['name' => 'PROJECT', 'badge' => 'info'],
-          6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']
-        ];
-
-        $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
-        $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
-
-        $action = '<button type="button" class="btn btn-circle btn-secondary" value=' . $row['id'] . ' onclick="startTask(this)"><i class="fas fa-question"></i></button>';
-
-        $status_badges = [
-          'NOT YET STARTED' => 'primary',
-          'IN PROGRESS' => 'warning',
-          'REVIEW' => 'danger',
-          'FINISHED' => 'success',
-          'RESCHEDULE' => 'secondary'
-        ];
-        $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
-
-        $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
         $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-        $assignee = '<img src=' . $imageURL . ' class="border border-primary img-table-solo">';
-      ?>
+        $date_accomplished = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
+        $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
         <tr>
           <td><?php echo $row['task_code'] ?></td>
           <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-          <td><?php echo $task_class ?></td>
+          <td><?php echo getTaskClass($row['task_class']); ?></td>
           <td><?php echo $due_date ?></td>
-          <td data-toggle="tooltip" data-placement="top" title="<?php echo $row['in_charge'] ?>">
-            <center /><?php echo $assignee ?>
-          </td>
-          <td><?php echo $progress ?></td>
-          <td><?php echo $action ?></td>
+          <td><?php echo $old_date ?></td>
+          <td><?php echo $assignee ?></td>
+          <td><button type="button" class="btn btn-block btn-secondary" value='<?php echo $row['id']; ?>' onclick="rescheduleTask(this)"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
         </tr>
     <?php }
     }
