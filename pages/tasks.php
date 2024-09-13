@@ -176,7 +176,7 @@ include('../include/header.php');
                       <th>Code</th>
                       <th>Title</th>
                       <th>Classification</th>
-                      <th class="col col-md-2">Due Date</th>
+                      <th>Due Date</th>
                       <th>Asignee</th>
                       <th>Action</th>
                     </tr>
@@ -190,8 +190,8 @@ include('../include/header.php');
                       $action = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) ? '<button type="button" class="btn btn-block btn-secondary fa-fw" disabled><i class="fas fa-ban"></i> Pending</button>' : '<button type="button" class="btn btn-block btn-success" value="' . $row['id'] . '" onclick="startTask(this)"><i class="fas fa-play fa-fw"></i> Start</button>';
                       $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
                       $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
-                    ?>
+                      // Global Variable
+                      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
                       <tr>
                         <td><?php echo $checkbox ?></td>
                         <td><?php echo $row['task_code'] ?></td>
@@ -199,7 +199,7 @@ include('../include/header.php');
                         <td><?php echo $task_class ?></td>
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $assignee ?></td>
-                        <td><?php echo $action ?> <button type="button" class="btn btn-block btn-secondary"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button></td>
+                        <td><button type="button" class="btn btn-block btn-secondary"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -218,7 +218,6 @@ include('../include/header.php');
                       <th>Classification</th>
                       <th>Due Date</th>
                       <th>Asignee</th>
-                      <th>Progress</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -226,39 +225,16 @@ include('../include/header.php');
                     <?php
                     $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='IN PROGRESS' AND tasks_details.in_charge='$username'");
                     while ($row = $query_result->fetch_assoc()) {
-                      $current_date = date('Y-m-d');
-                      $task_classes = [
-                        1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'],
-                        2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'],
-                        3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'],
-                        4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'],
-                        5 => ['name' => 'PROJECT', 'badge' => 'info'],
-                        6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']
-                      ];
-                      $class = $task_classes[$row['task_class']]['name'] ?? 'Unknown';
-                      $badge = $task_classes[$row['task_class']]['badge'] ?? 'secondary';
-                      $action = '<button type="button" class="btn btn-circle btn-danger" value=' . $row['id'] . ' onclick="endTask(this)"><i class="fas fa-stop"></i></button>';
-                      $status_badges = [
-                        'NOT YET STARTED' => 'primary',
-                        'IN PROGRESS' => 'warning',
-                        'REVIEW' => 'danger',
-                        'FINISHED' => 'success',
-                        'RESCHEDULE' => 'secondary'
-                      ];
-                      $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
-
-                      $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
                       $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
-                    ?>
+                      $task_class = '<span class="badge badge-' . ([1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'], 2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'], 3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'], 4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'], 5 => ['name' => 'PROJECT', 'badge' => 'info'], 6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']][$row['task_class']]['badge'] ?? 'secondary') . '">' . ([1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'], 2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'], 3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'], 4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'], 5 => ['name' => 'PROJECT', 'badge' => 'info'], 6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']][$row['task_class']]['name'] ?? 'Unknown') . '</span>';
+                      ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
                         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                         <td><?php echo $task_class ?></td>
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $assignee ?></td>
-                        <td><?php echo $progress ?></td>
-                        <td><?php echo $action ?></td>
+                        <td><button type="button" class="btn btn-block btn-danger" value='<?php echo $row['id']; ?>' onclick="endTask(this)"><i class="fas fa-stop fa-fw"></i> Finish</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
