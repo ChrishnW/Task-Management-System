@@ -626,12 +626,13 @@ include('../include/header.php');
   <?php } elseif ($access == 3) {
     $con->next_result();
     $today = date('Y-m-d 16:00:00');
-    $query_result = mysqli_query($con, "SELECT COUNT(tasks_details.id) as total_tasks, (SELECT COUNT(tasks_details.id) FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id='$dept_id') as for_review_tasks, (SELECT COUNT(tasks_details.id) FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND section.dept_id='$dept_id' AND tasks_details.status='PROJECT') as project_tasks, (SELECT COUNT('accounts.id') FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2) as members FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND section.dept_id='$dept_id'");
+    $query_result = mysqli_query($con, "SELECT COUNT(tasks_details.id) as total_tasks, (SELECT COUNT(tasks_details.id) FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id='$dept_id') as for_review_tasks, (SELECT COUNT(tasks_details.id) FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND tasks_details.status='RESCHEDULE' AND section.dept_id='$dept_id') as for_resched_tasks, (SELECT COUNT(tasks_details.id) FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND section.dept_id='$dept_id' AND tasks_details.status='PROJECT') as project_tasks, (SELECT COUNT('accounts.id') FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2) as members FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND section.dept_id='$dept_id'");
     $row = mysqli_fetch_assoc($query_result);
-    $total_tasks      = $row['total_tasks'];
-    $project_tasks    = $row['project_tasks'];
-    $for_review_tasks = $row['for_review_tasks'];
-    $members          = $row['members']; ?>
+    $total_tasks       = $row['total_tasks'];
+    $project_tasks     = $row['project_tasks'];
+    $for_review_tasks  = $row['for_review_tasks'];
+    $for_resched_tasks = $row['for_resched_tasks'];
+    $members           = $row['members']; ?>
     <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
     <div class="row">
       <div class="col-xl-3 col-md-6 mb-4">
@@ -659,7 +660,7 @@ include('../include/header.php');
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
                 <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Request for Reschedule Tasks</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $for_review_tasks ?></div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $for_resched_tasks ?></div>
               </div>
               <div class="col-auto">
                 <i class="fas fa-calendar-day fa-3x text-gray-500"></i>
