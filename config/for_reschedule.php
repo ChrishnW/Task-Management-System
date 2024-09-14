@@ -25,12 +25,17 @@ if (isset($_POST['rejectTask'])) {
   $taskCode = $_POST['taskCode'];
   $reason   = $_POST['reason'];
   $datetime_current = date('Y-m-d H:i:s');
-  
+
   $query_update = mysqli_query($con, "UPDATE `tasks_details` SET `status`='NOT YET STARTED' WHERE id='$id'");
   if ($query_update) {
-    $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `action`, `date_created`, `status`) VALUES ('$taskUser', 'fas fa-times', 'danger', 'Request for reschedule of $taskName has been rejected for the following reason:<br><b>$reason.</b>', 'window.location.href='tasks.php';', '$datetime_current', '1')");
-    log_action("You have rejected the reschedule request of user {$taskUser} for task {$taskCode}.");
-    echo "Success";
+    $action = mysqli_real_escape_string($con, "window.location.href='tasks.php';");
+    $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `action`, `date_created`, `status`) VALUES ('$taskUser', 'fas fa-times', 'danger', 'Request for reschedule of task $taskCode has been rejected for the following reason:<br><b>$reason.</b>', '$action', '$datetime_current', '1')");
+    if ($query_insert) {
+      log_action("You have rejected the reschedule request of user {$taskUser} for task {$taskCode}.");
+      echo "Success";
+    } else {
+      die('An unexpected error has occurred. Please try again.');
+    }
   }
 }
 

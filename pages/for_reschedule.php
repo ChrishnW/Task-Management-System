@@ -286,6 +286,7 @@ include('../include/header.php');
                 $('#success').modal('show');
               } else {
                 $('#danger').modal('hide');
+                console.log(response);
                 document.getElementById('error_found').innerHTML = response;
                 $('#error').modal('show');
                 $reject.prop('disabled', false);
