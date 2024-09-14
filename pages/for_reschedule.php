@@ -76,25 +76,6 @@ include('../include/header.php');
   </div>
 </div>
 
-<div class="modal fade" id="approve" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content border-success">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Approve Task</h5>
-      </div>
-      <div class="modal-body text-center">
-        <input type="hidden" id="taskID">
-        <i class="fas fa-question fa-5x text-success"></i>
-        <br><br>
-        Do you want to approve this selected task?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal" id="confirmButton">Confirm</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="modal fade" id="review" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content border-primary">
@@ -126,7 +107,7 @@ include('../include/header.php');
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="delete_id">Proceed</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -143,7 +124,7 @@ include('../include/header.php');
         <p id="error_found"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -160,7 +141,7 @@ include('../include/header.php');
         <p id="success_log"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -260,7 +241,7 @@ include('../include/header.php');
         processData: false,
         success: function(response) {
           if (response === 'Success') {
-            document.getElementById('success_log').innerHTML = 'Task ' + document.getElementById('approveCode').value + ' reviewed and approved successfully.';
+            document.getElementById('success_log').innerHTML = 'You have successfully approved the rescheduling of this task';
             $('#review').modal('hide');
             $('#success').modal('show');
           } else {
