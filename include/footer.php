@@ -174,15 +174,15 @@
             </tr>
           </thead>
           <tbody id='dataTableBody'>
-          <?php
-          $query_activity = mysqli_query($con, "SELECT * FROM system_log WHERE user='$username'");
+            <?php
+            $query_activity = mysqli_query($con, "SELECT * FROM system_log WHERE user='$username'");
             while ($row = $query_activity->fetch_assoc()) { ?>
-            <tr>
-              <td><?php echo date_format(date_create($row['date_created']), "Y-m-d h:i:s"); ?></td>
-              <td><?php echo $row['action']; ?></td>
-            </tr>
+              <tr>
+                <td><?php echo date_format(date_create($row['date_created']), "Y-m-d h:i:s"); ?></td>
+                <td><?php echo $row['action']; ?></td>
+              </tr>
             <?php }
-          ?>
+            ?>
           </tbody>
         </table>
       </div>
@@ -218,6 +218,26 @@
 
 <!-- Custom Scripts Global -->
 <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var inactivityTime = 900000;
+    var timeout;
+
+    // Function to reset the timeout
+    function resetTimeout() {
+      clearTimeout(timeout);
+      timeout = setTimeout(function() {
+        location.reload();
+      }, inactivityTime);
+    }
+
+    // Reset timeout when there is activity (using addEventListener for multiple event listeners)
+    // window.addEventListener('mousemove', resetTimeout);
+    window.addEventListener('keypress', resetTimeout);
+    window.addEventListener('touchstart', resetTimeout);
+
+    resetTimeout();
+  });
+
   function openSpecificModal(modalId, size) {
     var modalDialog = document.querySelector(`#${modalId} .modal-dialog`);
     modalDialog.classList.remove('modal-sm', 'modal-lg', 'modal-xl');
@@ -479,7 +499,9 @@
           "info": true,
           "autoWidth": false,
           "responsive": true,
-          "order": [[0, "desc"]],
+          "order": [
+            [0, "desc"]
+          ],
           "pageLength": 5,
           "lengthMenu": [5, 10, 25, 50, 100]
         });
