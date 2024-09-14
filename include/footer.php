@@ -282,11 +282,7 @@
         "checkedIds": checkedIds,
       },
       success: function(response) {
-        if (response === 'Success') {
-          location.reload();
-        } else {
-          location.reload();
-        }
+        console.log(response);
       }
     })
   }

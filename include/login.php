@@ -38,7 +38,8 @@ if (isset($_POST['submit'])) {
 				if ($check_rows > 0) {
 					$query_update = mysqli_query($con, "UPDATE `notification` SET `date_created`='$datetime_current' WHERE id='$notif_id'");
 				} else {
-					$query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$username', 'fas fa-key', 'danger', 'Your account still uses the default password. Please change it for security.', '$datetime_current', '1')");
+					$action = mysqli_real_escape_string($con, "$('#profileModal').modal('show');");
+					$query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `action`, `date_created`, `status`) VALUES ('$username', 'fas fa-key', 'danger', 'Your account still uses the default password. Please change it for security.', '$action', '$datetime_current', '1')");
 				}
 				header("location: include/home.php");
 			} else {
