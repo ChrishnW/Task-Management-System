@@ -147,12 +147,14 @@ include('../include/header.php');
 
                   $currentDate = "$currentYear-$currentMonth-" . str_pad($currentDayCount, 2, "0", STR_PAD_LEFT);
 
+                  $class = ($dayOfWeek == 0) ? 'sunday' : ''; // Apply 'sunday' class if it's Sunday
+
                   if ($currentDayCount == $currentDay) {
-                    $calendar .= "<td class='today' data-toggle='tooltip' data-placement='top' title='Today'>$currentDayCount</td>";
+                    $calendar .= "<td class='today $class' data-toggle='tooltip' data-placement='top' title='Today'>$currentDayCount</td>";
                   } elseif (in_array($currentDate, $specialDates)) {
-                    $calendar .= "<td class='special' data-toggle='tooltip' data-placement='top' title='$remarks'>$currentDayCount</td>";
+                    $calendar .= "<td class='special $class' data-toggle='tooltip' data-placement='top' title='$remarks'>$currentDayCount</td>";
                   } else {
-                    $calendar .= "<td>$currentDayCount</td>";
+                    $calendar .= "<td class='$class'>$currentDayCount</td>";
                   }
 
                   $currentDayCount++;
@@ -444,12 +446,14 @@ include('../include/header.php');
 
                   $currentDate = "$currentYear-$currentMonth-" . str_pad($currentDayCount, 2, "0", STR_PAD_LEFT);
 
+                  $class = ($dayOfWeek == 0) ? 'sunday' : ''; // Apply 'sunday' class if it's Sunday
+
                   if ($currentDayCount == $currentDay) {
-                    $calendar .= "<td class='today' data-toggle='tooltip' data-placement='top' title='Today'>$currentDayCount</td>";
+                    $calendar .= "<td class='today $class' data-toggle='tooltip' data-placement='top' title='Today'>$currentDayCount</td>";
                   } elseif (in_array($currentDate, $specialDates)) {
-                    $calendar .= "<td class='special' data-toggle='tooltip' data-placement='top' title='$remarks'>$currentDayCount</td>";
+                    $calendar .= "<td class='special $class' data-toggle='tooltip' data-placement='top' title='$remarks'>$currentDayCount</td>";
                   } else {
-                    $calendar .= "<td>$currentDayCount</td>";
+                    $calendar .= "<td class='$class'>$currentDayCount</td>";
                   }
 
                   $currentDayCount++;
@@ -757,86 +761,86 @@ include('../include/header.php');
     </div>
 
     <div class="row">
-  <div class="col-xl-4">
-    <div class="card border-left-primary shadow mb-4">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Calendar of <?php echo date('F Y') ?></h6>
+      <div class="col-xl-4">
+        <div class="card border-left-primary shadow mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Calendar of <?php echo date('F Y') ?></h6>
+          </div>
+          <div class="card-body table-responsive">
+            <table class="calendar table table-bordered">
+              <thead>
+                <tr>
+                  <th>Sun</th>
+                  <th>Mon</th>
+                  <th>Tue</th>
+                  <th>Wed</th>
+                  <th>Thu</th>
+                  <th>Fri</th>
+                  <th>Sat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                $query_result = mysqli_query($con, "SELECT * FROM day_off WHERE status=1");
+                $specialDates = [];
+                if ($query_result->num_rows > 0) {
+                  while ($row = $query_result->fetch_assoc()) {
+                    $specialDates[] = $row['date_off'];
+                    $remarks        = $row['remarks'];
+                  }
+                }
+
+                $currentYear = date("Y");
+                $currentMonth = date("m");
+                $currentDay = date("d");
+                $firstDayOfMonth = mktime(0, 0, 0, $currentMonth, 1, $currentYear);
+                $daysInMonth = date("t", $firstDayOfMonth);
+                $dateComponents = getdate($firstDayOfMonth);
+                $monthName = $dateComponents['month'];
+                $dayOfWeek = $dateComponents['wday'];
+
+                $calendar = "<tr>";
+
+                for ($i = 0; $i < $dayOfWeek; $i++) {
+                  $calendar .= "<td></td>";
+                }
+
+                $currentDayCount = 1;
+                while ($currentDayCount <= $daysInMonth) {
+                  if ($dayOfWeek == 7) {
+                    $dayOfWeek = 0;
+                    $calendar .= "</tr><tr>";
+                  }
+
+                  $currentDate = "$currentYear-$currentMonth-" . str_pad($currentDayCount, 2, "0", STR_PAD_LEFT);
+
+                  $class = ($dayOfWeek == 0) ? 'sunday' : ''; // Apply 'sunday' class if it's Sunday
+
+                  if ($currentDayCount == $currentDay) {
+                    $calendar .= "<td class='today $class' data-toggle='tooltip' data-placement='top' title='Today'>$currentDayCount</td>";
+                  } elseif (in_array($currentDate, $specialDates)) {
+                    $calendar .= "<td class='special $class' data-toggle='tooltip' data-placement='top' title='$remarks'>$currentDayCount</td>";
+                  } else {
+                    $calendar .= "<td class='$class'>$currentDayCount</td>";
+                  }
+
+                  $currentDayCount++;
+                  $dayOfWeek++;
+                }
+
+                while ($dayOfWeek != 7) {
+                  $calendar .= "<td></td>";
+                  $dayOfWeek++;
+                }
+
+                $calendar .= "</tr>";
+                echo $calendar;
+                ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      <div class="card-body table-responsive">
-        <table class="calendar table table-bordered">
-          <thead>
-            <tr>
-              <th>Sun</th>
-              <th>Mon</th>
-              <th>Tue</th>
-              <th>Wed</th>
-              <th>Thu</th>
-              <th>Fri</th>
-              <th>Sat</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
-            $query_result = mysqli_query($con, "SELECT * FROM day_off WHERE status=1");
-            $specialDates = [];
-            if ($query_result->num_rows > 0) {
-              while ($row = $query_result->fetch_assoc()) {
-                $specialDates[] = $row['date_off'];
-                $remarks        = $row['remarks'];
-              }
-            }
-
-            $currentYear = date("Y");
-            $currentMonth = date("m");
-            $currentDay = date("d");
-            $firstDayOfMonth = mktime(0, 0, 0, $currentMonth, 1, $currentYear);
-            $daysInMonth = date("t", $firstDayOfMonth);
-            $dateComponents = getdate($firstDayOfMonth);
-            $monthName = $dateComponents['month'];
-            $dayOfWeek = $dateComponents['wday'];
-
-            $calendar = "<tr>";
-
-            for ($i = 0; $i < $dayOfWeek; $i++) {
-              $calendar .= "<td></td>";
-            }
-
-            $currentDayCount = 1;
-            while ($currentDayCount <= $daysInMonth) {
-              if ($dayOfWeek == 7) {
-                $dayOfWeek = 0;
-                $calendar .= "</tr><tr>";
-              }
-
-              $currentDate = "$currentYear-$currentMonth-" . str_pad($currentDayCount, 2, "0", STR_PAD_LEFT);
-
-              $class = ($dayOfWeek == 0) ? 'sunday' : ''; // Apply 'sunday' class if it's Sunday
-
-              if ($currentDayCount == $currentDay) {
-                $calendar .= "<td class='today $class' data-toggle='tooltip' data-placement='top' title='Today'>$currentDayCount</td>";
-              } elseif (in_array($currentDate, $specialDates)) {
-                $calendar .= "<td class='special $class' data-toggle='tooltip' data-placement='top' title='$remarks'>$currentDayCount</td>";
-              } else {
-                $calendar .= "<td class='$class'>$currentDayCount</td>";
-              }
-
-              $currentDayCount++;
-              $dayOfWeek++;
-            }
-
-            while ($dayOfWeek != 7) {
-              $calendar .= "<td></td>";
-              $dayOfWeek++;
-            }
-
-            $calendar .= "</tr>";
-            echo $calendar;
-            ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 
       <div class="col-xl-5">
         <div class="card border-left-info shadow mb-4">
