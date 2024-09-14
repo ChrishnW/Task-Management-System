@@ -29,7 +29,7 @@ while ($row = $query_tasks->fetch_assoc()) {
       } else {
         $taskStatus = 'NOT YET STARTED';
       }
-      $dueDate          = $date;
+      $dueDate          = $date.' 16:00:00';
       $latestcode       = mysqli_fetch_assoc(mysqli_query($con, "SELECT MAX(task_code) AS latest_task_code FROM tasks_details WHERE task_class='$taskClass' AND task_for='$taskFor'"))['latest_task_code'];
       $numeric_portion  = intval(substr($latestcode, -6)) + 1;
       $taskCode         = $taskFor . '-TW-' . str_pad($numeric_portion, 6, '0', STR_PAD_LEFT);
