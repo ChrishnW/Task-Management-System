@@ -22,14 +22,14 @@ if (isset($_POST['approveTask'])) {
 if (isset($_POST['rejectTask'])) {
   $id       = $_POST['taskID'];
   $taskUser = $_POST['taskUser'];
-  $taskName = $_POST['taskName'];
+  $taskCode = $_POST['taskCode'];
   $reason   = $_POST['reason'];
   $datetime_current = date('Y-m-d H:i:s');
   
   $query_update = mysqli_query($con, "UPDATE `tasks_details` SET `status`='NOT YET STARTED' WHERE id='$id'");
   if ($query_update) {
-    $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$taskUser', 'fas fa-times', 'danger', 'Request for reschedule of $taskName has been rejected for the following reason:<br><b>$reason.</b>', '$datetime_current', '1')");
-    log_action("You have rejected the reschedule request of user {$taskUser} for task {$taskName}.");
+    $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `action`, `date_created`, `status`) VALUES ('$taskUser', 'fas fa-times', 'danger', 'Request for reschedule of $taskName has been rejected for the following reason:<br><b>$reason.</b>', 'window.location.href='tasks.php';', '$datetime_current', '1')");
+    log_action("You have rejected the reschedule request of user {$taskUser} for task {$taskCode}.");
     echo "Success";
   }
 }
@@ -38,8 +38,9 @@ if (isset($_POST['viewTask'])) {
   $id = $_POST['taskID'];
   $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name WHERE tasks_details.id='$id'")); ?>
   <form id="approveRequest" enctype="multipart/form-data">
-    <input type="hidden" id="reschedUser" name="reschedUser" value="<?php echo $row['in_charge']; ?>">
     <input type="hidden" id="reschedID" name="reschedID" value="<?php echo $row['id']; ?>">
+    <input type="hidden" id="reschedCode" name="reschedCode" value="<?php echo $row['task_code']; ?>">
+    <input type="hidden" id="reschedUser" name="reschedUser" value="<?php echo $row['in_charge']; ?>">
     <label for="">Assignee:</label>
     <div class="input-group mb-2">
       <div class="input-group-prepend">

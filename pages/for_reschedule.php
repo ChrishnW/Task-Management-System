@@ -266,7 +266,7 @@ include('../include/header.php');
         } else {
           var taskID    = document.getElementById('reschedID').value;
           var taskUser  = document.getElementById('reschedUser').value;
-          var taskName  = document.getElementById('resched_taskName').value;
+          var taskCode  = document.getElementById('reschedCode').value;
           var reason    = document.getElementById('rejectReason').value;
           $.ajax({
             method: "POST",
@@ -275,7 +275,7 @@ include('../include/header.php');
               "rejectTask": true,
               "taskID": taskID,
               "taskUser": taskUser,
-              "taskName": taskName,
+              "taskCode": taskCode,
               "reason": reason
             },
             success: function(response) {
