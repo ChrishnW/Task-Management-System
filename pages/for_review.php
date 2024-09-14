@@ -224,8 +224,6 @@ include('../include/header.php');
             [5, "desc"],
             [3, "asc"]
           ],
-          "pageLength": 5,
-          "lengthMenu": [5, 10, 25, 50, 100],
           "drawCallback": function(settings) {
             $('[data-toggle="tooltip"]').tooltip();
           }

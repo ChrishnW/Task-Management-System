@@ -723,9 +723,7 @@ include('../include/header.php');
   $('#dataTable').DataTable({
     "order": [
       [2, "asc"]
-    ],
-    "pageLength": 5,
-    "lengthMenu": [5, 10, 25, 50, 100]
+    ]
   });
 
   function addTasks(element) {
@@ -833,8 +831,6 @@ include('../include/header.php');
       success: function(response) {
         $('#viewAssignedTaskTable').html(response);
         $('#viewList').DataTable({
-          "pageLength": 5,
-          "lengthMenu": [5, 10, 25, 50, 100],
           "responsive": true
         });
         openSpecificModal('viewTable', 'modal-xl');
