@@ -310,13 +310,18 @@
 }
 
 .calendar .today {
-    background-color: #007bff;
-    color           : #fff;
+    border-width: 3px;
+    border-color: #000000;
 }
 
 .calendar .special {
     background-color: #ffeb3b;
     color           : #000;
+}
+
+.calendar .sunday {
+    background-color: red;
+    color           : white;
 }
 
 .custom-card {
@@ -472,15 +477,15 @@
 }
 
 .btn-gradient-cyan {
-  color           : #fff;
-  background:      linear-gradient(to right, #1BCFD0, #0D6BC2);
-  border-color    : #0D6BC2;
+    color       : #fff;
+    background  : linear-gradient(to right, #1BCFD0, #0D6BC2);
+    border-color: #0D6BC2;
 }
 
 .btn-gradient-cyan:hover {
-  color           : #fff;
-  background      : linear-gradient(to right, #007B7F, #0047AB);
-  border-color    : #0047AB;
+    color       : #fff;
+    background  : linear-gradient(to right, #007B7F, #0047AB);
+    border-color: #0047AB;
 }
 
 .login-height {
