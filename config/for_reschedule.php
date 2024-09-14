@@ -6,13 +6,31 @@ if (isset($_POST['approveTask'])) {
   $id           = $_POST['reschedID'];
   $approveDate  = $_POST['resched_date'];
   $oldDue       = $_POST['resched_dateog'];
+  $dateToday    = date('Y-m-d');
   if ($approveDate == '') {
     die('Please fill in the required fields.');
-  } else {
-    $query_update = mysqli_query($con, "UPDATE `tasks_details` SET `status`='NOT YET STARTED', `due_date`='$approveDate 16:00:00', `old_date`='$oldDue 16:00:00' WHERE `id`='$id'");
-    if ($query_update) {
-      echo "Success";
-    }
+  }
+  if ($approveDate < $dateToday) {
+    die('Invalid date. Please choose a date that is not in the past.');
+  }
+  $query_update = mysqli_query($con, "UPDATE `tasks_details` SET `status`='NOT YET STARTED', `due_date`='$approveDate 16:00:00', `old_date`='$oldDue 16:00:00' WHERE `id`='$id'");
+  if ($query_update) {
+    echo "Success";
+  }
+}
+
+if (isset($_POST['rejectTask'])) {
+  $id       = $_POST['taskID'];
+  $taskUser = $_POST['taskUser'];
+  $taskName = $_POST['taskName'];
+  $reason   = $_POST['reason'];
+  $datetime_current = date('Y-m-d H:i:s');
+  
+  $query_update = mysqli_query($con, "UPDATE `tasks_details` SET `status`='NOT YET STARTED' WHERE id='$id'");
+  if ($query_update) {
+    $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `date_created`, `status`) VALUES ('$taskUser', 'fas fa-times', 'danger', 'Request for reschedule of $taskName has been rejected for the following reason:<br><b>$reason.</b>', '$datetime_current', '1')");
+    log_action("You have rejected the reschedule request of user {$taskUser} for task {$taskName}.");
+    echo "Success";
   }
 }
 
@@ -20,6 +38,7 @@ if (isset($_POST['viewTask'])) {
   $id = $_POST['taskID'];
   $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name WHERE tasks_details.id='$id'")); ?>
   <form id="approveRequest" enctype="multipart/form-data">
+    <input type="hidden" id="reschedUser" name="reschedUser" value="<?php echo $row['in_charge']; ?>">
     <input type="hidden" id="reschedID" name="reschedID" value="<?php echo $row['id']; ?>">
     <label for="">Assignee:</label>
     <div class="input-group mb-2">
@@ -67,7 +86,8 @@ if (isset($_POST['filterTable'])) {
   $taskClass  = $_POST['taskClass'];
   $date_to    = $_POST['date_to'];
   $date_from  = $_POST['date_from'];
-  function getTaskClass($taskClassNumber) {
+  function getTaskClass($taskClassNumber)
+  {
     $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
     return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
   }

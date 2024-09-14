@@ -48,7 +48,8 @@ include('../include/header.php');
           </thead>
           <tbody id='dataTableBody'>
             <?php
-            function getTaskClass($taskClassNumber) {
+            function getTaskClass($taskClassNumber)
+            {
               $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
               return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
             }
@@ -101,13 +102,14 @@ include('../include/header.php');
         <h5 class="modal-title" id="exampleModalLongTitle">Caution!</h5>
       </div>
       <div class="modal-body text-center">
-        <i class="fas fa-exclamation-triangle fa-5x text-danger"></i>
-        <br><br>
-        You're about to delete this file, <br> do you still want to proceed?
+        <i class="fas fa-exclamation-triangle fa-5x text-danger mb-3"></i>
+        <br>
+        <small id='textValid' class="d-none text-danger font-italic font-weight-bold">This field cannot be empty to proceed.</small>
+        <textarea name="rejectReason" id="rejectReason" class="form-control" placeholder="You’re about to reject this request. Please indicate the reason."></textarea>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="delete_id">Proceed</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="rejectConfirm">Proceed</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>
@@ -228,7 +230,7 @@ include('../include/header.php');
       }
     });
 
-    $('#approveTask').off('click').on('click', function() {
+    $('#approveTask').off('click').on('click', function(event) {
       var $button = $(this);
       $button.prop('disabled', true);
       var formData = new FormData(document.getElementById('approveRequest'));
@@ -251,6 +253,47 @@ include('../include/header.php');
           }
         }
       })
-    })
+    });
+
+    $('#rejectTask').off('click').on('click', function() {
+      var $reject = $(this);
+      $reject.prop('disabled', true);
+      $('#danger').modal('show');
+      $('#rejectConfirm').off('click').on('click', function() {
+        if (document.getElementById('rejectReason').value === '') {
+          document.getElementById('rejectReason').classList.add('border-danger');
+          document.getElementById('textValid').classList.remove('d-none');
+        } else {
+          var taskID    = document.getElementById('reschedID').value;
+          var taskUser  = document.getElementById('reschedUser').value;
+          var taskName  = document.getElementById('resched_taskName').value;
+          var reason    = document.getElementById('rejectReason').value;
+          $.ajax({
+            method: "POST",
+            url: "../config/for_reschedule.php",
+            data: {
+              "rejectTask": true,
+              "taskID": taskID,
+              "taskUser": taskUser,
+              "taskName": taskName,
+              "reason": reason
+            },
+            success: function(response) {
+              if (response === 'Success') {
+                document.getElementById('success_log').innerHTML = 'You have successfully rejected the rescheduling of this task';
+                $('#review').modal('hide');
+                $('#danger').modal('hide');
+                $('#success').modal('show');
+              } else {
+                $('#danger').modal('hide');
+                document.getElementById('error_found').innerHTML = response;
+                $('#error').modal('show');
+                $reject.prop('disabled', false);
+              }
+            }
+          });
+        }
+      });
+    });
   }
 </script>
