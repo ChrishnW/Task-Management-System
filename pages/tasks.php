@@ -494,7 +494,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="resched" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content border-secondary">
       <div class="modal-header bg-secondary text-white">
         <h5 class="modal-title" id="exampleModalLongTitle">Reschedule Task</h5>
