@@ -38,7 +38,7 @@ if (isset($_POST['viewTask'])) {
     <label for="">Original Due Date:</label>
     <div class="input-group mb-2">
       <div class="input-group-prepend">
-        <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+        <div class="input-group-text"><i class="fas fa-calendar-times"></i></div>
       </div>
       <input type="date" id="resched_dateog" name="resched_dateog" class="form-control" value="<?php echo date('Y-m-d', strtotime($row['due_date'])); ?>" readonly>
     </div>
@@ -48,7 +48,7 @@ if (isset($_POST['viewTask'])) {
     } ?>
     <div class="input-group mb-2">
       <div class="input-group-prepend">
-        <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+        <div class="input-group-text"><i class="fas fa-calendar-check"></i></div>
       </div>
       <input type="date" id="resched_date" name="resched_date" class="form-control" value="<?php echo date('Y-m-d', strtotime($row['old_date'])); ?>">
     </div>

@@ -80,14 +80,14 @@ include('../include/header.php');
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content border-primary">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">Review Task</h5>
+        <h5 class="modal-title">Reschedule Task</h5>
       </div>
       <div class="modal-body" id="taskDetails">
       </div>
       <div class="modal-footer d-flex justify-content-between w-100">
         <div>
           <button type="button" class="btn btn-success" data-dismiss="modal" id="approveTask">Approve</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal" id="approveTask">Reject</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" id="rejectTask">Reject</button>
         </div>
         <button type="button" class="btn btn-secondary pull-right" data-dismiss="modal">Close</button>
       </div>
