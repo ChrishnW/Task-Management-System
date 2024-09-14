@@ -31,15 +31,17 @@ if (isset($_POST['submit'])) {
 			session_write_close();
 			if (password_verify($weak_password, $hash_password)) {
 				$con->next_result();
-				$check_request	= mysqli_query($con, "SELECT * FROM notification WHERE user='$username' AND icon='fas fa-key' AND status=1");
+				$check_request	= mysqli_query($con, "SELECT * FROM notification WHERE user='$username' AND icon='fas fa-user-secret'");
 				$check_get_rows	=	mysqli_fetch_assoc($check_request);
 				$check_rows			=	mysqli_num_rows($check_request);
 				$notif_id				=	$check_get_rows['id'];
 				if ($check_rows > 0) {
-					$query_update = mysqli_query($con, "UPDATE `notification` SET `date_created`='$datetime_current' WHERE id='$notif_id'");
+					$query_delete = mysqli_query($con, "DELETE FROM `notification` WHERE id='{$check_get_rows['id']}'");
+					$action = mysqli_real_escape_string($con, "$('#profileModal').modal('show');");
+					$query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `action`, `date_created`, `status`) VALUES ('$username', 'fas fa-user-secret', 'danger', 'Your password is still using the default. Please change it to enhance account security.', '$action', '$datetime_current', '1')");
 				} else {
 					$action = mysqli_real_escape_string($con, "$('#profileModal').modal('show');");
-					$query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `action`, `date_created`, `status`) VALUES ('$username', 'fas fa-key', 'danger', 'Your account still uses the default password. Please change it for security.', '$action', '$datetime_current', '1')");
+					$query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `action`, `date_created`, `status`) VALUES ('$username', 'fas fa-user-secret', 'danger', 'Your password is still using the default. Please change it to enhance account security.', '$action', '$datetime_current', '1')");
 				}
 				header("location: include/home.php");
 			} else {
