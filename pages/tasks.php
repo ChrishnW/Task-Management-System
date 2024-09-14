@@ -183,7 +183,8 @@ include('../include/header.php');
                   </thead>
                   <tbody id="myTasksTodo">
                     <?php
-                    function getTaskClass($taskClassNumber) {
+                    function getTaskClass($taskClassNumber)
+                    {
                       $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
                       return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
                     }
@@ -201,7 +202,8 @@ include('../include/header.php');
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $assignee ?></td>
-                        <td><?php echo $action; if($row['old_date'] === NULL) echo '<button type="button" class="btn btn-block btn-secondary" value="'.$row['id'].'" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button>'; ?></td>
+                        <td><?php echo $action;
+                            if ($row['old_date'] === NULL) echo '<button type="button" class="btn btn-block btn-secondary" value="' . $row['id'] . '" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button>'; ?></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -500,23 +502,21 @@ include('../include/header.php');
         <h5 class="modal-title" id="exampleModalLongTitle">Reschedule Task</h5>
       </div>
       <div class="modal-body">
-        <form id="submitDetails" enctype="multipart/form-data">
-          <input type="hidden" id="reschedID">
-          <label for="">Request Due Date:</label>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fas fa-calendar"></i></div>
-            </div>
-            <input type="date" id="resched_date" name="resched_date" class="form-control">
+        <input type="hidden" id="reschedID">
+        <label for="">Request Due Date:</label>
+        <div class="input-group mb-2">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i class="fas fa-calendar"></i></div>
           </div>
-          <label for="">Reason:</label>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fas fa-comment"></i></div>
-            </div>
-            <textarea name="resched_reason" id="resched_reason" class="form-control" placeholder="Please write your reason for rescheduling here."></textarea>
+          <input type="date" id="resched_date" name="resched_date" class="form-control">
+        </div>
+        <label for="">Reason:</label>
+        <div class="input-group mb-2">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i class="fas fa-comment"></i></div>
           </div>
-        </form>
+          <textarea name="resched_reason" id="resched_reason" class="form-control" placeholder="Please write your reason for rescheduling here."></textarea>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal" id="requestButton">Request</button>
@@ -773,7 +773,7 @@ include('../include/header.php');
     $('#requestButton').off('click').on('click', function() {
       let $button = $(this);
       $button.prop('disabled', true);
-      let reschedDate   = document.getElementById('resched_date').value;
+      let reschedDate = document.getElementById('resched_date').value;
       let reschedReason = document.getElementById('resched_reason').value;
       $.ajax({
         url: '../config/tasks.php',
