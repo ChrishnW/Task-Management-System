@@ -178,8 +178,45 @@
             $query_activity = mysqli_query($con, "SELECT * FROM system_log WHERE user='$username'");
             while ($row = $query_activity->fetch_assoc()) { ?>
               <tr>
-                <td><?php echo date_format(date_create($row['date_created']), "Y-m-d h:i:s"); ?></td>
+                <td><?php echo date_format(date_create($row['date_created']), "Y-m-d H:i:s"); ?></td>
                 <td><?php echo $row['action']; ?></td>
+              </tr>
+            <?php }
+            ?>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Activity Logs -->
+<div class="modal fade" id="notificationLogs" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLongTitle">Notification</h5>
+      </div>
+      <div class="modal-body" id="notificationDetails">
+        <table class="table table-borderless" id="notificationTable" width="100%" cellspacing="0">
+          <thead class='table table-primary'>
+            <tr>
+              <th>Date & Time</th>
+              <th></th>
+              <th>Subject</th>
+            </tr>
+          </thead>
+          <tbody id='dataTableBody'>
+            <?php
+            $query_notif = mysqli_query($con, "SELECT * FROM notification WHERE user='$username'");
+            while ($row = $query_notif->fetch_assoc()) { ?>
+              <tr>
+                <td><?php echo date_format(date_create($row['date_created']), "Y-m-d H:i:s"); ?></td>
+                <td><div class="icon-circle bg-<?php echo $row['type']; ?>"><i class="<?php echo $row['icon']; ?> text-white"></i></div></td>
+                <td><?php echo $row['body']; ?></td>
               </tr>
             <?php }
             ?>
@@ -257,11 +294,7 @@
         "id": id,
       },
       success: function(response) {
-        if (response === 'Success') {
-          location.reload();
-        } else {
-          location.reload();
-        }
+        console.log(response);
       }
     })
   }
@@ -489,6 +522,24 @@
     $('#activityLogs').on('shown.bs.modal', function() {
       if (!$.fn.DataTable.isDataTable('#activityTable')) {
         $('#activityTable').DataTable({
+          "paging": true,
+          "searching": true,
+          "ordering": true,
+          "info": true,
+          "autoWidth": false,
+          "responsive": true,
+          "order": [
+            [0, "desc"]
+          ],
+          "pageLength": 5,
+          "lengthMenu": [5, 10, 25, 50, 100]
+        });
+      }
+    });
+
+    $('#notificationLogs').on('shown.bs.modal', function() {
+      if (!$.fn.DataTable.isDataTable('#notificationTable')) {
+        $('#notificationTable').DataTable({
           "paging": true,
           "searching": true,
           "ordering": true,

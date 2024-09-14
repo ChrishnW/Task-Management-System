@@ -211,7 +211,7 @@
 
             <!-- Nav Item - Alerts -->
             <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="readAllNotification(this)">
+              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <!-- Counter - Alerts -->
                 <span class="badge badge-danger badge-counter"><?php echo $total_notification ?></span>
@@ -227,7 +227,7 @@
                 if (mysqli_num_rows($query_check) > 0) {
                   while ($row = mysqli_fetch_assoc($query_check)) {
                     $date_created = date_format(date_create($row['date_created']), "F d, Y @ h:i A"); ?>
-                    <button class="dropdown-item d-flex align-items-center <?php if($row['status'] == 0) echo 'bg-gray-200'; ?>" onclick="<?php echo $row['action']; ?>">
+                    <button class="dropdown-item d-flex align-items-center <?php if($row['status'] == 0) echo 'bg-gray-200'; ?>" value="<?php echo $row['id']; ?>" onclick="<?php echo $row['action']; ?> readNotification(this);">
                       <input type="hidden" name="notificationID[]" id="notificationID" value="<?php echo $row['id']; ?>">
                       <div class="mr-3">
                         <div class="icon-circle bg-<?php echo $row['type']; ?>">
@@ -245,7 +245,7 @@
                     <div class="small text-gray-500 text-center">No Notification</div>
                   </a>
                 <?php } ?>
-                <button class="dropdown-item text-center small text-gray-500">View All Notification</button>
+                <button class="dropdown-item text-center small text-gray-500" data-toggle="modal" data-target="#notificationLogs">View All Notification</button>
               </div>
             </li>
 
