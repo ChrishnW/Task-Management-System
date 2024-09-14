@@ -8,6 +8,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+  <!-- Cache control meta tags -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <title>Task Management System</title>
 
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/Logo.png">
@@ -227,7 +232,7 @@
                 if (mysqli_num_rows($query_check) > 0) {
                   while ($row = mysqli_fetch_assoc($query_check)) {
                     $date_created = date_format(date_create($row['date_created']), "F d, Y @ h:i A"); ?>
-                    <button class="dropdown-item d-flex align-items-center <?php if($row['status'] == 0) echo 'bg-gray-200'; ?>" value="<?php echo $row['id']; ?>" onclick="<?php echo $row['action']; ?> readNotification(this);">
+                    <button class="dropdown-item d-flex align-items-center <?php if ($row['status'] == 0) echo 'bg-gray-200'; ?>" value="<?php echo $row['id']; ?>" onclick="<?php echo $row['action']; ?> readNotification(this);">
                       <input type="hidden" name="notificationID[]" id="notificationID" value="<?php echo $row['id']; ?>">
                       <div class="mr-3">
                         <div class="icon-circle bg-<?php echo $row['type']; ?>">
