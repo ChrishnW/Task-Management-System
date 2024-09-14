@@ -100,7 +100,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-danger" type="button" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>
@@ -117,7 +117,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success d-none" id="passUpdate">Save</button>
-        <button class="btn btn-danger" type="button" data-dismiss="modal">Close</button>
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
