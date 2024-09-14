@@ -41,7 +41,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         </a>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -75,7 +75,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         Task imported successfully!
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

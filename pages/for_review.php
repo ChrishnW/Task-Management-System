@@ -107,7 +107,7 @@ include('../include/header.php');
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal" id="confirmButton">Confirm</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -122,7 +122,7 @@ include('../include/header.php');
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal" id="approveTask">Approve</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -140,7 +140,7 @@ include('../include/header.php');
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="delete_id">Proceed</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -157,7 +157,7 @@ include('../include/header.php');
         <p id="error_found"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -174,7 +174,7 @@ include('../include/header.php');
         <p id="success_log"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

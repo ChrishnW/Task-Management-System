@@ -187,7 +187,7 @@ include('../include/header.php');
       <div class="modal-body" id="viewAssignedTaskTable">
       </div>
       <div class="modal-footer">
-        <button type="button" id="destroyTable" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" id="destroyTable" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -246,7 +246,7 @@ include('../include/header.php');
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" onclick="editTask(this)" class="btn btn-primary" id="emptask_id">Update</button>
       </div>
     </div>
@@ -261,7 +261,7 @@ include('../include/header.php');
       <div class="modal-body text-center" id="resultBody">
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -279,7 +279,7 @@ include('../include/header.php');
         You're about to delete this assignee's task, <br> do you still want to proceed?
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" onclick="RemoveTask(this)" class="btn btn-primary">Proceed</button>
       </div>
     </div>
@@ -297,7 +297,7 @@ include('../include/header.php');
         <p id="error_found"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -314,7 +314,7 @@ include('../include/header.php');
         <p id="success_log"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

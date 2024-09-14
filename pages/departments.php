@@ -97,7 +97,7 @@ include('../include/header.php');
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" onclick="deparmentCreate(this)" class="btn btn-primary">Register</button>
       </div>
     </div>
@@ -142,7 +142,7 @@ include('../include/header.php');
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" onclick="deparmentUpdate(this)" class="btn btn-primary" id="department_id">Update</button>
       </div>
     </div>
@@ -161,7 +161,7 @@ include('../include/header.php');
         You're about to delete this department, <br> do you still want to proceed?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" onclick="deleteDepartment(this)" class="btn btn-primary" id="delete_id">Proceed</button>
       </div>
     </div>
@@ -179,7 +179,7 @@ include('../include/header.php');
         <p id="error_found"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -196,7 +196,7 @@ include('../include/header.php');
         <p id="success_log"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
