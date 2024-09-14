@@ -103,9 +103,12 @@ include('../include/header.php');
       </div>
       <div class="modal-body" id="taskDetails">
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal" id="approveTask">Approve</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      <div class="modal-footer d-flex justify-content-between w-100">
+        <div>
+          <button type="button" class="btn btn-success" data-dismiss="modal" id="approveTask">Approve</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" id="approveTask">Reject</button>
+        </div>
+        <button type="button" class="btn btn-secondary pull-right" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
