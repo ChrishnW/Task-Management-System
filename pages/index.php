@@ -399,7 +399,7 @@ include('../include/header.php');
             <h6 class="m-0 font-weight-bold text-primary">Calendar of <?php echo date('F Y') ?></h6>
           </div>
           <div class="card-body table-responsive">
-            <table class="calendar table table-bordered">
+            <table class="calendar table table-borderless">
               <thead>
                 <tr>
                   <th>Sun</th>
@@ -767,7 +767,7 @@ include('../include/header.php');
             <h6 class="m-0 font-weight-bold text-primary">Calendar of <?php echo date('F Y') ?></h6>
           </div>
           <div class="card-body table-responsive">
-            <table class="calendar table table-bordered">
+            <table class="calendar table table-borderless">
               <thead>
                 <tr>
                   <th>Sun</th>
