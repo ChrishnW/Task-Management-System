@@ -57,67 +57,35 @@ include('../include/header.php');
           <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
             <thead class='table table-success'>
               <tr>
-                <th class="col col-md-1">Action</th>
+                <th>Action</th>
                 <th>Code</th>
                 <th>Title</th>
                 <th>Classification</th>
-                <th class="col col-md-1">Due Date</th>
+                <th>Due Date</th>
                 <th>Asignee</th>
                 <th>Progress</th>
               </tr>
             </thead>
-            <tfoot class='table table-success'>
-              <tr>
-                <th class="col col-md-1">Action</th>
-                <th>Code</th>
-                <th>Title</th>
-                <th>Classification</th>
-                <th class="col col-md-1">Due Date</th>
-                <th>Asignee</th>
-                <th>Progress</th>
-              </tr>
-            </tfoot>
             <tbody id='dataTableBody'>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details FROM tasks_details JOIN accounts ON tasks_details.in_charge=accounts.username JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE task_status=1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE)");
+              function getTaskClass($taskClassNumber)
+              {
+                $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
+                return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
+              }
+              $result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge=accounts.username JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE task_status=1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE)");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
-                  if (empty($row['file_name'])) {
-                    $imageURL = '../assets/img/user-profiles/nologo.png';
-                  } else {
-                    $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-                  }
-                  $task_classes = [1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'], 2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'], 3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'], 4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'], 5 => ['name' => 'PROJECT', 'badge' => 'info'], 6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']];
-                  if (isset($task_classes[$row['task_class']])) {
-                    $class = $task_classes[$row['task_class']]['name'];
-                    $badge = $task_classes[$row['task_class']]['badge'];
-                  } else {
-                    $class = 'Unknown';
-                    $badge = 'secondary';
-                  }
-                  $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
-                  $due_date  = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                  $assignee  = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="' . $row['in_charge'] . '">';
-                  $status_badges = [
-                    'NOT YET STARTED' => 'primary',
-                    'IN PROGRESS' => 'warning',
-                    'REVIEW' => 'danger',
-                    'FINISHED' => 'success',
-                    'RESCHEDULE' => 'secondary'
-                  ];
-                  $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>';
-              ?>
+                  $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
+                  $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
+                  $progress = '<span class="badge badge-' . ['NOT YET STARTED' => 'primary', 'IN PROGRESS' => 'warning', 'REVIEW' => 'danger', 'FINISHED' => 'success', 'RESCHEDULE' => 'secondary'][$row['status']] . '">' . $row['status'] . '</span>'; ?>
                   <tr>
                     <td><button type="button" class="btn btn-info btn-block" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button> <button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
-                    <td>
-                      <center /><?php echo $row['task_code'] ?>
-                    </td>
+                    <td><center /><?php echo $row['task_code'] ?></td>
                     <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-                    <td><?php echo $task_class ?></td>
+                    <td><?php echo getTaskClass($row['task_class']); ?></td>
                     <td><?php echo $due_date ?></td>
-                    <td>
-                      <center /><?php echo $assignee ?>
-                    </td>
+                    <td><?php echo $assignee ?></td>
                     <td><?php echo $progress ?></td>
                   </tr>
               <?php }
