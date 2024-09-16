@@ -46,5 +46,5 @@ if (date('N') >= 1 && date('N') <= 5) {
 
 if ($systemAction != '') {
   $systemTime  = date('Y-m-d H:i:s');
-  $query_log  = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$systemAction', '$systemTime', 'SYSTEM MODULE')");
+  $query_log  = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$systemAction', '$systemTime', 'ADMIN')");
 }

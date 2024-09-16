@@ -52,5 +52,5 @@ if (mysqli_num_rows($query_tasks) > 0) {
 
 if ($systemAction != '') {
   $systemTime  = date('Y-m-d H:i:s');
-  $query_log  = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$systemAction', '$systemTime', 'SYSTEM MODULE')");
+  $query_log  = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$systemAction', '$systemTime', 'ADMIN')");
 }
