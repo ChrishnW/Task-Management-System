@@ -324,7 +324,7 @@ include('../include/header.php');
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $old_date ?></td>
                         <td><?php echo $assignee ?></td>
-                        <td><button type="button" class="btn btn-block btn-secondary" value='<?php echo $row['id']; ?>' onclick="rescheduleTask(this)"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
+                        <td><button type="button" class="btn btn-block btn-secondary" value='<?php echo $row['id']; ?>' onclick="rescheduleTask(this)" disabled><i class="fas fa-pen fa-fw"></i> Edit</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -1067,19 +1067,7 @@ include('../include/header.php');
       }
 
       function initializeDataTable(tableId) {
-        if (tableId === 'myTasksTableTodo') {
-          $('#' + tableId).DataTable({
-            "order": [
-              [4, "asc"],
-              [2, "asc"]
-            ],
-            pageLength: 5,
-            lengthMenu: [5, 10, 25, 50, 100],
-            "drawCallback": function(settings) {
-              $('[data-toggle="tooltip"]').tooltip();
-            }
-          });
-        } else {
+        if (tableId !== 'myTasksTableTodo') {
           $('#' + tableId).DataTable({
             "order": [
               [3, "desc"],
@@ -1109,34 +1097,55 @@ include('../include/header.php');
         initializeDataTable(initialTableId);
       }
 
-      const selectAllCheckbox = document.getElementById('selectAll');
-      const actionButton = document.getElementById('actionButton');
-      const checkboxes = document.querySelectorAll('input[name="selected_ids[]"]');
+      const selectAllCheckbox = $('#selectAll');
+      const actionButton = $('#actionButton');
+      const table = $('#myTasksTableTodo').DataTable({
+        "order": [
+          [4, "asc"],
+          [2, "asc"]
+        ],
+        pageLength: 5,
+        lengthMenu: [5, 10, 25, 50, 100],
+        "drawCallback": function(settings) {
+          $('[data-toggle="tooltip"]').tooltip();
+        }
+      }); // Assuming your DataTable has an id of #example
 
       function updateActionButton() {
-        const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked && !checkbox.disabled); // Ignore disabled checkboxes
+        // Select all checkboxes across pages
+        const allCheckboxes = table.cells(null, 0, {
+          'page': 'all'
+        }).nodes().to$().find('input[name="selected_ids[]"]');
+        const anyChecked = allCheckboxes.filter(':checked:not(:disabled)').length > 0;
+
         if (anyChecked) {
-          actionButton.classList.remove('d-none');
+          actionButton.removeClass('d-none');
         } else {
-          actionButton.classList.add('d-none');
+          actionButton.addClass('d-none');
         }
       }
 
-      selectAllCheckbox.addEventListener('change', function() {
-        checkboxes.forEach(checkbox => {
-          if (!checkbox.disabled) { // Only check checkboxes that are not disabled
-            checkbox.checked = selectAllCheckbox.checked;
+      // Handle "Select All" checkbox
+      selectAllCheckbox.on('change', function() {
+        // Get all rows (including those not visible)
+        const allRows = table.rows({
+          'search': 'applied'
+        }).nodes();
+
+        // Loop over each row to set checked status for each checkbox
+        $(allRows).find('input[name="selected_ids[]"]').each(function() {
+          if (!$(this).prop('disabled')) {
+            $(this).prop('checked', selectAllCheckbox.prop('checked'));
           }
         });
+
         updateActionButton();
       });
 
-      checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-          updateActionButton();
-        });
+      // Handle individual checkbox change
+      $('#example tbody').on('change', 'input[name="selected_ids[]"]', function() {
+        updateActionButton();
       });
-
     <?php } ?>
   });
 
