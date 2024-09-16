@@ -1114,7 +1114,7 @@ include('../include/header.php');
       const checkboxes = document.querySelectorAll('input[name="selected_ids[]"]');
 
       function updateActionButton() {
-        const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+        const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked && !checkbox.disabled); // Ignore disabled checkboxes
         if (anyChecked) {
           actionButton.classList.remove('d-none');
         } else {
@@ -1124,7 +1124,9 @@ include('../include/header.php');
 
       selectAllCheckbox.addEventListener('change', function() {
         checkboxes.forEach(checkbox => {
-          checkbox.checked = selectAllCheckbox.checked;
+          if (!checkbox.disabled) { // Only check checkboxes that are not disabled
+            checkbox.checked = selectAllCheckbox.checked;
+          }
         });
         updateActionButton();
       });
@@ -1134,6 +1136,7 @@ include('../include/header.php');
           updateActionButton();
         });
       });
+
     <?php } ?>
   });
 
