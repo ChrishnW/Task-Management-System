@@ -228,7 +228,7 @@
                 </h6>
                 <?php
                 $con->next_result();
-                $query_check = mysqli_query($con, "SELECT * FROM notification WHERE user='$username' ORDER BY id DESC, status ASC LIMIT 3");
+                $query_check = mysqli_query($con, "SELECT * FROM notification WHERE user='$username' ORDER BY status DESC, id DESC LIMIT 3");
                 if (mysqli_num_rows($query_check) > 0) {
                   while ($row = mysqli_fetch_assoc($query_check)) {
                     $date_created = date_format(date_create($row['date_created']), "F d, Y @ h:i A"); ?>
@@ -250,7 +250,7 @@
                     <div class="small text-gray-500 text-center">No Notification</div>
                   </a>
                 <?php } ?>
-                <button class="dropdown-item text-center small text-gray-500" data-toggle="modal" data-target="#notificationLogs">View All Notification</button>
+                <button class="dropdown-item text-center small text-gray-500" onclick="readAllNotification(this)" data-toggle="modal" data-target="#notificationLogs">View All Notification</button>
               </div>
             </li>
 
