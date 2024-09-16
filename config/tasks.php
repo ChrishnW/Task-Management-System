@@ -17,22 +17,23 @@ if (isset($_POST['filterTable'])) {
   $department = $_POST['department'];
   $section    = $_POST['section'];
   $progress   = $_POST['progress'];
+  $status     = isset($_POST['status']) ? $_POST['status'] : 1;
 
-  $query = "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE task_status = 1";
+
+  $query = "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE task_status = '$status'";
   if ($date_from != NULL && $date_to != NULL) {
     $query .= " AND DATE(due_date) >= '$date_to' AND DATE(due_date) <= '$date_from'";
   } else {
     $query .= " AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE)";
   }
   if ($department != NULL && $section != NULL) {
+    $query .= " AND section.dept_id = '$department' AND tasks_details.task_for = '$section'";
+  }
+  if ($department != NULL) {
+    $query .= " AND section.dept_id = '$department'";
+  }
+  if ($section != NULL) {
     $query .= " AND tasks_details.task_for = '$section'";
-  } else {
-    if ($department != NULL) {
-      $query .= " AND section.dept_id = '$department'";
-    }
-    if ($section != NULL) {
-      $query .= " AND tasks_details.task_for = '$section'";
-    }
   }
   if ($progress != NULL) {
     $query .= " AND tasks_details.status = '$progress'";

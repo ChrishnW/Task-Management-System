@@ -7,15 +7,15 @@ include('../include/header.php');
     <div class="row">
       <div class="form-group col-md-2">
         <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control">
+        <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTable(this)">
       </div>
       <div class="form-group col-md-2">
         <label>From</label>
-        <input type="date" name="date_from" id="date_from" class="form-control">
+        <input type="date" name="date_from" id="date_from" class="form-control" onchange="filterTable(this)">
       </div>
       <div class="form-group col-md-2">
         <label>Department</label>
-        <select id="department" name="department" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" data-live-search="true" onchange="selectSection(this);">
+        <select id="department" name="department" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" data-live-search="true" onchange="selectSection(this); filterTable(this);">
           <option value="" data-subtext="Default" selected>All</option>
           <?php
           $con->next_result();
@@ -29,13 +29,13 @@ include('../include/header.php');
       </div>
       <div class="form-group col-md-2">
         <label>Section</label>
-        <select id="section" name="section[]" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5">
+        <select id="section" name="section[]" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable(this)">
           <option value="" data-subtext="Default" selected>All</option>
         </select>
       </div>
       <div class="form-group col-md-2">
         <label>Progress</label>
-        <select id="progress" name="progress" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5">
+        <select id="progress" name="progress" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable(this)">
           <option value="" data-subtext="Default" selected>All</option>
           <option value="NOT YET STARTED">Not Yet Started</option>
           <option value="IN PROGRESS">In-Progress</option>
@@ -44,9 +44,12 @@ include('../include/header.php');
           <option value="RESCHEDULE">Reschedule</option>
         </select>
       </div>
-      <div class="form-group col">
-        <br>
-        <button type="button" class="btn btn-success btn-sm" onclick="filterTable(this)"><i class="fas fa-filter fa-fw"></i> Filter Table</button>
+      <div class="form-group col-sm-auto">
+        <label>Status</label>
+        <select id="taskStatus" name="taskStatus" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" onchange="filterTable(this)">
+          <option value="1" data-subtext="Default" selected>Active</option>
+          <option value="0">In-Active</option>
+        </select>
       </div>
     </div>
     <div class="card">
@@ -82,7 +85,9 @@ include('../include/header.php');
                   $progress = '<span class="badge badge-' . ['NOT YET STARTED' => 'primary', 'IN PROGRESS' => 'warning', 'REVIEW' => 'danger', 'FINISHED' => 'success', 'RESCHEDULE' => 'secondary'][$row['status']] . '">' . $row['status'] . '</span>'; ?>
                   <tr>
                     <td><button type="button" class="btn btn-info btn-block" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button> <button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
-                    <td><center /><?php echo $row['task_code'] ?></td>
+                    <td>
+                      <center /><?php echo $row['task_code'] ?>
+                    </td>
                     <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                     <td><?php echo getTaskClass($row['task_class']); ?></td>
                     <td><?php echo $due_date ?></td>
@@ -611,9 +616,13 @@ include('../include/header.php');
   function filterTable() {
     var date_to = document.getElementById('date_to').value;
     var date_from = document.getElementById('date_from').value;
-    var department = <?php echo json_encode($dept_id) ?>;
+    var department = document.getElementById('department').value;
     var section = document.getElementById('section').value;
     var progress = document.getElementById('progress').value;
+    var status = document.getElementById('taskStatus').value;
+    if (department.value === '') {
+      department.value = null;
+    }
     if (section.value === '') {
       section.value = null;
     }
@@ -638,6 +647,7 @@ include('../include/header.php');
         "department": department,
         "section": section,
         "progress": progress,
+        "status": status
       },
       success: function(response) {
         $('#dataTableBody').append(response);
