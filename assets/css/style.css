@@ -301,8 +301,6 @@
 .calendar th,
 .calendar td {
     text-align: center;
-    padding   : 10px;
-    border    : 1px solid #dee2e6;
 }
 
 .calendar th {
@@ -311,18 +309,18 @@
 }
 
 .calendar .today {
-    border-width: 3px;
-    border-color: #000000;
+    background-color: #4e73df;
+    color: #fff;
+    border-radius: 100%;
 }
 
 .calendar .special {
-    background-color: #ffeb3b;
-    color           : #000;
+    font-weight: bolder;
+    color: #f90000;
 }
 
 .calendar .sunday {
-    background-color: red;
-    color           : white;
+    color: #FF0000;
 }
 
 .custom-card {
