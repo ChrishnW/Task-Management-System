@@ -761,6 +761,7 @@ include('../include/header.php');
     </div>
 
     <div class="row">
+      <!-- Calendar -->
       <div class="col-xl-4">
         <div class="card border-left-primary shadow mb-4 h-75">
           <div class="card-header py-3">
@@ -841,7 +842,7 @@ include('../include/header.php');
           </div>
         </div>
       </div>
-
+      <!-- Reports -->
       <div class="col-xl-5">
         <div class="card border-left-primary shadow mb-4 h-75">
           <div class="card-header m-0 font-weight-bolder text-primary">Upcoming Report</div>
@@ -892,7 +893,7 @@ include('../include/header.php');
           <?php } ?>
         </div>
       </div>
-
+      <!-- Criteria -->
       <div class="col-xl-3">
         <div class="card border-left-primary shadow mb-4 h-75">
           <div class="card-header py-3">
