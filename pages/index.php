@@ -849,8 +849,9 @@ include('../include/header.php');
           $con->next_result();
           $today = date('Y-m-d 16:00:00');
           $query_result = mysqli_query($con, "SELECT DISTINCT td.task_name, tl.task_details, td.due_date, s.sec_name, s.dept_id FROM tasks_details td JOIN task_list tl ON tl.task_name=td.task_name JOIN section s ON s.sec_id=td.task_for WHERE td.task_class=6 AND dept_id='$dept_id' AND td.date_accomplished IS NULL ORDER BY td.due_date ASC");
-          if (mysqli_num_rows($query_result) > 0) {
-            while ($row = $query_result->fetch_assoc()) {
+          if (mysqli_num_rows($query_result) > 0) { ?>
+            <div class="card-body scrollable-card-body-md">
+            <?php while ($row = $query_result->fetch_assoc()) {
               $currentDate = new DateTime();
               $dueDate     = new DateTime($row['due_date']);
               $interval    = $currentDate->diff($dueDate);
@@ -871,7 +872,6 @@ include('../include/header.php');
               $due_date_temp  = date_create($row['due_date']);
               $due_date       = date_format($due_date_temp, "jS \of F Y");
               $due_day        = date_format($due_date_temp, "l"); ?>
-              <div class="card-body scrollable-card-body-md">
                 <div class="card shadow mb-4">
                   <div class="card-header py-3 bg-<?php echo $randomColor ?> text-white">
                     <h6 class="m-0 font-weight-bold"><?php echo $row['task_name']; ?></h6>
@@ -883,9 +883,9 @@ include('../include/header.php');
                     <p class="card-text" id="daysRemaining"><strong>Days Remaining:</strong> <?php echo $remainingTime; ?></p>
                   </div>
                 </div>
-              </div>
-            <?php }
-          } else { ?>
+            <?php } ?>
+            </div>
+            <?php } else { ?>
             <div class="card-body d-flex justify-content-center align-items-center bg-nodata-image">
               <h5 class="font-weight-bolder text-dark blurred-background">No data to display~</h5>
             </div>
