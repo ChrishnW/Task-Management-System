@@ -823,6 +823,7 @@ include('../include/header.php');
   }
 
   function editTask(element) {
+    element.disabled          = true;
     var edit_task             = document.getElementById('emptask_id').value;
     var edit_taskName         = document.getElementById('emptask_name').value;
     var edit_requirement      = document.getElementById('emptask_file').checked ? 1 : 0;
