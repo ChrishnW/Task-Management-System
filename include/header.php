@@ -53,15 +53,14 @@
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
-      <?php
-      if ($access == 1) { ?>
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item">
-          <a class="nav-link" href="index.php">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
-        </li>
 
+      <li class="nav-item">
+        <a class="nav-link" href="index.php">
+          <i class="fas fa-th fa-fw "></i>
+          <span>Dashboard</span></a>
+      </li>
+
+      <?php if ($access == 1) { ?>
         <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             <i class="fas fa-users-cog"></i>
@@ -109,13 +108,6 @@
           </div>
         </li>
       <?php } elseif ($access == 2) { ?>
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item">
-          <a class="nav-link" href="index.php">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
-        </li>
-
         <li class="nav-item">
           <a class="nav-link" href="tasks.php">
             <i class="fas fa-calendar-day"></i>
@@ -134,31 +126,38 @@
             <span>Performance</span></a>
         </li>
       <?php } elseif ($access == 3) { ?>
-        <!-- Nav Item - Dashboard -->
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading"> Components </div>
+
         <li class="nav-item">
-          <a class="nav-link" href="index.php">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
+          <a class="nav-link" href="accounts.php">
+            <i class="fas fa-fw fa-tag"></i>
+            <span>Assigned Task</span></a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-tasks"></i>
-            <span>Task</span>
-          </a>
-          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="accounts.php">Assigned Task</a>
-              <a class="collapse-item" href="tasks.php">Deployed Task</a>
-            </div>
-          </div>
+          <a class="nav-link" href="tasks.php">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Deployed Task</span></a>
+        </li>
+
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading"> Approval </div>
+
+        <li class="nav-item">
+          <a class="nav-link" href="for_review.php">
+            <i class="fas fa-fw fa-bell"></i>
+            <span>Review Task</span></a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="404.php">
-            <i class="fas fa-chart-bar"></i>
-            <span>Project</span></a>
+          <a class="nav-link" href="for_reschedule.php">
+            <i class="fas fa-calendar-day"></i>
+            <span>Reschedule Task</span></a>
         </li>
+
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading"> Ratings </div>
 
         <li class="nav-item">
           <a class="nav-link" href="../pages/performance.php">
@@ -168,7 +167,7 @@
       <?php } ?>
 
       <!-- Divider -->
-      <!-- <hr class="sidebar-divider d-none d-md-block"> -->
+      <hr class="sidebar-divider d-none d-md-block">
 
       <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">
