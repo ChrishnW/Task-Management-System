@@ -14,7 +14,7 @@ if (isset($_POST['sectionSelect'])) {
 if (isset($_POST['filterTable'])) {
   $date_from  = $_POST['date_from'];
   $date_to    = $_POST['date_to'];
-  $department = isset($_POST['department']) ?? '';
+  $department = isset($_POST['department']) ? $_POST['department'] : '';
   $section    = $_POST['section'];
   $progress   = $_POST['progress'];
   $status     = isset($_POST['status']) ? $_POST['status'] : 1;
