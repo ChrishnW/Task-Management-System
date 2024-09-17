@@ -519,3 +519,15 @@
 .system-logo {
     width: 50px;
 }
+
+.blurred-background {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.2); /* semi-transparent */
+}
+
+.bg-nodata-image {
+  background         : url(../img/illustrations/nodata.png);
+  background-position: center;
+  background-repeat  : no-repeat;
+  background-size    : cover;
+}

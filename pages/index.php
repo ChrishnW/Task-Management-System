@@ -762,11 +762,11 @@ include('../include/header.php');
 
     <div class="row">
       <div class="col-xl-4">
-        <div class="card border-left-primary shadow mb-4">
+        <div class="card border-left-primary shadow mb-4 h-75">
           <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Calendar of <?php echo date('F Y') ?></h6>
           </div>
-          <div class="card-body table-responsive">
+          <div class="card-body table-responsive p-0">
             <table class="calendar table table-borderless">
               <thead>
                 <tr>
@@ -843,128 +843,76 @@ include('../include/header.php');
       </div>
 
       <div class="col-xl-5">
-        <div class="card border-left-info shadow mb-4">
-          <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-info">Upcoming Reports</h6>
-          </div>
-          <div class="card-body scrollable-card-body">
-            <?php
-            $con->next_result();
-            $today = date('Y-m-d 16:00:00');
-            $query_result = mysqli_query($con, "SELECT td.*, s.dept_id, s.dept_id, CONCAT(ac.fname,' ',ac.lname) AS Mname FROM tasks_details td JOIN section s ON s.sec_id = td.task_for JOIN accounts ac ON td.in_charge = ac.username WHERE td.task_status=1 AND s.dept_id='$dept_id' AND td.due_date!='$today' AND td.status='NOT YET STARTED' ORDER BY td.due_date ASC");
-            if (mysqli_num_rows($query_result) > 0) {
-              while ($row = $query_result->fetch_assoc()) {
-                $currentDate = new DateTime();
-                $dueDate     = new DateTime($row['due_date']);
-                $interval    = $currentDate->diff($dueDate);
-                if ($currentDate < $dueDate) {
-                  if ($interval->days > 0 && $interval->days >= 1) {
-                    $remainingTime = $interval->days . ' days remaining';
-                  } elseif ($interval->days == 0) {
-                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes remaining';
-                  }
-                } else {
-                  if ($interval->days > 0 && $interval->days >= 1) {
-                    $remainingTime = $interval->days . ' days overdue';
-                  } elseif ($interval->days == 0) {
-                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes overdue';
-                  }
+        <div class="card border-left-primary shadow mb-4 h-75">
+          <div class="card-header m-0 font-weight-bolder text-primary">Upcoming Report</div>
+          <?php
+          $con->next_result();
+          $today = date('Y-m-d 16:00:00');
+          $query_result = mysqli_query($con, "SELECT DISTINCT td.task_name, tl.task_details, td.due_date, s.sec_name, s.dept_id FROM tasks_details td JOIN task_list tl ON tl.task_name=td.task_name JOIN section s ON s.sec_id=td.task_for WHERE td.task_class=6 AND dept_id='$dept_id' AND td.date_accomplished IS NULL ORDER BY td.due_date ASC");
+          if (mysqli_num_rows($query_result) > 0) {
+            while ($row = $query_result->fetch_assoc()) {
+              $currentDate = new DateTime();
+              $dueDate     = new DateTime($row['due_date']);
+              $interval    = $currentDate->diff($dueDate);
+              if ($currentDate < $dueDate) {
+                if ($interval->days > 0 && $interval->days >= 1) {
+                  $remainingTime = $interval->days . ' days remaining';
+                } elseif ($interval->days == 0) {
+                  $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes remaining';
                 }
-                $border         = array('primary', 'danger', 'info', 'success');
-                $randomBorder   = array_rand($border);
-                $selectBorder   = $border[$randomBorder];
-                $due_date_temp  = date_create($row['due_date']);
-                $due_date       = date_format($due_date_temp, "jS \of F Y");
-                $due_day        = date_format($due_date_temp, "l"); ?>
-                <div class="card mb-4 py-3 border-bottom-<?php echo $selectBorder ?>">
-                  <div class="card-body custom-card">
-                    <div class="left-content text-<?php echo $selectBorder ?>">
-                      <div class="display-8 font-weight-bold"><?php echo $due_date ?></div>
-                      <div class="font-weight-bold"><?php echo $due_day ?></div>
-                    </div>
-                    <div class="middle-content text-center">
-                      <div class="font-weight-bold display-7"><?php echo $row['task_name'] ?></div>
-                      <div class="text-<?php echo $selectBorder ?> font-weight-bold">Monthly Report</div>
-                      <?php echo $row['Mname']; ?>
-                    </div>
-                    <div class="right-content text-center">
-                      <i class="far fa-clock display-5"></i>
-                      <h6 class="font-weight-bold text-<?php echo $selectBorder ?>"><?php echo $remainingTime ?></h6>
-                    </div>
+              } else {
+                if ($interval->days > 0 && $interval->days >= 1) {
+                  $remainingTime = $interval->days . ' days overdue';
+                } elseif ($interval->days == 0) {
+                  $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes overdue';
+                }
+              }
+              $randomColor    = $color[array_rand($color = array('primary', 'danger', 'info', 'success'))];
+              $due_date_temp  = date_create($row['due_date']);
+              $due_date       = date_format($due_date_temp, "jS \of F Y");
+              $due_day        = date_format($due_date_temp, "l"); ?>
+              <div class="card-body scrollable-card-body-md">
+                <div class="card shadow mb-4">
+                  <div class="card-header py-3 bg-<?php echo $randomColor ?> text-white">
+                    <h6 class="m-0 font-weight-bold"><?php echo $row['task_name']; ?></h6>
+                  </div>
+                  <div class="card-body">
+                    <p class="card-text"><strong>Description:</strong> <?php echo $row['task_details']; ?></p>
+                    <p class="card-text"><strong>Section:</strong> <?php echo ucwords(strtolower($row['sec_name'])) ?></p>
+                    <p class="card-text"><strong>Due Date:</strong> <?php echo $due_date ?></p>
+                    <p class="card-text" id="daysRemaining"><strong>Days Remaining:</strong> <?php echo $remainingTime; ?></p>
                   </div>
                 </div>
-              <?php }
-            } else { ?>
-              <div class="card-body text-center">
-                No scheduled monthly report.
               </div>
-            <?php } ?>
-          </div>
-        </div>
-
-        <div class="card border-left-danger shadow mb-4">
-          <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Project Progression</h6>
-          </div>
-          <div class="card-body scrollable-card-body">
-            <?php
-            $con->next_result();
-            $query_result = mysqli_query($con, "SELECT project_list.*, accounts.file_name, accounts.username FROM project_list JOIN department ON department.dept_id=project_list.dept_id JOIN accounts ON accounts.id=project_list.leader WHERE project_list.dept_id='$dept_id'");
-            if (mysqli_num_rows($query_result) > 0) {
-              while ($row = mysqli_fetch_assoc($query_result)) { ?>
-                <div class="card mb-4 py-3 border-bottom-danger">
-                  <div class="card-body custom-card">
-                    <div class="left-content text-<?php echo $selectBorder ?> col-5">
-                      <div class="display-8 font-weight-bold"><?php echo $row['title']; ?></div>
-                      <div class="font-weight-light font-italic display-8"><?php echo $row['details']; ?></div>
-                    </div>
-                    <div class="middle-content text-center col-7">
-                      <i class="fas fa-user-circle"></i> Project Leader: <?php echo $row['username']; ?><br>
-                      <i class="fas fa-calendar-day fa-fw"></i>Due Date: <?php echo date_format(date_create($row['end']), "F d, Y") ?>
-                      <hr class="sidebar-divider d-none d-md-block">
-                      <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">
-                          75%
-                        </div>
-                      </div>
-                      <div class="font-weight-bold">
-                        <?php echo $row['status']; ?>
-                      </div>
-                    </div>
-                    <!-- <div class="right-content text-center">
-                    </div> -->
-                  </div>
-                </div>
-              <?php }
-            } else { ?>
-              <div class="card-body text-center">
-                No current in-progress project.
-              </div>
-            <?php } ?>
-          </div>
+            <?php }
+          } else { ?>
+            <div class="card-body d-flex justify-content-center align-items-center bg-nodata-image">
+              <h5 class="font-weight-bolder text-dark blurred-background">No data to display~</h5>
+            </div>
+          <?php } ?>
         </div>
       </div>
 
       <div class="col-xl-3">
-        <div class="card border-left-secondary shadow mb-4">
+        <div class="card border-left-primary shadow mb-4 h-75">
           <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-secondary">Rating Criteria for Task and Reports</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Rating Criteria for Task and Reports</h6>
           </div>
           <div class="card-body scrollable-card-body-md">
             <div class="card shadow mb-4">
               <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rating 5: 105% Achievement</h6>
+                <h6 class="m-0 font-weight-bold text-success">Rating 5: 105% Achievement</h6>
               </div>
               <div class="card-body display-9 font-weight-bolder">
-                <p><b>Excellent:</b> The task was completed to an outstanding standard. The result far exceeds expectations, showing exceptional quality, thoroughness, and skill.</p>
+                <p><b class="text-success">Excellent:</b> The task was completed to an outstanding standard. The result far exceeds expectations, showing exceptional quality, thoroughness, and skill.</p>
               </div>
             </div>
             <div class="card shadow mb-4">
               <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rating 4: 100% Achievement</h6>
+                <h6 class="m-0 font-weight-bold text-info">Rating 4: 100% Achievement</h6>
               </div>
               <div class="card-body display-9 font-weight-bolder">
-                <p><b>Good:</b> The task was completed well, with only minor issues. The result meets and occasionally exceeds expectations, showing a high level of competence and quality.</p>
+                <p><b class="text-info">Good:</b> The task was completed well, with only minor issues. The result meets and occasionally exceeds expectations, showing a high level of competence and quality.</p>
               </div>
             </div>
             <div class="card shadow mb-4">
@@ -972,23 +920,23 @@ include('../include/header.php');
                 <h6 class="m-0 font-weight-bold text-primary">Rating 3: 90% Achievement</h6>
               </div>
               <div class="card-body display-9 font-weight-bolder">
-                <p><b>Satisfactory:</b> The task was completed to an acceptable standard. The result meets the basic requirements and expectations, but there is room for improvement in certain areas.</p>
+                <p><b class="text-primary">Satisfactory:</b> The task was completed to an acceptable standard. The result meets the basic requirements and expectations, but there is room for improvement in certain areas.</p>
               </div>
             </div>
             <div class="card shadow mb-4">
               <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rating 2: 80% Achievement</h6>
+                <h6 class="m-0 font-weight-bold text-warning">Rating 2: 80% Achievement</h6>
               </div>
               <div class="card-body display-9 font-weight-bolder">
-                <p><b>Fair:</b> The task was completed but with noticeable issues. The result meets some but not all expectations, and there is a need for improvement in several areas.</p>
+                <p><b class="text-warning">Fair:</b> The task was completed but with noticeable issues. The result meets some but not all expectations, and there is a need for improvement in several areas.</p>
               </div>
             </div>
             <div class="card shadow mb-4">
               <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rating 1: 70% Achievement</h6>
+                <h6 class="m-0 font-weight-bold text-danger">Rating 1: 70% Achievement</h6>
               </div>
               <div class="card-body display-9 font-weight-bolder">
-                <p><b>Poor:</b> The task was not completed or was done incorrectly. The result is far below the expected standard, and significant improvement is needed.</p>
+                <p><b class="text-danger">Poor:</b> The task was not completed or was done incorrectly. The result is far below the expected standard, and significant improvement is needed.</p>
               </div>
             </div>
           </div>
