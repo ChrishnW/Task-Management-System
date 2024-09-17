@@ -845,7 +845,7 @@ include('../include/header.php');
       },
       success: function(response) {
         if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = edit_taskName + ' information has been updated successfully.';
+          document.getElementById('success_log').innerHTML = edit_taskName + ' information task of '+ document.getElementById('emptask_for').value +' has been updated successfully.';
           $('#edit').modal('hide');
           $('#success').modal('show');
         } else {
