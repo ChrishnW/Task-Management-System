@@ -614,55 +614,65 @@ include('../include/header.php');
   });
 
   function filterTable() {
-    var date_to = document.getElementById('date_to').value;
-    var date_from = document.getElementById('date_from').value;
-    var department = document.getElementById('department').value;
-    var section = document.getElementById('section').value;
-    var progress = document.getElementById('progress').value;
-    var status = document.getElementById('taskStatus').value;
-    if (department.value === '') {
-      department.value = null;
-    }
-    if (section.value === '') {
-      section.value = null;
-    }
-    if (progress.value === '') {
-      progress.value = null;
-    }
-    if (date_to.value === '') {
-      date_to.value = null;
-    }
-    if (date_from.value === '') {
-      date_from.value = null;
-    }
-    $('#dataTable').DataTable().destroy();
-    $('#dataTableBody').empty();
-    $.ajax({
-      method: "POST",
-      url: "../config/tasks.php",
-      data: {
-        "filterTable": true,
-        "date_to": date_to,
-        "date_from": date_from,
-        "department": department,
-        "section": section,
-        "progress": progress,
-        "status": status
-      },
-      success: function(response) {
-        $('#dataTableBody').append(response);
-        $('#dataTable').DataTable({
-          "order": [
-            [6, "desc"],
-            [4, "desc"],
-            [2, "asc"]
-          ],
-          "drawCallback": function(settings) {
-            $('[data-toggle="tooltip"]').tooltip();
-          }
-        });
-      }
-    });
+    <?php if ($access == 1) { ?>
+      var date_to = document.getElementById('date_to').value;
+      var date_from = document.getElementById('date_from').value;
+      var department = document.getElementById('department').value;
+      var section = document.getElementById('section').value;
+      var progress = document.getElementById('progress').value;
+      var status = document.getElementById('taskStatus').value;
+      $('#dataTable').DataTable().destroy();
+      $('#dataTableBody').empty();
+      $.ajax({
+        method: "POST",
+        url: "../config/tasks.php",
+        data: {
+          "filterTable": true,
+          "date_to": date_to,
+          "date_from": date_from,
+          "department": department,
+          "section": section,
+          "progress": progress,
+          "status": status
+        },
+        success: function(response) {
+          $('#dataTableBody').append(response);
+          $('#dataTable').DataTable({
+            "order": [[6, "desc"],[4, "desc"],[2, "asc"]],
+            "drawCallback": function(settings) {
+              $('[data-toggle="tooltip"]').tooltip();
+            }
+          });
+        }
+      });
+    <?php } else { ?>
+      var date_to = document.getElementById('date_to').value;
+      var date_from = document.getElementById('date_from').value;
+      var section = document.getElementById('section').value;
+      var progress = document.getElementById('progress').value;
+      $('#dataTable').DataTable().destroy();
+      $('#dataTableBody').empty();
+      $.ajax({
+        method: "POST",
+        url: "../config/tasks.php",
+        data: {
+          "filterTable": true,
+          "date_to": date_to,
+          "date_from": date_from,
+          "section": section,
+          "progress": progress,
+        },
+        success: function(response) {
+          $('#dataTableBody').append(response);
+          $('#dataTable').DataTable({
+            "order": [[6, "desc"],[4, "desc"],[2, "asc"]],
+            "drawCallback": function(settings) {
+              $('[data-toggle="tooltip"]').tooltip();
+            }
+          });
+        }
+      });
+    <?php } ?>
   }
 
   function selectSection(element) {

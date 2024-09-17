@@ -14,12 +14,10 @@ if (isset($_POST['sectionSelect'])) {
 if (isset($_POST['filterTable'])) {
   $date_from  = $_POST['date_from'];
   $date_to    = $_POST['date_to'];
-  $department = $_POST['department'];
+  $department = isset($_POST['department']) ?? '';
   $section    = $_POST['section'];
   $progress   = $_POST['progress'];
   $status     = isset($_POST['status']) ? $_POST['status'] : 1;
-
-
   $query = "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE task_status = '$status'";
   if ($date_from != NULL && $date_to != NULL) {
     $query .= " AND DATE(due_date) >= '$date_to' AND DATE(due_date) <= '$date_from'";
