@@ -367,6 +367,7 @@ include('../include/header.php');
           <option value="IN PROGRESS">In-Progress</option>
           <option value="REVIEW">Review</option>
           <option value="FINISHED">Finished</option>
+          <option value="RESCHEDULE">Reschedule</option>
         </select>
       </div>
     </div>
