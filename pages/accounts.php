@@ -173,52 +173,12 @@ include('../include/header.php');
 </div>
 <div class="modal fade" id="edit" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-    <div class="modal-content border-warning">
-      <div class="modal-header bg-warning text-white">
+    <div class="modal-content border-info">
+      <div class="modal-header bg-info text-white">
         <h5 class="modal-title">Task Properties</h5>
       </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>Assignee:</label>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fas fa-user"></i></div>
-            </div>
-            <input type="text" id="emptask_for" class="form-control" readonly>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Task Name:</label>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fas fa-tasks"></i></div>
-            </div>
-            <input type="text" id="emptask_name" class="form-control" readonly>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Task Class:</label>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fas fa-flag"></i></div>
-            </div>
-            <input type="datetime" id="emptask_class" class="form-control" readonly>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Task Requirement:</label>
-          <div class="input-group mb-2">
-            <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="emptask_file" name="emptask_file">
-              <label class="custom-control-label" for="emptask_file">Toggle this switch if required</label>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Due Date:</label>
-          <div class="input-group mb-2" id="editdueDateContainer">
-          </div>
-        </div>
+      <div class="modal-body" id="taskPropertiesDetails">
+
       </div>
       <div class="modal-footer">
         <button type="button" onclick="editTask(this)" class="btn btn-success" id="emptask_id">Update</button>
@@ -847,7 +807,19 @@ include('../include/header.php');
 
   function EditTaskView(element) {
     var editID = element.value;
-    console.log(editID);
+    $.ajax({
+      method: 'POST',
+      url: '../config/assign_tasks.php',
+      data: {
+        "EditTaskView": true,
+        "editID": editID
+      },
+      success: function(response) {
+        $('#taskPropertiesDetails').html(response);
+        $('#emptask_duedate').selectpicker('refresh');
+        $('#edit').modal('show');
+      }
+    })
   }
 
   function editTask(element) {
