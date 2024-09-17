@@ -739,25 +739,19 @@ include('../include/header.php');
         </div>
       </div>
       <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
+        <div class="card border-left-info shadow h-100">
+          <div class="card-header m-0 font-weight-bolder text-primary">Department Accomplishment</div>
           <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Department Accomplishment</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $project_tasks ?> out of 100</div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-chart-line fa-3x text-gray-500"></i>
-              </div>
+            <div class="progress mb-2">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
             </div>
-            <div class="row mt-3">
-              <div class="col">
-                <a href="404.php" class="btn btn-info btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
 
     <div class="row">
@@ -852,27 +846,27 @@ include('../include/header.php');
           $query_result = mysqli_query($con, "SELECT DISTINCT td.task_name, tl.task_details, td.due_date, s.sec_name, s.dept_id FROM tasks_details td JOIN task_list tl ON tl.task_name=td.task_name JOIN section s ON s.sec_id=td.task_for WHERE td.task_class=6 AND dept_id='$dept_id' AND td.date_accomplished IS NULL ORDER BY td.due_date ASC");
           if (mysqli_num_rows($query_result) > 0) { ?>
             <div class="card-body scrollable-card-body-md">
-            <?php while ($row = $query_result->fetch_assoc()) {
-              $currentDate = new DateTime();
-              $dueDate     = new DateTime($row['due_date']);
-              $interval    = $currentDate->diff($dueDate);
-              if ($currentDate < $dueDate) {
-                if ($interval->days > 0 && $interval->days >= 1) {
-                  $remainingTime = $interval->days . ' days remaining';
-                } elseif ($interval->days == 0) {
-                  $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes remaining';
+              <?php while ($row = $query_result->fetch_assoc()) {
+                $currentDate = new DateTime();
+                $dueDate     = new DateTime($row['due_date']);
+                $interval    = $currentDate->diff($dueDate);
+                if ($currentDate < $dueDate) {
+                  if ($interval->days > 0 && $interval->days >= 1) {
+                    $remainingTime = $interval->days . ' days remaining';
+                  } elseif ($interval->days == 0) {
+                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes remaining';
+                  }
+                } else {
+                  if ($interval->days > 0 && $interval->days >= 1) {
+                    $remainingTime = $interval->days . ' days overdue';
+                  } elseif ($interval->days == 0) {
+                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes overdue';
+                  }
                 }
-              } else {
-                if ($interval->days > 0 && $interval->days >= 1) {
-                  $remainingTime = $interval->days . ' days overdue';
-                } elseif ($interval->days == 0) {
-                  $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes overdue';
-                }
-              }
-              $randomColor    = $color[array_rand($color = array('primary', 'danger', 'info', 'success'))];
-              $due_date_temp  = date_create($row['due_date']);
-              $due_date       = date_format($due_date_temp, "jS \of F Y");
-              $due_day        = date_format($due_date_temp, "l"); ?>
+                $randomColor    = $color[array_rand($color = array('primary', 'danger', 'info', 'success'))];
+                $due_date_temp  = date_create($row['due_date']);
+                $due_date       = date_format($due_date_temp, "jS \of F Y");
+                $due_day        = date_format($due_date_temp, "l"); ?>
                 <div class="card shadow mb-4">
                   <div class="card-header py-3 bg-<?php echo $randomColor ?> text-white">
                     <h6 class="m-0 font-weight-bold"><?php echo $row['task_name']; ?></h6>
@@ -884,9 +878,9 @@ include('../include/header.php');
                     <p class="card-text" id="daysRemaining"><strong>Days Remaining:</strong> <?php echo $remainingTime; ?></p>
                   </div>
                 </div>
-            <?php } ?>
+              <?php } ?>
             </div>
-            <?php } else { ?>
+          <?php } else { ?>
             <div class="card-body d-flex justify-content-center align-items-center bg-nodata-image">
               <h5 class="font-weight-bolder text-dark blurred-background">No data to display~</h5>
             </div>
