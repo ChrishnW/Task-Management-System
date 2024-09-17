@@ -900,40 +900,40 @@ include('../include/header.php');
           </div>
           <div class="card-body scrollable-card-body-md">
             <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-success">Rating 5: 105% Achievement</h6>
+              <div class="card-header bg-success text-white py-3">
+                <h6 class="m-0 font-weight-bold">Rating 5: 105% Achievement</h6>
               </div>
               <div class="card-body display-9 font-weight-bolder">
                 <p><b class="text-success">Excellent:</b> The task was completed to an outstanding standard. The result far exceeds expectations, showing exceptional quality, thoroughness, and skill.</p>
               </div>
             </div>
             <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-info">Rating 4: 100% Achievement</h6>
+              <div class="card-header bg-info text-white py-3">
+                <h6 class="m-0 font-weight-bold">Rating 4: 100% Achievement</h6>
               </div>
               <div class="card-body display-9 font-weight-bolder">
                 <p><b class="text-info">Good:</b> The task was completed well, with only minor issues. The result meets and occasionally exceeds expectations, showing a high level of competence and quality.</p>
               </div>
             </div>
             <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rating 3: 90% Achievement</h6>
+              <div class="card-header bg-primary text-white py-3">
+                <h6 class="m-0 font-weight-bold">Rating 3: 90% Achievement</h6>
               </div>
               <div class="card-body display-9 font-weight-bolder">
                 <p><b class="text-primary">Satisfactory:</b> The task was completed to an acceptable standard. The result meets the basic requirements and expectations, but there is room for improvement in certain areas.</p>
               </div>
             </div>
             <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-warning">Rating 2: 80% Achievement</h6>
+              <div class="card-header bg-warning text-white py-3">
+                <h6 class="m-0 font-weight-bold">Rating 2: 80% Achievement</h6>
               </div>
               <div class="card-body display-9 font-weight-bolder">
                 <p><b class="text-warning">Fair:</b> The task was completed but with noticeable issues. The result meets some but not all expectations, and there is a need for improvement in several areas.</p>
               </div>
             </div>
             <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-danger">Rating 1: 70% Achievement</h6>
+              <div class="card-header bg-danger text-white py-3">
+                <h6 class="m-0 font-weight-bold">Rating 1: 70% Achievement</h6>
               </div>
               <div class="card-body display-9 font-weight-bolder">
                 <p><b class="text-danger">Poor:</b> The task was not completed or was done incorrectly. The result is far below the expected standard, and significant improvement is needed.</p>
