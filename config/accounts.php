@@ -235,28 +235,21 @@
     echo json_encode($dataList);
   }
   if (isset($_POST['editTask'])) {
-    $error                = false;
     $editTask_id          = $_POST['edit_task'];
-    $editTask_requirement = $_POST['edit_requirement_value'];
-    $editTask_duedate     = $_POST['edit_duedate'];
-    if ($editTask_requirement === '' || $editTask_duedate === '') {
-      $error = true;
-      echo "Empty field has been detected! Please try again.";
-    }
-    if (is_array($editTask_duedate)) {
-      $editTask_duedate = implode(', ', $editTask_duedate);
-    }
-    if (!$error) {
-      $query_get = mysqli_query($con, "SELECT * FROM tasks WHERE id='$editTask_id'");
-      $row = mysqli_fetch_assoc($query_get);
-      $username         = $row['in_charge'];
-      $task_name        = $row['task_name'];
-      $datetime_current = date('Y-m-d H:i:s');
-      $query_result = mysqli_query($con, "UPDATE tasks SET requirement_status='$editTask_requirement', submission='$editTask_duedate' WHERE id='$editTask_id'");
-      if ($query_result) {
-        log_action("Details of registered task {$task_name} have been edited.");
-        echo "Success";
+    $editTaskName         = $_POST['edit_taskName'];
+    $editTask_requirement = $_POST['edit_requirement'];
+    if (!isset($_POST['edit_duedate'])) {
+      die('Empty field has been detected! Please try again.');
+    } else {
+      $editTask_duedate = $_POST['edit_duedate'];
+      if (is_array($editTask_duedate)) {
+        $editTask_duedate = implode(', ', $editTask_duedate);
       }
+    }
+    $query_result = mysqli_query($con, "UPDATE tasks SET requirement_status='$editTask_requirement', submission='$editTask_duedate' WHERE id='$editTask_id'");
+    if ($query_result) {
+      log_action("Details of registered task {$editTaskName} have been edited.");
+      echo "Success";
     }
   }
   if (isset($_POST['taskDelete'])) {

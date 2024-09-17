@@ -245,6 +245,7 @@ include('../include/auth.php');
         <div class="input-group-prepend">
           <div class="input-group-text"><i class="fas fa-user"></i></div>
         </div>
+        <input type="hidden" id="emptask_id" value="<?php echo $row['id']; ?>">
         <input type="text" id="emptask_for" class="form-control" value="<?php echo $row['in_charge']; ?>" readonly>
       </div>
     </div>
@@ -269,8 +270,8 @@ include('../include/auth.php');
     <div class="form-group">
       <label>File Attachment:</label>
       <div class="input-group mb-2">
-        <label class="toggle-switchy" for="dept_status_check" data-color="green" data-size="lg" data-label="left">
-          <input type="checkbox" id="dept_status_check" name="dept_status_check" <?php if($row['requirement_status'] == 1) echo 'checked'; ?>>
+        <label class="toggle-switchy" for="emptask_file" data-color="green" data-size="lg" data-label="left">
+          <input type="checkbox" id="emptask_file" name="emptask_file" <?php if($row['requirement_status'] == 1) echo 'checked'; ?>>
           <span class="toggle"><span class="switch"></span></span>
           <span class="label">Required</span>
         </label>
@@ -294,6 +295,15 @@ include('../include/auth.php');
           <option value="Wednesday" <?php echo in_array('Wednesday', $daysArray) ? 'selected' : ''; ?>>Wednesday</option>
           <option value="Thursday" <?php echo in_array('Thursday', $daysArray) ? 'selected' : ''; ?>>Thursday</option>
           <option value="Friday" <?php echo in_array('Friday', $daysArray) ? 'selected' : ''; ?>>Friday</option>
+        </select>
+        <?php } elseif ($row['task_class'] == 3 || $row['task_class'] == 6) { ?>
+        <div class="input-group-prepend">
+          <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+        </div>
+        <select class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" name="emptask_duedate" id="emptask_duedate">
+        <?php for ($i = 1; $i <= 31; $i++) { $selected = ($row['submission'] == $i) ? 'selected' : ''; ?>
+          <option value="<?php echo $i ?>" <?php echo $selected; ?>>Day <?php echo $i ?> of the Month</option>
+        <?php } ?>
         </select>
         <?php } ?>
       </div>

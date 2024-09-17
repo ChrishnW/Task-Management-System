@@ -823,33 +823,28 @@ include('../include/header.php');
   }
 
   function editTask(element) {
-    element.disabled = true;
-    var edit_task = element.value;
-    var edit_requirement = document.getElementById('emptask_file');
-    var edit_duedate_element = document.getElementById('emptask_duedate');
+    var edit_task             = document.getElementById('emptask_id').value;
+    var edit_taskName         = document.getElementById('emptask_name').value;
+    var edit_requirement      = document.getElementById('emptask_file').checked ? 1 : 0;
+    var edit_duedate_element  = document.getElementById('emptask_duedate');
     if (edit_duedate_element.multiple) {
       var edit_duedate = Array.from(edit_duedate_element.selectedOptions).map(option => option.value);
     } else {
       var edit_duedate = edit_duedate_element.value;
     }
-    if (edit_requirement.checked) {
-      var edit_requirement_value = '1';
-    } else {
-      var edit_requirement_value = '0';
-    }
-    console.log(edit_duedate);
     $.ajax({
       method: "POST",
       url: "../config/accounts.php",
       data: {
         "editTask": true,
         "edit_task": edit_task,
-        "edit_requirement_value": edit_requirement_value,
+        "edit_taskName": edit_taskName,
+        "edit_requirement": edit_requirement,
         "edit_duedate": edit_duedate,
       },
       success: function(response) {
         if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = 'Task #' + edit_task + ' information has been updated successfully.';
+          document.getElementById('success_log').innerHTML = edit_taskName + ' information has been updated successfully.';
           $('#edit').modal('hide');
           $('#success').modal('show');
         } else {
