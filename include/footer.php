@@ -256,7 +256,7 @@
 <!-- Custom Scripts Global -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    var inactivityTime = 900000;
+    var inactivityTime = 3600000;
     var timeout;
 
     // Function to reset the timeout

@@ -738,20 +738,6 @@ include('../include/header.php');
           </div>
         </div>
       </div>
-      <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100">
-          <div class="card-header m-0 font-weight-bolder text-primary">Department Accomplishment</div>
-          <div class="card-body">
-            <div class="progress mb-2">
-              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
-            </div>
-            <div class="progress">
-              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
 
     <div class="row">
