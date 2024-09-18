@@ -311,7 +311,6 @@
 .calendar .today {
     background-color: #4e73df;
     color           : #fff;
-    border-radius   : 100%;
 }
 
 .calendar .special {
