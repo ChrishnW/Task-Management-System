@@ -637,113 +637,138 @@ include('../include/header.php');
     $for_review_tasks  = $row['for_review_tasks'];
     $for_resched_tasks = $row['for_resched_tasks'];
     $members           = $row['members']; ?>
-    <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
     <div class="row">
-      <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Request for Review Tasks</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $for_review_tasks ?></div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-bell fa-3x text-gray-500"></i>
+      <div class="col-xl-3 p-0">
+        <div class="col-lg-auto mb-4">
+          <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                    Pending Review
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $for_review_tasks ?></div>
+                </div>
+                <div class="col-auto">
+                  <a href="for_review.php"><i class="fas fa-tasks fa-2x text-gray-300"></i></a>
+                </div>
               </div>
             </div>
-            <div class="row mt-3">
-              <div class="col"><a href="for_review.php" class="btn btn-danger btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-auto mb-4">
+          <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                    Pending Reschedule
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $for_resched_tasks ?></div>
+                </div>
+                <div class="col-auto">
+                  <a href="for_reschedule.php"><i class="fas fa-calendar-day fa-2x text-gray-300"></i></a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-secondary shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Request for Reschedule Tasks</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $for_resched_tasks ?></div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-calendar-day fa-3x text-gray-500"></i>
+      <div class="col-xl-3 p-0">
+        <div class="col-lg-auto mb-4">
+          <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                    Deployed Task
+                  </div>
+                  <div class="row no-gutters align-items-center">
+                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $total_tasks ?></div>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <a href="tasks.php"><i class="fas fa-clipboard-list fa-2x text-gray-300"></i></a>
+                </div>
               </div>
             </div>
-            <div class="row mt-3">
-              <div class="col"><a href="for_reschedule.php" class="btn btn-secondary btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-auto mb-4">
+          <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                    Members
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $members ?></div>
+                </div>
+                <div class="col-auto">
+                  <a href="accounts.php"><i class="fas fa-users fa-2x text-gray-300"></i></a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">List of Deployed Tasks</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $total_tasks ?></div>
+      <div class="col-xl-3 p-0">
+        <div class="col-lg-auto mb-4">
+          <div class="card shadow">
+            <div class="card-header text-primary font-weight-bolder py-2">Task Completion</div>
+            <div class="card-body">
+              <div>
+                <canvas id="myChart"></canvas>
               </div>
-              <div class="col-auto">
-                <i class="fas fa-calendar-alt fa-3x text-gray-500"></i>
-              </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col"><a href="tasks.php" class="btn btn-primary btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
+              <div class="mt-4 text-center small">
+                <span class="mr-2">
+                  <i class="fas fa-circle text-success"></i> Finished
+                </span>
+                <span class="mr-2">
+                  <i class="fas fa-circle text-danger"></i> Not Finished
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Current Projects</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $project_tasks ?></div>
+      <div class="col-xl-3 p-0 position-relative">
+        <div class="col-lg-auto mb-4">
+          <div class="card shadow">
+            <div class="card-header text-primary font-weight-bolder py-2">Projects</div>
+            <div class="card-body blur-body scrollable-card-body">
+              <div class="blur-overlay">
+                <h2 class="blur-text">Under Development</h2>
               </div>
-              <div class="col-auto">
-                <i class="fas fa-project-diagram fa-3x text-gray-500"></i>
+              <h4 class="small font-weight-bold">Server Migration <span class="float-right">20%</span></h4>
+              <div class="progress mb-4">
+                <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col">
-                <a href="404.php" class="btn btn-warning btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
+              <h4 class="small font-weight-bold">Sales Tracking <span class="float-right">40%</span></h4>
+              <div class="progress mb-4">
+                <div class="progress-bar bg-warning" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <h4 class="small font-weight-bold">Customer Database <span class="float-right">60%</span></h4>
+              <div class="progress mb-4">
+                <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <h4 class="small font-weight-bold">Payout Details <span class="float-right">80%</span></h4>
+              <div class="progress mb-4">
+                <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <h4 class="small font-weight-bold">Account Setup <span class="float-right">Complete!</span></h4>
+              <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="row">
-      <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Department Members</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $members ?></div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-users fa-3x text-gray-500"></i>
-              </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col"><a href="accounts.php" class="btn btn-success btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="row">
       <!-- Calendar -->
       <div class="col-xl-4">
-        <div class="card border-left-primary shadow mb-4 h-75">
+        <div class="card shadow mb-4 h-75">
           <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Calendar of <?php echo date('F Y') ?></h6>
           </div>
@@ -824,7 +849,7 @@ include('../include/header.php');
       </div>
       <!-- Reports -->
       <div class="col-xl-5">
-        <div class="card border-left-primary shadow mb-4 h-75">
+        <div class="card shadow mb-4 h-75">
           <div class="card-header m-0 font-weight-bolder text-primary">Upcoming Report</div>
           <?php
           $con->next_result();
@@ -867,15 +892,13 @@ include('../include/header.php');
               <?php } ?>
             </div>
           <?php } else { ?>
-            <div class="card-body d-flex justify-content-center align-items-center bg-nodata-image">
-              <h5 class="font-weight-bolder text-dark blurred-background">No data to display~</h5>
-            </div>
+            <div class="card-body d-flex justify-content-center align-items-center bg-nodata-image"></div>
           <?php } ?>
         </div>
       </div>
       <!-- Criteria -->
       <div class="col-xl-3">
-        <div class="card border-left-primary shadow mb-4 h-75">
+        <div class="card shadow mb-4 h-75">
           <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Rating Criteria for Task and Reports</h6>
           </div>
@@ -963,7 +986,7 @@ include('../include/header.php');
 
 <script>
   $(function() {
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
   })
 
   $('#systemInfo').on('shown.bs.modal', function() {
@@ -983,5 +1006,44 @@ include('../include/header.php');
         "lengthMenu": [5, 10, 25, 50, 100]
       });
     }
+  });
+
+  $(document).ready(function() {
+    const ctx = document.getElementById('myChart');
+    const myChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: [
+          'Not Finished',
+          'Finished'
+        ],
+        datasets: [{
+          data: [10, 90],
+          backgroundColor: [
+            '#e74a3b',
+            '#1cc88a'
+          ],
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        tooltips: {
+          titleFontColor: '#6e707e',
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: true,
+          caretPadding: 10,
+        },
+        legend: {
+          display: false
+        },
+        cutoutPercentage: 50,
+      },
+    });
   });
 </script>
