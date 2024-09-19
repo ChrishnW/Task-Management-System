@@ -222,9 +222,7 @@
               </a>
               <!-- Dropdown - Alerts -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-                <h6 class="dropdown-header">
-                  Notification Center
-                </h6>
+                <h6 class="dropdown-header">Notification Center</h6>
                 <?php
                 $con->next_result();
                 $query_check = mysqli_query($con, "SELECT * FROM notification WHERE user='$username' ORDER BY status DESC, id DESC LIMIT 3");
