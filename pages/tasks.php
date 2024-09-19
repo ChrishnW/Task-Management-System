@@ -307,7 +307,6 @@ include('../include/header.php');
                       <th>Original Due Date</th>
                       <th>Requested Due Date</th>
                       <th>Asignee</th>
-                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody id="myTasksReschedule">
@@ -324,7 +323,6 @@ include('../include/header.php');
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $old_date ?></td>
                         <td><?php echo $assignee ?></td>
-                        <td><button type="button" class="btn btn-block btn-secondary" value='<?php echo $row['id']; ?>' onclick="rescheduleTask(this)" disabled><i class="fas fa-pen fa-fw"></i> Edit</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>

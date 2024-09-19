@@ -170,8 +170,8 @@ if (isset($_POST['filterTableTask'])) {
       <?php }
     } elseif ($status == 'RESCHEDULE') {
       while ($row = $query_result->fetch_assoc()) {
-        $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-        $date_accomplished = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
+        $due_date = date_format(date_create($row['due_date']), "Y-m-d");
+        $old_date = date_format(date_create($row['old_date']), "Y-m-d");
         $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
         <tr>
           <td><?php echo $row['task_code'] ?></td>
@@ -180,7 +180,6 @@ if (isset($_POST['filterTableTask'])) {
           <td><?php echo $due_date ?></td>
           <td><?php echo $old_date ?></td>
           <td><?php echo $assignee ?></td>
-          <td><button type="button" class="btn btn-block btn-secondary" value='<?php echo $row['id']; ?>' onclick="rescheduleTask(this)"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
         </tr>
     <?php }
     }
