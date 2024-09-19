@@ -130,12 +130,12 @@
 
         <li class="nav-item">
           <a class="nav-link" href="assign_tasks.php">
-            <i class="fas fa-list-ol"></i>
-            <span>Task List</span></a>
+            <i class="fas fa-fw fa-tag"></i>
+            <span>Assigned Task</span></a>
         </li>
 
         <hr class="sidebar-divider">
-        <div class="sidebar-heading"> Ratings</div>
+        <div class="sidebar-heading"> Ratings </div>
         <li class="nav-item">
           <a class="nav-link" href="performance.php">
             <i class="fas fa-chart-bar"></i>
