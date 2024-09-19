@@ -22,6 +22,78 @@
   <i class="fas fa-angle-up"></i>
 </a>
 
+<!-- Profile Activity Logs -->
+<div class="modal fade" id="activityLogs" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLongTitle">Activity Log</h5>
+      </div>
+      <div class="modal-body" id="activityDetails">
+        <table class="table table-striped" id="activityTable" width="100%" cellspacing="0">
+          <thead class='table table-primary'>
+            <tr>
+              <th>Date & Time</th>
+              <th>Activity</th>
+            </tr>
+          </thead>
+          <tbody id='dataTableBody'>
+            <?php
+            $query_activity = mysqli_query($con, "SELECT * FROM system_log WHERE user='$username'");
+            while ($row = $query_activity->fetch_assoc()) { ?>
+              <tr>
+                <td><?php echo date_format(date_create($row['date_created']), "Y-m-d H:i:s"); ?></td>
+                <td><?php echo $row['action']; ?></td>
+              </tr>
+            <?php }
+            ?>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notifications -->
+<div class="modal fade" id="notificationLogs" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLongTitle">Notification</h5>
+      </div>
+      <div class="modal-body" id="notificationDetails">
+        <table class="table table-hover table-sm table-dark table-borderless" id="notificationTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th >Date & Time</th>
+              <th>Subject</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id='dataTableBody'>
+            <?php
+            $query_notif = mysqli_query($con, "SELECT * FROM notification WHERE user='$username'");
+            while ($row = $query_notif->fetch_assoc()) { ?>
+              <tr>
+                <td><?php echo date_format(date_create($row['date_created']), "Y-m-d H:i:s"); ?></td>
+                <td id="td-table-shrink"><span class="btn btn-circle btn-sm bg-<?php echo $row['type']; ?> text-white" onclick="<?php echo $row['action']; ?> readNotification(this);"><i class="<?php echo $row['icon']; ?>"></i></span> <?php echo $row['body']; ?></td>
+                <td><?php if($row['status'] == 1) echo "<span class='badge badge-pill text-white bg-warning'>New</span>"; else echo "<span class='badge badge-pill text-white bg-secondary'>Read</span>"; ?></td>
+              </tr>
+            <?php }
+            ?>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Account Profile -->
 <div class="modal fade" id="profileModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
@@ -150,78 +222,6 @@
         <i class="fas fa-sad-cry fa-5x text-danger"></i>
         <br><br>
         <p id="textError"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Profile Activity Logs -->
-<div class="modal fade" id="activityLogs" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Activity Log</h5>
-      </div>
-      <div class="modal-body" id="activityDetails">
-        <table class="table table-striped" id="activityTable" width="100%" cellspacing="0">
-          <thead class='table table-primary'>
-            <tr>
-              <th>Date & Time</th>
-              <th>Activity</th>
-            </tr>
-          </thead>
-          <tbody id='dataTableBody'>
-            <?php
-            $query_activity = mysqli_query($con, "SELECT * FROM system_log WHERE user='$username'");
-            while ($row = $query_activity->fetch_assoc()) { ?>
-              <tr>
-                <td><?php echo date_format(date_create($row['date_created']), "Y-m-d H:i:s"); ?></td>
-                <td><?php echo $row['action']; ?></td>
-              </tr>
-            <?php }
-            ?>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Profile Activity Logs -->
-<div class="modal fade" id="notificationLogs" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Notification</h5>
-      </div>
-      <div class="modal-body" id="notificationDetails">
-        <table class="table table-hover table-sm table-dark table-borderless" id="notificationTable" width="100%" cellspacing="0">
-          <thead>
-            <tr>
-              <th >Date & Time</th>
-              <th>Subject</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id='dataTableBody'>
-            <?php
-            $query_notif = mysqli_query($con, "SELECT * FROM notification WHERE user='$username'");
-            while ($row = $query_notif->fetch_assoc()) { ?>
-              <tr>
-                <td><?php echo date_format(date_create($row['date_created']), "Y-m-d H:i:s"); ?></td>
-                <td id="td-table-shrink"><span class="btn btn-circle btn-sm bg-<?php echo $row['type']; ?> text-white"><i class="<?php echo $row['icon']; ?>"></i></span> <?php echo $row['body']; ?></td>
-                <td><?php if($row['status'] == 1) echo "<span class='badge badge-pill text-white bg-warning'>New</span>"; else echo "<span class='badge badge-pill text-white bg-secondary'>Read</span>"; ?></td>
-              </tr>
-            <?php }
-            ?>
-          </tbody>
-        </table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
