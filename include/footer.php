@@ -201,12 +201,12 @@
         <h5 class="modal-title" id="exampleModalLongTitle">Notification</h5>
       </div>
       <div class="modal-body" id="notificationDetails">
-        <table class="table table-borderless" id="notificationTable" width="100%" cellspacing="0">
-          <thead class='table table-primary'>
+        <table class="table table-hover table-sm table-dark table-borderless" id="notificationTable" width="100%" cellspacing="0">
+          <thead>
             <tr>
-              <th>Date & Time</th>
-              <th></th>
+              <th >Date & Time</th>
               <th>Subject</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody id='dataTableBody'>
@@ -215,8 +215,8 @@
             while ($row = $query_notif->fetch_assoc()) { ?>
               <tr>
                 <td><?php echo date_format(date_create($row['date_created']), "Y-m-d H:i:s"); ?></td>
-                <td><div class="icon-circle bg-<?php echo $row['type']; ?>"><i class="<?php echo $row['icon']; ?> text-white"></i></div></td>
-                <td><?php echo $row['body']; ?></td>
+                <td id="td-table-shrink"><span class="btn btn-circle btn-sm bg-<?php echo $row['type']; ?> text-white"><i class="<?php echo $row['icon']; ?>"></i></span> <?php echo $row['body']; ?></td>
+                <td><?php if($row['status'] == 1) echo "<span class='badge badge-pill text-white bg-warning'>New</span>"; else echo "<span class='badge badge-pill text-white bg-secondary'>Read</span>"; ?></td>
               </tr>
             <?php }
             ?>
