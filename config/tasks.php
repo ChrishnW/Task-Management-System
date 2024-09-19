@@ -339,11 +339,6 @@ if (isset($_POST['endTask'])) {
     $finish_date  = date_create($row['date_accomplished']);
     $days         = date_diff($due_date, $finish_date);
     $interval     = $days->format("%R%a");
-    // if ($interval <= 0) {
-    //   $achievement = 3;
-    // } elseif ($interval > 0) {
-    //   $achievement = 1;
-    // }
     $achievement = 3;
   }
   if ($require == 1) {
