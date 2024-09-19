@@ -123,7 +123,7 @@
               <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#inprogress');window.location.href='tasks.php';">In Progress</span>
               <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#review');window.location.href='tasks.php';">For Review</span>
               <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#finished');window.location.href='tasks.php';">Finished</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#res');window.location.href='tasks.php';">For Reschedule</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#reschedule');window.location.href='tasks.php';">For Reschedule</span>
             </div>
           </div>
         </li>
