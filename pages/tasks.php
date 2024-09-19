@@ -105,16 +105,11 @@ include('../include/header.php');
     <div class="row">
       <div class="form-group col-md-2">
         <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control" onchange="checkDateInputs(this)">
+        <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTableTask(this)">
       </div>
       <div class="form-group col-md-2">
         <label>From</label>
-        <input type="date" name="date_from" id="date_from" class="form-control" onchange="checkDateInputs(this)">
-      </div>
-      <div class="form-group col">
-        <br>
-        <button type="button" class="btn btn-success btn-sm d-none" id="filterButton" onclick="filterTableTask(this)"><i class="fas fa-filter fa-fw"></i> Filter Table</button>
-        <button type="button" class="btn btn-danger btn-sm d-none" id="removeFilterButton" onclick="location.reload();"><i class="fas fa-eraser fa-fw"></i> Remove Filter</button>
+        <input type="date" name="date_from" id="date_from" class="form-control" onchange="filterTableTask(this)">
       </div>
     </div>
     <div class="card">
@@ -637,7 +632,11 @@ include('../include/header.php');
         success: function(response) {
           $('#dataTableBody').append(response);
           $('#dataTable').DataTable({
-            "order": [[6, "desc"],[4, "desc"],[2, "asc"]],
+            "order": [
+              [6, "desc"],
+              [4, "desc"],
+              [2, "asc"]
+            ],
             "drawCallback": function(settings) {
               $('[data-toggle="tooltip"]').tooltip();
             }
@@ -664,7 +663,11 @@ include('../include/header.php');
         success: function(response) {
           $('#dataTableBody').append(response);
           $('#dataTable').DataTable({
-            "order": [[6, "desc"],[4, "desc"],[2, "asc"]],
+            "order": [
+              [6, "desc"],
+              [4, "desc"],
+              [2, "asc"]
+            ],
             "drawCallback": function(settings) {
               $('[data-toggle="tooltip"]').tooltip();
             }
@@ -1010,46 +1013,48 @@ include('../include/header.php');
     var progress = localStorage.getItem('activeTab').replace('#', '').toUpperCase();
     var currentTab = progress.charAt(0).toUpperCase() + progress.slice(1).toLowerCase();
     // console.log(date_to, date_from, progress, currentTab);
-    $('#myTasksTable' + currentTab).DataTable().destroy();
-    $('#myTasks' + currentTab).empty();
-    $.ajax({
-      method: "POST",
-      url: "../config/tasks.php",
-      data: {
-        "filterTableTask": true,
-        "date_to": date_to,
-        "date_from": date_from,
-        "progress": progress,
-      },
-      success: function(response) {
-        $('#myTasks' + currentTab).append(response);
-        if (currentTab === 'Todo') {
-          $('#myTasksTable' + currentTab).DataTable({
-            "order": [
-              [4, "asc"],
-              [2, "asc"]
-            ],
-            "pageLength": 5,
-            "lengthMenu": [5, 10, 25, 50, 100],
-            "drawCallback": function(settings) {
-              $('[data-toggle="tooltip"]').tooltip();
-            }
-          });
-        } else {
-          $('#myTasksTable' + currentTab).DataTable({
-            "order": [
-              [3, "desc"],
-              [1, "asc"]
-            ],
-            "pageLength": 5,
-            "lengthMenu": [5, 10, 25, 50, 100],
-            "drawCallback": function(settings) {
-              $('[data-toggle="tooltip"]').tooltip();
-            }
-          });
+    if (date_to !== '' && date_from !== '') {
+      $('#myTasksTable' + currentTab).DataTable().destroy();
+      $('#myTasks' + currentTab).empty();
+      $.ajax({
+        method: "POST",
+        url: "../config/tasks.php",
+        data: {
+          "filterTableTask": true,
+          "date_to": date_to,
+          "date_from": date_from,
+          "progress": progress,
+        },
+        success: function(response) {
+          $('#myTasks' + currentTab).append(response);
+          if (currentTab === 'Todo') {
+            $('#myTasksTable' + currentTab).DataTable({
+              "order": [
+                [4, "asc"],
+                [2, "asc"]
+              ],
+              "pageLength": 5,
+              "lengthMenu": [5, 10, 25, 50, 100],
+              "drawCallback": function(settings) {
+                $('[data-toggle="tooltip"]').tooltip();
+              }
+            });
+          } else {
+            $('#myTasksTable' + currentTab).DataTable({
+              "order": [
+                [3, "desc"],
+                [1, "asc"]
+              ],
+              "pageLength": 5,
+              "lengthMenu": [5, 10, 25, 50, 100],
+              "drawCallback": function(settings) {
+                $('[data-toggle="tooltip"]').tooltip();
+              }
+            });
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   function resetFileInput() {
@@ -1157,23 +1162,4 @@ include('../include/header.php');
       });
     <?php } ?>
   });
-
-  <?php if ($access == 2) { ?>
-
-    function checkDateInputs() {
-      var dateFrom = document.getElementById('date_from').value;
-      var dateTo = document.getElementById('date_to').value;
-      var filterButton = document.getElementById('filterButton');
-      var removeFilterButton = document.getElementById('removeFilterButton');
-
-      if (dateFrom && dateTo) {
-        filterButton.classList.remove('d-none');
-        removeFilterButton.classList.remove('d-none');
-      } else {
-        filterButton.classList.add('d-none');
-        removeFilterButton.classList.add('d-none');
-      }
-    }
-    checkDateInputs();
-  <?php } ?>
 </script>
