@@ -309,19 +309,13 @@ if (isset($_POST['endTaskDeatails'])) {
   }
   if ($require == 1) { ?>
     <input type="hidden" id="finish_taskID" name="finish_taskID" value="<?php echo $id ?>">
-    <i class="fas fa-edit fa-5x text-danger"></i>
-    <br><br>
-    <label for="taskRemarks">Write your remarks and attach a file for this task.</label>
-    <textarea class="form-control border-dark" name="taskRemarks" id="taskRemarks" placeholder="Write your remarks here..."></textarea>
+    <textarea class="form-control border-dark" rows="5" cols="50" name="taskRemarks" id="taskRemarks" placeholder="Write your remarks for this task..."></textarea>
     <br>
-    <center><input type="file" name="file-1[]" id="file-1" class="form-control col-sm-5 mb-2" multiple /></center>
-    <button type="button" class="btn btn-secondary" onclick="resetFileInput()">Remove Selected Files</button>
+    <center><input type="file" name="file-1[]" id="file-1" class="form-control-file col-sm-5 mb-2" multiple /></center>
+    <button type="button" class="btn btn-sm btn-secondary" onclick="resetFileInput()">Remove Selected Files</button>
   <?php } else { ?>
     <input type="hidden" id="finish_taskID" name="finish_taskID" value="<?php echo $id ?>">
-    <i class="fas fa-edit fa-5x text-danger"></i>
-    <br><br>
-    <label for="taskRemarks">Write your remarks for this task.</label>
-    <textarea class="form-control border-dark" name="taskRemarks" id="taskRemarks" placeholder="Write your remarks here..."></textarea>
+    <textarea class="form-control border-dark" rows="5" cols="50" name="taskRemarks" id="taskRemarks" placeholder="Write your remarks for this task..."></textarea>
   <?php }
 }
 if (isset($_POST['endTask'])) {

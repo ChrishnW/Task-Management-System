@@ -504,7 +504,7 @@ include('../include/header.php');
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content border-danger">
       <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Finish Task</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle"><i class="fas fa-edit fa-fw"></i> Finish Task</h5>
       </div>
       <form id="submitDetails" enctype="multipart/form-data">
         <div class="modal-body text-center" id="finishDetails">
