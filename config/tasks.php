@@ -476,7 +476,7 @@ if (isset($_POST['checkTask'])) {
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
               </div>
-              <textarea class="form-control" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['remarks'] ?></textarea>
+              <textarea class="form-control" rows="4" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['remarks'] ?></textarea>
             </div>
           </div>
         </div>
@@ -499,7 +499,7 @@ if (isset($_POST['checkTask'])) {
                 <div class="input-group-prepend">
                   <div class="input-group-text"><i class="fas fa-comments"></i></div>
                 </div>
-                <textarea class="form-control" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['head_note'] ?></textarea>
+                <textarea class="form-control" rows="3" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['head_note'] ?></textarea>
               </div>
             </div>
           </div>
@@ -853,7 +853,7 @@ if (isset($_POST['viewTask'])) {
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
               </div>
-              <textarea class="form-control" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['remarks'] ?? 'TO BE DETERMINED' ?></textarea>
+              <textarea class="form-control" rows="4" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['remarks'] ?? 'TO BE DETERMINED' ?></textarea>
             </div>
           </div>
         </div>
@@ -876,7 +876,7 @@ if (isset($_POST['viewTask'])) {
                 <div class="input-group-prepend">
                   <div class="input-group-text"><i class="fas fa-comments"></i></div>
                 </div>
-                <textarea class="form-control" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['head_note'] ?></textarea>
+                <textarea class="form-control" rows="3" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['head_note'] ?></textarea>
               </div>
             </div>
           </div>
