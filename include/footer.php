@@ -30,8 +30,8 @@
         <h5 class="modal-title" id="exampleModalLongTitle">Activity Log</h5>
       </div>
       <div class="modal-body" id="activityDetails">
-        <table class="table table-striped" id="activityTable" width="100%" cellspacing="0">
-          <thead class='table table-primary'>
+        <table class="table table-hover table-sm table-dark table-borderless" id="activityTable" width="100%" cellspacing="0">
+          <thead>
             <tr>
               <th>Date & Time</th>
               <th>Activity</th>
