@@ -7,9 +7,30 @@ include('../include/header.php');
 
 <div class="container-fluid">
   <?php if ($access == 1) { ?>
-  <?php } elseif ($access == 2) { ?>
+  <?php } elseif ($access == 2) {
+    function getPercentage($average)
+    {
+      if ($average == 5.0) {
+        return 105;
+      } elseif ($average >= 4.0 && $average <= 4.99) {
+        return 100 + (($average - 4.0) / (4.99 - 4.0)) * (104 - 100);
+      } elseif ($average >= 3.0 && $average <= 3.99) {
+        return 90 + (($average - 3.0) / (3.99 - 3.0)) * (99 - 90);
+      } elseif ($average >= 2.0 && $average <= 2.99) {
+        return 80 + (($average - 2.0) / (2.99 - 2.0)) * (89 - 80);
+      } elseif ($average >= 0.0 && $average <= 1.99) {
+        return 70 + (($average - 0.0) / (1.99 - 0.0)) * (79 - 70);
+      } else {
+        return 0;
+      }
+    }
+    $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT *, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$username' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class != 6) AS routineTotal, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$username' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS reportTotal, (SELECT SUM(achievement) FROM tasks_details WHERE in_charge = '$username' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class != 6) AS routineSUM, (SELECT SUM(achievement) FROM tasks_details WHERE in_charge = '$username' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS reportSUM FROM tasks_details WHERE task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND in_charge = '$username'"));
+    $routine_average    = $row['routineTotal'] > 0 ? number_format(($row['routineSUM'] / $row['routineTotal']), 2) : 0;
+    $routine_percentage = $row['routineTotal'] > 0 ? number_format(getPercentage($routine_average), 2) : 0;
+    $report_average     = $row['reportTotal'] > 0 ? number_format(($row['reportSUM'] / $row['reportTotal']), 2) : 0;
+    $report_percentage  = $row['reportTotal'] > 0 ? number_format(getPercentage($report_average), 2) : 0; ?>
     <div class="row justify-content-center">
-      <div class="col-xl-5 col-lg-5">
+      <div class="col-xl-6">
         <div class="card shadow mb-4">
           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Performance</h6>
@@ -23,58 +44,108 @@ include('../include/header.php');
             </div>
           </div>
           <div class="card-body">
-            <div class="card card-primary card-outline">
-              <div class="card-body box-profile">
-                <div class="text-center"><img class="profile-user-img img-fluid img-circle" src="<?php echo $profileURL ?>" alt="User profile picture">
+            <div class="text-center mb-4">
+              <img class="profile-user-img img-fluid rounded-circle shadow" src="<?php echo $profileURL ?>" style="width: 120px; height: 120px;">
+              <h3 class="profile-username mt-3"><?php echo $full_name ?></h3>
+              <p class="text-muted"><?php echo $section ?></p>
+            </div>
+
+            <!-- Tab Navigation for Routine and Report -->
+            <ul class="nav nav-pills justify-content-center mb-4" id="taskTabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="routine-tab" data-toggle="pill" href="#routine" role="tab" aria-controls="routine" aria-selected="true">
+                  <i class="fas fa-tasks"></i> Routine
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="report-tab" data-toggle="pill" href="#report" role="tab" aria-controls="report" aria-selected="false">
+                  <i class="fas fa-chart-line"></i> Report
+                </a>
+              </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="taskTabsContent">
+              <!-- Routine Tab Content -->
+              <div class="tab-pane fade show active" id="routine" role="tabpanel" aria-labelledby="routine-tab">
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <div class="card border-left-primary shadow-sm h-100">
+                      <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-primary">Total Routine Tasks</h5>
+                        <p class="card-text display-6"><?php echo $row['routineTotal']; ?></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <div class="card border-left-success shadow-sm h-100">
+                      <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-success">Routine Average</h5>
+                        <p class="card-text display-6"><?php echo $routine_average; ?></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <div class="card border-left-info shadow-sm h-100">
+                      <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-info">Routine Completion %</h5>
+                        <p class="card-text display-6"><?php echo $routine_percentage; ?>%</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <h3 class="profile-username text-center"><?php echo $full_name ?></h3>
-                <p class="text-muted text-center"><?php echo $section ?></p>
-                <ul class="list-group list-group-unbordered mb-3">
-                  <?php
-                  function getPercentage($average)
-                  {
-                    if ($average == 5.0) {
-                      return 120;
-                    } elseif ($average >= 4.0 && $average <= 4.99) {
-                      return 105 + (($average - 4.0) / (4.99 - 4.0)) * (119 - 105);
-                    } elseif ($average >= 3.0 && $average <= 3.99) {
-                      return 95 + (($average - 3.0) / (3.99 - 3.0)) * (104 - 95);
-                    } elseif ($average >= 2.0 && $average <= 2.99) {
-                      return 80 + (($average - 2.0) / (2.99 - 2.0)) * (94 - 80);
-                    } elseif ($average >= 0.0 && $average <= 1.99) {
-                      return 70 + (($average - 0.0) / (1.99 - 0.0)) * (79 - 70);
-                    } else {
-                      return 0;
-                    }
-                  }
-                  $count_task = mysqli_query($con, "SELECT *, (SELECT COUNT(id) FROM tasks_details WHERE in_charge='$username' AND task_status=1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class NOT IN (5, 6)) AS task_total, (SELECT COUNT(id) FROM tasks_details WHERE task_status=1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS report_total FROM tasks_details WHERE task_status=1 AND status='FINISHED' AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND in_charge='$username'");
-                  $routine_sum = 0;
-                  $report_sum = 0;
-                  $routine_total = 0;
-                  $report_total = 0;
-                  while ($count_row = $count_task->fetch_assoc()) {
-                    if ($count_row['task_class'] != 5 && $count_row['task_class'] != 6) {
-                      $routine_sum += $count_row['achievement'];
-                    }
-                    if ($count_row['task_class'] == 6) {
-                      $report_sum += $count_row['achievement'];
-                    }
-                    $routine_total = $count_row['task_total'];
-                    $report_total = $count_row['report_total'];
-                  }
+              </div>
 
-                  $routine_average = $routine_total > 0 ? number_format(($routine_sum / $routine_total), 2) : 0;
-                  $routine_percentage = $routine_total > 0 ? number_format(getPercentage($routine_average), 2) : 0;
-
-                  $report_average = $report_total > 0 ? number_format(($report_sum / $report_total), 2) : 0;
-                  $report_percentage = $report_total > 0 ? number_format(getPercentage($report_average), 2) : 0;
-                  ?>
-                  <li class="list-group-item"><b>Completed Tasks</b><a class="float-right"><?php echo $completed_tasks ?> out of <?php echo $total_tasks ?></a></li>
-                  <li class="list-group-item"><b>Average</b><a class="float-right"> <?php echo $routine_average ?> for Routine | <?php echo $report_average ?> for Report</a></li>
-                  <li class="list-group-item"><b>Rating</b><a class="float-right"> <?php echo $routine_percentage ?>% | <?php echo $report_percentage ?>% </a></li>
-                </ul>
+              <!-- Report Tab Content -->
+              <div class="tab-pane fade" id="report" role="tabpanel" aria-labelledby="report-tab">
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <div class="card border-left-warning shadow-sm h-100">
+                      <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-warning">Total Report Tasks</h5>
+                        <p class="card-text display-6"><?php echo $row['reportTotal']; ?></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <div class="card border-left-danger shadow-sm h-100">
+                      <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-danger">Report Average</h5>
+                        <p class="card-text display-6"><?php echo $report_average; ?></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <div class="card border-left-secondary shadow-sm h-100">
+                      <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-secondary">Report Completion %</h5>
+                        <p class="card-text display-6"><?php echo $report_percentage; ?>%</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-xl-6">
+        <div class="card shadow mb-4">
+          <div class="card-body">
+            <h5 class="card-title">How the Average is Computed</h5>
+            <p class="card-text">
+              The average tasks deployed is calculated by dividing the total number of tasks deployed by the total number of days within the selected period.
+              For this example:
+            </p>
+            <ul>
+              <li><strong>Total Tasks Deployed:</strong> 200</li>
+              <li><strong>Total Days in the Period:</strong> 30</li>
+              <li><strong>Average Tasks Deployed:</strong> 200 / 30 = 15.6</li>
+            </ul>
+            <p class="card-text">
+              This gives the average number of tasks completed per day during the period, which helps measure daily productivity.
+            </p>
           </div>
         </div>
       </div>
@@ -244,16 +315,16 @@ include('../include/header.php');
   });
 
   function calculate(element) {
-    var section   = document.getElementById('section').value;
-    var date_to   = document.getElementById('date_to').value;
+    var section = document.getElementById('section').value;
+    var date_to = document.getElementById('date_to').value;
     var date_from = document.getElementById('date_from').value;
     var sortdata = {
       "calculate": true,
       "section": section,
     };
     if (date_to && date_from !== '') {
-      sortdata.date_to    = date_to;
-      sortdata.date_from  = date_from;
+      sortdata.date_to = date_to;
+      sortdata.date_from = date_from;
     }
 
     $('#dataTable').DataTable().destroy();
@@ -296,16 +367,16 @@ include('../include/header.php');
   }
 
   function viewTask(element) {
-    var account_id  = element.value;
-    var date_to     = document.getElementById('date_to').value;
-    var date_from   = document.getElementById('date_from').value;
+    var account_id = element.value;
+    var date_to = document.getElementById('date_to').value;
+    var date_from = document.getElementById('date_from').value;
     var data = {
       "viewTask": true,
       "account_id": account_id,
     };
     if (date_to && date_from !== '') {
-      data.date_to    = date_to;
-      data.date_from  = date_from;
+      data.date_to = date_to;
+      data.date_from = date_from;
     }
     $.ajax({
       method: "POST",
@@ -314,7 +385,10 @@ include('../include/header.php');
       success: function(response) {
         $('#ajaxContents').html(response);
         $('#ViewFinishedTaskTable').DataTable({
-          "order": [[4, "asc"],[6, "desc"]]
+          "order": [
+            [4, "asc"],
+            [6, "desc"]
+          ]
         });
         $('[data-toggle="tooltip"]').tooltip();
         openSpecificModal('view', 'modal-xl');
@@ -334,7 +408,10 @@ include('../include/header.php');
       success: function(response) {
         $('#ajaxContents').html(response);
         $('#ViewFinishedTaskTable').DataTable({
-          "order": [[4, "asc"],[6, "desc"]]
+          "order": [
+            [4, "asc"],
+            [6, "desc"]
+          ]
         });
         $('[data-toggle="tooltip"]').tooltip();
         openSpecificModal('view', 'modal-xl');
