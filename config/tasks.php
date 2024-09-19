@@ -507,7 +507,7 @@ if (isset($_POST['checkTask'])) {
             <div class="form-group">
               <label>Attachments:</label>
               <div class="table-responsive">
-                <table id="taskView_table" class="table table-striped">
+                <table id="taskView_table" class="table table-sm table-hover table-borderless">
                   <thead>
                     <tr>
                       <th>File</th>
@@ -521,13 +521,13 @@ if (isset($_POST['checkTask'])) {
                     $task_code  = $row['task_code'];
                     $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code'");
                     while ($row = mysqli_fetch_assoc($query_result)) {
-                      $size = number_format($row['file_size'] / (1024 * 1024), 2);
+                      $size   = formatSize($row['file_size']);
                       $action = '<button type="button" class="btn btn-circle btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download"></i></button>';
                       $date = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
                     ?>
                       <tr>
                         <td><?php echo $row['file_name'] ?></td>
-                        <td><?php echo $size ?> mb</td>
+                        <td><?php echo $size ?></td>
                         <td><?php echo $date ?></td>
                         <td><?php echo $action ?></td>
                       </tr>
@@ -627,7 +627,7 @@ if (isset($_POST['reviewTask'])) {
             <div class="form-group">
               <label>Current Attachments:</label>
               <div class="table-responsive">
-                <table id="taskReview_table" class="table table-striped">
+                <table id="taskReview_table" class="table table-sm table-hover table-borderless">
                   <thead>
                     <tr>
                       <th>File</th>
@@ -884,7 +884,7 @@ if (isset($_POST['viewTask'])) {
             <div class="form-group">
               <label>Attachments:</label>
               <div class="table-responsive">
-                <table id="taskView_table" class="table table-striped">
+                <table id="taskView_table" class="table table-sm table-hover table-borderless">
                   <thead>
                     <tr>
                       <th>File</th>
@@ -898,7 +898,7 @@ if (isset($_POST['viewTask'])) {
                     $task_code  = $row['task_code'];
                     $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code'");
                     while ($row = mysqli_fetch_assoc($query_result)) {
-                      $size = formatSize($row['file_size']);
+                      $size   = formatSize($row['file_size']);
                       $action = '<button type="button" class="btn btn-sm btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download fa-fw"></i> Download</button>';
                       $date = date_format(date_create($row['file_dated']), "F d, Y h:i a");
                     ?>
