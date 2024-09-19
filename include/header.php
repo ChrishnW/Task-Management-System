@@ -60,6 +60,8 @@
           <span>Dashboard</span></a>
       </li>
 
+      <hr class="sidebar-divider">
+
       <?php if ($access == 1) { ?>
         <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -108,10 +110,22 @@
           </div>
         </li>
       <?php } elseif ($access == 2) { ?>
+        <div class="sidebar-heading"> Components </div>
+
         <li class="nav-item">
-          <a class="nav-link" href="tasks.php">
-            <i class="fas fa-calendar-day"></i>
-            <span>My Tasks</span></a>
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <i class="fas fa-tasks"></i>
+            <span>My Tasks</span>
+          </a>
+          <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#todo');window.location.href='tasks.php';">Not Yet Started</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#inprogress');window.location.href='tasks.php';">In Progress</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#review');window.location.href='tasks.php';">For Review</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#finished');window.location.href='tasks.php';">Finished</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#res');window.location.href='tasks.php';">For Reschedule</span>
+            </div>
+          </div>
         </li>
 
         <li class="nav-item">
@@ -126,7 +140,6 @@
             <span>Performance</span></a>
         </li>
       <?php } elseif ($access == 3) { ?>
-        <hr class="sidebar-divider">
         <div class="sidebar-heading"> Components </div>
 
         <li class="nav-item">
