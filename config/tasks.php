@@ -608,7 +608,7 @@ if (isset($_POST['reviewTask'])) {
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
               </div>
-              <textarea class="form-control" name="taskReview_remarks" id="taskReview_remarks"><?php echo $row['remarks'] ?></textarea>
+              <textarea class="form-control" rows="4" cols="50" name="taskReview_remarks" id="taskReview_remarks"><?php echo $row['remarks'] ?></textarea>
             </div>
           </div>
         </div>
