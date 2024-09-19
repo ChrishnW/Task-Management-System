@@ -111,7 +111,6 @@
         </li>
       <?php } elseif ($access == 2) { ?>
         <div class="sidebar-heading"> Components </div>
-
         <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             <i class="fas fa-tasks"></i>
@@ -119,6 +118,7 @@
           </a>
           <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header"><center/>Task Status</h6>
               <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#todo');window.location.href='tasks.php';">Not Yet Started</span>
               <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#inprogress');window.location.href='tasks.php';">In Progress</span>
               <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#review');window.location.href='tasks.php';">For Review</span>
@@ -134,6 +134,8 @@
             <span>Task List</span></a>
         </li>
 
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading"> Ratings</div>
         <li class="nav-item">
           <a class="nav-link" href="performance.php">
             <i class="fas fa-chart-bar"></i>
