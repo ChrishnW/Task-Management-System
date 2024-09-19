@@ -20,7 +20,7 @@ if (isset($_POST['approveTask'])) {
       $username         = $row['in_charge'];
       $task_code        = $row['task_code'];
       $datetime_current = date('Y-m-d H:i:s');
-      $action = mysqli_real_escape_string($con, "window.location.href='tasks.php';");
+      $action = mysqli_real_escape_string($con, "localStorage.setItem('activeTab', '#finished');window.location.href='tasks.php';");
       $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `action`, `date_created`, `status`) VALUES ('$username', 'fas fa-exclamation', 'warning', 'You have received a note from the head regarding your finished task $task_code.', '$action', '$datetime_current', '1')");
     }
     $query_result = mysqli_query($con, "UPDATE tasks_details SET status='FINISHED', achievement='$score', head_name='$head_name', head_note='$head_comment' WHERE id='$id'");
