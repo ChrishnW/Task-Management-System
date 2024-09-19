@@ -359,7 +359,7 @@ if (isset($_POST['endTask'])) {
         $query = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code' AND file_name='$original_filename' AND file_owner='$assignee'");
         $check = mysqli_num_rows($query);
         if ($check > 0) {
-          die("File upload error, Duplicate file detected! Please upload a different file or filename.");
+          die("File upload error, Duplicate file detected!<br>Please upload a different file or filename.");
           break;
         } else {
           $file_extension     = pathinfo($original_filename, PATHINFO_EXTENSION);

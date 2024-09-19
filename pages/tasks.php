@@ -533,7 +533,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="re-view" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
     <div class="modal-content border-warning">
       <div class="modal-header bg-warning text-white">
         <h5 class="modal-title">Review Task</h5>
