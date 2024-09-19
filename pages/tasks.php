@@ -105,11 +105,16 @@ include('../include/header.php');
     <div class="row">
       <div class="form-group col-md-2">
         <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTableTask(this)">
+        <input type="date" name="date_to" id="date_to" class="form-control" onchange="checkDateInputs(this)">
       </div>
       <div class="form-group col-md-2">
         <label>From</label>
-        <input type="date" name="date_from" id="date_from" class="form-control" onchange="filterTableTask(this)">
+        <input type="date" name="date_from" id="date_from" class="form-control" onchange="checkDateInputs(this)">
+      </div>
+      <div class="form-group col">
+        <br>
+        <button type="button" class="btn btn-success btn-sm d-none" id="filterButton" onclick="filterTableTask(this)"><i class="fas fa-filter fa-fw"></i> Filter Table</button>
+        <button type="button" class="btn btn-danger btn-sm d-none" id="removeFilterButton" onclick="location.reload();"><i class="fas fa-eraser fa-fw"></i> Remove Filter</button>
       </div>
     </div>
     <div class="card">
@@ -135,7 +140,7 @@ include('../include/header.php');
           <div class="tab-pane fade" id="todo">
             <div class="card">
               <div class="card-header d-none" id="actionButton">
-                <button id="submitButton" onclick="getCheckedValue(this)" class="btn btn-success pull-right"><i class="fas fa-play"></i> Start All Selected</button>
+                <button id="multiStart" class="btn btn-success pull-right"><i class="fas fa-play"></i> Start All Selected</button>
               </div>
               <div class="card-body table-responsive">
                 <table id="myTasksTableTodo" class="table table-striped">
@@ -302,6 +307,7 @@ include('../include/header.php');
                       <th>Original Due Date</th>
                       <th>Requested Due Date</th>
                       <th>Asignee</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody id="myTasksReschedule">
@@ -318,6 +324,7 @@ include('../include/header.php');
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $old_date ?></td>
                         <td><?php echo $assignee ?></td>
+                        <td><button type="button" class="btn btn-block btn-secondary" value='<?php echo $row['id']; ?>' onclick="rescheduleTask(this)" disabled><i class="fas fa-pen fa-fw"></i> Edit</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -497,7 +504,7 @@ include('../include/header.php');
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content border-danger">
       <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle"><i class="fas fa-edit fa-fw"></i> Finish Task</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Finish Task</h5>
       </div>
       <form id="submitDetails" enctype="multipart/form-data">
         <div class="modal-body text-center" id="finishDetails">
@@ -511,7 +518,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="view" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content border-primary">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">View Task</h5>
@@ -526,7 +533,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="re-view" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
     <div class="modal-content border-warning">
       <div class="modal-header bg-warning text-white">
         <h5 class="modal-title">Review Task</h5>
@@ -976,85 +983,52 @@ include('../include/header.php');
     window.location.href = '../config/tasks.php?downloadFile=true&id=' + id;
   }
 
-  function getCheckedValue(element) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"][name="selected_ids[]"]');
-    var checkedIds = [];
-    checkboxes.forEach(function(checkbox) {
-      if (checkbox.checked) {
-        checkedIds.push(checkbox.value);
-      }
-    });
-    $('#start').modal('show');
-    $('#confirmButton').off('click').on('click', function() {
-      $.ajax({
-        url: '../config/tasks.php',
-        method: 'POST',
-        data: {
-          "startTaskMultiple": true,
-          "checkedIds": checkedIds
-        },
-        success: function(response) {
-          if (response === 'Success') {
-            document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-            $('#start').modal('hide');
-            $('#success').modal('show');
-          } else {
-            document.getElementById('error_found').innerHTML = response;
-            $('#error').modal('show');
-          }
-        },
-      });
-    });
-  }
-
   function filterTableTask(element) {
     var date_to = $('#date_to').val();
     var date_from = $('#date_from').val();
     var progress = localStorage.getItem('activeTab').replace('#', '').toUpperCase();
     var currentTab = progress.charAt(0).toUpperCase() + progress.slice(1).toLowerCase();
     // console.log(date_to, date_from, progress, currentTab);
-    if (date_to !== '' && date_from !== '') {
-      $('#myTasksTable' + currentTab).DataTable().destroy();
-      $('#myTasks' + currentTab).empty();
-      $.ajax({
-        method: "POST",
-        url: "../config/tasks.php",
-        data: {
-          "filterTableTask": true,
-          "date_to": date_to,
-          "date_from": date_from,
-          "progress": progress,
-        },
-        success: function(response) {
-          $('#myTasks' + currentTab).append(response);
-          if (currentTab === 'Todo') {
-            $('#myTasksTable' + currentTab).DataTable({
-              "order": [
-                [4, "asc"],
-                [2, "asc"]
-              ],
-              "pageLength": 5,
-              "lengthMenu": [5, 10, 25, 50, 100],
-              "drawCallback": function(settings) {
-                $('[data-toggle="tooltip"]').tooltip();
-              }
-            });
-          } else {
-            $('#myTasksTable' + currentTab).DataTable({
-              "order": [
-                [3, "desc"],
-                [1, "asc"]
-              ],
-              "pageLength": 5,
-              "lengthMenu": [5, 10, 25, 50, 100],
-              "drawCallback": function(settings) {
-                $('[data-toggle="tooltip"]').tooltip();
-              }
-            });
-          }
+    $('#myTasksTable' + currentTab).DataTable().destroy();
+    $('#myTasks' + currentTab).empty();
+    $.ajax({
+      method: "POST",
+      url: "../config/tasks.php",
+      data: {
+        "filterTableTask": true,
+        "date_to": date_to,
+        "date_from": date_from,
+        "progress": progress,
+      },
+      success: function(response) {
+        $('#myTasks' + currentTab).append(response);
+        if (currentTab === 'Todo') {
+          $('#myTasksTable' + currentTab).DataTable({
+            "order": [
+              [4, "asc"],
+              [2, "asc"]
+            ],
+            "pageLength": 5,
+            "lengthMenu": [5, 10, 25, 50, 100],
+            "drawCallback": function(settings) {
+              $('[data-toggle="tooltip"]').tooltip();
+            }
+          });
+        } else {
+          $('#myTasksTable' + currentTab).DataTable({
+            "order": [
+              [3, "desc"],
+              [1, "asc"]
+            ],
+            "pageLength": 5,
+            "lengthMenu": [5, 10, 25, 50, 100],
+            "drawCallback": function(settings) {
+              $('[data-toggle="tooltip"]').tooltip();
+            }
+          });
         }
-      });
-    }
+      }
+    });
   }
 
   function resetFileInput() {
@@ -1069,8 +1043,8 @@ include('../include/header.php');
     }
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    <?php if ($access == 2) { ?>
+  <?php if ($access == 2) { ?>
+    document.addEventListener('DOMContentLoaded', function() {
       var activeTab = localStorage.getItem('activeTab');
       if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
         document.querySelector(`a[href="${activeTab}"]`).classList.add('active');
@@ -1110,9 +1084,26 @@ include('../include/header.php');
       if (initialTableId && !$.fn.DataTable.isDataTable('#' + initialTableId)) {
         initializeDataTable(initialTableId);
       }
+    });
 
-      const selectAllCheckbox = $('#selectAll');
-      const actionButton = $('#actionButton');
+    // Multi Select Start Function Start
+    function getCheckedIds(table) {
+      const allCheckboxes = table.cells(null, 0, {
+        'page': 'all'
+      }).nodes().to$().find('input[name="selected_ids[]"]');
+      const checkedIds = [];
+
+      allCheckboxes.each(function() {
+        if ($(this).prop('checked')) {
+          checkedIds.push($(this).val());
+        }
+      });
+
+      return checkedIds;
+    }
+
+    $(document).ready(function() {
+      // Initialize the DataTable and make sure it's assigned to the 'table' variable
       const table = $('#myTasksTableTodo').DataTable({
         "order": [
           [4, "asc"],
@@ -1123,10 +1114,13 @@ include('../include/header.php');
         "drawCallback": function(settings) {
           $('[data-toggle="tooltip"]').tooltip();
         }
-      }); // Assuming your DataTable has an id of #example
+      });
+
+      const selectAllCheckbox = $('#selectAll');
+      const actionButton = $('#actionButton');
 
       function updateActionButton() {
-        // Select all checkboxes across pages
+        // Select all checkboxes across all pages
         const allCheckboxes = table.cells(null, 0, {
           'page': 'all'
         }).nodes().to$().find('input[name="selected_ids[]"]');
@@ -1139,14 +1133,14 @@ include('../include/header.php');
         }
       }
 
-      // Handle "Select All" checkbox
+      // Handle "Select All" checkbox across all pages
       selectAllCheckbox.on('change', function() {
-        // Get all rows (including those not visible)
+        // Get all rows across all pages
         const allRows = table.rows({
-          'search': 'applied'
+          'page': 'all'
         }).nodes();
 
-        // Loop over each row to set checked status for each checkbox
+        // Loop over each row and set the checked status for each checkbox
         $(allRows).find('input[name="selected_ids[]"]').each(function() {
           if (!$(this).prop('disabled')) {
             $(this).prop('checked', selectAllCheckbox.prop('checked'));
@@ -1157,9 +1151,38 @@ include('../include/header.php');
       });
 
       // Handle individual checkbox change
-      $('#example tbody').on('change', 'input[name="selected_ids[]"]', function() {
+      $('#myTasksTableTodo tbody').on('change', 'input[name="selected_ids[]"]', function() {
         updateActionButton();
       });
-    <?php } ?>
-  });
+
+      // Example usage of fetching all selected IDs on button click
+      $('#multiStart').on('click', function() {
+        $('#start').modal('show');
+        $('#confirmButton').off('click').on('click', function() {
+          const checkedIds = getCheckedIds(table);
+          // console.log(checkedIds);
+          $.ajax({
+            url: '../config/tasks.php',
+            method: 'POST',
+            data: {
+              "startTaskMultiple": true,
+              "checkedIds": checkedIds
+            },
+            success: function(response) {
+              if (response === 'Success') {
+                document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+                $('#start').modal('hide');
+                $('#success').modal('show');
+              } else {
+                document.getElementById('error_found').innerHTML = response;
+                $('#error').modal('show');
+              }
+            },
+          });
+        });
+      });
+    });
+    // Multi Select Start Function End
+
+  <?php } ?>
 </script>
