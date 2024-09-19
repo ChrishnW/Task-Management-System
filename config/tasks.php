@@ -356,34 +356,32 @@ if (isset($_POST['endTask'])) {
         $filetype           = $files['type'][$i];
         $filesize           = $files['size'][$i];
         $tmpname            = $files['tmp_name'][$i];
-
         $query = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code' AND file_name='$original_filename' AND file_owner='$assignee'");
         $check = mysqli_num_rows($query);
         if ($check > 0) {
-          echo "File upload error, Duplicate file detected! Please upload a different file or filename.";
+          die("File upload error, Duplicate file detected! Please upload a different file or filename.");
           break;
         } else {
           $file_extension     = pathinfo($original_filename, PATHINFO_EXTENSION);
-
           $new_filename       = '[' . $task_code . '] ' . $original_filename;
           $destination        = $upload_dir . '/' . $new_filename;
-
           if (move_uploaded_file($tmpname, $destination)) {
             $query_update = mysqli_query($con, "UPDATE tasks_details SET status='REVIEW', date_accomplished='$currentDateTime', achievement='$achievement', remarks='$remarks' WHERE id='$id'");
             $query_insert = mysqli_query($con, "INSERT INTO `task_files`(`task_code`, `file_name`, `file_size`, `file_type`, `file_dated`, `file_owner`, `file_target`) VALUES ('$task_code', '$original_filename', '$filesize', '$file_extension', '$currentDateTime', '$assignee', '$new_filename')");
             if ($query_update && $query_insert) {
               $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
-              $row = mysqli_fetch_assoc($query_code);
-              log_action("Task {$row['task_code']} completed and sent for review.");
-              echo "Success";
             } else {
-              unlink($targetDir . $new_filename);
-              echo "Unable to complete the operation. Please try again later.";
+              die('Unable to complete the operation. Please try again later.');
             }
           } else {
-            echo "Unable to complete the operation. File storage location is unknown.";
+            die('Unable to complete the operation. File storage location is unknown.');
           }
         }
+      }
+      if ($query_code) {
+        $row = mysqli_fetch_assoc($query_code);
+        log_action("Task {$row['task_code']} completed and sent for review.");
+        die("Success");
       }
     }
   } else {
