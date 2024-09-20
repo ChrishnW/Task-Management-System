@@ -56,8 +56,6 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
               </form>
               <hr>
               <div class="text-center">
-                <a class="small" href="forgot-password.html">Forgot Password?</a>
-                <br><br>
                 <small class="text-white-50">System Version 1.0</small>
               </div>
             </div>
