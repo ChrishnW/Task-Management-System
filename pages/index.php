@@ -586,6 +586,12 @@ include('../include/header.php');
     $utasks            = $row['utasks'];
     $members           = $row['members']; ?>
     <div class="row">
+      <div class="col-md-9 col-auto">
+        <h2 class="mb-2 font-weight-bolder">Dashboard</h2>
+        <h5 class="mb-3 font-weight-light display-8">Here’s what’s going on at your department right now</h5>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-xl-3 p-0">
         <div class="col-lg-auto mb-4">
           <div class="card border-left-danger shadow h-100 py-2">
