@@ -104,3 +104,5 @@ function log_action($action) {
   $username = $_SESSION['SESS_MEMBER_USERNAME'];
   $query_insert = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$action', '$datetime', '$username')");
 }
+
+$minDay = date('Y-m-d', strtotime('+1 day'));

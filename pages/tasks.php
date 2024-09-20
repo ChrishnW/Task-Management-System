@@ -483,7 +483,7 @@ include('../include/header.php');
           <div class="input-group-prepend">
             <div class="input-group-text"><i class="fas fa-calendar"></i></div>
           </div>
-          <input type="date" id="resched_date" name="resched_date" class="form-control">
+          <input type="date" id="resched_date" name="resched_date" class="form-control" min=<?php echo $minDay; ?>>
         </div>
         <label for="">Reason:</label>
         <div class="input-group mb-2">
