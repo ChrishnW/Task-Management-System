@@ -176,7 +176,8 @@ include('../include/header.php');
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $assignee ?></td>
-                        <td><?php echo $action; if ($row['old_date'] === NULL) echo '<button type="button" class="btn btn-block btn-secondary" value="' . $row['id'] . '" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button>'; ?></td>
+                        <td><?php echo $action;
+                            if ($row['old_date'] === NULL) echo '<button type="button" class="btn btn-block btn-secondary" value="' . $row['id'] . '" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button>'; ?></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -1004,20 +1005,56 @@ include('../include/header.php');
       }
 
       function initializeDataTable(tableId) {
-        if (tableId !== 'myTasksTableTodo') {
-          $('#' + tableId).DataTable({
-            "order": [
-              [3, "desc"],
-              [1, "asc"]
-            ],
-            pageLength: 5,
-            lengthMenu: [5, 10, 25, 50, 100],
-            "drawCallback": function(settings) {
-              $('[data-toggle="tooltip"]').tooltip();
-            }
-          });
+        const order = tableId === 'myTasksTableTodo' ? [[4, "asc"],[2, "asc"]] : [[3, "desc"],[1, "asc"]];
+        const table = $('#' + tableId).DataTable({
+          "order": order,
+          pageLength: 5,
+          lengthMenu: [5, 10, 25, 50, 100],
+          "drawCallback": function(settings) {
+            $('[data-toggle="tooltip"]').tooltip();
+          }
+        });
+
+        $('#selectAll').on('click', function() {
+          $('input[name="selected_ids[]"]:not(:disabled)', table.rows().nodes()).prop('checked', this.checked);
+          toggleActionButton();
+        });
+
+        $(document).on('change', 'input[name="selected_ids[]"]:not(:disabled)', toggleActionButton);
+
+        function toggleActionButton() {
+          $('#actionButton').toggleClass('d-none', !$('input[name="selected_ids[]"]:checked:not(:disabled)', table.rows().nodes()).length);
         }
+
+        $('#actionButton').on('click', function() {
+          const selectedValues = $('input[name="selected_ids[]"]:checked:not(:disabled)', table.rows().nodes()).map(function() {
+            return $(this).val();
+          }).get();
+          // console.log(selectedValues);
+          $('#start').modal('show');
+          $('#confirmButton').off('click').on('click', function() {
+            $.ajax({
+              url: '../config/tasks.php',
+              method: 'POST',
+              data: {
+                "startTaskMultiple": true,
+                "checkedIds": selectedValues
+              },
+              success: function(response) {
+                if (response === 'Success') {
+                  document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+                  $('#start').modal('hide');
+                  $('#success').modal('show');
+                } else {
+                  document.getElementById('error_found').innerHTML = response;
+                  $('#error').modal('show');
+                }
+              },
+            });
+          });
+        });
       }
+
 
       $('#myTabs a').on('shown.bs.tab', function(e) {
         var href = $(e.target).attr('href');
@@ -1034,104 +1071,6 @@ include('../include/header.php');
         initializeDataTable(initialTableId);
       }
     });
-
-    // Multi Select Start Function Start
-    function getCheckedIds(table) {
-      const allCheckboxes = table.cells(null, 0, {
-        'page': 'all'
-      }).nodes().to$().find('input[name="selected_ids[]"]');
-      const checkedIds = [];
-
-      allCheckboxes.each(function() {
-        if ($(this).prop('checked')) {
-          checkedIds.push($(this).val());
-        }
-      });
-
-      return checkedIds;
-    }
-
-    $(document).ready(function() {
-      // Initialize the DataTable and make sure it's assigned to the 'table' variable
-      const table = $('#myTasksTableTodo').DataTable({
-        "order": [
-          [4, "asc"],
-          [2, "asc"]
-        ],
-        pageLength: 5,
-        lengthMenu: [5, 10, 25, 50, 100],
-        "drawCallback": function(settings) {
-          $('[data-toggle="tooltip"]').tooltip();
-        }
-      });
-
-      const selectAllCheckbox = $('#selectAll');
-      const actionButton = $('#actionButton');
-
-      function updateActionButton() {
-        // Select all checkboxes across all pages
-        const allCheckboxes = table.cells(null, 0, {
-          'page': 'all'
-        }).nodes().to$().find('input[name="selected_ids[]"]');
-        const anyChecked = allCheckboxes.filter(':checked:not(:disabled)').length > 0;
-
-        if (anyChecked) {
-          actionButton.removeClass('d-none');
-        } else {
-          actionButton.addClass('d-none');
-        }
-      }
-
-      // Handle "Select All" checkbox across all pages
-      selectAllCheckbox.on('change', function() {
-        // Get all rows across all pages
-        const allRows = table.rows({
-          'page': 'all'
-        }).nodes();
-
-        // Loop over each row and set the checked status for each checkbox
-        $(allRows).find('input[name="selected_ids[]"]').each(function() {
-          if (!$(this).prop('disabled')) {
-            $(this).prop('checked', selectAllCheckbox.prop('checked'));
-          }
-        });
-
-        updateActionButton();
-      });
-
-      // Handle individual checkbox change
-      $('#myTasksTableTodo tbody').on('change', 'input[name="selected_ids[]"]', function() {
-        updateActionButton();
-      });
-
-      // Example usage of fetching all selected IDs on button click
-      $('#multiStart').on('click', function() {
-        $('#start').modal('show');
-        $('#confirmButton').off('click').on('click', function() {
-          const checkedIds = getCheckedIds(table);
-          // console.log(checkedIds);
-          $.ajax({
-            url: '../config/tasks.php',
-            method: 'POST',
-            data: {
-              "startTaskMultiple": true,
-              "checkedIds": checkedIds
-            },
-            success: function(response) {
-              if (response === 'Success') {
-                document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-                $('#start').modal('hide');
-                $('#success').modal('show');
-              } else {
-                document.getElementById('error_found').innerHTML = response;
-                $('#error').modal('show');
-              }
-            },
-          });
-        });
-      });
-    });
-    // Multi Select Start Function End
 
     function checkDateInputs() {
       var dateFrom = document.getElementById('date_from').value;
@@ -1158,20 +1097,52 @@ include('../include/header.php');
         },
         success: function(response) {
           $('#myTasks' + setTab).append(response);
-          const orderConfig = setTab === 'Todo' ? [
-            [4, "asc"],
-            [2, "asc"]
-          ] : [
-            [3, "desc"],
-            [1, "asc"]
-          ];
-          $('#myTasksTable' + setTab).DataTable({
+          const orderConfig = setTab === 'Todo' ? [[4, "asc"],[2, "asc"]] : [[3, "desc"],[1, "asc"]];
+          const table = $('#myTasksTable' + setTab).DataTable({
             "order": orderConfig,
             "pageLength": 5,
             "lengthMenu": [5, 10, 25, 50, 100],
             "drawCallback": function(settings) {
               $('[data-toggle="tooltip"]').tooltip();
             }
+          });
+          $('#selectAll').on('click', function() {
+            $('input[name="selected_ids[]"]:not(:disabled)', table.rows().nodes()).prop('checked', this.checked);
+            toggleActionButton();
+          });
+
+          $(document).on('change', 'input[name="selected_ids[]"]:not(:disabled)', toggleActionButton);
+
+          function toggleActionButton() {
+            $('#actionButton').toggleClass('d-none', !$('input[name="selected_ids[]"]:checked:not(:disabled)', table.rows().nodes()).length);
+          }
+
+          $('#actionButton').on('click', function() {
+            const selectedValues = $('input[name="selected_ids[]"]:checked:not(:disabled)', table.rows().nodes()).map(function() {
+              return $(this).val();
+            }).get();
+            // console.log(selectedValues);
+            $('#start').modal('show');
+            $('#confirmButton').off('click').on('click', function() {
+              $.ajax({
+                url: '../config/tasks.php',
+                method: 'POST',
+                data: {
+                  "startTaskMultiple": true,
+                  "checkedIds": selectedValues
+                },
+                success: function(response) {
+                  if (response === 'Success') {
+                    document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+                    $('#start').modal('hide');
+                    $('#success').modal('show');
+                  } else {
+                    document.getElementById('error_found').innerHTML = response;
+                    $('#error').modal('show');
+                  }
+                },
+              });
+            });
           });
         }
       });
