@@ -115,12 +115,12 @@ if (isset($_POST['filterTableTask'])) {
         <td><?php echo $due_date ?></td>
         <td><?php echo $assignee ?></td>
         <td><?php echo $action ?><button type="button" class="btn btn-block btn-secondary" value="<?php echo $row['id']; ?>" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button></td>
-      </tr> <?php
-          }
-        } elseif ($status == 'IN PROGRESS') {
-          while ($row = $query_result->fetch_assoc()) {
-            $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-            $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
+      </tr>
+    <?php }
+  } elseif ($status == 'IN PROGRESS') {
+    while ($row = $query_result->fetch_assoc()) {
+      $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
+      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
       <tr>
         <td><?php echo $row['task_code'] ?></td>
         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
@@ -128,13 +128,13 @@ if (isset($_POST['filterTableTask'])) {
         <td><?php echo $due_date ?></td>
         <td><?php echo $assignee ?></td>
         <td><button type="button" class="btn btn-block btn-danger" value='<?php echo $row['id']; ?>' onclick="endTask(this)"><i class="fas fa-stop fa-fw"></i> Finish</button></td>
-      </tr> <?php
-          }
-        } elseif ($status == 'REVIEW') {
-          while ($row = $query_result->fetch_assoc()) {
-            $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-            $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-            $assignee           = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
+      </tr>
+    <?php }
+  } elseif ($status == 'REVIEW') {
+    while ($row = $query_result->fetch_assoc()) {
+      $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
+      $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
+      $assignee           = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
       <tr>
         <td><?php echo $row['task_code'] ?></td>
         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
@@ -143,13 +143,13 @@ if (isset($_POST['filterTableTask'])) {
         <td><?php echo $date_accomplished ?></td>
         <td><?php echo $assignee ?></td>
         <td><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
-      </tr> <?php
-          }
-        } elseif ($status == 'FINISHED') {
-          while ($row = $query_result->fetch_assoc()) {
-            $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-            $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-            $assignee           = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
+      </tr>
+    <?php }
+  } elseif ($status == 'FINISHED') {
+    while ($row = $query_result->fetch_assoc()) {
+      $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
+      $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
+      $assignee           = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
       <tr>
         <td><?php echo $row['task_code'] ?></td>
         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
@@ -159,13 +159,13 @@ if (isset($_POST['filterTableTask'])) {
         <td><span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span></td>
         <td><?php echo $assignee ?></td>
         <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="checkTask(this)"><i class="fas fa-history fa-fw"></i> Details</button></td>
-      </tr> <?php
-          }
-        } elseif ($status == 'RESCHEDULE') {
-          while ($row = $query_result->fetch_assoc()) {
-            $due_date = date_format(date_create($row['due_date']), "Y-m-d");
-            $old_date = date_format(date_create($row['old_date']), "Y-m-d");
-            $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
+      </tr>
+    <?php }
+  } elseif ($status == 'RESCHEDULE') {
+    while ($row = $query_result->fetch_assoc()) {
+      $due_date = date_format(date_create($row['due_date']), "Y-m-d");
+      $old_date = date_format(date_create($row['old_date']), "Y-m-d");
+      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
       <tr>
         <td><?php echo $row['task_code'] ?></td>
         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
@@ -173,18 +173,18 @@ if (isset($_POST['filterTableTask'])) {
         <td><?php echo $due_date ?></td>
         <td><?php echo $old_date ?></td>
         <td><?php echo $assignee ?></td>
-      </tr> <?php
-          }
-        }
+      </tr>
+    <?php }
+  }
 }
-      if (isset($_POST['editTask'])) {
-        $id = $_POST['taskID'];
-        $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details FROM tasks_details JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE tasks_details.id='$id'");
-        while ($row = mysqli_fetch_assoc($query_result)) {
-          $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
-          $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
-          $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
-          $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
+if (isset($_POST['editTask'])) {
+  $id = $_POST['taskID'];
+  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details FROM tasks_details JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE tasks_details.id='$id'");
+  while ($row = mysqli_fetch_assoc($query_result)) {
+    $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
+    $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
+    $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
+    $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
     <div class="row">
       <div class="form-group col-md-4">
         <label>Assignee:</label>
@@ -245,60 +245,60 @@ if (isset($_POST['filterTableTask'])) {
       </div>
     </div>
   <?php }
-      }
-      if (isset($_POST['updateTask'])) {
-        $error    = false;
-        $id       = $_POST['taskID'];
-        $progress = $_POST['progress'];
-        $status   = $_POST['status'];
+}
+if (isset($_POST['updateTask'])) {
+  $error    = false;
+  $id       = $_POST['taskID'];
+  $progress = $_POST['progress'];
+  $status   = $_POST['status'];
 
-        if ($_POST['datetime'] === '') {
-          $error = true;
-          echo "Date and Time cannot be empty. Please fill in all required fields.";
-        }
-        if (!$error) {
-          $datetime = str_replace("T", " ", $_POST['datetime']) . ":00";
-          $query_result = mysqli_query($con, "UPDATE tasks_details SET status='$progress', due_date='$datetime', task_status='$status' WHERE id='$id'");
-          if ($query_result) {
-            echo "Success";
-          } else {
-            echo "Unable to complete the operation. Please try again later.";
-          }
-        }
-      }
-      if (isset($_POST['startTask'])) {
-        $id = $_POST['id'];
-        $query_result = mysqli_query($con, "UPDATE tasks_details SET status='IN PROGRESS' WHERE id='$id'");
-        if ($query_result) {
-          $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
-          $row = mysqli_fetch_assoc($query_code);
-          log_action("Task {$row['task_code']} started.");
-          echo "Success";
-        } else {
-          echo "Unable to complete the operation. Please try again later.";
-        }
-      }
-      if (isset($_POST['startTaskMultiple'])) {
-        $count = 0;
-        $taskIDmultiple = $_POST['checkedIds'];
-        foreach ($taskIDmultiple as $taskID) {
-          $query_result = mysqli_query($con, "UPDATE tasks_details SET status='IN PROGRESS' WHERE id='$taskID'");
-          if ($query_result) {
-            $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$taskID'");
-            $row = mysqli_fetch_assoc($query_code);
-            log_action("Task {$row['task_code']} started.");
-            $count++;
-          }
-        }
-        echo $count > 0 ? "Success" : "Unable to complete the operation. Please try again later.";
-      }
-      if (isset($_POST['endTaskDeatails'])) {
-        $id = $_POST['taskID'];
-        $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE task_status=1 AND id='$id'");
-        while ($row = mysqli_fetch_assoc($query_result)) {
-          $require = $row['requirement_status'];
-        }
-        if ($require == 1) { ?>
+  if ($_POST['datetime'] === '') {
+    $error = true;
+    echo "Date and Time cannot be empty. Please fill in all required fields.";
+  }
+  if (!$error) {
+    $datetime = str_replace("T", " ", $_POST['datetime']) . ":00";
+    $query_result = mysqli_query($con, "UPDATE tasks_details SET status='$progress', due_date='$datetime', task_status='$status' WHERE id='$id'");
+    if ($query_result) {
+      echo "Success";
+    } else {
+      echo "Unable to complete the operation. Please try again later.";
+    }
+  }
+}
+if (isset($_POST['startTask'])) {
+  $id = $_POST['id'];
+  $query_result = mysqli_query($con, "UPDATE tasks_details SET status='IN PROGRESS' WHERE id='$id'");
+  if ($query_result) {
+    $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+    $row = mysqli_fetch_assoc($query_code);
+    log_action("Task {$row['task_code']} started.");
+    echo "Success";
+  } else {
+    echo "Unable to complete the operation. Please try again later.";
+  }
+}
+if (isset($_POST['startTaskMultiple'])) {
+  $count = 0;
+  $taskIDmultiple = $_POST['checkedIds'];
+  foreach ($taskIDmultiple as $taskID) {
+    $query_result = mysqli_query($con, "UPDATE tasks_details SET status='IN PROGRESS' WHERE id='$taskID'");
+    if ($query_result) {
+      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$taskID'");
+      $row = mysqli_fetch_assoc($query_code);
+      log_action("Task {$row['task_code']} started.");
+      $count++;
+    }
+  }
+  echo $count > 0 ? "Success" : "Unable to complete the operation. Please try again later.";
+}
+if (isset($_POST['endTaskDeatails'])) {
+  $id = $_POST['taskID'];
+  $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE task_status=1 AND id='$id'");
+  while ($row = mysqli_fetch_assoc($query_result)) {
+    $require = $row['requirement_status'];
+  }
+  if ($require == 1) { ?>
     <input type="hidden" id="finish_taskID" name="finish_taskID" value="<?php echo $id ?>">
     <textarea class="form-control border-dark" rows="5" cols="50" name="taskRemarks" id="taskRemarks" placeholder="Write your remarks for this task..."></textarea>
     <br>
@@ -308,97 +308,97 @@ if (isset($_POST['filterTableTask'])) {
     <input type="hidden" id="finish_taskID" name="finish_taskID" value="<?php echo $id ?>">
     <textarea class="form-control border-dark" rows="5" cols="50" name="taskRemarks" id="taskRemarks" placeholder="Write your remarks for this task..."></textarea>
   <?php }
+}
+if (isset($_POST['endTask'])) {
+  $currentDateTime  = date('Y-m-d H:i:s');
+  $id               = $_POST['finish_taskID'];
+  // $remarks          = str_replace("'", "&apos;", $_POST['taskRemarks']);
+  $remarks = preg_replace('/^\s+|\s+$|\s+(?=\s)/m', '', $_POST['taskRemarks']);
+  $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE id='$id'");
+  while ($row = $query_result->fetch_assoc()) {
+    $task_name    = $row['task_name'];
+    $assignee     = $row['in_charge'];
+    $task_code    = $row['task_code'];
+    $require      = $row['requirement_status'];
+    $due_date     = date_create($row['due_date']);
+    $finish_date  = date_create($row['date_accomplished']);
+    $days         = date_diff($due_date, $finish_date);
+    $interval     = $days->format("%R%a");
+    $achievement = 3;
+  }
+  if ($require == 1) {
+    if (empty($_FILES['file-1']['name'][0]) && empty($remarks)) {
+      echo "An empty field has been detected!<br>Please ensure to include your remarks and attach a file to submit.";
+    } elseif (empty($remarks)) {
+      echo "An empty field has been detected!<br>Please ensure to include your remarks for this task.";
+    } elseif (empty($_FILES['file-1']['name'][0])) {
+      echo "An empty field has been detected!<br>File attachments are required for this task.";
+    } elseif (strlen(trim($remarks)) <= 30) {
+      echo "The remarks contains fewer than 30 characters (excluding excess whitespace).";
+    } else {
+      $files      = $_FILES['file-1'];
+      $upload_dir = '../files/' . $assignee;
+      $targetDir  = "../files/$assignee/";
+      if (!file_exists($upload_dir)) {
+        mkdir($upload_dir, 0777, true);
       }
-      if (isset($_POST['endTask'])) {
-        $currentDateTime  = date('Y-m-d H:i:s');
-        $id               = $_POST['finish_taskID'];
-        // $remarks          = str_replace("'", "&apos;", $_POST['taskRemarks']);
-        $remarks = preg_replace('/^\s+|\s+$|\s+(?=\s)/m', '', $_POST['taskRemarks']);
-        $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE id='$id'");
-        while ($row = $query_result->fetch_assoc()) {
-          $task_name    = $row['task_name'];
-          $assignee     = $row['in_charge'];
-          $task_code    = $row['task_code'];
-          $require      = $row['requirement_status'];
-          $due_date     = date_create($row['due_date']);
-          $finish_date  = date_create($row['date_accomplished']);
-          $days         = date_diff($due_date, $finish_date);
-          $interval     = $days->format("%R%a");
-          $achievement = 3;
-        }
-        if ($require == 1) {
-          if (empty($_FILES['file-1']['name'][0]) && empty($remarks)) {
-            echo "An empty field has been detected!<br>Please ensure to include your remarks and attach a file to submit.";
-          } elseif (empty($remarks)) {
-            echo "An empty field has been detected!<br>Please ensure to include your remarks for this task.";
-          } elseif (empty($_FILES['file-1']['name'][0])) {
-            echo "An empty field has been detected!<br>File attachments are required for this task.";
-          } elseif (strlen(trim($remarks)) <= 30) {
-            echo "The remarks contains fewer than 30 characters (excluding excess whitespace).";
-          } else {
-            $files      = $_FILES['file-1'];
-            $upload_dir = '../files/' . $assignee;
-            $targetDir  = "../files/$assignee/";
-            if (!file_exists($upload_dir)) {
-              mkdir($upload_dir, 0777, true);
-            }
-            for ($i = 0; $i < count($files['name']); $i++) {
-              $original_filename  = $files['name'][$i];
-              $filetype           = $files['type'][$i];
-              $filesize           = $files['size'][$i];
-              $tmpname            = $files['tmp_name'][$i];
-              $query = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code' AND file_name='$original_filename' AND file_owner='$assignee'");
-              $check = mysqli_num_rows($query);
-              if ($check > 0) {
-                die("File upload error, Duplicate file detected!<br>Please upload a different file or filename.");
-                break;
-              } else {
-                $file_extension     = pathinfo($original_filename, PATHINFO_EXTENSION);
-                $new_filename       = '[' . $task_code . '] ' . $original_filename;
-                $destination        = $upload_dir . '/' . $new_filename;
-                if (move_uploaded_file($tmpname, $destination)) {
-                  $query_update = mysqli_query($con, "UPDATE tasks_details SET status='REVIEW', date_accomplished='$currentDateTime', achievement='$achievement', remarks='$remarks' WHERE id='$id'");
-                  $query_insert = mysqli_query($con, "INSERT INTO `task_files`(`task_code`, `file_name`, `file_size`, `file_type`, `file_dated`, `file_owner`, `file_target`) VALUES ('$task_code', '$original_filename', '$filesize', '$file_extension', '$currentDateTime', '$assignee', '$new_filename')");
-                  if ($query_update && $query_insert) {
-                    $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
-                  } else {
-                    die('Unable to complete the operation. Please try again later.');
-                  }
-                } else {
-                  die('Unable to complete the operation. File storage location is unknown.');
-                }
-              }
-            }
-            if ($query_code) {
-              $row = mysqli_fetch_assoc($query_code);
-              log_action("Task {$row['task_code']} completed and sent for review.");
-              die("Success");
-            }
-          }
+      for ($i = 0; $i < count($files['name']); $i++) {
+        $original_filename  = $files['name'][$i];
+        $filetype           = $files['type'][$i];
+        $filesize           = $files['size'][$i];
+        $tmpname            = $files['tmp_name'][$i];
+        $query = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code' AND file_name='$original_filename' AND file_owner='$assignee'");
+        $check = mysqli_num_rows($query);
+        if ($check > 0) {
+          die("File upload error, Duplicate file detected!<br>Please upload a different file or filename.");
+          break;
         } else {
-          if (empty($remarks)) {
-            echo "An empty field has been detected!<br>Please ensure to include your remarks for this task.";
-          } elseif (strlen(trim($remarks)) <= 30) {
-            echo "The remarks contains fewer than 30 characters (excluding excess whitespace).";
-          } else {
+          $file_extension     = pathinfo($original_filename, PATHINFO_EXTENSION);
+          $new_filename       = '[' . $task_code . '] ' . $original_filename;
+          $destination        = $upload_dir . '/' . $new_filename;
+          if (move_uploaded_file($tmpname, $destination)) {
             $query_update = mysqli_query($con, "UPDATE tasks_details SET status='REVIEW', date_accomplished='$currentDateTime', achievement='$achievement', remarks='$remarks' WHERE id='$id'");
-            if ($query_update) {
+            $query_insert = mysqli_query($con, "INSERT INTO `task_files`(`task_code`, `file_name`, `file_size`, `file_type`, `file_dated`, `file_owner`, `file_target`) VALUES ('$task_code', '$original_filename', '$filesize', '$file_extension', '$currentDateTime', '$assignee', '$new_filename')");
+            if ($query_update && $query_insert) {
               $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
-              $row = mysqli_fetch_assoc($query_code);
-              log_action("Task {$row['task_code']} completed and sent for review.");
-              echo "Success";
+            } else {
+              die('Unable to complete the operation. Please try again later.');
             }
+          } else {
+            die('Unable to complete the operation. File storage location is unknown.');
           }
         }
       }
-      if (isset($_POST['checkTask'])) {
-        $id = $_POST['taskID'];
-        $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details FROM tasks_details JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE tasks_details.id='$id'");
-        while ($row = mysqli_fetch_assoc($query_result)) {
-          $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
-          $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
-          $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
-          $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
+      if ($query_code) {
+        $row = mysqli_fetch_assoc($query_code);
+        log_action("Task {$row['task_code']} completed and sent for review.");
+        die("Success");
+      }
+    }
+  } else {
+    if (empty($remarks)) {
+      echo "An empty field has been detected!<br>Please ensure to include your remarks for this task.";
+    } elseif (strlen(trim($remarks)) <= 30) {
+      echo "The remarks contains fewer than 30 characters (excluding excess whitespace).";
+    } else {
+      $query_update = mysqli_query($con, "UPDATE tasks_details SET status='REVIEW', date_accomplished='$currentDateTime', achievement='$achievement', remarks='$remarks' WHERE id='$id'");
+      if ($query_update) {
+        $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+        $row = mysqli_fetch_assoc($query_code);
+        log_action("Task {$row['task_code']} completed and sent for review.");
+        echo "Success";
+      }
+    }
+  }
+}
+if (isset($_POST['checkTask'])) {
+  $id = $_POST['taskID'];
+  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details FROM tasks_details JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE tasks_details.id='$id'");
+  while ($row = mysqli_fetch_assoc($query_result)) {
+    $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
+    $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
+    $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
+    $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
     <form id="editDetails" enctype="multipart/form-data">
       <div class="row">
         <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['id'] ?>">
@@ -493,7 +493,7 @@ if (isset($_POST['filterTableTask'])) {
             </div>
           </div>
         <?php }
-          if ($row['requirement_status'] == 1) { ?>
+        if ($row['requirement_status'] == 1) { ?>
           <div class="col-md-12">
             <div class="form-group">
               <label>Attachments:</label>
@@ -532,15 +532,15 @@ if (isset($_POST['filterTableTask'])) {
       </div>
     </form>
   <?php }
-      }
-      if (isset($_POST['reviewTask'])) {
-        $id = $_POST['taskID'];
-        $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details FROM tasks_details JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE tasks_details.id='$id'");
-        while ($row = mysqli_fetch_assoc($query_result)) {
-          $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
-          $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
-          $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
-          $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
+}
+if (isset($_POST['reviewTask'])) {
+  $id = $_POST['taskID'];
+  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details FROM tasks_details JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE tasks_details.id='$id'");
+  while ($row = mysqli_fetch_assoc($query_result)) {
+    $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
+    $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
+    $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
+    $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
     <form id="editDetails" enctype="multipart/form-data">
       <div class="row">
         <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['id'] ?>">
@@ -652,117 +652,117 @@ if (isset($_POST['filterTableTask'])) {
       </div>
     </form>
   <?php }
-      }
-      if (isset($_POST['updateDetails'])) {
-        $success          = true;
-        $currentDateTime  = date('Y-m-d H:i:s');
-        $id               = $_POST['taskReview_id'];
-        $task_code        = $_POST['taskReview_code'];
-        $assignee         = $_POST['taskReview_owner'];
-        $remarks          = str_replace("'", "&apos;", $_POST['taskReview_remarks']);
-        $query = mysqli_query($con, "SELECT * FROM tasks_details WHERE task_status=1 AND id='$id'");
-        while ($row = mysqli_fetch_assoc($query)) {
-          $require = $row['requirement_status'];
-        }
-        if ($require == 1) {
-          $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE id='$id'");
-          $files      = $_FILES['taskReview_upload'];
-          $upload_dir = '../files/' . $assignee;
-          $targetDir  = "../files/$assignee/";
-          if (!file_exists($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-          }
-          for ($i = 0; $i < count($files['name']); $i++) {
-            $original_filename  = $files['name'][$i];
-            $filetype           = $files['type'][$i];
-            $filesize           = $files['size'][$i];
-            $tmpname            = $files['tmp_name'][$i];
+}
+if (isset($_POST['updateDetails'])) {
+  $success          = true;
+  $currentDateTime  = date('Y-m-d H:i:s');
+  $id               = $_POST['taskReview_id'];
+  $task_code        = $_POST['taskReview_code'];
+  $assignee         = $_POST['taskReview_owner'];
+  $remarks          = str_replace("'", "&apos;", $_POST['taskReview_remarks']);
+  $query = mysqli_query($con, "SELECT * FROM tasks_details WHERE task_status=1 AND id='$id'");
+  while ($row = mysqli_fetch_assoc($query)) {
+    $require = $row['requirement_status'];
+  }
+  if ($require == 1) {
+    $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE id='$id'");
+    $files      = $_FILES['taskReview_upload'];
+    $upload_dir = '../files/' . $assignee;
+    $targetDir  = "../files/$assignee/";
+    if (!file_exists($upload_dir)) {
+      mkdir($upload_dir, 0777, true);
+    }
+    for ($i = 0; $i < count($files['name']); $i++) {
+      $original_filename  = $files['name'][$i];
+      $filetype           = $files['type'][$i];
+      $filesize           = $files['size'][$i];
+      $tmpname            = $files['tmp_name'][$i];
 
-            $query = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code' AND file_name='$original_filename' AND file_owner='$assignee'");
-            $check = mysqli_num_rows($query);
-            if ($check > 0) {
-              echo "File upload error, Duplicate file detected!<br>Please upload a different file or filename.";
-              $success = false;
-              break;
-            } else {
-              $file_extension     = pathinfo($original_filename, PATHINFO_EXTENSION);
+      $query = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code' AND file_name='$original_filename' AND file_owner='$assignee'");
+      $check = mysqli_num_rows($query);
+      if ($check > 0) {
+        echo "File upload error, Duplicate file detected!<br>Please upload a different file or filename.";
+        $success = false;
+        break;
+      } else {
+        $file_extension     = pathinfo($original_filename, PATHINFO_EXTENSION);
 
-              $new_filename       = '[' . $task_code . '] ' . $original_filename;
-              $destination        = $upload_dir . '/' . $new_filename;
+        $new_filename       = '[' . $task_code . '] ' . $original_filename;
+        $destination        = $upload_dir . '/' . $new_filename;
 
-              if (move_uploaded_file($tmpname, $destination)) {
-                $query_insert = mysqli_query($con, "INSERT INTO `task_files`(`task_code`, `file_name`, `file_size`, `file_type`, `file_dated`, `file_owner`, `file_target`) VALUES ('$task_code', '$original_filename', '$filesize', '$file_extension', '$currentDateTime', '$assignee', '$new_filename')");
-              }
-            }
-          }
-          if ($success) {
-            $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
-            $row = mysqli_fetch_assoc($query_code);
-            log_action("Task {$row['task_code']} remarks/files have been edited.");
-            echo "Success";
-          }
-        } else {
-          $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE id='$id'");
-          if ($query_update) {
-            $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
-            $row = mysqli_fetch_assoc($query_code);
-            log_action("Task {$row['task_code']} remarks have been edited.");
-            echo "Success";
-          }
+        if (move_uploaded_file($tmpname, $destination)) {
+          $query_insert = mysqli_query($con, "INSERT INTO `task_files`(`task_code`, `file_name`, `file_size`, `file_type`, `file_dated`, `file_owner`, `file_target`) VALUES ('$task_code', '$original_filename', '$filesize', '$file_extension', '$currentDateTime', '$assignee', '$new_filename')");
         }
       }
-      if (isset($_POST['deleteFile'])) {
-        $deleteFileID = $_POST['id'];
-        $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE id ='$deleteFileID'");
-        while ($row = mysqli_fetch_assoc($query_result)) {
-          $fileName = $row['file_target'];
-          $assignee = $row['file_owner'];
-          $targetDir = "../files/$assignee/";
-          $query_remove = mysqli_query($con, "DELETE FROM task_files WHERE id ='$deleteFileID'");
-          if ($query_remove) {
-            if ($fileName != "" && file_exists($targetDir . $fileName)) {
-              unlink($targetDir . $fileName);
-            }
-            log_action("File {$row['file_name']} deleted from task {$row['task_code']}.");
-            echo "Success";
-          } else {
-            echo "Unable to complete the operation. Please try again later.";
-          }
-        }
+    }
+    if ($success) {
+      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+      $row = mysqli_fetch_assoc($query_code);
+      log_action("Task {$row['task_code']} remarks/files have been edited.");
+      echo "Success";
+    }
+  } else {
+    $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE id='$id'");
+    if ($query_update) {
+      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+      $row = mysqli_fetch_assoc($query_code);
+      log_action("Task {$row['task_code']} remarks have been edited.");
+      echo "Success";
+    }
+  }
+}
+if (isset($_POST['deleteFile'])) {
+  $deleteFileID = $_POST['id'];
+  $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE id ='$deleteFileID'");
+  while ($row = mysqli_fetch_assoc($query_result)) {
+    $fileName = $row['file_target'];
+    $assignee = $row['file_owner'];
+    $targetDir = "../files/$assignee/";
+    $query_remove = mysqli_query($con, "DELETE FROM task_files WHERE id ='$deleteFileID'");
+    if ($query_remove) {
+      if ($fileName != "" && file_exists($targetDir . $fileName)) {
+        unlink($targetDir . $fileName);
       }
-      if (isset($_GET['downloadFile'])) {
-        $id = $_GET['id'];
-        $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE id='$id'");
-        while ($row = mysqli_fetch_assoc($query_result)) {
-          $file     = $row['file_target'];
-          $assignee = $row['file_owner'];
-          $filePath =  "../files/$assignee/$file";
+      log_action("File {$row['file_name']} deleted from task {$row['task_code']}.");
+      echo "Success";
+    } else {
+      echo "Unable to complete the operation. Please try again later.";
+    }
+  }
+}
+if (isset($_GET['downloadFile'])) {
+  $id = $_GET['id'];
+  $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE id='$id'");
+  while ($row = mysqli_fetch_assoc($query_result)) {
+    $file     = $row['file_target'];
+    $assignee = $row['file_owner'];
+    $filePath =  "../files/$assignee/$file";
 
-          if (file_exists($filePath)) {
-            log_action("File {$row['file_name']} downloaded from task {$row['task_code']}.");
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename=' . basename($filePath));
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($filePath));
-            flush();
-            readfile($filePath);
-            exit;
-          } else {
-            echo 'File does not exist.';
-          }
-        }
-      }
-      if (isset($_POST['viewTask'])) {
-        $id = $_POST['taskID'];
-        $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.id='$id'");
-        while ($row = mysqli_fetch_assoc($query_result)) {
-          $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
-          $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
-          $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
-          $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
+    if (file_exists($filePath)) {
+      log_action("File {$row['file_name']} downloaded from task {$row['task_code']}.");
+      header('Content-Description: File Transfer');
+      header('Content-Type: application/octet-stream');
+      header('Content-Disposition: attachment; filename=' . basename($filePath));
+      header('Expires: 0');
+      header('Cache-Control: must-revalidate');
+      header('Pragma: public');
+      header('Content-Length: ' . filesize($filePath));
+      flush();
+      readfile($filePath);
+      exit;
+    } else {
+      echo 'File does not exist.';
+    }
+  }
+}
+if (isset($_POST['viewTask'])) {
+  $id = $_POST['taskID'];
+  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.id='$id'");
+  while ($row = mysqli_fetch_assoc($query_result)) {
+    $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
+    $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
+    $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
+    $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
     <form id="editDetails" enctype="multipart/form-data">
       <div class="row">
         <div class="col-md-5">
@@ -870,7 +870,7 @@ if (isset($_POST['filterTableTask'])) {
             </div>
           </div>
         <?php }
-          if ($row['requirement_status'] == 1) { ?>
+        if ($row['requirement_status'] == 1) { ?>
           <div class="col-md-12">
             <div class="form-group">
               <label>Attachments:</label>
@@ -909,19 +909,19 @@ if (isset($_POST['filterTableTask'])) {
       </div>
     </form>
 <?php
-        }
-      }
-      if (isset($_POST['rescheduleTask'])) {
-        $id     = $_POST['id'];
-        if ($_POST['reschedDate'] == '' || $_POST['reschedReason'] == '') {
-          die('Please fill in the required fields.');
-        } else {
-          $date   = $_POST['reschedDate'] . ' 16:00:00';
-          $reason = str_replace("'", "&apos;", $_POST['reschedReason']);
-          $query_update = mysqli_query($con, "UPDATE `tasks_details` SET `status`='RESCHEDULE', `old_date`='$date', `reason`='$reason' WHERE `id`='$id'");
-          if ($query_update) {
-            echo "Success";
-          }
-        }
-      }
+  }
+}
+if (isset($_POST['rescheduleTask'])) {
+  $id     = $_POST['id'];
+  if ($_POST['reschedDate'] == '' || $_POST['reschedReason'] == '') {
+    die('Please fill in the required fields.');
+  } else {
+    $date   = $_POST['reschedDate'] . ' 16:00:00';
+    $reason = str_replace("'", "&apos;", $_POST['reschedReason']);
+    $query_update = mysqli_query($con, "UPDATE `tasks_details` SET `status`='RESCHEDULE', `old_date`='$date', `reason`='$reason' WHERE `id`='$id'");
+    if ($query_update) {
+      echo "Success";
+    }
+  }
+}
 ?>
