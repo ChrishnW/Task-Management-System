@@ -66,7 +66,7 @@ include('../include/header.php');
                 <th>Title</th>
                 <th>Classification</th>
                 <th>Due Date</th>
-                <th>Asignee</th>
+                <th>Assignee</th>
                 <th>Progress</th>
               </tr>
             </thead>
@@ -146,12 +146,12 @@ include('../include/header.php');
                 <table id="myTasksTableTodo" class="table table-striped">
                   <thead class="table table-success">
                     <tr>
-                      <th class="col col-md-1"><input type='checkbox' id='selectAll' class='form-control tasksCheckboxes'></th>
+                      <th><input type='checkbox' id='selectAll' class='form-control tasksCheckboxes'></th>
                       <th>Code</th>
                       <th>Title</th>
                       <th>Classification</th>
                       <th>Due Date</th>
-                      <th>Asignee</th>
+                      <th>Assignee</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -195,7 +195,7 @@ include('../include/header.php');
                       <th>Title</th>
                       <th>Classification</th>
                       <th>Due Date</th>
-                      <th>Asignee</th>
+                      <th>Assignee</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -230,7 +230,7 @@ include('../include/header.php');
                       <th>Classification</th>
                       <th>Due Date</th>
                       <th>Finished Date</th>
-                      <th>Asignee</th>
+                      <th>Assignee</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -268,7 +268,7 @@ include('../include/header.php');
                       <th>Due Date</th>
                       <th>Finished Date</th>
                       <th>Rating</th>
-                      <th>Asignee</th>
+                      <th>Assignee</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -306,8 +306,7 @@ include('../include/header.php');
                       <th>Classification</th>
                       <th>Original Due Date</th>
                       <th>Requested Due Date</th>
-                      <th>Asignee</th>
-                      <th>Action</th>
+                      <th>Assignee</th>
                     </tr>
                   </thead>
                   <tbody id="myTasksReschedule">
@@ -324,7 +323,6 @@ include('../include/header.php');
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $old_date ?></td>
                         <td><?php echo $assignee ?></td>
-                        <td><button type="button" class="btn btn-block btn-secondary" value='<?php echo $row['id']; ?>' onclick="rescheduleTask(this)" disabled><i class="fas fa-pen fa-fw"></i> Edit</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -385,7 +383,7 @@ include('../include/header.php');
                 <th>Title</th>
                 <th>Classification</th>
                 <th class="col col-md-1">Due Date</th>
-                <th>Asignee</th>
+                <th>Assignee</th>
                 <th>Progress</th>
               </tr>
             </thead>
@@ -396,7 +394,7 @@ include('../include/header.php');
                 <th>Title</th>
                 <th>Classification</th>
                 <th class="col col-md-1">Due Date</th>
-                <th>Asignee</th>
+                <th>Assignee</th>
                 <th>Progress</th>
               </tr>
             </tfoot>
@@ -504,7 +502,7 @@ include('../include/header.php');
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content border-danger">
       <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Finish Task</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle"><i class="fas fa-pen-square fa-fw"></i> Finish Task</h5>
       </div>
       <form id="submitDetails" enctype="multipart/form-data">
         <div class="modal-body text-center" id="finishDetails">
