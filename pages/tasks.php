@@ -104,12 +104,12 @@ include('../include/header.php');
   <?php } elseif ($access == 2) { ?>
     <div class="row">
       <div class="form-group col-md-2">
-        <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control" onchange="checkDateInputs(this)">
-      </div>
-      <div class="form-group col-md-2">
         <label>From</label>
         <input type="date" name="date_from" id="date_from" class="form-control" onchange="checkDateInputs(this)">
+      </div>
+      <div class="form-group col-md-2">
+        <label>To</label>
+        <input type="date" name="date_to" id="date_to" class="form-control" onchange="checkDateInputs(this)" disabled>
       </div>
       <div class="form-group col">
         <br>
@@ -983,54 +983,6 @@ include('../include/header.php');
     window.location.href = '../config/tasks.php?downloadFile=true&id=' + id;
   }
 
-  function filterTableTask(element) {
-    var date_to = $('#date_to').val();
-    var date_from = $('#date_from').val();
-    var progress = localStorage.getItem('activeTab').replace('#', '').toUpperCase();
-    var currentTab = progress.charAt(0).toUpperCase() + progress.slice(1).toLowerCase();
-    // console.log(date_to, date_from, progress, currentTab);
-    $('#myTasksTable' + currentTab).DataTable().destroy();
-    $('#myTasks' + currentTab).empty();
-    $.ajax({
-      method: "POST",
-      url: "../config/tasks.php",
-      data: {
-        "filterTableTask": true,
-        "date_to": date_to,
-        "date_from": date_from,
-        "progress": progress,
-      },
-      success: function(response) {
-        $('#myTasks' + currentTab).append(response);
-        if (currentTab === 'Todo') {
-          $('#myTasksTable' + currentTab).DataTable({
-            "order": [
-              [4, "asc"],
-              [2, "asc"]
-            ],
-            "pageLength": 5,
-            "lengthMenu": [5, 10, 25, 50, 100],
-            "drawCallback": function(settings) {
-              $('[data-toggle="tooltip"]').tooltip();
-            }
-          });
-        } else {
-          $('#myTasksTable' + currentTab).DataTable({
-            "order": [
-              [3, "desc"],
-              [1, "asc"]
-            ],
-            "pageLength": 5,
-            "lengthMenu": [5, 10, 25, 50, 100],
-            "drawCallback": function(settings) {
-              $('[data-toggle="tooltip"]').tooltip();
-            }
-          });
-        }
-      }
-    });
-  }
-
   function resetFileInput() {
     const fileInput = document.getElementById('file-1');
     if (typeof fileInput !== 'undefined' && fileInput !== null) {
@@ -1184,5 +1136,48 @@ include('../include/header.php');
     });
     // Multi Select Start Function End
 
+    function checkDateInputs() {
+      var dateFrom = document.getElementById('date_from').value;
+      var dateTo = document.getElementById('date_to');
+      var status = localStorage.getItem('activeTab').replace('#', '').toUpperCase();
+      var setTab = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+      if (dateFrom) {
+        dateTo.setAttribute('min', dateFrom);
+        dateTo.disabled = false;
+      } else {
+        dateTo.removeAttribute('min');
+        dateTo.disabled = true;
+      }
+      $('#myTasksTable' + setTab).DataTable().destroy();
+      $('#myTasks' + setTab).empty();
+      $.ajax({
+        method: "POST",
+        url: "../config/tasks.php",
+        data: {
+          "filterTableTask": true,
+          "dateFrom": dateFrom,
+          "dateTo": dateTo.value,
+          "status": status
+        },
+        success: function(response) {
+          $('#myTasks' + setTab).append(response);
+          const orderConfig = setTab === 'Todo' ? [
+            [4, "asc"],
+            [2, "asc"]
+          ] : [
+            [3, "desc"],
+            [1, "asc"]
+          ];
+          $('#myTasksTable' + setTab).DataTable({
+            "order": orderConfig,
+            "pageLength": 5,
+            "lengthMenu": [5, 10, 25, 50, 100],
+            "drawCallback": function(settings) {
+              $('[data-toggle="tooltip"]').tooltip();
+            }
+          });
+        }
+      });
+    }
   <?php } ?>
 </script>
