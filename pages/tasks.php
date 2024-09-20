@@ -146,7 +146,7 @@ include('../include/header.php');
                 <table id="myTasksTableTodo" class="table table-striped">
                   <thead class="table table-success">
                     <tr>
-                      <th><input type='checkbox' id='selectAll' class='form-control tasksCheckboxes'></th>
+                      <th><input type='checkbox' id='selectAll' class='tasksCheckboxes' style="transform: scale(2.0);"></th>
                       <th>Code</th>
                       <th>Title</th>
                       <th>Classification</th>
