@@ -176,8 +176,7 @@ include('../include/header.php');
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $assignee ?></td>
-                        <td><?php echo $action;
-                            if ($row['old_date'] === NULL) echo '<button type="button" class="btn btn-block btn-secondary" value="' . $row['id'] . '" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button>'; ?></td>
+                        <td><?php echo $action; if ($row['old_date'] === NULL) echo '<button type="button" class="btn btn-block btn-secondary" value="' . $row['id'] . '" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button>'; ?></td>
                       </tr>
                     <?php } ?>
                   </tbody>
