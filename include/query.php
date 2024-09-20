@@ -105,4 +105,5 @@ function log_action($action) {
   $query_insert = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$action', '$datetime', '$username')");
 }
 
+// Used for Input Type Date Min
 $minDay = date('Y-m-d', strtotime('+1 day'));
