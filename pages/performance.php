@@ -135,13 +135,13 @@ include('../include/header.php');
           <div class="card-body">
             <h5 class="card-title">How the Average is Computed</h5>
             <p class="card-text">
-              The average tasks deployed is calculated by dividing the total number of tasks deployed by the total number of days within the selected period.
-              For this example:
+              The average is calculated by dividing the sum of completed tasks by the total number of tasks. This gives a clear measure of how many tasks, on average, have been completed relative to the total tasks.
             </p>
+            <b>Example</b>
             <ul>
-              <li><strong>Total Tasks Deployed:</strong> 200</li>
-              <li><strong>Total Days in the Period:</strong> 30</li>
-              <li><strong>Average Tasks Deployed:</strong> 200 / 30 = 15.6</li>
+              <li><strong>Sum of Completed Tasks:</strong> 150</li>
+              <li><strong>Total Tasks:</strong> 30</li>
+              <li><strong>Average:</strong> 150 / 30 = 5.00</li>
             </ul>
             <p class="card-text">
               This gives the average number of tasks completed per day during the period, which helps measure daily productivity.
