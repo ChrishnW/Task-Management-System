@@ -409,8 +409,8 @@ include('../include/header.php');
         $('#ajaxContents').html(response);
         $('#ViewFinishedTaskTable').DataTable({
           "order": [
-            [4, "asc"],
-            [6, "desc"]
+            [6, "desc"],
+            [4, "asc"]
           ]
         });
         $('[data-toggle="tooltip"]').tooltip();
