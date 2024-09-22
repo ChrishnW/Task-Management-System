@@ -97,7 +97,7 @@ if (isset($_POST['viewTask'])) {
     </tfoot>
     <tbody id='dataTableBody'>
       <?php
-      $query = "SELECT tasks_details.*, accounts.file_name, accounts.id, tasks.task_details FROM tasks_details JOIN accounts ON tasks_details.in_charge=accounts.username JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE accounts.id='$id'";
+      $query = "SELECT td.*, tl.task_details FROM tasks_details td JOIN accounts ac ON ac.username=td.in_charge JOIN task_list tl ON td.task_name=tl.task_name WHERE ac.id='$id'";
       if (isset($_POST['date_to']) && isset($_POST['date_from'])) {
         $date_to   = $_POST['date_to'];
         $date_from = $_POST['date_from'];
@@ -132,9 +132,7 @@ if (isset($_POST['viewTask'])) {
           $assignee           = '<img src=' . $imageURL . ' class="border border-primary img-table-solo" data-toggle="tooltip" data-placement="top" title="' . $row['in_charge'] . '">';
           $progress = '<span class="badge badge-' . $status_badges[$row['status']] . '">' . $row['status'] . '</span>'; ?>
           <tr>
-            <td>
-              <center /><?php echo $row['task_code'] ?>
-            </td>
+            <td><?php echo $row['task_code'] ?></td>
             <td><?php echo $row['task_name']; ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
             <td><?php echo $task_class ?></td>
             <td><?php echo $progress ?></td>
@@ -178,7 +176,7 @@ if (isset($_POST['showPerformance'])) {
     </tfoot>
     <tbody id='dataTableBody'>
       <?php
-      $query = "SELECT tasks_details.*, accounts.file_name, accounts.id, tasks.task_details FROM tasks_details JOIN accounts ON tasks_details.in_charge=accounts.username JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE accounts.id='$id'";
+      $query = "SELECT DISTINCT td.*, tl.task_details FROM tasks_details td JOIN accounts ac ON ac.username=td.in_charge JOIN task_list tl ON td.task_name=tl.task_name WHERE ac.id='$id'";
       if (isset($_POST['date_to']) && isset($_POST['date_from'])) {
         $date_to   = $_POST['date_to'];
         $date_from = $_POST['date_from'];
