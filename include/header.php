@@ -179,47 +179,7 @@
             <i class="fas fa-award"></i>
             <span>Member Perfromance</span></a>
         </li>
-      <?php } elseif ($access == 4) { ?>
-        <div class="sidebar-heading"> Components </div>
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            <i class="fas fa-tasks"></i>
-            <span>My Tasks</span>
-          </a>
-          <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header"><center/>Task Status</h6>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#todo');window.location.href='tasks.php';">Not Yet Started</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#inprogress');window.location.href='tasks.php';">In Progress</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#review');window.location.href='tasks.php';">For Review</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#finished');window.location.href='tasks.php';">Finished</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#reschedule');window.location.href='tasks.php';">For Reschedule</span>
-            </div>
-          </div>
-        </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="assign_tasks.php">
-            <i class="fas fa-fw fa-tag"></i>
-            <span>Assigned Task</span></a>
-        </li>
-
-        <hr class="sidebar-divider">
-        <div class="sidebar-heading"> Approval </div>
-
-        <li class="nav-item">
-          <a class="nav-link" href="for_review.php">
-            <i class="fas fa-fw fa-bell"></i>
-            <span>Review Task</span></a>
-        </li>
-
-        <hr class="sidebar-divider">
-        <div class="sidebar-heading"> Ratings </div>
-        <li class="nav-item">
-          <a class="nav-link" href="performance.php">
-            <i class="fas fa-chart-bar"></i>
-            <span>Performance</span></a>
-        </li>
       <?php } ?>
 
       <!-- Divider -->

@@ -124,7 +124,7 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php } elseif ($access == 2 || $access == 4) { ?>
+  <?php } elseif ($access == 2) { ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">Task List</h6>

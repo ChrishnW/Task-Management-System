@@ -40,9 +40,15 @@ if (isset($_POST['viewTask'])) {
     $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
     $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
     $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
-    $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); 
+    $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a");
     $dueDated           = new DateTime($row['due_date']);
-    $finDated           = new DateTime($row['date_accomplished']);?>
+    $finDated           = new DateTime($row['date_accomplished']);
+    $findings           = '';
+    if ($finDated > $dueDated) {
+      $findings .= '<span class="badge badge-danger">Late Submission</span>';
+    } if ($row['old_date'] !== NULL) {
+      $findings .= '<span class="badge badge-warning">Rescheduled</span>';
+    } ?>
     <form id="checkDetails" enctype="multipart/form-data">
       <div class="row justify-content-between">
         <div class="col-md-5">
@@ -57,13 +63,13 @@ if (isset($_POST['viewTask'])) {
             </div>
           </div>
         </div>
-        <?php if ($finDated > $dueDated) { ?>
-        <div class="col-md-2">
-          <div class="form-group">
-            <label>Findings:</label>
-              <span class="badge badge-danger">Late Submitted</span>
+        <?php if ($findings !== '') { ?>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>Findings:</label>
+              <?php echo $findings; ?>
+            </div>
           </div>
-        </div>
         <?php } ?>
       </div>
       <div class="row">
@@ -233,7 +239,7 @@ if (isset($_POST['filterTable'])) {
       $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
       $due_date   = date_format(date_create($row['due_date']), "Y-m-d h:i a");
       $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-      $assignee   = '<img src='.$assigneeURL.' class="img-table-solo"> '.ucwords(strtolower($row['Mname'])).''; ?>
+      $assignee   = '<img src=' . $assigneeURL . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
       <tr>
         <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
         <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
@@ -246,7 +252,7 @@ if (isset($_POST['filterTable'])) {
           <?php echo $assignee ?>
         </td>
       </tr>
-    <?php }
+<?php }
   }
 }
 ?>

@@ -101,7 +101,7 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php } elseif ($access == 2 || $access == 4) { ?>
+  <?php } elseif ($access == 2) { ?>
     <div class="row">
       <div class="form-group col-md-2">
         <label>From</label>
