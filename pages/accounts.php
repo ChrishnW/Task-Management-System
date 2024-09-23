@@ -515,9 +515,10 @@ include('../include/header.php');
                     <option data-divider="true"></option>
                     <?php if ($access == 3) {
                       echo '<option value="2">Member</option>';
+                      echo '<option value="4">Leader</option>';
                     } else {
                       $con->next_result();
-                      $sql = mysqli_query($con, "SELECT * FROM access");
+                      $sql = mysqli_query($con, "SELECT * FROM access ORDER BY access ASC");
                       if (mysqli_num_rows($sql) > 0) {
                         while ($row = mysqli_fetch_assoc($sql)) { ?>
                           <option value='<?php echo $row['id'] ?>'><?php echo ucwords(strtolower($row['access'])) ?></option>
