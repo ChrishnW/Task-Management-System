@@ -12,6 +12,7 @@
       $card       = $row['card'];
       $email      = $row['email'];
       $sec        = $row['sec_name'];
+      $sec_id     = $row['sec_id'];
       $dept_id    = $row['dept_id'];
       $dept_name  = ucwords(strtolower($row['dept_name']));
       $sec_name   = ucwords(strtolower($sec));

@@ -7,7 +7,7 @@ include('../include/header.php');
 
 <div class="container-fluid">
   <?php if ($access == 1) { ?>
-  <?php } elseif ($access == 2) {
+  <?php } elseif ($access == 2 || $access == 4) {
     function getPercentage($average)
     {
       if ($average == 5.0) {

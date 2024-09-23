@@ -124,7 +124,7 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php } elseif ($access == 2) { ?>
+  <?php } elseif ($access == 2 || $access == 4) { ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">Task List</h6>
@@ -339,7 +339,18 @@ include('../include/header.php');
       <?php } ?>
     });
   <?php
-  } ?>
+  } else { ?>
+    $(document).ready(function() {
+      $('#dataTable').DataTable({
+        "order": [
+          [0, "asc"]
+        ],
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50, 100],
+        "responsive": true
+      });
+    })
+  <?php } ?>
 
   function selectClass(element) {
     var task_for = document.getElementById('assignTask_section').value;

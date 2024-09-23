@@ -77,7 +77,92 @@ include('../include/header.php');
                     <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
                     <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
                     <td><?php echo $row['task_code'] ?></td>
-                    <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i> <i class="fas fa-envelope text-success" data-toggle="tooltip" data-placement="right" title="<?php echo $row['remarks'] ?>"></i></td>
+                    <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+                    <td><?php echo $task_class ?></td>
+                    <td><?php echo $due_date ?></td>
+                    <td><?php echo $date_accomplished ?></td>
+                    <td><?php echo $assignee ?></td>
+                  </tr>
+              <?php }
+              } ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <?php } elseif ($access == 4) { ?>
+    <div class="row">
+      <div class="form-group col-md-2">
+        <label>To</label>
+        <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTable(this)">
+      </div>
+      <div class="form-group col-md-2">
+        <label>From</label>
+        <input type="date" name="date_from" id="date_from" class="form-control" onchange="filterTable(this)">
+      </div>
+      <div class="form-group col-md-2">
+        <label>Classification</label>
+        <select name="reviewClass" id="reviewClass" class="form-control selectpicker show-tick" data-style="border border-secondary" onchange="filterTable(this)">
+          <option value="">All</option>
+          <option value="1">Daily Routine</option>
+          <option value="2">Weekly Routine</option>
+          <option value="3">Monthly Routine</option>
+          <option value="6">Monthly Report</option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-danger">
+        <h6 class="m-0 font-weight-bold text-white">For Review Tasks</h6>
+        <div class="dropdown no-arrow">
+          <button type="button" class="btn btn-success btn-sm" id="approveButton" onclick="approveIDs(this)" style="display: none;">
+            <i class="fas fa-check-double fa-fw"></i> Approve
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
+            <thead class='table table-danger'>
+              <tr>
+                <th class="col-auto"><input type="checkbox" id='selectAll' class="form-control"></th>
+                <th class="col-auto">Action</th>
+                <th class="col-auto">Code</th>
+                <th class="col-auto">Title</th>
+                <th class="col-auto">Classification</th>
+                <th class="col-auto">Due Date</th>
+                <th class="col-auto">Accomplished</th>
+                <th class="col-auto">Asignee</th>
+              </tr>
+            </thead>
+            <tbody id='dataTableBody'>
+              <?php $con->next_result();
+              $result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND tasks_details.task_for='$sec_id' AND tasks_details.in_charge!='$username'");
+              if (mysqli_num_rows($result) > 0) {
+                while ($row = $result->fetch_assoc()) {
+                  if (empty($row['file_name'])) {
+                    $assigneeURL = '../assets/img/user-profiles/nologo.png';
+                  } else {
+                    $assigneeURL = '../assets/img/user-profiles/' . $row['file_name'];
+                  } 
+                  $task_classes = [1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'], 2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'], 3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'], 4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'], 5 => ['name' => 'PROJECT', 'badge' => 'info'], 6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']];
+                  if (isset($task_classes[$row['task_class']])) {
+                    $class = $task_classes[$row['task_class']]['name'];
+                    $badge = $task_classes[$row['task_class']]['badge'];
+                  } else {
+                    $class = 'Unknown';
+                    $badge = 'secondary';
+                  }
+                  $task_class         = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
+                  $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
+                  $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
+                  $assignee           = '<img src='.$assigneeURL.' class="img-table-solo"> '.ucwords(strtolower($row['Mname'])).'';
+              ?>
+                  <tr>
+                    <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
+                    <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
+                    <td><?php echo $row['task_code'] ?></td>
+                    <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                     <td><?php echo $task_class ?></td>
                     <td><?php echo $due_date ?></td>
                     <td><?php echo $date_accomplished ?></td>

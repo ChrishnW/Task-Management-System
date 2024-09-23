@@ -4,7 +4,7 @@ include('../include/header.php');
 
 <div class="container-fluid">
   <?php if ($access == 1) { ?>
-  <?php } elseif ($access == 2) { ?>
+  <?php } elseif ($access == 2 || $access == 4) { ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-success">
         <h6 class="m-0 font-weight-bold text-white">Uploaded Files</h6>

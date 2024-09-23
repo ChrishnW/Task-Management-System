@@ -101,7 +101,7 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php } elseif ($access == 2) { ?>
+  <?php } elseif ($access == 2 || $access == 4) { ?>
     <div class="row">
       <div class="form-group col-md-2">
         <label>From</label>
@@ -993,7 +993,7 @@ include('../include/header.php');
     }
   }
 
-  <?php if ($access == 2) { ?>
+  <?php if ($access == 2 || $access == 4) { ?>
     document.addEventListener('DOMContentLoaded', function() {
       var activeTab = localStorage.getItem('activeTab');
       if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
