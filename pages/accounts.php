@@ -55,7 +55,7 @@ include('../include/header.php');
                   } ?>
                   <tr>
                     <td>
-                      <center /><button type="button" class="btn btn-info btn-circle" value="<?php echo $row['id']; ?>" onclick="accountEdit(this)"><i class="fas fa-pen"></i></button>
+                      <center /><button type="button" class="btn btn-info" value="<?php echo $row['id']; ?>" onclick="accountEdit(this)"><i class="fas fa-pen fa-fw"></i> Edit</button>
                     </td>
                     <td><?php echo $row['username']; ?></td>
                     <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
