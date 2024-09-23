@@ -31,7 +31,7 @@ include('../include/header.php');
                     <td><span class="badge badge-info"><?php echo strtoupper($row['file_type']); ?></span></td>
                     <td><?php echo formatSize($row['file_size']); ?></td>
                     <td><?php echo $row['file_dated']; ?></td>
-                    <td><button type="button" class="btn btn-success"><i class="fas fa-download"></i> Download</button></td>
+                    <td><button type="button" class="btn btn-success" value="<?php echo $row['id']; ?>" onclick="downloadFile(this)"><i class="fas fa-download"></i> Download</button></td>
                   </tr>
               <?php }
               } ?>
@@ -50,4 +50,9 @@ include('../include/header.php');
   $(document).ready(function() {
     $('#dataTable').DataTable();
   });
+
+  function downloadFile(element) {
+    var id = element.value;
+    window.location.href = '../config/tasks.php?downloadFile=true&id=' + id;
+  }
 </script>
