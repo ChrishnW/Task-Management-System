@@ -75,9 +75,11 @@ include('../include/header.php');
                   $icon = "<i class='fas fa-info-circle' data-toggle='tooltip' data-placement='right' title='{$row['task_details']}'></i>";
                   if (new DateTime($row['date_accomplished']) > new DateTime($row['due_date'])) {
                     $icon .= " <i class='fas fa-hourglass-end text-danger' data-toggle='tooltip' data-placement='right' title='Late Submission'></i>";
-                  } if ($row['requirement_status'] == 1) {
+                  }
+                  if ($row['requirement_status'] == 1) {
                     $icon .= " <i class='fas fa-paperclip text-success' data-toggle='tooltip' data-placement='right' title='Attachment'></i>";
-                  } if ($row['old_date'] !== NULL) {
+                  }
+                  if ($row['old_date'] !== NULL) {
                     $icon .= " <i class='fas fa-sync text-warning' data-toggle='tooltip' data-placement='right' title='Rescheduled'></i>";
                   }
               ?>
@@ -85,7 +87,7 @@ include('../include/header.php');
                     <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
                     <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
                     <td><?php echo $row['task_code'] ?></td>
-                    <td><?php echo $row['task_name'].' '.$icon ?></td>
+                    <td><?php echo $row['task_name'] . ' ' . $icon ?></td>
                     <td><?php echo $task_class ?></td>
                     <td><?php echo $due_date ?></td>
                     <td><?php echo $date_accomplished ?></td>
@@ -229,7 +231,7 @@ include('../include/header.php');
         $('#dataTableBody').append(response);
         $('#dataTable').DataTable({
           "order": [
-            [5, "desc"],
+            [6, "desc"],
             [3, "asc"]
           ],
           "drawCallback": function(settings) {

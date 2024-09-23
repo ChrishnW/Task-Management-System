@@ -46,7 +46,8 @@ if (isset($_POST['viewTask'])) {
     $findings           = '';
     if ($finDated > $dueDated) {
       $findings .= '<span class="badge badge-danger">Late Submission</span>';
-    } if ($row['old_date'] !== NULL) {
+    }
+    if ($row['old_date'] !== NULL) {
       $findings .= '<span class="badge badge-warning">Rescheduled</span>';
     } ?>
     <form id="checkDetails" enctype="multipart/form-data">
@@ -239,18 +240,26 @@ if (isset($_POST['filterTable'])) {
       $task_class = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
       $due_date   = date_format(date_create($row['due_date']), "Y-m-d h:i a");
       $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-      $assignee   = '<img src=' . $assigneeURL . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
+      $assignee   = '<img src=' . $assigneeURL . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
+      $icon = "<i class='fas fa-info-circle' data-toggle='tooltip' data-placement='right' title='{$row['task_details']}'></i>";
+      if (new DateTime($row['date_accomplished']) > new DateTime($row['due_date'])) {
+        $icon .= " <i class='fas fa-hourglass-end text-danger' data-toggle='tooltip' data-placement='right' title='Late Submission'></i>";
+      }
+      if ($row['requirement_status'] == 1) {
+        $icon .= " <i class='fas fa-paperclip text-success' data-toggle='tooltip' data-placement='right' title='Attachment'></i>";
+      }
+      if ($row['old_date'] !== NULL) {
+        $icon .= " <i class='fas fa-sync text-warning' data-toggle='tooltip' data-placement='right' title='Rescheduled'></i>";
+      } ?>
       <tr>
         <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
         <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
         <td><?php echo $row['task_code'] ?></td>
-        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+        <td><?php echo $row['task_name'] . ' ' . $icon ?></td>
         <td><?php echo $task_class ?></td>
         <td><?php echo $due_date ?></td>
         <td><?php echo $date_accomplished ?></td>
-        <td>
-          <?php echo $assignee ?>
-        </td>
+        <td><?php echo $assignee ?></td>
       </tr>
 <?php }
   }
