@@ -326,7 +326,7 @@ include('../include/header.php');
               </div>
             </div>
             <div class="row mt-3">
-              <div class="col"><a href="tasks.php" class="btn btn-primary btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
+              <div class="col"><a href="javascript:void(0);" onclick="localStorage.setItem('activeTab', '#todo');window.location.href='tasks.php';" class="btn btn-primary btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
           </div>
@@ -384,7 +384,7 @@ include('../include/header.php');
               </div>
             </div>
             <div class="row mt-3">
-              <div class="col"><a href="404.php" class="btn btn-success btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
+              <div class="col"><a href="files.php" class="btn btn-success btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
           </div>
