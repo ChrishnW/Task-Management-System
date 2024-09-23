@@ -6,6 +6,7 @@ if (isset($_POST['approveTask'])) {
   $id           = $_POST['approveID'];
   $head_name    = $_POST['approveHead'];
   $head_comment = $_POST['approveComment'];
+  $comment      = (strlen($head_comment) > 15) ? substr($head_comment, 0, 15) . '...' : $head_comment;
   $score        = $_POST['approveScore'];
   $inCharge     = $_POST['approveIncharge'];
   $taskCode     = $_POST['approveCode'];
@@ -21,7 +22,7 @@ if (isset($_POST['approveTask'])) {
       $task_code        = $row['task_code'];
       $datetime_current = date('Y-m-d H:i:s');
       $action = mysqli_real_escape_string($con, "localStorage.setItem('activeTab', '#finished');window.location.href='tasks.php';");
-      $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `action`, `date_created`, `status`) VALUES ('$username', 'fas fa-exclamation', 'warning', 'You have received a note from the head regarding your finished task $task_code.', '$action', '$datetime_current', '1')");
+      $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `action`, `date_created`, `status`) VALUES ('$username', 'fas fa-exclamation', 'warning', '<b>$head_name</b> wrote a comment on your task <b>$task_code</b>: <i>$comment</i>', '$action', '$datetime_current', '1')");
     }
     $query_result = mysqli_query($con, "UPDATE tasks_details SET status='FINISHED', achievement='$score', head_name='$head_name', head_note='$head_comment' WHERE id='$id'");
     if ($query_result) {
