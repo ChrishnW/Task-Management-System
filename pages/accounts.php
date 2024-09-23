@@ -347,7 +347,7 @@ include('../include/header.php');
                       <select class="form-control custom-select" name="account_access" id="account_access">
                         <?php
                         $con->next_result();
-                        $sql = mysqli_query($con, "SELECT * FROM access");
+                        $sql = mysqli_query($con, "SELECT * FROM access WHERE id!=1 ORDER BY access ASC");
                         if (mysqli_num_rows($sql) > 0) {
                           while ($row = mysqli_fetch_assoc($sql)) { ?>
                             <option value='<?php echo $row['id'] ?>'><?php echo strtoupper($row['access']) ?></option>
@@ -518,7 +518,7 @@ include('../include/header.php');
                       echo '<option value="4">Leader</option>';
                     } else {
                       $con->next_result();
-                      $sql = mysqli_query($con, "SELECT * FROM access ORDER BY access ASC");
+                      $sql = mysqli_query($con, "SELECT * FROM access WHERE id!=1 ORDER BY access ASC");
                       if (mysqli_num_rows($sql) > 0) {
                         while ($row = mysqli_fetch_assoc($sql)) { ?>
                           <option value='<?php echo $row['id'] ?>'><?php echo ucwords(strtolower($row['access'])) ?></option>
@@ -916,7 +916,7 @@ include('../include/header.php');
           $('#account_delete').val(value['id']);
           $('#statusBtn').val(value['status']);
           $('#old_image').val(value['file_name']);
-          if (value['file_name'] === "") {
+          if (value['file_name'] === null) {
             $("#perview_image").attr("src", "../assets/img/user-profiles/nologo.png");
           } else {
             $("#perview_image").attr("src", "../assets/img/user-profiles/" + value['file_name']);
