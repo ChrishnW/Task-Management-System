@@ -77,7 +77,7 @@ include('../include/auth.php');
   }
   if (isset($_POST['viewTaskEmp'])) {
     $userID = $_POST['assignee_id'];
-    $query_result = mysqli_query($con, "SELECT * FROM tasks WHERE in_charge='$userID'");
+    $query_result = mysqli_query($con, "SELECT * FROM tasks WHERE in_charge='$userID' AND task_class!=4");
     $dataList = [];
     $counter  = 0; ?>
     <table id="viewList" class="table table-striped">

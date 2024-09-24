@@ -115,7 +115,7 @@ include('../include/header.php');
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
                   $member = $row['username'];
-                  $query = mysqli_query($con, "SELECT COUNT(id) AS total_task FROM tasks WHERE in_charge='$member'");
+                  $query = mysqli_query($con, "SELECT COUNT(id) AS total_task FROM tasks WHERE tasks.in_charge='$member' AND tasks.task_class!=4");
                   $query_result = mysqli_fetch_assoc($query);
                   if (empty($row['file_name'])) {
                     $imageURL = '../assets/img/user-profiles/nologo.png';
