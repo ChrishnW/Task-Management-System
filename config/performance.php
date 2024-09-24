@@ -97,7 +97,7 @@ if (isset($_POST['viewTask'])) {
     </tfoot>
     <tbody id='dataTableBody'>
       <?php
-      $query = "SELECT td.*, tl.task_details FROM tasks_details td JOIN accounts ac ON ac.username=td.in_charge JOIN task_list tl ON td.task_name=tl.task_name WHERE ac.id='$id'";
+      $query = "SELECT DISTINCT td.*, t.task_details FROM tasks_details td JOIN accounts ac ON ac.username=td.in_charge JOIN tasks t ON td.task_name=t.task_name WHERE ac.id='$id'";
       if (isset($_POST['date_to']) && isset($_POST['date_from'])) {
         $date_to   = $_POST['date_to'];
         $date_from = $_POST['date_from'];
@@ -176,7 +176,7 @@ if (isset($_POST['showPerformance'])) {
     </tfoot>
     <tbody id='dataTableBody'>
       <?php
-      $query = "SELECT DISTINCT td.*, tl.task_details FROM tasks_details td JOIN accounts ac ON ac.username=td.in_charge JOIN task_list tl ON td.task_name=tl.task_name WHERE ac.id='$id'";
+      $query = "SELECT DISTINCT td.*, t.task_details FROM tasks_details td JOIN accounts ac ON ac.username=td.in_charge JOIN tasks t ON td.task_name=t.task_name WHERE ac.id='$id'";
       if (isset($_POST['date_to']) && isset($_POST['date_from'])) {
         $date_to   = $_POST['date_to'];
         $date_from = $_POST['date_from'];
