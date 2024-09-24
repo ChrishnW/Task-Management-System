@@ -370,7 +370,7 @@ include('../include/header.php');
       </div>
       <div class="form-group col-md-2">
         <label>Classification</label>
-        <select id="taskClass" name="taskClass" class="form-control selectpicker show-tick" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable()">
+        <select id="taskClass" name="taskClass" class="form-control selectpicker show-tick" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable()" onchange="filterTable()">
           <option value="" data-subtext="Default" selected>All</option>
           <?php
           $con->next_result();
@@ -663,10 +663,11 @@ include('../include/header.php');
         }
       });
     <?php } else { ?>
-      var date_to = document.getElementById('date_to').value;
+      var date_to   = document.getElementById('date_to').value;
       var date_from = document.getElementById('date_from').value;
-      var section = document.getElementById('section').value;
-      var progress = document.getElementById('progress').value;
+      var section   = document.getElementById('section').value;
+      var progress  = document.getElementById('progress').value;
+      var taskClass = document.getElementById('taskClass').value;
       $('#dataTable').DataTable().destroy();
       $('#dataTableBody').empty();
       $.ajax({
@@ -678,6 +679,7 @@ include('../include/header.php');
           "date_from": date_from,
           "section": section,
           "progress": progress,
+          "class": taskClass
         },
         success: function(response) {
           $('#dataTableBody').append(response);

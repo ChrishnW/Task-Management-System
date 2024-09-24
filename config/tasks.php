@@ -17,6 +17,7 @@ if (isset($_POST['filterTable'])) {
   $department = isset($_POST['department']) ? $_POST['department'] : '';
   $section    = $_POST['section'];
   $progress   = $_POST['progress'];
+  $class      = isset($_POST['class']) ? $_POST['class'] : '';
   $status     = isset($_POST['status']) ? $_POST['status'] : 1;
   $query = "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE task_status = '$status'";
   if ($date_from != NULL && $date_to != NULL) {
@@ -35,6 +36,9 @@ if (isset($_POST['filterTable'])) {
   }
   if ($progress != NULL) {
     $query .= " AND tasks_details.status = '$progress'";
+  }
+  if ($class != NULL) {
+    $query .= " AND tasks_details.task_class = '$class'";
   }
   $result = mysqli_query($con, $query);
   if (mysqli_num_rows($result) > 0) {
