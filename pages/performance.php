@@ -38,9 +38,9 @@ include('../include/header.php');
               <button type="button" onclick="showPerformance(this)" class="btn">
                 <i class="fas fa-eye fa-fw text-primary"></i> View
               </button>
-              <button type="button" id="print" class="btn">
+              <!-- <button type="button" id="print" class="btn">
                 <i class="fas fa-print fa-fw text-success"></i> Print
-              </button>
+              </button> -->
             </div>
           </div>
           <div class="card-body">
