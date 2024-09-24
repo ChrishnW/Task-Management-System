@@ -328,7 +328,7 @@ if (isset($_POST['endTask'])) {
     $finish_date  = date_create($row['date_accomplished']);
     $days         = date_diff($due_date, $finish_date);
     $interval     = $days->format("%R%a");
-    $achievement = 3;
+    $achievement = 4;
   }
   if ($require == 1) {
     if (empty($_FILES['file-1']['name'][0]) && empty($remarks)) {
