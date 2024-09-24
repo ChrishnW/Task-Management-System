@@ -336,16 +336,16 @@ include('../include/header.php');
   <?php } elseif ($access == 3) { ?>
     <div class="row">
       <div class="form-group col-md-2">
-        <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTable()">
-      </div>
-      <div class="form-group col-md-2">
         <label>From</label>
         <input type="date" name="date_from" id="date_from" class="form-control" onchange="filterTable()">
       </div>
       <div class="form-group col-md-2">
+        <label>To</label>
+        <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTable()">
+      </div>
+      <div class="form-group col-md-2">
         <label>Section</label>
-        <select id="section" name="section[]" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" data-live-search="true" onchange="filterTable()">
+        <select id="section" name="section[]" class="form-control selectpicker show-tick" data-style="bg-primary text-white text-capitalize" data-size="5" data-live-search="true" onchange="filterTable()">
           <option value='' data-subtext='Default' selected>All</option>
           <?php
           $con->next_result();
@@ -359,13 +359,27 @@ include('../include/header.php');
       </div>
       <div class="form-group col-md-2">
         <label>Progress</label>
-        <select id="progress" name="progress" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable()">
+        <select id="progress" name="progress" class="form-control selectpicker show-tick" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable()">
           <option value="" data-subtext="Default" selected>All</option>
           <option value="NOT YET STARTED">Not Yet Started</option>
           <option value="IN PROGRESS">In-Progress</option>
           <option value="REVIEW">Review</option>
           <option value="FINISHED">Finished</option>
           <option value="RESCHEDULE">Reschedule</option>
+        </select>
+      </div>
+      <div class="form-group col-md-2">
+        <label>Classification</label>
+        <select id="taskClass" name="taskClass" class="form-control selectpicker show-tick" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable()">
+          <option value="" data-subtext="Default" selected>All</option>
+          <?php
+          $con->next_result();
+          $sql = mysqli_query($con, "SELECT * FROM task_class WHERE id!=5");
+          if (mysqli_num_rows($sql) > 0) {
+            while ($row = mysqli_fetch_assoc($sql)) { ?>
+              <option value='<?php echo $row['id'] ?>' class="text-capitalize"><?php echo strtolower($row['task_class']) ?></option>
+          <?php }
+          } ?>
         </select>
       </div>
     </div>

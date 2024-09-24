@@ -20,7 +20,7 @@ if (isset($_POST['filterTable'])) {
   $status     = isset($_POST['status']) ? $_POST['status'] : 1;
   $query = "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE task_status = '$status'";
   if ($date_from != NULL && $date_to != NULL) {
-    $query .= " AND DATE(due_date) >= '$date_to' AND DATE(due_date) <= '$date_from'";
+    $query .= " AND DATE(due_date) >= '$date_from' AND DATE(due_date) <= '$date_to'";
   } else {
     $query .= " AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE)";
   }
