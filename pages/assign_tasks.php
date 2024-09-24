@@ -101,7 +101,7 @@ include('../include/header.php');
                       $assignTable = mysqli_query($con, "SELECT * FROM accounts WHERE status=1 AND access=2 AND sec_id='$sectionID'");
                       while ($assignRow = mysqli_fetch_array($assignTable)) {
                         $assignee = $assignRow['username'];
-                        $count_task = mysqli_query($con, "SELECT COUNT(id) as total_task FROM tasks WHERE in_charge='$assignee'");
+                        $count_task = mysqli_query($con, "SELECT COUNT(id) as total_task FROM tasks WHERE in_charge='$assignee' AND task_class!=4");
                         $count_task_row = $count_task->fetch_assoc();
                         $total_task = $count_task_row['total_task'];
                         if (empty($assignRow['file_name'])) {
@@ -147,7 +147,7 @@ include('../include/header.php');
             </thead>
             <tbody>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT tasks.task_name, tasks.task_details, tasks.submission, task_class.task_class, tasks.requirement_status FROM tasks JOIN task_class ON task_class.id=tasks.task_class WHERE in_charge='$username'");
+              $result = mysqli_query($con, "SELECT tasks.task_name, tasks.task_details, tasks.submission, task_class.task_class, tasks.requirement_status FROM tasks JOIN task_class ON task_class.id=tasks.task_class WHERE tasks.in_charge='$username' AND tasks.task_class!=4");
               if (mysqli_num_rows($result) > 0) {
                 $count = 0;
                 while ($row = $result->fetch_assoc()) {
