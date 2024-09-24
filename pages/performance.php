@@ -153,12 +153,12 @@ include('../include/header.php');
   <?php } elseif ($access == 3) { ?>
     <div class="row">
       <div class="form-group col-md-2">
-        <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control" onchange="calculate(this)">
-      </div>
-      <div class="form-group col-md-2">
         <label>From</label>
         <input type="date" name="date_from" id="date_from" class="form-control" onchange="calculate(this)">
+      </div>
+      <div class="form-group col-md-2">
+        <label>To</label>
+        <input type="date" name="date_to" id="date_to" class="form-control" onchange="calculate(this)">
       </div>
       <div class="form-group col-md-2">
         <label>Section</label>
@@ -179,7 +179,7 @@ include('../include/header.php');
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
         <h6 class="m-0 font-weight-bold text-white">TMS Member Performance</h6>
         <div class="dropdown no-arrow">
-          <button type="button" onclick="taskDownload(this)" class="btn btn-sm btn-success"><i class="fas fa-file-excel fa-fw"></i> Download</button>
+          <!-- <button type="button" onclick="generatePDF()" class="btn btn-sm btn-success"><i class="fas fa-file-excel fa-fw"></i> Download</button> -->
           <input type="hidden" name="viewTableID" id="viewTableID">
         </div>
       </div>
