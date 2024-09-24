@@ -928,4 +928,24 @@ if (isset($_POST['rescheduleTask'])) {
     }
   }
 }
+if (isset($_POST['addTask'])) {
+  $task       = $_POST['taskName'];
+  $details    = ucwords(strtolower($_POST['addDetails']));
+  $in_charge  = $_POST['taskAssignee'];
+  $due_date   = $_POST['dueDate'] . ' 16:00:00';
+  $date_today = date('Y-m-d');
+  $require    = $_POST['require'];
+  $task_for   = $_POST['assignTask_section'];
+
+  $latestcode = mysqli_fetch_assoc(mysqli_query($con, "SELECT MAX(task_code) AS latest_task_code FROM tasks_details WHERE task_class='4' AND task_for='$task_for'"))['latest_task_code'];
+  $numeric_portion = intval(substr($latestcode, -6)) + 1;
+  $taskCode = $task_for . '-TA-' . str_pad($numeric_portion, 6, '0', STR_PAD_LEFT);
+
+  $insert_task = mysqli_multi_query($con, "INSERT INTO `tasks` (`task_name`,`task_class`,`task_details`,`task_for`,`requirement_status`,`in_charge`,`submission`) VALUES ('$task', '4', '$details', '$task_for', '$require', '$in_charge', '$due_date'); INSERT INTO tasks_details (`task_code`, `task_name`, `task_class`, `task_for`, `in_charge`, `status`, `date_created`, `due_date`, `requirement_status`, `task_status`) VALUES ('$taskCode', '$task', '4', '$task_for', '$in_charge', 'NOT YET STARTED', '$date_today', '$due_date', '$require', 1)");
+  if ($insert_task) {
+    die('Success');
+  } else {
+    die('Error');
+  }
+}
 ?>
