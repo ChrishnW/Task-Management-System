@@ -161,12 +161,14 @@
 
         <li class="nav-item">
           <a class="nav-link" href="for_review.php">
+            <span class="badge badge-danger badge-counter mx-4" style="font-size: 15px;"><?php echo ($for_review_tasks >= 100) ? '99+' : $for_review_tasks; ?></span>
             <i class="fas fa-fw fa-bell"></i>
             <span>Review Task</span></a>
         </li>
 
         <li class="nav-item">
           <a class="nav-link" href="for_reschedule.php">
+            <span class="badge badge-danger badge-counter mx-4" style="font-size: 15px;"><?php echo ($for_review_tasks >= 100) ? '99+' : $for_resched_tasks; ?></span>
             <i class="fas fa-calendar-day"></i>
             <span>Reschedule Task</span></a>
         </li>
