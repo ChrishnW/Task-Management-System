@@ -160,7 +160,6 @@ include('../include/header.php');
         <h5 class="modal-title" id="assignee_name">View Assigned Task</h5>
         <div class="dropdown no-arrow">
           <button type="button" onclick="taskDownload(this)" class="btn btn-sm btn-success"><i class="fas fa-file-excel fa-fw"></i> Download</button>
-          <input type="hidden" name="viewTableID" id="viewTableID">
         </div>
       </div>
       <div class="modal-body" id="viewAssignedTaskTable">

@@ -80,6 +80,7 @@ include('../include/auth.php');
     $query_result = mysqli_query($con, "SELECT * FROM tasks WHERE in_charge='$userID' AND task_class!=4");
     $dataList = [];
     $counter  = 0; ?>
+    <input type="hidden" name="viewTableID" id="viewTableID" value="<?php echo $userID ?>">
     <table id="viewList" class="table table-striped">
       <thead class="table-success">
         <tr>

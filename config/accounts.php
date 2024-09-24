@@ -318,7 +318,7 @@
 
           <tbody>
             <?php
-            $result = mysqli_query($con, "SELECT tasks.task_name, tasks.task_details, tasks.submission, task_class.task_class, tasks.requirement_status FROM tasks JOIN task_class ON task_class.id=tasks.task_class WHERE in_charge='$assignee'");
+            $result = mysqli_query($con, "SELECT tasks.task_name, tasks.task_details, tasks.submission, task_class.task_class, tasks.requirement_status FROM tasks JOIN task_class ON task_class.id=tasks.task_class WHERE tasks.in_charge='$assignee' AND tasks.task_class!=4");
             if (mysqli_num_rows($result) > 0) {
               $count = 0;
               while ($row = $result->fetch_assoc()) {
