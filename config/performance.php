@@ -101,7 +101,7 @@ if (isset($_POST['viewTask'])) {
       if (isset($_POST['date_to']) && isset($_POST['date_from'])) {
         $date_to   = $_POST['date_to'];
         $date_from = $_POST['date_from'];
-        $query .= " AND DATE(due_date) >= '$date_to' AND DATE(due_date) <= '$date_from'";
+        $query .= " AND DATE(due_date) >= '$date_from' AND DATE(due_date) <= '$date_to'";
       }
       $result = mysqli_query($con, $query);
       if (mysqli_num_rows($result) > 0) {

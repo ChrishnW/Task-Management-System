@@ -398,12 +398,16 @@ include('../include/header.php');
 
   function showPerformance(element) {
     var account_id = <?php echo json_encode($emp_id) ?>;
+    var date_from = document.getElementById('date_from').value;
+    var date_to = document.getElementById('date_to').value;
     $.ajax({
       method: "POST",
       url: "../config/performance.php",
       data: {
         "showPerformance": true,
-        "account_id": account_id
+        "account_id": account_id,
+        "date_from": date_from,
+        "date_to": date_to
       },
       success: function(response) {
         $('#ajaxContents').html(response);
