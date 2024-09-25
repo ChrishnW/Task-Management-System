@@ -68,7 +68,7 @@
         <table class="table table-hover table-sm table-dark table-borderless" id="notificationTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th >Date & Time</th>
+              <th>Date & Time</th>
               <th>Subject</th>
               <th>Status</th>
             </tr>
@@ -80,7 +80,8 @@
               <tr>
                 <td><?php echo date_format(date_create($row['date_created']), "Y-m-d H:i:s"); ?></td>
                 <td id="td-table-shrink"><span class="btn btn-circle btn-sm bg-<?php echo $row['type']; ?> text-white" onclick="<?php echo $row['action']; ?> readNotification(this);"><i class="<?php echo $row['icon']; ?>"></i></span> <?php echo $row['body']; ?></td>
-                <td><?php if($row['status'] == 1) echo "<span class='badge badge-pill text-white bg-warning'>New</span>"; else echo "<span class='badge badge-pill text-white bg-secondary'>Read</span>"; ?></td>
+                <td><?php if ($row['status'] == 1) echo "<span class='badge badge-pill text-white bg-warning'>New</span>";
+                    else echo "<span class='badge badge-pill text-white bg-secondary'>Read</span>"; ?></td>
               </tr>
             <?php }
             ?>
@@ -253,6 +254,11 @@
 
 <!-- Custom Scripts Global -->
 <script>
+  window.onload = function() {
+    document.getElementById('preloader').style.display = 'none';
+    document.getElementById('wrapper').style.visibility = 'visible';
+  };
+
   document.addEventListener('DOMContentLoaded', function() {
     var inactivityTime = 3600000;
     var timeout;
