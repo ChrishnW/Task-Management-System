@@ -158,7 +158,7 @@ include('../include/header.php');
       </div>
       <div class="form-group col-md-2">
         <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control" onchange="calculate(this)">
+        <input type="date" name="date_to" id="date_to" class="form-control" onchange="calculate(this)" disabled>
       </div>
       <div class="form-group col-md-2">
         <label>Section</label>
@@ -322,6 +322,13 @@ include('../include/header.php');
       "calculate": true,
       "section": section,
     };
+    if (date_from) {
+      document.getElementById('date_to').setAttribute('min', date_from);
+      document.getElementById('date_to').disabled = false;
+    } else {
+      document.getElementById('date_to').removeAttribute('min');
+      document.getElementById('date_to').disabled = true;
+    }
     if (date_to && date_from !== '') {
       sortdata.date_to = date_to;
       sortdata.date_from = date_from;
