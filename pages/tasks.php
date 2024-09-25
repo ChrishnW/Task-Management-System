@@ -984,11 +984,15 @@ include('../include/header.php');
       formData.append('endTask', true);
       $.ajax({
         method: "POST",
+        beforeSend: function() {
+          togglePreloader(true);
+        },
         url: "../config/tasks.php",
         data: formData,
         contentType: false,
         processData: false,
         success: function(response) {
+          togglePreloader(false);
           if (response === 'Success') {
             document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
             $('#finish').modal('hide');
