@@ -259,6 +259,16 @@
     document.getElementById('wrapper').style.visibility = 'visible';
   };
 
+  function togglePreloader(show) {
+    if (show) {
+      $('#preloader').show();
+      $('#wrapper').css('visibility', 'hidden'); // Hide content while loading
+    } else {
+      $('#preloader').hide();
+      $('#wrapper').css('visibility', 'visible'); // Show content after loading
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
     var inactivityTime = 3600000;
     var timeout;
