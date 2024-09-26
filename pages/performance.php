@@ -222,35 +222,20 @@ include('../include/header.php');
               while ($row = $result->fetch_assoc()) {
                 $imageURL = empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name'];
                 $assignee = $row['username'];
-                $task_query = "SELECT *, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class NOT IN (5, 6)) AS task_total, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS report_total FROM tasks_details WHERE task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND in_charge = '$assignee'";
-                $count_task = mysqli_query($con, $task_query);
-                $routine_sum    = 0;
-                $report_sum     = 0;
-                $routine_total  = 0;
-                $report_total   = 0;
-                while ($count_row = $count_task->fetch_assoc()) {
-                  if ($count_row['task_class'] != 5 && $count_row['task_class'] != 6) {
-                    $routine_sum += $count_row['achievement'];
-                  }
-                  if ($count_row['task_class'] == 6) {
-                    $report_sum += $count_row['achievement'];
-                  }
-                  $routine_total = $count_row['task_total'];
-                  $report_total = $count_row['report_total'];
-                }
+                $rows = mysqli_fetch_assoc(mysqli_query($con, "SELECT *, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class != 6) AS routineTotal, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS reportTotal, (SELECT SUM(achievement) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class != 6) AS routineSUM, (SELECT SUM(achievement) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS reportSUM FROM tasks_details WHERE task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND in_charge = '$assignee'"));
 
-                $routine_average = $routine_total > 0 ? number_format(($routine_sum / $routine_total), 2) : 0;
-                $routine_percentage = $routine_total > 0 ? number_format(getPercentage($routine_average), 2) : 0;
-
-                $report_average = $report_total > 0 ? number_format(($report_sum / $report_total), 2) : 0;
-                $report_percentage = $report_total > 0 ? number_format(getPercentage($report_average), 2) : 0;
+                $task_total         = $rows['routineTotal'] + $rows['reportTotal'];
+                $routine_average    = $rows['routineTotal'] > 0 ? number_format(($rows['routineSUM'] / $rows['routineTotal']), 2) : 0;
+                $routine_percentage = $rows['routineTotal'] > 0 ? number_format(getPercentage($routine_average), 2) : 0;
+                $report_average     = $rows['reportTotal'] > 0 ? number_format(($rows['reportSUM'] / $rows['reportTotal']), 2) : 0;
+                $report_percentage  = $rows['reportTotal'] > 0 ? number_format(getPercentage($report_average), 2) : 0;
               ?>
                 <tr>
                   <td></td>
                   <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
                   <td><?php echo $row['sec_name']; ?></td>
                   <td>
-                    <center /><span class="badge badge-info"><?php echo $routine_total ?> Total</span>
+                    <center /><span class="badge badge-info"><?php echo $task_total ?> Total</span>
                   </td>
                   <td><?php echo $routine_average ?> (Routine) <p class="text-danger"><?php echo $report_average ?> (Report)</p>
                   </td>
