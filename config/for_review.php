@@ -1,6 +1,10 @@
 <?php
 include('../include/auth.php');
+include('../vendor/autoload.php');
 date_default_timezone_set('Asia/Manila');
+
+use PhpOffice\PhpSpreadsheet\IOFactory as ExcelIOFactory;
+use PhpOffice\PhpWord\IOFactory as WordIOFactory;
 
 if (isset($_POST['approveTask'])) {
   $id           = $_POST['approveID'];
@@ -281,15 +285,33 @@ if (isset($_GET['getFile'])) {
   ]);
 }
 
-if (isset($_GET['loadFile'])) {
+if (isset($_GET['file'])) {
   $filePath = $_GET['file'];
 
+  // Get the file extension to determine file type
   $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
 
-  if ($fileExtension === 'xlsx' || $fileExtension === 'xls') {
+  if ($fileExtension === 'xlsx') {
+    // Handle Excel file
+    try {
+      $spreadsheet = ExcelIOFactory::load($filePath);
+      $worksheet = $spreadsheet->getActiveSheet();
 
-  } elseif ($fileExtension === 'docx') {
+      echo '<table class="table table-bordered">';
+      foreach ($worksheet->getRowIterator() as $row) {
+        echo '<tr>';
+        $cellIterator = $row->getCellIterator();
+        $cellIterator->setIterateOnlyExistingCells(false); // Include empty cells
 
+        foreach ($cellIterator as $cell) {
+          echo '<td>' . $cell->getValue() . '</td>';
+        }
+        echo '</tr>';
+      }
+      echo '</table>';
+    } catch (Exception $e) {
+      echo 'Error loading Excel file: ', $e->getMessage();
+    }
   } else {
     echo 'Unsupported file type.';
   }

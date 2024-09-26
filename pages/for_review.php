@@ -139,8 +139,8 @@ include('../include/header.php');
 </div>
 <div class="modal fade" id="docModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content border-success">
-      <div class="modal-header bg-success text-white">
+    <div class="modal-content border-primary">
+      <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">View Document</h5>
       </div>
       <div class="modal-body" id="modalBodyContent">
@@ -322,13 +322,16 @@ include('../include/header.php');
       .then(data => {
         var filePath = data.filePath;
         var fileType = data.fileType;
+        var allowedExtensions = ['pdf', 'jpg', 'png', 'jpeg'];
 
-        if (fileType === 'pdf') {
+        if (allowedExtensions.includes(fileType)) {
           modalBody.innerHTML = '<iframe src="' + filePath + '" style="width:100%; height:500px;" frameborder="0"></iframe>';
         } else {
-          var encodedUrl = encodeURIComponent(filePath);
-          var viewerUrl = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodedUrl;
-          modalBody.innerHTML = '<iframe src="' + viewerUrl + '" style="width:100%; height:500px;" frameborder="0"></iframe>';
+          fetch('../config/for_review.php?loadFile=true&file=' + filePath)
+            .then(response => response.text())
+            .then(data => {
+              modalBody.innerHTML = data;
+            });
         }
       });
     $('#docModal').modal('show');
