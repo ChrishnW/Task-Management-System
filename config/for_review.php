@@ -104,7 +104,7 @@ if (isset($_POST['viewTask'])) {
         </div>
         <div class="col-md-2">
           <div class="form-group">
-            <label>Achievement:</label>
+            <label>Achievement: <i class="fas fa-question-circle text-info" data-toggle="popover" data-trigger="hover" data-html="true" title="Rating Criteria" data-placement="left" data-content="Rating 5: 105% Achievement<br>Rating 4: 100% Achievement<br>Rating 3: 90% Achievement<br>Rating 2: 80% Achievement<br>Rating 1: 70% Achievement"></i></label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-trophy"></i></div>
