@@ -48,7 +48,7 @@ if (isset($_POST['viewTask'])) {
     $dueDated           = new DateTime($row['due_date']);
     $finDated           = new DateTime($row['date_accomplished']);
     $findings           = '';
-    if ($finDated > $dueDated) {
+    if ($finDated->setTime(0,0,0) > $dueDated->setTime(0,0,0)) {
       $findings .= '<span class="badge badge-danger">Late Submission</span>';
     }
     if ($row['old_date'] !== NULL) {
@@ -247,7 +247,7 @@ if (isset($_POST['filterTable'])) {
       $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
       $assignee   = '<img src=' . $assigneeURL . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
       $icon = "<i class='fas fa-info-circle' data-toggle='tooltip' data-placement='right' title='{$row['task_details']}'></i>";
-      if (new DateTime($row['date_accomplished']) > new DateTime($row['due_date'])) {
+      if ((new DateTime($row['date_accomplished']))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0)) {
         $icon .= " <i class='fas fa-hourglass-end text-danger' data-toggle='tooltip' data-placement='right' title='Late Submission'></i>";
       }
       if ($row['requirement_status'] == 1) {
