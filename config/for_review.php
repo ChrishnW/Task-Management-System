@@ -221,7 +221,7 @@ if (isset($_POST['filterTable'])) {
 
   $query = "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id = '$dept_id'";
   if ($date_to != NULL && $date_from != NULL) {
-    $query .= " AND DATE(tasks_details.date_accomplished) >= '$date_to' AND DATE(tasks_details.date_accomplished) <= '$date_from'";
+    $query .= " AND DATE(tasks_details.date_accomplished) >= '$date_from' AND DATE(tasks_details.date_accomplished) <= '$date_to'";
   }
   if ($taskClass != '') {
     $query .= " AND tasks_details.task_class='$taskClass'";

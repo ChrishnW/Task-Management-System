@@ -8,12 +8,12 @@ include('../include/header.php');
   <?php } elseif ($access == 3) { ?>
     <div class="row">
       <div class="form-group col-md-2">
-        <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTable(this)">
-      </div>
-      <div class="form-group col-md-2">
         <label>From</label>
         <input type="date" name="date_from" id="date_from" class="form-control" onchange="filterTable(this)">
+      </div>
+      <div class="form-group col-md-2">
+        <label>To</label>
+        <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTable(this)">
       </div>
       <div class="form-group col-md-2">
         <label>Classification</label>
@@ -23,6 +23,7 @@ include('../include/header.php');
           <option value="2">Weekly Routine</option>
           <option value="3">Monthly Routine</option>
           <option value="6">Monthly Report</option>
+          <option value="4">Additional Task</option>
         </select>
       </div>
     </div>
