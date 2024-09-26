@@ -85,6 +85,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
 
 <script>
   function uploadFile(element) {
+    togglePreloader(true);
     element.disabled = true;
     var formData = new FormData();
     var fileInput = document.getElementById('UploadedFile');
@@ -102,6 +103,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         contentType: false,
         processData: false,
         success: function(response) {
+          togglePreloader(false);
           if (response === 'Success') {
             $('#success').modal('show');
           } else {

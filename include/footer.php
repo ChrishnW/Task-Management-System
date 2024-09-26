@@ -262,10 +262,10 @@
   function togglePreloader(show) {
     if (show) {
       $('#preloader').show();
-      $('#wrapper').css('visibility', 'hidden'); // Hide content while loading
+      // $('#wrapper').css('visibility', 'hidden');
     } else {
       $('#preloader').hide();
-      $('#wrapper').css('visibility', 'visible'); // Show content after loading
+      // $('#wrapper').css('visibility', 'visible');
     }
   }
 
