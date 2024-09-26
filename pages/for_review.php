@@ -268,6 +268,7 @@ include('../include/header.php');
       },
       success: function(response) {
         $('#taskDetails').html(response);
+        $('[data-toggle="popover"]').popover();
         $('#review').modal('show');
         $('#taskView_table').DataTable({
           order: [
@@ -277,7 +278,6 @@ include('../include/header.php');
           lengthMenu: [3, 10, 25, 50, 100],
           "drawCallback": function(settings) {
             $('[data-toggle="tooltip"]').tooltip();
-            $('[data-toggle="popover"]').popover();
           }
         });
       }
