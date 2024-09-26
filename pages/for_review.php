@@ -139,8 +139,8 @@ include('../include/header.php');
 </div>
 <div class="modal fade" id="docModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content border-primary">
-      <div class="modal-header bg-primary text-white">
+    <div class="modal-content border-info">
+      <div class="modal-header bg-info text-white">
         <h5 class="modal-title">View Document</h5>
       </div>
       <div class="modal-body" id="modalBodyContent">
