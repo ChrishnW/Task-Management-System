@@ -316,8 +316,7 @@ if (isset($_POST['endTaskDeatails'])) {
 if (isset($_POST['endTask'])) {
   $currentDateTime  = date('Y-m-d H:i:s');
   $id               = $_POST['finish_taskID'];
-  // $remarks          = str_replace("'", "&apos;", $_POST['taskRemarks']);
-  $remarks = preg_replace('/^\s+|\s+$|\s+(?=\s)/m', '', $_POST['taskRemarks']);
+  $remarks          = str_replace("'", "&apos;", preg_replace('/^\s+|\s+$|\s+(?=\s)/m', '', $_POST['taskRemarks']));
   $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE id='$id'");
   while ($row = $query_result->fetch_assoc()) {
     $task_name    = $row['task_name'];
