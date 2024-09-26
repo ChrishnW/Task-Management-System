@@ -4,7 +4,6 @@ include('../vendor/autoload.php');
 date_default_timezone_set('Asia/Manila');
 
 use PhpOffice\PhpSpreadsheet\IOFactory as ExcelIOFactory;
-use PhpOffice\PhpWord\IOFactory as WordIOFactory;
 
 if (isset($_POST['approveTask'])) {
   $id           = $_POST['approveID'];
