@@ -35,8 +35,8 @@
 </head>
 
 <body id="page-top">
+
   <div id="preloader"><img src="../assets/img/illustrations/spinner.gif" alt="Loading..."></div>
-  <div id="loading" style="display: none;"><img src="../assets/img/illustrations/loading.gif" alt="Loading..."></div>
 
   <!-- Page Wrapper -->
   <div id="wrapper">
