@@ -719,7 +719,7 @@ include('../include/header.php');
             $('#success').modal('show');
           } else {
             element.disabled = false;
-            $('#error_found').text('An unexpected error has occurred. Please try again.');
+            $('#error_found').text(data);
             $('#error').modal('show');
           }
         }
