@@ -151,7 +151,7 @@ include('../include/header.php');
       </div>
     </div>
   <?php } elseif ($access == 3) { ?>
-    <div class="row">
+    <div class="row" id="print-exclude">
       <div class="form-group col-md-2">
         <label>From</label>
         <input type="date" name="date_from" id="date_from" class="form-control" onchange="calculate(this)">
@@ -178,8 +178,8 @@ include('../include/header.php');
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
         <h6 class="m-0 font-weight-bold text-white">TMS Member Performance</h6>
-        <div class="dropdown no-arrow">
-          <!-- <button type="button" onclick="generatePDF()" class="btn btn-sm btn-success"><i class="fas fa-file-excel fa-fw"></i> Download</button> -->
+        <div class="dropdown no-arrow" id="print-exclude">
+          <button type="button" id="print-page" class="btn btn-sm text-white"><i class="fas fa-print fa-fw"></i> Print</button>
           <input type="hidden" name="viewTableID" id="viewTableID">
         </div>
       </div>
@@ -197,7 +197,7 @@ include('../include/header.php');
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody id='dataTableBody'>
+            <tbody id='dataTableBody' id="print-include">
               <?php
               $con->next_result();
               function getPercentage($average)
@@ -234,14 +234,14 @@ include('../include/header.php');
                   <td></td>
                   <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
                   <td><?php echo $row['sec_name']; ?></td>
-                  <td>
+                  <td id="print-exclude">
                     <center /><span class="badge badge-info"><?php echo $task_total ?> Total</span>
                   </td>
                   <td><?php echo $routine_average ?> (Routine) <p class="text-danger"><?php echo $report_average ?> (Report)</p>
                   </td>
                   <td><?php echo $routine_percentage ?? '0'; ?> (Routine) <p class="text-danger"><?php echo $report_percentage ?? '0' ?> (Report)</p>
                   </td>
-                  <td><button class="btn btn-block btn-primary btn-sm" value="<?php echo $row['id']; ?>" onclick="viewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
+                  <td id="print-exclude"><button class="btn btn-block btn-primary btn-sm" value="<?php echo $row['id']; ?>" onclick="viewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
                 </tr>
               <?php } ?>
             </tbody>

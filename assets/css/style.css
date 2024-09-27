@@ -575,3 +575,28 @@
 #wrapper {
     visibility: none;
 }
+
+@media print {
+    #print-exclude {
+        display: none;
+    }
+
+    #dataTable thead {
+        display: none !important;
+    }
+
+    #dataTable,
+    #dataTable th,
+    #dataTable td,
+    #dataTable thead,
+    #dataTable tfoot {
+        border: none !important;
+    }
+
+    td {
+        max-width    : 200px;
+        overflow     : hidden;
+        white-space  : nowrap;
+        text-overflow: ellipsis;
+    }
+}
