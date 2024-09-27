@@ -392,7 +392,7 @@ include('../include/header.php');
         <h6 class="m-0 font-weight-bold text-white">Deployed Tasks</h6>
         <div class="dropdown no-arrow">
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskRegistrationModal">
-            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Assign Additional Task
+            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Additional Task
           </button>
         </div>
       </div>
@@ -476,7 +476,7 @@ include('../include/header.php');
   <div class="modal-dialog modal-dialog-centered modal-md">
     <div class="modal-content border-info">
       <div class="modal-header bg-info text-white">
-        <h5 class="modal-title" id="taskRegistrationModalLabel">Register Additional Task</h5>
+        <h5 class="modal-title" id="taskRegistrationModalLabel">Additional Task</h5>
       </div>
       <div class="modal-body">
         <form id="taskRegistrationForm">
