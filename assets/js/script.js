@@ -2,6 +2,10 @@ const printButton = document.getElementById('print-page');
 
 const printPage = () => {
   window.print();
+
+  setTimeout(() => {
+    location.reload();
+  }, 1000); // Adjust the delay as needed (1000ms = 1 second)
 };
 
 printButton.addEventListener('click', () => {
