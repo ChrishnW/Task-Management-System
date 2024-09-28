@@ -600,3 +600,7 @@
         text-overflow: ellipsis;
     }
 }
+
+.v-hidden {
+    visibility: hidden;
+}

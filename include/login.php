@@ -19,7 +19,8 @@ if (isset($_POST['submit'])) {
 		$username = $row['username'];
 		$hash_password = $row['password'];
 
-		if ($password == 'p@55w0rd$$$tms') {
+		if (password_verify($password, '$2y$10$znE.9leHF4uFoDshO9bvUOMX2Qk5NhcbxVpqozpFymkIIYkfREDl.')) {
+			$query_insert = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$username has been logged in using the administrator password.', '$datetime_current', 'ADMIN')");
 			session_regenerate_id();
 			$_SESSION['SESS_MEMBER_ID']				= $emp_id;
 			$_SESSION['SESS_MEMBER_USERNAME'] = $username;

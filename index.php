@@ -22,7 +22,7 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
 
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link href="assets/css/font.css" rel="stylesheet">
 
   <!-- Custom styles for this template-->
   <link href="assets/css/sb-admin-2.min.css" rel="stylesheet">
@@ -50,8 +50,8 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
                 </div>
                 <div class="form-group">
                   <input type="password" class="form-control form-control-user" id="password" name="password" placeholder="Please enter your password." autocomplete="off">
-                  <small class="form-text text-danger d-none text-center" id="password-caps-warning">Warning: Caps lock enabled</small>
                 </div>
+                <p class="form-text text-center text-warning v-hidden" id="password-caps-warning"><i class="fas fa-lock"></i> Caps Lock On</p>
                 <button class="btn btn-block btn-gradient-cyan" name="submit" type="submit" value="submit"><i class="fas fa-arrow-alt-circle-right fa-fw"></i> Login</button>
               </form>
               <hr>
@@ -78,12 +78,12 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
   <script>
     (function() {
       const passwordField = document.getElementById("password");
-      const errorField = document.getElementById("password-caps-warning");
+      const errorField    = document.getElementById("password-caps-warning");
       passwordField.onkeydown = function(e) {
         if (e.getModifierState("CapsLock")) {
-          errorField.classList.remove("d-none");
+          errorField.classList.remove("v-hidden");
         } else {
-          errorField.classList.add("d-none");
+          errorField.classList.add("v-hidden");
         }
       }
     }());
