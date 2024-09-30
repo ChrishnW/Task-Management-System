@@ -258,7 +258,6 @@ include('../include/header.php');
                     while ($row = $query_result->fetch_assoc()) {
                       $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
                       $date_accomplished = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-
                     ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
