@@ -146,14 +146,19 @@ include('../include/header.php');
               </tr>
             </thead>
             <tbody>
-              <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT tasks.task_name, tasks.task_details, tasks.submission, task_class.task_class, tasks.requirement_status FROM tasks JOIN task_class ON task_class.id=tasks.task_class WHERE tasks.in_charge='$username' AND tasks.task_class!=4");
+              <?php
+              function getTaskClass($taskClassNumber)
+              {
+                $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
+                return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
+              }
+              $result = mysqli_query($con, "SELECT * FROM tasks t JOIN task_list tl ON tl.task_id=t.task_id WHERE in_charge='CLOPEZ' AND tl.task_class!=4");
               if (mysqli_num_rows($result) > 0) {
                 $count = 0;
                 while ($row = $result->fetch_assoc()) {
                   $count += 1;
                   $task_class = '<span class="badge badge-info">' . $row['task_class'] . '</span>';
-                  if ($row['requirement_status'] == 1) {
+                  if ($row['attachment'] == 1) {
                     $requirement = '<span class="badge badge-primary">File Attachment</span>';
                   } else {
                     $requirement = '<span class="badge badge-primary">None</span>';
@@ -162,7 +167,7 @@ include('../include/header.php');
                   <tr>
                     <td><?php echo $count ?></td>
                     <td><?php echo $row['task_name'] ?></td>
-                    <td><?php echo $task_class ?></td>
+                    <td><?php echo getTaskClass($row['task_class']); ?></td>
                     <td id="td-table-shrink"><?php echo $row['task_details']; ?></td>
                     <td><?php echo $requirement ?></td>
                     <td><?php echo $row['submission'] ?></td>
