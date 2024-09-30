@@ -2,8 +2,8 @@
 include("connect.php");
 session_start();
 
-// Define session timeout duration (e.g., 15 minutes)
-$timeout_duration = 60 * 60;
+// Define session timeout duration (e.g., 120 minutes)
+$timeout_duration = 120 * 60;
 
 // Check if the session is set and valid
 if (!isset($_SESSION['SESS_MEMBER_ID']) || trim($_SESSION['SESS_MEMBER_ID']) == '') {

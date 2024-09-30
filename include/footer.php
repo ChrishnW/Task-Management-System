@@ -270,7 +270,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    var inactivityTime = 3600000;
+    var inactivityTime = 7200000;
     var timeout;
 
     // Function to reset the timeout
