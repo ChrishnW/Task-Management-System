@@ -254,10 +254,10 @@
 
 <!-- Custom Scripts Global -->
 <script>
-  window.onload = function() {
-    document.getElementById('preloader').style.display = 'none';
-    document.getElementById('wrapper').style.visibility = 'visible';
-  };
+  // window.onload = function() {
+  //   document.getElementById('preloader').style.display = 'none';
+  //   document.getElementById('wrapper').style.visibility = 'visible';
+  // };
 
   function togglePreloader(show) {
     if (show) {
