@@ -147,12 +147,7 @@ include('../include/header.php');
             </thead>
             <tbody>
               <?php
-              function getTaskClass($taskClassNumber)
-              {
-                $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
-                return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
-              }
-              $result = mysqli_query($con, "SELECT * FROM tasks t JOIN task_list tl ON tl.task_id=t.task_id WHERE in_charge='CLOPEZ' AND tl.task_class!=4");
+              $result = mysqli_query($con, "SELECT * FROM tasks t JOIN task_list tl ON tl.tl_ID=t.task_id WHERE in_charge='CLOPEZ' AND tl.task_class!=4");
               if (mysqli_num_rows($result) > 0) {
                 $count = 0;
                 while ($row = $result->fetch_assoc()) {

@@ -66,7 +66,7 @@ include('../include/header.php');
                 <th>Title</th>
                 <th>Classification</th>
                 <th>Due Date</th>
-                <th>Assignee</th>
+
                 <th>Progress</th>
               </tr>
             </thead>
@@ -80,7 +80,7 @@ include('../include/header.php');
               $result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge=accounts.username JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE task_status=1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE)");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
-                  $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
+
                   $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
                   $progress = '<span class="badge badge-' . ['NOT YET STARTED' => 'primary', 'IN PROGRESS' => 'warning', 'REVIEW' => 'danger', 'FINISHED' => 'success', 'RESCHEDULE' => 'secondary'][$row['status']] . '">' . $row['status'] . '</span>'; ?>
                   <tr>
@@ -91,7 +91,7 @@ include('../include/header.php');
                     <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                     <td><?php echo getTaskClass($row['task_class']); ?></td>
                     <td><?php echo $due_date ?></td>
-                    <td><?php echo $assignee ?></td>
+
                     <td><?php echo $progress ?></td>
                   </tr>
               <?php }
@@ -120,21 +120,12 @@ include('../include/header.php');
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">My Task</h5>
-        <?php
-        $query_result = mysqli_query($con, "SELECT COUNT('id') AS not_yet_started, (SELECT COUNT('id') FROM tasks_details WHERE task_status=1 AND status='IN PROGRESS' AND in_charge='$username') AS in_progress, (SELECT COUNT('id') FROM tasks_details WHERE task_status=1 AND status='REVIEW' AND in_charge='$username') AS review, (SELECT COUNT('id') FROM tasks_details WHERE task_status=1 AND status='FINISHED' AND in_charge='$username') AS finished, (SELECT COUNT('id') FROM tasks_details WHERE task_status=1 AND status='RESCHEDULE' AND in_charge='$username') AS rescheduled FROM tasks_details WHERE task_status=1 AND status='NOT YET STARTED' AND in_charge='$username'");
-        $row = mysqli_fetch_assoc($query_result);
-        ?>
         <ul class="nav nav-tabs" id="myTabs">
-          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#todo" data-status="NOT YET STARTED"><i class="fas fa-list-ul"></i> To-do <span class="badge badge-success"><?php echo $row['not_yet_started'] ?></span></a>
-          </li>
-          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#inprogress" data-status="IN PROGRESS"><i class="fas fa-hourglass-start"></i> In-Progress <span class="badge badge-danger"><?php echo $row['in_progress'] ?></span></a>
-          </li>
-          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#review" data-status="REVIEW"><i class="fas fa-hand-paper"></i> For Review <span class="badge badge-warning"><?php echo $row['review'] ?></span></a>
-          </li>
-          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#finished" data-status="FINISHED"><i class="fas fa-tasks"></i> Finished <span class="badge badge-primary"><?php echo $row['finished'] ?></span></a>
-          </li>
-          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#reschedule" data-status="RESCHEDULE"><i class="fas fa-clock"></i> Rescheduling <span class="badge badge-secondary"><?php echo $row['rescheduled'] ?></span></a>
-          </li>
+          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#todo" data-status="NOT YET STARTED"><i class="fas fa-list-ul"></i> To-do <span class="badge badge-success"><?php echo $row['not_yet_started'] ?></span></a></li>
+          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#inprogress" data-status="IN PROGRESS"><i class="fas fa-hourglass-start"></i> In-Progress <span class="badge badge-danger"><?php echo $row['in_progress'] ?></span></a></li>
+          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#review" data-status="REVIEW"><i class="fas fa-hand-paper"></i> For Review <span class="badge badge-warning"><?php echo $row['review'] ?></span></a></li>
+          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#finished" data-status="FINISHED"><i class="fas fa-tasks"></i> Finished <span class="badge badge-primary"><?php echo $row['finished'] ?></span></a></li>
+          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#reschedule" data-status="RESCHEDULE"><i class="fas fa-clock"></i> Rescheduling <span class="badge badge-secondary"><?php echo $row['rescheduled'] ?></span></a></li>
         </ul>
         <div class="tab-content" id="myTabContent">
           <div class="tab-pane fade" id="todo">
@@ -151,33 +142,26 @@ include('../include/header.php');
                       <th>Title</th>
                       <th>Classification</th>
                       <th>Due Date</th>
-                      <th>Assignee</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody id="myTasksTodo">
                     <?php
-                    function getTaskClass($taskClassNumber)
-                    {
-                      $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
-                      return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
-                    }
-                    $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='NOT YET STARTED' AND tasks_details.in_charge='$username'");
+                    $query_result = mysqli_query($con, "SELECT DISTINCT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE task_status=1 AND in_charge='$username' AND progress='NOT YET STARTED'");
                     while ($row = $query_result->fetch_assoc()) {
                       $current_date = date('Y-m-d');
-                      $action = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) ? '<button type="button" class="btn btn-block btn-secondary fa-fw" disabled><i class="fas fa-ban"></i> Pending</button>' : '<button type="button" class="btn btn-block btn-success" value="' . $row['id'] . '" onclick="startTask(this)"><i class="fas fa-play fa-fw"></i> Start</button>';
-                      $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
+                      $action = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) ? '<button type="button" class="btn btn-block btn-secondary fa-fw" disabled><i class="fas fa-ban"></i> Pending</button>' : '<button type="button" class="btn btn-block btn-success" value="' . $row['td_ID'] . '" onclick="startTask(this)"><i class="fas fa-play fa-fw"></i> Start</button>';
+                      $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['td_ID']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
                       $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
+                    ?>
                       <tr>
                         <td><?php echo $checkbox ?></td>
                         <td><?php echo $row['task_code'] ?></td>
                         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
-                        <td><?php echo $assignee ?></td>
                         <td><?php echo $action;
-                            if ($row['old_date'] === NULL) echo '<button type="button" class="btn btn-block btn-secondary" value="' . $row['id'] . '" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button>'; ?></td>
+                            if ($row['old_date'] === NULL) echo '<button type="button" class="btn btn-block btn-secondary" value="' . $row['td_ID'] . '" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button>'; ?></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -195,24 +179,21 @@ include('../include/header.php');
                       <th>Title</th>
                       <th>Classification</th>
                       <th>Due Date</th>
-                      <th>Assignee</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody id="myTasksInprogress">
                     <?php
-                    $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='IN PROGRESS' AND tasks_details.in_charge='$username'");
+                    $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE task_status=1 AND in_charge='$username' AND progress='IN PROGRESS'");
                     while ($row = $query_result->fetch_assoc()) {
                       $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
                     ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
                         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
-                        <td><?php echo $assignee ?></td>
-                        <td><button type="button" class="btn btn-block btn-danger" value='<?php echo $row['id']; ?>' onclick="endTask(this)"><i class="fas fa-stop fa-fw"></i> Finish</button></td>
+                        <td><button type="button" class="btn btn-block btn-danger" value='<?php echo $row['td_ID']; ?>' onclick="endTask(this)"><i class="fas fa-stop fa-fw"></i> Finish</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -231,17 +212,16 @@ include('../include/header.php');
                       <th>Classification</th>
                       <th>Due Date</th>
                       <th>Finished Date</th>
-                      <th>Assignee</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody id="myTasksReview">
                     <?php
-                    $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='REVIEW' AND tasks_details.in_charge='$username'");
+                    $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE task_status=1 AND in_charge='$username' AND progress='REVIEW'");
                     while ($row = $query_result->fetch_assoc()) {
                       $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
                       $date_accomplished = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-                      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
+
                     ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
@@ -249,8 +229,7 @@ include('../include/header.php');
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $date_accomplished ?></td>
-                        <td><?php echo $assignee ?></td>
-                        <td><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
+                        <td><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['td_ID']; ?>' onclick="reviewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -270,17 +249,16 @@ include('../include/header.php');
                       <th>Due Date</th>
                       <th>Finished Date</th>
                       <th>Rating</th>
-                      <th>Assignee</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody id="myTasksFinished">
                     <?php
-                    $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='FINISHED' AND tasks_details.in_charge='$username'");
+                    $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE task_status=1 AND in_charge='$username' AND progress='FINISHED'");
                     while ($row = $query_result->fetch_assoc()) {
                       $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
                       $date_accomplished = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-                      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
+
                     ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
@@ -289,8 +267,7 @@ include('../include/header.php');
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $date_accomplished ?></td>
                         <td><span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span></td>
-                        <td><?php echo $assignee ?></td>
-                        <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="checkTask(this)"><i class="fas fa-history fa-fw"></i> Details</button></td>
+                        <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['td_ID']; ?>' onclick="checkTask(this)"><i class="fas fa-history fa-fw"></i> Details</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -309,16 +286,14 @@ include('../include/header.php');
                       <th>Classification</th>
                       <th>Original Due Date</th>
                       <th>Requested Due Date</th>
-                      <th>Assignee</th>
                     </tr>
                   </thead>
                   <tbody id="myTasksReschedule">
                     <?php
-                    $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='RESCHEDULE' AND tasks_details.in_charge='$username'");
+                    $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE task_status=1 AND in_charge='$username' AND progress='RESCHEDULE'");
                     while ($row = $query_result->fetch_assoc()) {
                       $due_date = date_format(date_create($row['due_date']), "Y-m-d");
                       $old_date = date_format(date_create($row['old_date']), "Y-m-d");
-                      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
                     ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
@@ -326,7 +301,6 @@ include('../include/header.php');
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $old_date ?></td>
-                        <td><?php echo $assignee ?></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -406,7 +380,7 @@ include('../include/header.php');
                 <th>Title</th>
                 <th>Classification</th>
                 <th class="col col-md-1">Due Date</th>
-                <th>Assignee</th>
+
                 <th>Progress</th>
               </tr>
             </thead>
@@ -417,7 +391,7 @@ include('../include/header.php');
                 <th>Title</th>
                 <th>Classification</th>
                 <th class="col col-md-1">Due Date</th>
-                <th>Assignee</th>
+
                 <th>Progress</th>
               </tr>
             </tfoot>
@@ -459,7 +433,7 @@ include('../include/header.php');
                     <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                     <td><?php echo $task_class ?></td>
                     <td><?php echo $due_date ?></td>
-                    <td><?php echo $assignee ?></td>
+
                     <td><?php echo $progress ?></td>
                   </tr>
               <?php }

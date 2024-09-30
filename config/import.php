@@ -57,7 +57,7 @@ if (isset($_POST['taskImport'])) {
         $taskTo       = strtoupper(mysqli_real_escape_string($con, $rowValues[0][4]));
         $taskDue      = mysqli_real_escape_string($con, $rowValues[0][5]);
         $taskReq      = mysqli_real_escape_string($con, $rowValues[0][6]);
-        $import_checker = mysqli_query($con, "SELECT t.*, tl.* FROM tasks t JOIN task_list tl ON tl.task_id=t.task_id WHERE tl.task_name = '$taskName' AND tl.task_class='$taskClass' AND t.in_charge = '$taskTo' AND t.submission = '$taskDue'");
+        $import_checker = mysqli_query($con, "SELECT t.*, tl.* FROM tasks t JOIN task_list tl ON t.task_id=tl.tl_ID WHERE tl.task_name = '$taskName' AND tl.task_class='$taskClass' AND t.in_charge = '$taskTo' AND t.submission = '$taskDue'");
         if (mysqli_num_rows($import_checker) > 0) {
           $duplicateDataFound = true;
           $query_checker = mysqli_query($con, "INSERT INTO task_temp (`task_name`, `task_details`, `task_class`, `task_for`, `in_charge`, `submission`, `attachment`, `status`) values ('$taskName', '$taskDetails', '$taskClass', '$taskFor', '$taskTo', '$taskDue', '$taskReq', 'DUPLICATED')");
@@ -96,7 +96,7 @@ if (isset($_POST['taskImport'])) {
           $register_task = mysqli_query($con, "INSERT INTO task_list (`task_name`, `task_details`, `task_class`, `task_for`, `date_created`, `status`) VALUES ('$task_name', '$task_details', '$task_class', '$task_for', '$today', 1)");
           $task_id = mysqli_insert_id($con);
         }
-        $assign_task = mysqli_query($con, "INSERT INTO tasks (`task_id`, `in_charge`, `submission`, `requirement_status`) VALUES ('$task_id', '$in_charge', '$submission', '$attachment')");
+        $assign_task = mysqli_query($con, "INSERT INTO tasks (`task_id`, `in_charge`, `submission`, `attachment`) VALUES ('$task_id', '$in_charge', '$submission', '$attachment')");
       }
       if ($success) {
         log_action("Bulk tasks imported successfully.");

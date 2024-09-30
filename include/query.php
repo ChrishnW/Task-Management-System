@@ -1,5 +1,6 @@
 <?php
 date_default_timezone_set('Asia/Manila');
+$currentDate = date('Y-m-d');
 $currentMonth = date('m');
 $currentYear = date('Y');
 
@@ -49,6 +50,11 @@ if ($access == 3) {
   $ftasks            = $row['ftasks'];
   $utasks            = $row['utasks'];
   $members           = $row['members'];
+}
+
+function getTaskClass($taskClassNumber) {
+  $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
+  return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
 }
 
 // Server Statistics

@@ -183,7 +183,7 @@ if (isset($_POST['filterTableTask'])) {
 }
 if (isset($_POST['editTask'])) {
   $id = $_POST['taskID'];
-  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details FROM tasks_details JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE tasks_details.id='$id'");
+  $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE td_ID='$id'");
   while ($row = mysqli_fetch_assoc($query_result)) {
     $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
     $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
@@ -272,9 +272,9 @@ if (isset($_POST['updateTask'])) {
 }
 if (isset($_POST['startTask'])) {
   $id = $_POST['id'];
-  $query_result = mysqli_query($con, "UPDATE tasks_details SET status='IN PROGRESS' WHERE id='$id'");
+  $query_result = mysqli_query($con, "UPDATE tasks_details SET progress='IN PROGRESS' WHERE td_ID='$id'");
   if ($query_result) {
-    $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+    $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE td_ID='$id'");
     $row = mysqli_fetch_assoc($query_code);
     log_action("Task {$row['task_code']} started.");
     echo "Success";
@@ -286,9 +286,9 @@ if (isset($_POST['startTaskMultiple'])) {
   $count = 0;
   $taskIDmultiple = $_POST['checkedIds'];
   foreach ($taskIDmultiple as $taskID) {
-    $query_result = mysqli_query($con, "UPDATE tasks_details SET status='IN PROGRESS' WHERE id='$taskID'");
+    $query_result = mysqli_query($con, "UPDATE tasks_details SET progress='IN PROGRESS' WHERE td_ID='$taskID'");
     if ($query_result) {
-      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$taskID'");
+      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE td_ID='$taskID'");
       $row = mysqli_fetch_assoc($query_code);
       log_action("Task {$row['task_code']} started.");
       $count++;
@@ -298,9 +298,9 @@ if (isset($_POST['startTaskMultiple'])) {
 }
 if (isset($_POST['endTaskDeatails'])) {
   $id = $_POST['taskID'];
-  $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE task_status=1 AND id='$id'");
+  $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id WHERE task_status=1 AND td_ID='$id'");
   while ($row = mysqli_fetch_assoc($query_result)) {
-    $require = $row['requirement_status'];
+    $require = $row['attachment'];
   }
   if ($require == 1) { ?>
     <input type="hidden" id="finish_taskID" name="finish_taskID" value="<?php echo $id ?>">
@@ -317,12 +317,11 @@ if (isset($_POST['endTask'])) {
   $currentDateTime  = date('Y-m-d H:i:s');
   $id               = $_POST['finish_taskID'];
   $remarks          = str_replace("'", "&apos;", preg_replace('/^\s+|\s+$|\s+(?=\s)/m', '', $_POST['taskRemarks']));
-  $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE id='$id'");
+  $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id WHERE td_ID='$id'");
   while ($row = $query_result->fetch_assoc()) {
-    $task_name    = $row['task_name'];
     $assignee     = $row['in_charge'];
     $task_code    = $row['task_code'];
-    $require      = $row['requirement_status'];
+    $require      = $row['attachment'];
     $due_date     = date_create($row['due_date']);
     $finish_date  = date_create($row['date_accomplished']);
     $days         = date_diff($due_date, $finish_date);
@@ -360,10 +359,10 @@ if (isset($_POST['endTask'])) {
           $new_filename       = '[' . $task_code . '] ' . $original_filename;
           $destination        = $upload_dir . '/' . $new_filename;
           if (move_uploaded_file($tmpname, $destination)) {
-            $query_update = mysqli_query($con, "UPDATE tasks_details SET status='REVIEW', date_accomplished='$currentDateTime', achievement='$achievement', remarks='$remarks' WHERE id='$id'");
+            $query_update = mysqli_query($con, "UPDATE tasks_details SET progress='REVIEW', date_accomplished='$currentDateTime', achievement='$achievement', remarks='$remarks' WHERE td_ID='$id'");
             $query_insert = mysqli_query($con, "INSERT INTO `task_files`(`task_code`, `file_name`, `file_size`, `file_type`, `file_dated`, `file_owner`, `file_target`) VALUES ('$task_code', '$original_filename', '$filesize', '$file_extension', '$currentDateTime', '$assignee', '$new_filename')");
             if ($query_update && $query_insert) {
-              $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+              $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE td_ID='$id'");
             } else {
               die('Unable to complete the operation. Please try again later.');
             }
@@ -384,9 +383,9 @@ if (isset($_POST['endTask'])) {
     } elseif (strlen(trim($remarks)) <= 30) {
       echo "The remarks contains fewer than 30 characters (excluding excess whitespace).";
     } else {
-      $query_update = mysqli_query($con, "UPDATE tasks_details SET status='REVIEW', date_accomplished='$currentDateTime', achievement='$achievement', remarks='$remarks' WHERE id='$id'");
+      $query_update = mysqli_query($con, "UPDATE tasks_details SET progress='REVIEW', date_accomplished='$currentDateTime', achievement='$achievement', remarks='$remarks' WHERE td_ID='$id'");
       if ($query_update) {
-        $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+        $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE td_ID='$id'");
         $row = mysqli_fetch_assoc($query_code);
         log_action("Task {$row['task_code']} completed and sent for review.");
         echo "Success";
@@ -396,7 +395,7 @@ if (isset($_POST['endTask'])) {
 }
 if (isset($_POST['checkTask'])) {
   $id = $_POST['taskID'];
-  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details FROM tasks_details JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE tasks_details.id='$id'");
+  $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE td_ID='$id'");
   while ($row = mysqli_fetch_assoc($query_result)) {
     $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
     $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
@@ -404,7 +403,7 @@ if (isset($_POST['checkTask'])) {
     $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
     <form id="editDetails" enctype="multipart/form-data">
       <div class="row">
-        <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['id'] ?>">
+        <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['td_ID'] ?>">
         <input type="hidden" name="taskReview_owner" id="taskReview_owner" value="<?php echo $row['in_charge'] ?>">
         <div class="col-md-3">
           <div class="form-group">
@@ -496,7 +495,7 @@ if (isset($_POST['checkTask'])) {
             </div>
           </div>
         <?php }
-        if ($row['requirement_status'] == 1) { ?>
+        if ($row['attachment'] == 1) { ?>
           <div class="col-md-12">
             <div class="form-group">
               <label>Attachments:</label>
@@ -538,7 +537,7 @@ if (isset($_POST['checkTask'])) {
 }
 if (isset($_POST['reviewTask'])) {
   $id = $_POST['taskID'];
-  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details FROM tasks_details JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE tasks_details.id='$id'");
+  $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE td_ID='$id'");
   while ($row = mysqli_fetch_assoc($query_result)) {
     $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
     $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
@@ -546,7 +545,7 @@ if (isset($_POST['reviewTask'])) {
     $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
     <form id="editDetails" enctype="multipart/form-data">
       <div class="row">
-        <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['id'] ?>">
+        <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['td_ID'] ?>">
         <input type="hidden" name="taskReview_owner" id="taskReview_owner" value="<?php echo $row['in_charge'] ?>">
         <div class="col-md-3">
           <div class="form-group">
@@ -604,7 +603,7 @@ if (isset($_POST['reviewTask'])) {
             </div>
           </div>
         </div>
-        <?php if ($row['requirement_status'] == 1) { ?>
+        <?php if ($row['attachment'] == 1) { ?>
           <div class="col-md-12">
             <div class="form-group">
               <label>Add Attachment:</label>
@@ -663,12 +662,12 @@ if (isset($_POST['updateDetails'])) {
   $task_code        = $_POST['taskReview_code'];
   $assignee         = $_POST['taskReview_owner'];
   $remarks          = str_replace("'", "&apos;", $_POST['taskReview_remarks']);
-  $query = mysqli_query($con, "SELECT * FROM tasks_details WHERE task_status=1 AND id='$id'");
+  $query = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id WHERE td_ID='$id'");
   while ($row = mysqli_fetch_assoc($query)) {
-    $require = $row['requirement_status'];
+    $require = $row['attachment'];
   }
   if ($require == 1) {
-    $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE id='$id'");
+    $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE td_ID='$id'");
     $files      = $_FILES['taskReview_upload'];
     $upload_dir = '../files/' . $assignee;
     $targetDir  = "../files/$assignee/";
@@ -699,15 +698,15 @@ if (isset($_POST['updateDetails'])) {
       }
     }
     if ($success) {
-      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE td_ID='$id'");
       $row = mysqli_fetch_assoc($query_code);
       log_action("Task {$row['task_code']} remarks/files have been edited.");
       echo "Success";
     }
   } else {
-    $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE id='$id'");
+    $query_update = mysqli_query($con, "UPDATE tasks_details SET remarks='$remarks' WHERE td_ID='$id'");
     if ($query_update) {
-      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE id='$id'");
+      $query_code = mysqli_query($con, "SELECT task_code FROM tasks_details WHERE td_ID='$id'");
       $row = mysqli_fetch_assoc($query_code);
       log_action("Task {$row['task_code']} remarks have been edited.");
       echo "Success";
@@ -873,7 +872,7 @@ if (isset($_POST['viewTask'])) {
             </div>
           </div>
         <?php }
-        if ($row['requirement_status'] == 1) { ?>
+        if ($row['attachment'] == 1) { ?>
           <div class="col-md-12">
             <div class="form-group">
               <label>Attachments:</label>
@@ -921,7 +920,7 @@ if (isset($_POST['rescheduleTask'])) {
   } else {
     $date   = $_POST['reschedDate'] . ' 16:00:00';
     $reason = str_replace("'", "&apos;", $_POST['reschedReason']);
-    $query_update = mysqli_query($con, "UPDATE `tasks_details` SET `status`='RESCHEDULE', `old_date`='$date', `reason`='$reason' WHERE `id`='$id'");
+    $query_update = mysqli_query($con, "UPDATE `tasks_details` SET `progress`='RESCHEDULE', `old_date`='$date', `reason`='$reason' WHERE `td_ID`='$id'");
     if ($query_update) {
       echo "Success";
     }
@@ -944,7 +943,7 @@ if (isset($_POST['addTask'])) {
     $numeric_portion = intval(substr($latestcode, -6)) + 1;
     $taskCode = $task_for . '-TA-' . str_pad($numeric_portion, 6, '0', STR_PAD_LEFT);
 
-    $insert_task = mysqli_multi_query($con, "INSERT INTO `tasks` (`task_name`,`task_class`,`task_details`,`task_for`,`requirement_status`,`in_charge`,`submission`) VALUES ('$task', '4', '$details', '$task_for', '$require', '$in_charge', '$due_date'); INSERT INTO tasks_details (`task_code`, `task_name`, `task_class`, `task_for`, `in_charge`, `status`, `date_created`, `due_date`, `requirement_status`, `task_status`) VALUES ('$taskCode', '$task', '4', '$task_for', '$in_charge', 'NOT YET STARTED', '$date_today', '$due_date', '$require', 1)");
+    $insert_task = mysqli_multi_query($con, "INSERT INTO `tasks` (`task_name`,`task_class`,`task_details`,`task_for`,`attachment`,`in_charge`,`submission`) VALUES ('$task', '4', '$details', '$task_for', '$require', '$in_charge', '$due_date'); INSERT INTO tasks_details (`task_code`, `task_name`, `task_class`, `task_for`, `in_charge`, `status`, `date_created`, `due_date`, `attachment`, `task_status`) VALUES ('$taskCode', '$task', '4', '$task_for', '$in_charge', 'NOT YET STARTED', '$date_today', '$due_date', '$require', 1)");
     if ($insert_task) {
       die('Success');
     } else {
