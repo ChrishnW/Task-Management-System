@@ -480,7 +480,7 @@ include('../include/header.php');
           <?php
           $con->next_result();
           $today = date('Y-m-d 16:00:00');
-          $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=td.task_id WHERE task_class=6 AND in_charge='$username' AND date_accomplished IS NULL ORDER BY due_date ASC");
+          $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE task_class=6 AND in_charge='$username' AND date_accomplished IS NULL ORDER BY due_date ASC");
           if (mysqli_num_rows($query_result) > 0) { ?>
             <div class="card-body scrollable-card-body-md">
               <?php while ($row = $query_result->fetch_assoc()) {

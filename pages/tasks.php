@@ -285,6 +285,7 @@ include('../include/header.php');
                       <th>Classification</th>
                       <th>Original Due Date</th>
                       <th>Requested Due Date</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody id="myTasksReschedule">
@@ -300,6 +301,7 @@ include('../include/header.php');
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $old_date ?></td>
+                        <td><button type="button" class="btn btn-block btn-danger" disabled><i class="fas fa-ban fa-fw"></i> Cancel</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>

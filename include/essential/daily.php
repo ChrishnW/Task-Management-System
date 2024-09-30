@@ -11,7 +11,7 @@ if (date('N') >= 1 && date('N') <= 5) {
   if ($dayoff_count > 0) {
     $systemAction = "Today's date is set as a day off; no tasks have been generated.";
   } else {
-    $query_tasks  = mysqli_query($con, "SELECT * FROM tasks t JOIN task_list tl ON t.task_id=tl.task_id WHERE task_class=1 ORDER BY task_name ASC");
+    $query_tasks  = mysqli_query($con, "SELECT * FROM tasks t JOIN task_list tl ON t.task_id=tl.tl_ID WHERE task_class=1 ORDER BY task_name ASC");
     if (mysqli_num_rows($query_tasks) > 0) {
       while ($row = $query_tasks->fetch_assoc()) {
         $taskID     = $row['t_ID'];
@@ -23,7 +23,7 @@ if (date('N') >= 1 && date('N') <= 5) {
         $getFile    = $row['attachment'];
         $dueDate    = date('Y-m-d 16:00:00');
 
-        $latestcode = mysqli_fetch_assoc(mysqli_query($con, "SELECT MAX(task_code) AS latest_task_code FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.task_id=t.task_id WHERE task_class='$taskClass' AND task_for='$taskFor'"))['latest_task_code'];
+        $latestcode = mysqli_fetch_assoc(mysqli_query($con, "SELECT MAX(task_code) AS latest_task_code FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE task_class='$taskClass' AND task_for='$taskFor'"))['latest_task_code'];
         $numeric_portion = intval(substr($latestcode, -6)) + 1;
         $taskCode = $taskFor . '-TD-' . str_pad($numeric_portion, 6, '0', STR_PAD_LEFT);
 
