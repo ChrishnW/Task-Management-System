@@ -111,11 +111,6 @@ include('../include/header.php');
         <label>To</label>
         <input type="date" name="date_to" id="date_to" class="form-control" onchange="checkDateInputs(this)" disabled>
       </div>
-      <div class="form-group col">
-        <br>
-        <button type="button" class="btn btn-success btn-sm d-none" id="filterButton" onclick="filterTableTask(this)"><i class="fas fa-filter fa-fw"></i> Filter Table</button>
-        <button type="button" class="btn btn-danger btn-sm d-none" id="removeFilterButton" onclick="location.reload();"><i class="fas fa-eraser fa-fw"></i> Remove Filter</button>
-      </div>
     </div>
     <div class="card">
       <div class="card-body">
@@ -131,7 +126,7 @@ include('../include/header.php');
           <div class="tab-pane fade" id="todo">
             <div class="card">
               <div class="card-header d-none" id="actionButton">
-                <button id="multiStart" class="btn btn-success pull-right"><i class="fas fa-play"></i> Start All Selected</button>
+                <button id="multiStart" class="btn btn-success pull-right"><i class="fas fa-play"></i> Start All</button>
               </div>
               <div class="card-body table-responsive">
                 <table id="myTasksTableTodo" class="table table-striped">
@@ -147,7 +142,7 @@ include('../include/header.php');
                   </thead>
                   <tbody id="myTasksTodo">
                     <?php
-                    $query_result = mysqli_query($con, "SELECT DISTINCT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE task_status=1 AND in_charge='$username' AND progress='NOT YET STARTED'");
+                    $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE task_status=1 AND in_charge='$username' AND progress='NOT YET STARTED'");
                     while ($row = $query_result->fetch_assoc()) {
                       $current_date = date('Y-m-d');
                       $action = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) ? '<button type="button" class="btn btn-block btn-secondary fa-fw" disabled><i class="fas fa-ban"></i> Pending</button>' : '<button type="button" class="btn btn-block btn-success" value="' . $row['td_ID'] . '" onclick="startTask(this)"><i class="fas fa-play fa-fw"></i> Start</button>';
@@ -221,7 +216,6 @@ include('../include/header.php');
                     while ($row = $query_result->fetch_assoc()) {
                       $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
                       $date_accomplished = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-
                     ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>

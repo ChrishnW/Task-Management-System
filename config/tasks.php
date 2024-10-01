@@ -35,7 +35,7 @@ if (isset($_POST['filterTable'])) {
     $query .= " AND tasks_details.task_for = '$section'";
   }
   if ($progress != NULL) {
-    $query .= " AND tasks_details.status = '$progress'";
+    $query .= " AND progress = '$progress'";
   }
   if ($class != NULL) {
     $query .= " AND tasks_details.task_class = '$class'";
@@ -90,27 +90,21 @@ if (isset($_POST['filterTableTask'])) {
   $from   = $_POST['dateFrom'];
   $to     = $_POST['dateTo'];
   $status = ['TODO' => 'NOT YET STARTED', 'INPROGRESS' => 'IN PROGRESS', 'REVIEW' => 'REVIEW', 'FINISHED' => 'FINISHED', 'RESCHEDULE' => 'RESCHEDULE'][$_POST['status']];
-  function getTaskClass($taskClassNumber)
-  {
-    $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
-    return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
-  }
   if ($from !== '' && $to !== '') {
     if ($status == 'NOT YET STARTED' || $status == 'IN PROGRESS' || $status == 'RESCHEDULE') {
-      $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='$status' AND tasks_details.in_charge='$username' AND DATE(due_date) >= '$from' AND DATE(due_date) <= '$to'");
+      $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE task_status = 1 AND progress='$status' AND in_charge='$username' AND DATE(due_date) >= '$from' AND DATE(due_date) <= '$to'");
     } else {
-      $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='$status' AND tasks_details.in_charge='$username' AND DATE(date_accomplished) >= '$from' AND DATE(date_accomplished) <= '$to'");
+      $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND progress='$status' AND tasks_details.in_charge='$username' AND DATE(date_accomplished) >= '$from' AND DATE(date_accomplished) <= '$to'");
     }
   } else {
-    $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND tasks_details.status='$status' AND tasks_details.in_charge='$username'");
+    $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status = 1 AND progress='$status' AND tasks_details.in_charge='$username'");
   }
   if ($status == 'NOT YET STARTED') {
     while ($row = $query_result->fetch_assoc()) {
       $current_date = date('Y-m-d');
-      $action       = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) ? '<button type="button" class="btn btn-block btn-secondary fa-fw" disabled><i class="fas fa-ban"></i> Pending</button>' : '<button type="button" class="btn btn-block btn-success" value="' . $row['id'] . '" onclick="startTask(this)"><i class="fas fa-play fa-fw"></i> Start</button>';
-      $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
-      $due_date     = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-      $assignee     = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
+      $action = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) ? '<button type="button" class="btn btn-block btn-secondary fa-fw" disabled><i class="fas fa-ban"></i> Pending</button>' : '<button type="button" class="btn btn-block btn-success" value="' . $row['td_ID'] . '" onclick="startTask(this)"><i class="fas fa-play fa-fw"></i> Start</button>';
+      $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['td_ID']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
+      $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a"); ?>
       <tr>
         <td><?php echo $checkbox ?></td>
         <td><?php echo $row['task_code'] ?></td>
