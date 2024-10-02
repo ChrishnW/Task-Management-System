@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '2c20a3819f22745876f5e68dd75c55757bd8f6b8',
+        'reference' => '2da8ea153156ca8bdca636f8b3d69ff1237d47dc',
         'name' => '__root__',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '2c20a3819f22745876f5e68dd75c55757bd8f6b8',
+            'reference' => '2da8ea153156ca8bdca636f8b3d69ff1237d47dc',
             'dev_requirement' => false,
         ),
         'markbaker/complex' => array(

@@ -58,12 +58,13 @@
 
       <li class="nav-item">
         <a class="nav-link" href="index.php">
-          <i class="fas fa-th fa-fw "></i>
+          <i class="fas fa-th-large fa-fw "></i>
           <span>Dashboard</span></a>
       </li>
 
       <hr class="sidebar-divider">
 
+      <div class="sidebar-heading"> Components </div>
       <?php if ($access == 1) { ?>
         <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -112,7 +113,6 @@
           </div>
         </li>
       <?php } elseif ($access == 2) { ?>
-        <div class="sidebar-heading"> Components </div>
         <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             <i class="fas fa-tasks"></i>
@@ -120,7 +120,9 @@
           </a>
           <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header"><center/>Task Status</h6>
+              <h6 class="collapse-header">
+                <center />Task Status
+              </h6>
               <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#todo');window.location.href='tasks.php';">Not Yet Started</span>
               <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#inprogress');window.location.href='tasks.php';">In Progress</span>
               <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#review');window.location.href='tasks.php';">For Review</span>
@@ -144,8 +146,6 @@
             <span>Performance</span></a>
         </li>
       <?php } elseif ($access == 3) { ?>
-        <div class="sidebar-heading"> Components </div>
-
         <li class="nav-item">
           <a class="nav-link" href="accounts.php">
             <i class="fas fa-fw fa-tag"></i>
@@ -259,7 +259,8 @@
                       <div>
                         <div class="small text-gray-500"><?php echo $date_created ?></div>
                         <?php echo $row['body']; ?>
-                        <?php if($row['status'] == 1) echo "<br><span class='badge badge-pill text-white bg-warning'>New</span>"; else echo "<br><span class='badge badge-pill text-white bg-secondary'>Read</span>"; ?>
+                        <?php if ($row['status'] == 1) echo "<br><span class='badge badge-pill text-white bg-warning'>New</span>";
+                        else echo "<br><span class='badge badge-pill text-white bg-secondary'>Read</span>"; ?>
                       </div>
                     </button>
                   <?php }
