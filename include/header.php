@@ -36,7 +36,7 @@
 
 <body id="page-top">
 
-  <!-- <div id="preloader"><img src="../assets/img/illustrations/loading.gif" alt="Loading..."></div> -->
+  <div id="preloader"><img src="../assets/img/illustrations/loading.gif" alt="Loading..."></div>
 
   <!-- Page Wrapper -->
   <div id="wrapper">

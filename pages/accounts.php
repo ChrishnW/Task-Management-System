@@ -6,10 +6,10 @@ include('../include/header.php');
   <?php if ($access == 1) { ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-        <h6 class="m-0 font-weight-bold text-white">Registered Accounts</h6>
+        <h6 class="m-0 font-weight-bold text-white">Registered</h6>
         <div class="dropdown no-arrow">
           <button type="button" onclick="showCreate(this)" class="btn btn-primary">
-            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Register New Account
+            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> New Account
           </button>
         </div>
       </div>
@@ -26,47 +26,22 @@ include('../include/header.php');
                 <th>Status</th>
               </tr>
             </thead>
-            <tfoot class='table table-success'>
-              <tr>
-                <th>Action</th>
-                <th>Username</th>
-                <th>Name</th>
-                <th>Section & Department</th>
-                <th>Access</th>
-                <th>Status</th>
-              </tr>
-            </tfoot>
             <tbody>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT accounts.fname, accounts.lname, accounts.file_name , accounts.username, accounts.email, section.sec_name, access.access, accounts.status, accounts.id, department.dept_name FROM accounts LEFT JOIN section ON accounts.sec_id=section.sec_id LEFT JOIN access on accounts.access=access.id LEFT JOIN department ON department.dept_id=section.dept_id");
+              $result = mysqli_query($con, "SELECT * FROM department d JOIN section s ON s.dept_id=d.dept_id JOIN accounts ac ON ac.sec_id=s.sec_id JOIN access a ON ac.access=a.id");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
-                  if (empty($row['file_name'])) {
-                    $imageURL = '../assets/img/user-profiles/nologo.png';
-                  } else {
-                    $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-                  }
-                  if ($row['status'] == 1) {
-                    $status = 'Active';
-                    $btn = 'success';
-                  } else {
-                    $status = 'Inactive';
-                    $btn = 'danger';
-                  } ?>
+                  $imageURL = empty($row["img"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row["img"];
+                  $status = $row['status'] == 1 ? "<span class='badge badge-success'>Active</span>" : "<span class='badge badge-danger'>Inactive</span>";
+              ?>
                   <tr>
-                    <td>
-                      <center /><button type="button" class="btn btn-info" value="<?php echo $row['id']; ?>" onclick="accountEdit(this)"><i class="fas fa-pen fa-fw"></i> Edit</button>
-                    </td>
+                    <td><button type="button" class="btn btn-info btn-block" value="<?php echo $row['username']; ?>" onclick="accountEdit(this)"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
                     <td><?php echo $row['username']; ?></td>
                     <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
-                    <td>
-                      <?php if ($row['access'] != 'head') {
-                        echo $row['sec_name'];
-                      } ?>
-                      <p class="form-text text-danger"><?php echo $row['dept_name']; ?></p>
+                    <td><?php echo $row['access'] != 'head' ? $row['sec_name'] : ''; ?><p class="form-text text-danger"><?php echo $row['dept_name']; ?></p>
                     </td>
                     <td><?php echo strtoupper($row['access']) ?></td>
-                    <td><span class="badge badge-<?php echo $btn ?>"><?php echo $status ?></span></td>
+                    <td><?php echo $status ?></td>
                   </tr>
               <?php }
               } ?>
@@ -256,188 +231,6 @@ include('../include/header.php');
     </div>
   </div>
 </div>
-<div class="modal fade" id="accountEdit" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-xl">
-    <div class="modal-content border-info">
-      <div class="modal-header bg-info">
-        <h5 class="modal-title text-white">Account Update</h5>
-      </div>
-      <form method="POST">
-        <div class="modal-body">
-          <div class="row">
-            <div class="col">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label>Picture:</label>
-                    <img class="img-profile mb-2" id="perview_image">
-                    <input type="file" class="form-control-file mb-2" id="account_image" name="account_image">
-                    <button type="button" class="btn btn-success ml-3 btn-sm" onclick="uploadImage(this)">Upload</button>
-                    <button type="button" class="btn btn-secondary btn-sm" id="old_image" onclick="deleteImage(this)">Remove</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-10">
-              <div class="row">
-                <div class="col-md-4">
-                  <input type="hidden" class="form-control" name="account_id" id="account_id">
-                  <div class="form-group">
-                    <label>User Name:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-user-circle"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter User Name" class="form-control" name="account_username" id="account_username">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>First Name:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-font"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter First Name" class="form-control" name="account_fname" id="account_fname">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>Last Name:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-font"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter Last Name" class="form-control" name="account_lname" id="account_lname">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>Employee ID:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-id-card"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter Employee ID" class="form-control" name="account_number" id="account_number" disabled>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>ID Number:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter ID Number" class="form-control" name="account_card" id="account_card">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>Access:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-key"></i></div>
-                      </div>
-                      <select class="form-control custom-select" name="account_access" id="account_access">
-                        <?php
-                        $con->next_result();
-                        $sql = mysqli_query($con, "SELECT * FROM access WHERE id!=1 ORDER BY access ASC");
-                        if (mysqli_num_rows($sql) > 0) {
-                          while ($row = mysqli_fetch_assoc($sql)) { ?>
-                            <option value='<?php echo $row['id'] ?>'><?php echo strtoupper($row['access']) ?></option>
-                        <?php }
-                        } ?>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>Section:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-users"></i></div>
-                      </div>
-                      <select name="account_section" id="account_section" class="form-control custom-select">
-                        <?php
-                        $con->next_result();
-                        $sql = mysqli_query($con, "SELECT * FROM section WHERE status='1'");
-                        if (mysqli_num_rows($sql) > 0) {
-                          while ($row = mysqli_fetch_assoc($sql)) { ?>
-                            <option value='<?php echo $row['sec_id'] ?>'><?php echo $row['sec_name'] ?></option>
-                        <?php }
-                        } ?>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>E-mail:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-solid fa-at"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter E-mail" class="form-control" name="account_email" id="account_email">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="form-group">
-                    <label>Password:</label>
-                    <div>
-                      <button type="button" class="btn btn-outline-danger btn-sm" onclick='resetPassword(this)'>Reset</button>
-                      <button type="button" class="btn btn-outline-secondary btn-sm" onclick='changePassword(this)'>Change</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="form-group">
-                    <label>Status:</label>
-                    <div>
-                      <button type="button" class="btn btn-sm" id='statusBtn' onclick='changeStatus(this)'>Active</button>
-                      <button type="button" class="btn btn-outline-secondary btn-sm" id='account_delete' onclick='alert(this)'>Delete</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" onclick="accountUpdate(this)" class="btn btn-success" name="account_update">Update Account</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="accountPassword" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="accountUsername"></h5>
-      </div>
-      <div class="modal-body">
-        <form method="POST">
-          <div class="col-md-12">
-            <label>Enter a new password for this account:</label>
-            <input type="text" class="form-control" id="account_password" name="account_password" placeholder="New Password">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" onclick="updatePassword(this);" class="btn btn-success" name="account_update">Change Password</button>
-        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="modal fade" id="createAccount" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
     <div class="modal-content border-primary">
@@ -584,9 +377,44 @@ include('../include/header.php');
         </div>
         <div class="modal-footer">
           <button type="button" onclick="accountCreate(this)" class="btn btn-success" name="create_update">Create Account</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="accountEdit" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-secondary">
+      <div class="modal-header">
+        <h5 class="modal-title">Account Details</h5>
+      </div>
+      <div class="modal-body" id="editBody">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="accountPassword" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="accountUsername"></h5>
+      </div>
+      <div class="modal-body">
+        <form method="POST">
+          <div class="col-md-12">
+            <label>Enter a new password for this account:</label>
+            <input type="text" class="form-control" id="account_password" name="account_password" placeholder="New Password">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="updatePassword(this);" class="btn btn-success" name="account_update">Change Password</button>
+        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>
@@ -600,78 +428,6 @@ include('../include/header.php');
       </div>
       <div class="modal-footer">
         <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="success" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
-      </div>
-      <div class="modal-body text-center">
-        <i class="far fa-check-circle fa-5x text-success"></i>
-        <br><br>
-        <p id="success_log"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="warning" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Caution!</h5>
-      </div>
-      <div class="modal-body text-center">
-        <input type="hidden" id="hidden_id">
-        <i class="fas fa-exclamation-triangle fa-5x text-danger"></i>
-        <br><br>
-        You're about to delete this assignee's task, <br> do you still want to proceed?
-      </div>
-      <div class="modal-footer">
-        <button type="button" onclick="RemoveTask(this)" class="btn btn-success">Proceed</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="danger" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Caution!</h5>
-      </div>
-      <div class="modal-body text-center">
-        <input type="hidden" id="hidden_id">
-        <i class="fas fa-exclamation-triangle fa-5x text-danger"></i>
-        <br><br>
-        You're about to delete this account, <br> do you still want to proceed?
-      </div>
-      <div class="modal-footer">
-        <button type="button" onclick="accountDelete(this)" class="btn btn-success">Proceed</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="error" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Caution!</h5>
-      </div>
-      <div class="modal-body text-center">
-        <i class="fas fa-sad-cry fa-5x text-danger"></i>
-        <br><br>
-        <p id="error_found"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -823,11 +579,11 @@ include('../include/header.php');
   }
 
   function editTask(element) {
-    element.disabled          = true;
-    var edit_task             = document.getElementById('emptask_id').value;
-    var edit_taskName         = document.getElementById('emptask_name').value;
-    var edit_requirement      = document.getElementById('emptask_file').checked ? 1 : 0;
-    var edit_duedate_element  = document.getElementById('emptask_duedate');
+    element.disabled = true;
+    var edit_task = document.getElementById('emptask_id').value;
+    var edit_taskName = document.getElementById('emptask_name').value;
+    var edit_requirement = document.getElementById('emptask_file').checked ? 1 : 0;
+    var edit_duedate_element = document.getElementById('emptask_duedate');
     if (edit_duedate_element.multiple) {
       var edit_duedate = Array.from(edit_duedate_element.selectedOptions).map(option => option.value);
     } else {
@@ -845,7 +601,7 @@ include('../include/header.php');
       },
       success: function(response) {
         if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = edit_taskName + ' information task of '+ document.getElementById('emptask_for').value +' has been updated successfully.';
+          document.getElementById('success_log').innerHTML = edit_taskName + ' information task of ' + document.getElementById('emptask_for').value + ' has been updated successfully.';
           $('#edit').modal('hide');
           $('#success').modal('show');
         } else {
@@ -892,7 +648,6 @@ include('../include/header.php');
 
   function accountEdit(element) {
     var accountID = element.value;
-    // console.log(accountID);
     $.ajax({
       method: "POST",
       url: "../config/accounts.php",
@@ -900,40 +655,31 @@ include('../include/header.php');
         'accountEdit': true,
         'accountID': accountID,
       },
-      success: function(respone) {
-        // console.log(respone);
-        $.each(respone, function(Key, value) {
-          $('#account_id').val(value['id']);
-          $('#account_username').val(value['username']);
-          $('#account_fname').val(value['fname']);
-          $('#account_lname').val(value['lname']);
-          $('#account_number').val(value['emp_id']);
-          $('#account_card').val(value['card']);
-          $('#account_access').val(value['access']);
-          $('#account_section').val(value['sec_id']);
-          $('#account_email').val(value['email']);
-          $('#account_delete').val(value['id']);
-          $('#statusBtn').val(value['status']);
-          $('#old_image').val(value['file_name']);
-          if (value['file_name'] === null) {
-            $("#perview_image").attr("src", "../assets/img/user-profiles/nologo.png");
-          } else {
-            $("#perview_image").attr("src", "../assets/img/user-profiles/" + value['file_name']);
-          }
-        });
-        var checkStatus = document.getElementById('statusBtn').value;
-        var btn = document.getElementById('statusBtn');
-        if (checkStatus === '1') {
-          btn.textContent = 'Active';
-          btn.classList.add('btn-success');
-        } else {
-          btn.textContent = 'Inactive';
-          btn.classList.add('btn-danger');
-        }
-        // console.log('Select Account:', checkStatus);
-        $('#accountEdit').modal('show');
+      success: function(response) {
+        $('#editBody').html(response);
+        openSpecificModal('accountEdit', 'modal-lg');
+        $('.selectpicker').selectpicker('refresh');
+        attachEventListeners();
       }
     })
+  }
+
+  function attachEventListeners() {
+    document.getElementById('uploadPicture').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('profileImage').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById('removeButton').addEventListener('click', function() {
+      document.getElementById('uploadPicture').value = '';
+      document.getElementById('profileImage').src = '../assets/img/user-profiles/nologo.png';
+    });
   }
 
   function resetPassword(element) {
@@ -1040,104 +786,6 @@ include('../include/header.php');
     })
   }
 
-  function alert(element) {
-    var alertID = document.getElementById('account_id').value;
-    document.getElementById('hidden_id').value = alertID;
-    $('#accountEdit').modal('hide');
-    $('#danger').modal('show');
-  }
-
-  function accountDelete(element) {
-    var deleteID = document.getElementById('hidden_id').value;
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'accountDelete': true,
-        'deleteID': deleteID,
-      },
-      success: function(respone) {
-        if (respone === "Success") {
-          document.getElementById('success_log').innerHTML = 'Account has been deleted successfully.';
-          $('#danger').modal('hide');
-          $('#success').modal('show');
-        }
-      }
-    })
-  }
-
-  $(document).ready(function() {
-    const imageInput = document.getElementById('account_image');
-    const previewImage = document.getElementById('perview_image');
-
-    imageInput.addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          previewImage.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  });
-
-  function uploadImage(element) {
-    var formData = new FormData();
-    var fileImage = document.getElementById('account_image');
-    var fileUser = document.getElementById('account_username').value;
-    formData.append('image', fileImage.files[0]);
-    formData.append('fileUser', fileUser);
-    formData.append('uploadImage', true);
-
-    $.ajax({
-      type: 'POST',
-      url: "../config/accounts.php",
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function(response) {
-        console.log(response);
-        if (response === "Success") {
-          document.getElementById('success_log').innerHTML = 'Account photo uploaded and changed successfully.';
-          $('#accountEdit').modal('hide');
-          $('#success').modal('show');
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#accountEdit').modal('hide');
-          $('#error').modal('show');
-        }
-      }
-    });
-  }
-
-  function deleteImage(element) {
-    var fileName = element.value;
-    var userName = document.getElementById('account_username').value;
-    console.log(userName);
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        "deleteImage": true,
-        "fileName": fileName,
-        "userName": userName,
-      },
-      success: function(response) {
-        console.log(response);
-        if (response === "Success") {
-          document.getElementById('success_log').innerHTML = 'Account photo removed successfully.';
-          $('#accountEdit').modal('hide');
-          $('#success').modal('show');
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#accountEdit').modal('hide');
-          $('#error').modal('show');
-        }
-      }
-    })
-  }
-
   function showCreate(element) {
     $('#createAccount').modal('show');
   }
@@ -1220,5 +868,18 @@ include('../include/header.php');
 
     $("select[name='create_department']").val('').selectpicker('refresh');
     $("select[name='create_section']").val('').selectpicker('refresh');
+  }
+
+  function detailsUpdate(element) {
+    var imgSrc = $('#profileImage').attr('src').substring($('#profileImage').attr('src').lastIndexOf('/') + 1);
+    var accountDetails = new FormData(document.getElementById('accountEditForm'));
+    accountDetails.append('detailsUpdate', true);
+    if (imgSrc.includes(accountDetails.get('curImg'))) {
+      accountDetails.append('imgCon', 0); // No Change
+    } else if (imgSrc.includes('nologo.png')) {
+      accountDetails.append('imgCon', 1); // Default
+    } else {
+      accountDetails.append('imgCon', 2); // New
+    }
   }
 </script>

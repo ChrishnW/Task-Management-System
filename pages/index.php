@@ -3,14 +3,7 @@ include('../include/header.php');
 ?>
 
 <div class="container-fluid">
-  <?php if ($access == 1) {
-    $con->next_result();
-    $today = date('Y-m-d 16:00:00');
-    $query_result = mysqli_query($con, "SELECT COUNT(id) as total_tasks, (SELECT COUNT(id) FROM accounts WHERE status=1) as all_accounts, (SELECT COUNT(id) FROM tasks_details WHERE status='PROJECT' AND task_status=1) as project_tasks FROM tasks_details WHERE task_status=1");
-    $row = mysqli_fetch_assoc($query_result);
-    $total_tasks      = $row['total_tasks'];
-    $project_tasks    = $row['project_tasks'];
-    $all_accounts     = $row['all_accounts']; ?>
+  <?php if ($access == 1) { ?>
     <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
     <div class="row">
       <div class="col-xl-3 col-md-6 mb-4">

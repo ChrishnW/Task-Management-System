@@ -42,22 +42,16 @@ $con->next_result();
 $query_result = mysqli_query($con, "SELECT a.*, d.dept_name, d.dept_id, s.sec_name FROM accounts a JOIN section s ON s.sec_id=a.sec_id JOIN department d ON d.dept_id=s.dept_id WHERE a.username='$username'");
 if (mysqli_num_rows($query_result) > 0) {
   while ($row = $query_result->fetch_assoc()) {
-    $profileURL = empty($row["file_name"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row["file_name"];
-    $fname_temp = strtolower($row['fname']);
-    $lname_temp = strtolower($row['lname']);
-    $fname      = ucwords($fname_temp);
-    $lname      = ucwords($lname_temp);
-    $fn_temp    = strtolower($row['fname'] . ' ' . $row['lname']);
-    $full_name  = ucwords($fn_temp);
-    $card       = $row['card'];
+    $profileURL = empty($row["img"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row["img"];
+    $full_name  = ucwords(strtolower($row['fname'] . ' ' . $row['lname']));
+    $fname      = ucwords(strtolower($row['fname']));
+    $lname      = ucwords(strtolower($row['lname']));
+    $card       = $row['empid'];
     $email      = $row['email'];
-    $sec        = $row['sec_name'];
     $sec_id     = $row['sec_id'];
+    $sec_name   = ucwords(strtolower($row['sec_name']));
     $dept_id    = $row['dept_id'];
     $dept_name  = ucwords(strtolower($row['dept_name']));
-    $sec_name   = ucwords(strtolower($sec));
-    $fileSRC    = $row['file_name'];
-    $section    = ucwords(strtolower($row['sec_name']));
   }
 }
 

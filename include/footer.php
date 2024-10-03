@@ -231,6 +231,36 @@
   </div>
 </div>
 
+<!-- Global Modal -->
+<div class="modal fade" id="error" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger justify-content-center">
+        <i class="far fa-times-circle fa-5x text-white"></i>
+      </div>
+      <div class="modal-body text-center">
+        <h4 class="modal-title">Ooops!</h4>
+        <p id="error_found"></p>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="success" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-success justify-content-center">
+        <i class="far fa-check-circle fa-5x text-white"></i>
+      </div>
+      <div class="modal-body text-center">
+        <h4 class="modal-title">Success!</h4>
+        <p id="success_log"></p>
+        <button type="button" class="btn btn-outline-secondary" onclick="location.reload();">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Bootstrap core JavaScript-->
 <script src="../vendor/jquery/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
@@ -254,10 +284,10 @@
 
 <!-- Custom Scripts Global -->
 <script>
-  // window.onload = function() {
-  //   document.getElementById('preloader').style.display = 'none';
-  //   document.getElementById('wrapper').style.visibility = 'visible';
-  // };
+  window.onload = function() {
+    document.getElementById('preloader').style.display = 'none';
+    document.getElementById('wrapper').style.visibility = 'visible';
+  };
 
   function togglePreloader(show) {
     if (show) {
@@ -270,10 +300,9 @@
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    var inactivityTime = 7200000;
+    var inactivityTime = 900000;
     var timeout;
 
-    // Function to reset the timeout
     function resetTimeout() {
       clearTimeout(timeout);
       timeout = setTimeout(function() {
@@ -281,7 +310,6 @@
       }, inactivityTime);
     }
 
-    // Reset timeout when there is activity (using addEventListener for multiple event listeners)
     // window.addEventListener('mousemove', resetTimeout);
     window.addEventListener('keypress', resetTimeout);
     window.addEventListener('touchstart', resetTimeout);
@@ -336,7 +364,7 @@
 
   function checkPassword(element) {
     var icPassowrd = element.value;
-    var ccPassword = <?php echo json_encode($pass); ?>;
+    var ccPassword = <?php echo json_encode($password); ?>;
     $.ajax({
       method: "POST",
       url: "../config/accounts.php",
