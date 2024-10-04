@@ -5,8 +5,8 @@ include('../include/header.php');
 <div class="container-fluid">
   <?php if ($access == 1) { ?>
     <div class="card">
-      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-        <h6 class="m-0 font-weight-bold text-white">Registered</h6>
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold">User Management</h6>
         <div class="dropdown no-arrow">
           <button type="button" onclick="showCreate(this)" class="btn btn-primary">
             <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> New Account
@@ -15,33 +15,43 @@ include('../include/header.php');
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
-            <thead class='table table-success'>
+          <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+            <thead class='table'>
               <tr>
-                <th>Action</th>
                 <th>Username</th>
                 <th>Name</th>
                 <th>Section & Department</th>
                 <th>Access</th>
                 <th>Status</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT * FROM department d JOIN section s ON s.dept_id=d.dept_id JOIN accounts ac ON ac.sec_id=s.sec_id JOIN access a ON ac.access=a.id");
+              $result = mysqli_query($con, "SELECT * FROM department d JOIN section s ON s.dept_id=d.dept_id JOIN accounts ac ON ac.sec_id=s.sec_id JOIN access a ON ac.access=a.id WHERE a.access!='admin'");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
                   $imageURL = empty($row["img"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row["img"];
                   $status = $row['status'] == 1 ? "<span class='badge badge-success'>Active</span>" : "<span class='badge badge-danger'>Inactive</span>";
               ?>
                   <tr>
-                    <td><button type="button" class="btn btn-info btn-block" value="<?php echo $row['username']; ?>" onclick="accountEdit(this)"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
                     <td><?php echo $row['username']; ?></td>
                     <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
-                    <td><?php echo $row['access'] != 'head' ? $row['sec_name'] : ''; ?><p class="form-text text-danger"><?php echo $row['dept_name']; ?></p>
+                    <td><?php echo $row['access'] != 'head' ? $row['sec_name'] : ''; ?><p class="form-text text-primary"><?php echo $row['dept_name']; ?></p>
                     </td>
                     <td><?php echo strtoupper($row['access']) ?></td>
                     <td><?php echo $status ?></td>
+                    <td>
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-block dropdown-toggle" data-toggle="dropdown"><i class="fas fa-cog fa-fw"></i> Settings</button>
+                        <div class="dropdown-menu">
+                          <button type="button" class="dropdown-item" value="<?php echo $row['username']; ?>" onclick="accountEdit(this)"><i class="fas fa-cog fa-fw"></i> Edit information</button>
+                          <div class="dropdown-divider"></div>
+                          <?php echo $row['status'] == 0 ? '<button type="button" class="dropdown-item"><i class="fas fa-toggle-on fa-fw"></i> Activate user</button>' : '<button type="button" class="dropdown-item"><i class="fas fa-toggle-off fa-fw"></i> Deactivate user</button>'; ?>
+                          <button type="button" class="dropdown-item" disabled><i class="fas fa-trash fa-fw"></i> Delete user</button>
+                        </div>
+                      </div>
+                    </td>
                   </tr>
               <?php }
               } ?>
@@ -383,20 +393,7 @@ include('../include/header.php');
     </div>
   </div>
 </div>
-<div class="modal fade" id="accountEdit" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content border-secondary">
-      <div class="modal-header">
-        <h5 class="modal-title">Account Details</h5>
-      </div>
-      <div class="modal-body" id="editBody">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+
 <div class="modal fade" id="accountPassword" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -438,6 +435,7 @@ include('../include/header.php');
 <script>
   $('#dataTable').DataTable({
     "order": [
+      [4, "asc"],
       [2, "asc"]
     ]
   });
@@ -646,189 +644,6 @@ include('../include/header.php');
     })
   }
 
-  function accountEdit(element) {
-    var accountID = element.value;
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'accountEdit': true,
-        'accountID': accountID,
-      },
-      success: function(response) {
-        $('#editBody').html(response);
-        openSpecificModal('accountEdit', 'modal-lg');
-        $('.selectpicker').selectpicker('refresh');
-        attachEventListeners();
-      }
-    })
-  }
-
-  function attachEventListeners() {
-    document.getElementById('uploadPicture').addEventListener('change', function(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('profileImage').src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    document.getElementById('removeButton').addEventListener('click', function() {
-      document.getElementById('uploadPicture').value = '';
-      document.getElementById('profileImage').src = '../assets/img/user-profiles/nologo.png';
-    });
-  }
-
-  function resetPassword(element) {
-    var resetID = document.getElementById('account_id').value;
-    // console.log(resetID);
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'accountReset': true,
-        'resetID': resetID,
-      },
-      success: function(respone) {
-        document.getElementById('success_log').innerHTML = 'Password has been reset to default 12345.';
-        $('#accountEdit').modal('hide');
-        $('#success').modal('show');
-      }
-    })
-  }
-
-  function changeStatus(element) {
-    var statusID = document.getElementById('account_id').value;
-    var status = element.value;
-    // console.log(statusID);
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'statusUpdate': true,
-        'statusID': statusID,
-        'status': status,
-      },
-      success: function(respone) {
-        document.getElementById('success_log').innerHTML = 'Account status has been changed successfully.';
-        $('#accountEdit').modal('hide');
-        $('#success').modal('show');
-      }
-    })
-  }
-
-  function accountUpdate(element) {
-    var updateID = document.getElementById('account_id').value;
-    var updateUsername = document.getElementById('account_username').value;
-    var updateFname = document.getElementById('account_fname').value;
-    var updateLname = document.getElementById('account_lname').value;
-    var updateNumber = document.getElementById('account_number').value;
-    var updateCard = document.getElementById('account_card').value;
-    var updateAccess = document.getElementById('account_access').value;
-    var updateSection = document.getElementById('account_section').value;
-    var updateEmail = document.getElementById('account_email').value;
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'accountUpdate': true,
-        'updateID': updateID,
-        'updateUsername': updateUsername,
-        'updateFname': updateFname,
-        'updateLname': updateLname,
-        'updateNumber': updateNumber,
-        'updateCard': updateCard,
-        'updateAccess': updateAccess,
-        'updateSection': updateSection,
-        'updateEmail': updateEmail,
-      },
-      success: function(respone) {
-        document.getElementById('success_log').innerHTML = 'Account information has been changed successfully.';
-        $('#accountEdit').modal('hide');
-        $('#success').modal('show');
-      }
-    })
-  }
-
-  function changePassword(element) {
-    var accountID = document.getElementById('account_username').value;
-    document.getElementById('accountUsername').innerHTML = accountID;
-    $('#accountEdit').modal('hide');
-    $('#accountPassword').modal('show');
-  }
-
-  function updatePassword(element) {
-    element.disabled = true;
-    var newPassword = document.getElementById('account_password').value;
-    var accountID = document.getElementById('account_id').value;
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'updatePassword': true,
-        'accountID': accountID,
-        'newPassword': newPassword,
-      },
-      success: function(response) {
-        if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-          $('#accountPassword').modal('hide');
-          $('#success').modal('show');
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#error').modal('show');
-          element.disabled = false;
-        }
-      }
-    })
-  }
-
-  function showCreate(element) {
-    $('#createAccount').modal('show');
-  }
-
-  function accountCreate(element) {
-    var createUsername = document.getElementById('create_username').value;
-    var createFname = document.getElementById('create_fname').value;
-    var createLname = document.getElementById('create_lname').value;
-    var createNumber = document.getElementById('create_number').value;
-    var createCard = document.getElementById('create_card').value;
-    var createAccess = document.getElementById('create_access').value;
-    var createDepartment = document.getElementById('create_department').value;
-    var createSection = document.getElementById('create_section').value;
-    var createEmail = document.getElementById('create_email').value;
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'accountCreate': true,
-        'createUsername': createUsername,
-        'createFname': createFname,
-        'createLname': createLname,
-        'createNumber': createNumber,
-        'createCard': createCard,
-        'createAccess': createAccess,
-        'createDepartment': createDepartment,
-        'createSection': createSection,
-        'createEmail': createEmail,
-      },
-      success: function(response) {
-        console.log(response);
-        if (response === "Success") {
-          document.getElementById('success_log').innerHTML = 'Account has been created successfully.';
-          $('#createAccount').modal('hide');
-          $('#success').modal('show');
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#error').modal('show');
-        }
-      }
-    })
-  }
-
   function selectDepartment(element) {
     var departmentSelect = element.value;
     var accessSelect = document.getElementById('create_access').value;
@@ -854,32 +669,5 @@ include('../include/header.php');
         }
       }
     });
-  }
-
-  function accessLevel(element) {
-    var access = element.value;
-    console.log(access);
-
-    if (access != 3) {
-      document.getElementById('create_section').disabled = false;
-    } else {
-      document.getElementById('create_section').disabled = true;
-    }
-
-    $("select[name='create_department']").val('').selectpicker('refresh');
-    $("select[name='create_section']").val('').selectpicker('refresh');
-  }
-
-  function detailsUpdate(element) {
-    var imgSrc = $('#profileImage').attr('src').substring($('#profileImage').attr('src').lastIndexOf('/') + 1);
-    var accountDetails = new FormData(document.getElementById('accountEditForm'));
-    accountDetails.append('detailsUpdate', true);
-    if (imgSrc.includes(accountDetails.get('curImg'))) {
-      accountDetails.append('imgCon', 0); // No Change
-    } else if (imgSrc.includes('nologo.png')) {
-      accountDetails.append('imgCon', 1); // Default
-    } else {
-      accountDetails.append('imgCon', 2); // New
-    }
   }
 </script>

@@ -283,10 +283,10 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#profileModal">
+                <button class="dropdown-item" value="<?php echo $username; ?>" onclick="accountEdit(this)">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
-                </a>
+                </button>
                 <button class="dropdown-item" data-toggle="modal" data-target="#activityLogs">
                   <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                   Activity Log

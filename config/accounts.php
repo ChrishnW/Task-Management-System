@@ -19,6 +19,7 @@ if (isset($_POST['accountEdit'])) {
       <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
         <a class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="true">Profile</a>
         <a class="nav-link" id="v-pills-security-tab" data-toggle="pill" href="#v-pills-security" role="tab" aria-controls="v-pills-security" aria-selected="false">Security</a>
+        <a class="nav-link" id="v-pills-permission-tab" data-toggle="pill" href="#v-pills-permission" role="tab" aria-controls="v-pills-permission" aria-selected="false">Permission</a>
       </div>
     </div>
     <div class="col-9">
@@ -65,10 +66,12 @@ if (isset($_POST['accountEdit'])) {
               <label for="editDept">Department</label>
               <input type="text" class="form-control" id="department" value="<?php echo $dept; ?>" readonly>
             </div>
-            <div class="form-group">
-              <label for="editSec">Section</label>
-              <input type="text" class="form-control" id="section" value="<?php echo $sec; ?>" readonly>
-            </div>
+            <?php if (!in_array($lvl, ['admin', 'head'])) { ?>
+              <div class="form-group">
+                <label for="editSec">Section</label>
+                <input type="text" class="form-control" id="section" value="<?php echo $sec; ?>" readonly>
+              </div>
+            <?php } ?>
           </form>
           <div class="d-flex justify-content-center w-100">
             <div>
@@ -78,18 +81,49 @@ if (isset($_POST['accountEdit'])) {
         </div>
         <div class="tab-pane fade" id="v-pills-security" role="tabpanel" aria-labelledby="v-pills-security-tab">
           <form id="accountSecurity" enctype="multipart/form-data">
+            <input type="hidden" id="current-user" name="current-user" value="<?php echo $user; ?>">
             <div class="mb-3">
               <label for="current-password" class="form-label">Current Password</label>
-              <input type="password" class="form-control" id="current-password" placeholder="Enter your current password">
+              <input type="password" class="form-control" id="current-password" name="current-password" placeholder="Enter your current password">
             </div>
             <div class="mb-3">
               <label for="new-password" class="form-label">New Password</label>
-              <input type="password" class="form-control" id="new-password" placeholder="Enter your new password">
+              <input type="password" class="form-control" id="new-password" name="new-password" placeholder="Enter your new password" oninput="checkPasswordStrength()">
+            </div>
+            <div class="progress">
+              <div id="strength-bar" class="progress-bar strength-meter" role="progressbar"></div>
+            </div>
+            <p id="strength-text" class="mt-2"></p>
+          </form>
+          <div class="d-flex justify-content-between w-100">
+            <div>
+              <button type="button" onclick="passwordReset(this)" class="btn btn-primary" name="account_update">Reset Password</button>
+            </div>
+            <div>
+              <button type="button" onclick="passwordUpdate(this)" class="btn btn-success" name="account_update">Update Password</button>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="v-pills-permission" role="tabpanel" aria-labelledby="v-pills-permission-tab">
+          <form id="accountPermission" enctype="multipart/form-data">
+            <div class="mb-3">
+              <div class="form-row">
+                <div class="form-group col-3">
+                  <label for="user-role">Finish Task</label>
+                  <br>
+                  <label for="ID_HERE" class="toggle-switchy" data-size="lg" data-style="square" data-color="green">
+                    <input type="checkbox" id="ID_HERE" Disabled>
+                    <span class="toggle">
+                      <span class="switch"></span>
+                    </span>
+                  </label>
+                </div>
+              </div>
             </div>
           </form>
           <div class="d-flex justify-content-center w-100">
             <div>
-              <button type="button" onclick="passwordUpdate(this)" class="btn btn-success" name="account_update">Update Password</button>
+              <button type="button" onclick="permissionUpdate(this)" class="btn btn-success" name="account_update">Update Permission</button>
             </div>
           </div>
         </div>
@@ -98,7 +132,107 @@ if (isset($_POST['accountEdit'])) {
   </div>
 <?php }
 if (isset($_POST['detailsUpdate'])) {
+  $update   = "UPDATE `accounts` SET";
+  $updates  = [];
+  $check = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM accounts WHERE username='{$_POST['userName']}'"));
+  if (empty($_POST['firstName']) || empty($_POST['lastName']) || empty($_POST['email']) || empty($_POST['empID'])) {
+    die('All fields must be filled out.');
+  }
+  $fields = ['fname' => strtoupper($_POST['firstName']), 'lname' => strtoupper($_POST['lastName']), 'email' => $_POST['email'], 'empid' => $_POST['empID'],];
+  foreach ($fields as $key => $value) {
+    if ($check[$key] != $value) {
+      $updates[] .= "$key='$value'";
+    }
+  }
+  if (isset($_POST['imgCon'])) {
+    if ($_POST['imgCon'] == '1') {
+      $targetDir = "../assets/img/user-profiles/";
+      if (file_exists($targetDir . $_POST['curImg'])) {
+        if (unlink($targetDir . $_POST['curImg'])) {
+          $updates[] = " img='nologo.png'";
+        } else {
+          die('File does not exist.');
+        }
+      } else {
+        $updates[] = " img='nologo.png'";
+      }
+    } else if ($_POST['imgCon'] == '2') {
+      $targetDir  = "../assets/img/user-profiles/";
+      $fileName   = $_POST['userName'] . "_" . rand(1000, 9999) . "." . pathinfo($_FILES["uploadPicture"]["name"], PATHINFO_EXTENSION);
+      $FilePath   = $targetDir . $fileName;
+      $allowTypes = array('jpg', 'png', 'jpeg');
+      if (in_array(pathinfo($FilePath, PATHINFO_EXTENSION), $allowTypes)) {
+        if (getimagesize($_FILES["uploadPicture"]["tmp_name"]) !== false) {
+          if ($_FILES["uploadPicture"]["size"] <= 5e+6) {
+            if (move_uploaded_file($_FILES["uploadPicture"]["tmp_name"], $FilePath)) {
+              if ($_POST['curImg'] != "" && file_exists($targetDir . $_POST['curImg'])) {
+                if ($_POST['curImg'] != 'nologo.png') {
+                  if (unlink($targetDir . $_POST['curImg'])) {
+                    $updates[] .= " img='{$fileName}'";
+                  } else {
+                    die('File does not exist.');
+                  }
+                } else {
+                  $updates[] .= " img='{$fileName}'";
+                }
+              } else {
+                die('The current image file does not exist at the path');
+              }
+            } else {
+              die('Invalid file path.');
+            }
+          } else {
+            die('The file is too large');
+          }
+        } else {
+          die('The file is not an image.');
+        }
+      } else {
+        die('Image extensions are not supported.');
+      }
+    }
+  }
+  if (!empty($updates)) {
+    $update .= " " . implode(", ", $updates) . "WHERE username='{$_POST['userName']}'";
+    $result = mysqli_query($con, $update);
+    if ($result) {
+      die('Success');
+    } else {
+      die('Error updating record:' . $con->error);
+    }
+  } else {
+    die('No data to update.');
+  }
 }
+if (isset($_POST['passwordUpdate'])) {
+  $currentUser = $_POST['current-user'];
+  $currentPass = $_POST['current-password'];
+  $newPassword = password_hash($_POST['new-password'], PASSWORD_DEFAULT);
+  $get = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM accounts WHERE username='$currentUser'"));
+  if ($_POST['current-password'] != '' && $_POST['new-password'] != '') {
+    if (strlen($_POST['new-password']) < 6) {
+      die('Password must be at least 6 characters long.');
+    } else {
+      if (password_verify($currentPass, $get['password'])) {
+        $updatePass = mysqli_query($con, "UPDATE accounts SET password='$newPassword' WHERE username='$currentUser'");
+        if ($updatePass) {
+          die('Success');
+        } else {
+          die('Error updating password:' . $con->error);
+        }
+      } else {
+        die('Incorrect password.');
+      }
+    }
+  } else {
+    die('Please fill in both fields.');
+  }
+}
+if (isset($_POST['accountPermission'])) {
+  // Under development
+}
+
+
 if (isset($_POST['updatePassword'])) {
   $id             = $_POST['accountID'];
   $password_temp  = $_POST['newPassword'];
@@ -162,92 +296,6 @@ if (isset($_POST['statusUpdate'])) {
   $query_user   = mysqli_query($con, "SELECT * FROM accounts WHERE id='$id'");
   $row = mysqli_fetch_assoc($query_user);
   log_action("Status of user {$row['username']} changed to {$status}.");
-}
-if (isset($_POST['accountUpdate'])) {
-  $id       = $_POST['updateID'];
-  $username = strtoupper($_POST['updateUsername']);
-  $fname    = strtoupper($_POST['updateFname']);
-  $lname    = strtoupper($_POST['updateLname']);
-  $card     = $_POST['updateCard'];
-  $access   = $_POST['updateAccess'];
-  $sec_id   = $_POST['updateSection'];
-  $email    = strtolower($_POST['updateEmail']);
-  $update_query = mysqli_query($con, "UPDATE accounts SET username='$username', fname='$fname', lname='$lname', card='$card', access='$access', sec_id='$sec_id', email='$email' WHERE id = '$id'");
-  $query_user   = mysqli_query($con, "SELECT * FROM accounts WHERE id='$id'");
-  $row = mysqli_fetch_assoc($query_user);
-  log_action("Account details of user {$row['username']} have been changed.");
-}
-if (isset($_POST['accountDelete'])) {
-  $id           = $_POST['deleteID'];
-  $query_result = mysqli_query($con, "DELETE FROM `accounts` WHERE id='$id'");
-  if ($query_result) {
-    $query_user   = mysqli_query($con, "SELECT * FROM accounts WHERE id='$id'");
-    $row = mysqli_fetch_assoc($query_user);
-    log_action("Account for user {$row['username']} has been deleted.");
-    echo "Success";
-  }
-}
-if (isset($_POST['deleteImage'])) {
-  $oldFileName  = $_POST['fileName'];
-  $username     = $_POST['userName'];
-  $targetDir = "../assets/img/user-profiles/";
-
-  $check_photo = mysqli_query($con, "SELECT file_name FROM accounts WHERE username = '$username'");
-  $rowPhoto    = $check_photo->fetch_assoc();
-  if ($rowPhoto['file_name'] != '') {
-    $remove_result = mysqli_query($con, "UPDATE accounts SET file_name = '' WHERE username = '$username'");
-    if ($remove_result) {
-      unlink($targetDir . $oldFileName);
-      log_action("Image set by user {$username} has been deleted.");
-      echo "Success";
-    }
-  } else {
-    echo "No current photo has been set for this account.";
-  }
-}
-if (isset($_POST['uploadImage'])) {
-  $fileUser       = $_POST['fileUser'];
-  $number         = rand(1000, 9999);
-  $targetDir      = "../assets/img/user-profiles/";
-  $fileName       = basename($_FILES["image"]["name"]);
-  $extension      = pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION);
-  $fileName       = $fileUser . "_" . $number . "." . $extension;
-  $targetFilePath = $targetDir . $fileName;
-  $fileType       = pathinfo($targetFilePath, PATHINFO_EXTENSION);
-  $allowTypes     = array('jpg', 'png', 'jpeg');
-
-  if (in_array($fileType, $allowTypes)) {
-    $check = getimagesize($_FILES["image"]["tmp_name"]);
-    if ($check !== false) {
-      if ($_FILES["image"]["size"] <= 5e+6) {
-        if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFilePath)) {
-          $select = "SELECT file_name FROM accounts WHERE username = '$fileUser'";
-          $select_result = mysqli_query($con, $select);
-          $row = mysqli_fetch_assoc($select_result);
-          $oldFileName = $row['file_name'];
-          $insert_result = mysqli_query($con, "UPDATE accounts SET file_name = '$fileName' WHERE username = '$fileUser'");
-          if ($insert_result) {
-            if ($oldFileName != "" && file_exists($targetDir . $oldFileName)) {
-              unlink($targetDir . $oldFileName);
-              echo "Success";
-            } else {
-              echo "Success";
-            }
-          } else {
-            echo "The file failed to upload to the database. Contact the system administrator now.";
-          }
-        } else {
-          echo "The file path directory is not found. Contact the system administrator now.";
-        }
-      } else {
-        echo "The file size is larger than 5 megabyte.";
-      }
-    } else {
-      echo "The file is not genuine.";
-    }
-  } else {
-    echo "File extensions are not supported. Try 'jpg/png/jpeg' types only.";
-  }
 }
 if (isset($_POST['accountCreate'])) {
   $error    = false;
