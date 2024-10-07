@@ -37,9 +37,18 @@ include('../include/header.php');
                   <tr>
                     <td><?php echo $row['username']; ?></td>
                     <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
-                    <td><?php echo $row['access'] != 'head' ? $row['sec_name'] : ''; ?><p class="form-text text-primary"><?php echo $row['dept_name']; ?></p>
+                    <td>
+                      <?php echo $row['access'] != 'head' ? $row['sec_name'] : ''; ?><p class="form-text text-primary"><?php echo $row['dept_name']; ?></p>
                     </td>
-                    <td><?php echo strtoupper($row['access']) ?></td>
+                    <td>
+                      <select class="form-control selectpicker show-tick" data-user="<?php echo $row['username']; ?>" onchange="changeAccess(this)">
+                        <?php $level = mysqli_query($con, "SELECT * FROM access WHERE id!=1 ORDER BY access ASC");
+                        while ($level_row = $level->fetch_assoc()) {
+                          $selected = ($level_row['access'] == $row['access']) ? 'selected' : ''; ?>
+                          <option value="<?php echo $level_row['id']; ?>" <?php echo $selected; ?>><?php echo ucwords(strtolower($level_row['access'])); ?></option>
+                        <?php } ?>
+                      </select>
+                    </td>
                     <td><?php echo $status ?></td>
                     <td>
                       <div class="btn-group">
@@ -47,7 +56,7 @@ include('../include/header.php');
                         <div class="dropdown-menu">
                           <button type="button" class="dropdown-item" value="<?php echo $row['username']; ?>" onclick="accountEdit(this)"><i class="fas fa-cog fa-fw"></i> Edit information</button>
                           <div class="dropdown-divider"></div>
-                          <?php echo $row['status'] == 0 ? '<button type="button" class="dropdown-item"><i class="fas fa-toggle-on fa-fw"></i> Activate user</button>' : '<button type="button" class="dropdown-item"><i class="fas fa-toggle-off fa-fw"></i> Deactivate user</button>'; ?>
+                          <?php echo $row['status'] == 0 ? '<button type="button" class="dropdown-item" value="1" data-user=' . $row['username'] . ' onclick="changeStatus(this)"><i class="fas fa-toggle-on fa-fw"></i> Activate user</button>' : '<button type="button" class="dropdown-item" value="0" data-user=' . $row['username'] . ' onclick="changeStatus(this)"><i class="fas fa-toggle-off fa-fw"></i> Deactivate user</button>'; ?>
                           <button type="button" class="dropdown-item" disabled><i class="fas fa-trash fa-fw"></i> Delete user</button>
                         </div>
                       </div>

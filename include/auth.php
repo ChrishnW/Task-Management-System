@@ -1,5 +1,6 @@
 <?php
 session_start();
+date_default_timezone_set('Asia/Manila');
 include('connect.php');
 
 $timeout_duration = 15 * 60;

@@ -1,6 +1,5 @@
 <?php
 include('../include/auth.php');
-date_default_timezone_set('Asia/Manila');
 
 if (isset($_POST['accountEdit'])) {
   $id = $_POST['accountID'];
@@ -19,7 +18,7 @@ if (isset($_POST['accountEdit'])) {
       <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
         <a class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="true">Profile</a>
         <a class="nav-link" id="v-pills-security-tab" data-toggle="pill" href="#v-pills-security" role="tab" aria-controls="v-pills-security" aria-selected="false">Security</a>
-        <a class="nav-link" id="v-pills-permission-tab" data-toggle="pill" href="#v-pills-permission" role="tab" aria-controls="v-pills-permission" aria-selected="false">Permission</a>
+        <!-- <a class="nav-link" id="v-pills-permission-tab" data-toggle="pill" href="#v-pills-permission" role="tab" aria-controls="v-pills-permission" aria-selected="false">Permission</a> -->
       </div>
     </div>
     <div class="col-9">
@@ -230,6 +229,26 @@ if (isset($_POST['passwordUpdate'])) {
 }
 if (isset($_POST['accountPermission'])) {
   // Under development
+}
+if (isset($_POST['statusUpdate'])) {
+  $user   = $_POST['userName'];
+  $status = $_POST['status_value'];
+  $changeStatus = mysqli_query($con, "UPDATE accounts SET status='$status' WHERE username='$user'");
+  if ($changeStatus) {
+    die('Success');
+  } else {
+    die('Error updating status:' . $con->error);
+  }
+}
+if (isset($_POST['changeAccess'])) {
+  $user   = $_POST['user'];
+  $access = $_POST['access'];
+  $changeAccess = mysqli_query($con, "UPDATE accounts SET access='$access' WHERE username='$user'");
+  if ($changeAccess) {
+    die('Success');
+  } else {
+    die('Error updating access:' . $con->error);
+  }
 }
 
 

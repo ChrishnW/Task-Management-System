@@ -223,7 +223,6 @@ function detailsUpdate(element) {
     processData: false,
     contentType: false,
     success: function (response) {
-      console.log(response);
       if (response === 'Success') {
         $('#success').modal('show');
       } else {
@@ -268,4 +267,59 @@ function passwordUpdate(element) {
 function permissionUpdate(element) {
   document.getElementById('error_found').innerHTML = 'There was an error processing your request.';
   $('#error').modal('show');
+}
+
+function changeStatus(element) {
+  element.disabled    = true;
+  const status_value  = element.value;
+  const curret_user   = element.getAttribute('data-user');
+  $.ajax({
+    url: "../config/accounts.php",
+    type: "POST",
+    data: {
+      "statusUpdate": true,
+      "userName": curret_user,
+      "status_value": status_value
+    },
+    success: function(response) {
+      if (response === 'Success') {
+        $('#success').modal('show');
+      } else {
+        if (response !== '' && !response.includes('Warning')) {
+          document.getElementById('error_found').innerHTML = response;
+        } else {
+          document.getElementById('error_found').innerHTML = 'There was an error processing your request.';
+        }
+        $('#error').modal('show');
+        element.disabled = false;
+      }
+    }
+  })
+}
+
+function changeAccess(element) {
+  const access  = element.value;
+  const user    = element.getAttribute('data-user');
+  $.ajax({
+    url: "../config/accounts.php",
+    type: "POST",
+    data: {
+      "changeAccess": true,
+      "access": access,
+      "user": user
+    },
+    success: function (response) {
+      if (response === 'Success') {
+        $('#success').modal('show');
+      } else {
+        if (response !== '' && !response.includes('Warning')) {
+          document.getElementById('error_found').innerHTML = response;
+        } else {
+          document.getElementById('error_found').innerHTML = 'There was an error processing your request.';
+        }
+        $('#error').modal('show');
+        element.disabled = false;
+      }
+    }
+  })
 }
