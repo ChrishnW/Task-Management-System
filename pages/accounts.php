@@ -18,9 +18,10 @@ include('../include/header.php');
           <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
             <thead class='table'>
               <tr>
+                <td></td>
                 <th>Username</th>
                 <th>Name</th>
-                <th>Section & Department</th>
+                <th>Department & Section</th>
                 <th>Access</th>
                 <th>Status</th>
                 <th></th>
@@ -35,10 +36,11 @@ include('../include/header.php');
                   $status = $row['status'] == 1 ? "<span class='badge badge-success'>Active</span>" : "<span class='badge badge-danger'>Inactive</span>";
               ?>
                   <tr>
+                    <td><input type="checkbox" name="usernames[]" id="usernames" class="form-control" value="<?php echo $row['username']; ?>" onchange="transferAccount(this)"></td>
                     <td><?php echo $row['username']; ?></td>
                     <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
                     <td>
-                      <?php echo $row['access'] != 'head' ? $row['sec_name'] : ''; ?><p class="form-text text-primary"><?php echo $row['dept_name']; ?></p>
+                      <p class="form-text text-primary"><?php echo $row['dept_name']; ?></p><?php echo $row['access'] != 'head' ? $row['sec_name'] : ''; ?>
                     </td>
                     <td>
                       <select class="form-control selectpicker show-tick" data-user="<?php echo $row['username']; ?>" onchange="changeAccess(this)">
@@ -251,154 +253,76 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="createAccount" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-    <div class="modal-content border-primary">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">Create New Account</h5>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-secondary">
+      <div class="modal-header">
+        <h5 class="modal-title">Account Details</h5>
       </div>
-      <form method="POST">
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>User Name:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-user-circle"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter User Name" class="form-control" name="create_username" id="create_username">
-                </div>
-              </div>
+      <div class="modal-body">
+        <form id="accountRegister" enctype="multipart/form-data">
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label for="reg_user">Username</label>
+              <input type="text" class="form-control text-uppercase" name="reg_user" id="reg_user" readonly>
             </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>First Name:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-font"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter First Name" class="form-control" name="create_fname" id="create_fname">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Last Name:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-font"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter Last Name" class="form-control" name="create_lname" id="create_lname">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Employee ID:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-id-card"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter Employee ID" class="form-control" name="create_number" id="create_number" disabled>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>ID Number:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter ID Number" class="form-control" name="create_card" id="create_card">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Access:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-key"></i></div>
-                  </div>
-                  <select class="form-control selectpicker show-tick" data-style="border-secondary" name="create_access" id="create_access" onchange="accessLevel(this)">
-                    <option value="" disabled selected>Select Access</option>
-                    <option data-divider="true"></option>
-                    <?php if ($access == 3) {
-                      echo '<option value="2">Member</option>';
-                      echo '<option value="4">Leader</option>';
-                    } else {
-                      $con->next_result();
-                      $sql = mysqli_query($con, "SELECT * FROM access WHERE id!=1 ORDER BY access ASC");
-                      if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_assoc($sql)) { ?>
-                          <option value='<?php echo $row['id'] ?>'><?php echo ucwords(strtolower($row['access'])) ?></option>
-                    <?php }
-                      }
-                    } ?>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Department:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-warehouse"></i></div>
-                  </div>
-                  <select name="create_department" id="create_department" class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" data-dropup-auto="false" title="Select Department" onchange="selectDepartment(this)">
-                    <?php if ($access == 3) {
-                      $con->next_result();
-                      $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' AND dept_id='$dept_id' ORDER BY dept_name ASC");
-                      if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_assoc($sql)) { ?>
-                          <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>'><?php echo ucwords(strtolower($row['dept_name'])) ?></option>
-                        <?php }
-                      }
-                    } else {
-                      $con->next_result();
-                      $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' ORDER BY dept_name ASC");
-                      if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_assoc($sql)) { ?>
-                          <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>'><?php echo ucwords(strtolower($row['dept_name'])) ?></option>
-                    <?php }
-                      }
-                    } ?>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Section:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-users"></i></div>
-                  </div>
-                  <select name="create_section" id="create_section" class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" title="Select Section" data-live-search="true" data-dropup-auto="false">
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>E-mail:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-solid fa-at"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter E-mail" class="form-control" name="create_email" id="create_email">
-                </div>
-              </div>
+            <div class="form-group col-md-7">
+              <label for="reg_id">Employee ID <small class="text-danger">*</small></label>
+              <input type="text" class="form-control text-uppercase" name="reg_id" id="reg_id">
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" onclick="accountCreate(this)" class="btn btn-success" name="create_update">Create Account</button>
-          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </form>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="reg_fname">First Name <small class="text-danger">*</small></label>
+              <input type="text" class="form-control text-uppercase" name="reg_fname" id="reg_fname" onchange="genUsername();">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="reg_lname">Last Name <small class="text-danger">*</small></label>
+              <input type="text" class="form-control text-uppercase" name="reg_lname" id="reg_lname" onchange="genUsername();">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-8">
+              <label for="reg_email">Email <small class="text-danger">*</small></label>
+              <input type="email" class="form-control" name="reg_email" id="reg_email">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="reg_access">Access <small class="text-danger">*</small></label>
+              <select name="reg_access" id="reg_access" class="form-control selectpicker show-tick" data-style="border-secondary" title="Nothing" onchange="accountAccess(this);">
+                <option data-divider="true"></option>
+                <?php
+                $access_list = mysqli_query($con, "SELECT * FROM access WHERE id!=1 ORDER BY access ASC");
+                while ($access_row = mysqli_fetch_assoc($access_list)) { ?>
+                  <option value="<?php echo $access_row['id'] ?>"> <?php echo ucwords($access_row['access']); ?></option>
+                  <option data-divider="true"></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="reg_dept">Department <small class="text-danger">*</small></label>
+            <select name="reg_dept" id="reg_dept" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" data-style="border-secondary" title="Select department here..." onchange="deptList(this);">
+              <option data-divider="true"></option>
+              <option value="EMPTY" data-icon="fas fa-sync">Refresh Section</option>
+              <option data-divider="true"></option>
+              <?php
+              $dept_list = mysqli_query($con, "SELECT d.* FROM department d JOIN section s ON s.dept_id=d.dept_id WHERE d.status=1 GROUP BY d.dept_id ORDER BY d.dept_name ASC");
+              while ($dept_row = mysqli_fetch_assoc($dept_list)) { ?>
+                <option value="<?php echo $dept_row['dept_id'] ?>"> <?php echo ucwords(strtolower($dept_row['dept_name'])); ?></option>
+                <option data-divider="true"></option>
+              <?php } ?>
+            </select>
+          </div>
+          <div class="form-group" id="hideThis">
+            <label for="reg_sect">Section <small class="text-danger">*</small></label>
+            <select name="reg_sect" id="reg_sect" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" data-style="border-secondary" title="Select section here...">
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info">Create Account</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>
@@ -442,6 +366,10 @@ include('../include/header.php');
 <?php include('../include/footer.php'); ?>
 
 <script>
+  function showCreate() {
+    $('#createAccount').modal('show');
+  }
+
   $('#dataTable').DataTable({
     "order": [
       [4, "asc"],
@@ -449,234 +377,17 @@ include('../include/header.php');
     ]
   });
 
-  function addTasks(element) {
-    var assignee = element.value;
-    var section = element.getAttribute('data-for');
-    $(document).ready(function() {
-      document.getElementById('assigneeID').value = assignee;
-      document.getElementById('assigneeSEC').value = section;
-      $('#addtask').modal('show');
-    })
-  }
+  // Admin Functions
+  function transferAccount(element) {
+    const listUsernames = document.querySelectorAll('input[name="usernames[]"]:checked');
+    const getUsernames = [];
 
-  function taskList(element) {
-    var task_for = document.getElementById('assigneeSEC').value;
-    var task_class = element.value;
-    var dueDateContainer = document.getElementById('dueDateContainer');
-
-    if (task_class && task_for) {
-      $.ajax({
-        method: "POST",
-        url: "../config/accounts.php",
-        data: {
-          "taskList": true,
-          "task_class": task_class,
-          "task_for": task_for,
-        },
-        success: function(response) {
-          $("select[name='assignList[]']").html(response).selectpicker('refresh');
-        }
-      });
-    }
-
-    if (task_class === '1') {
-      dueDateContainer.innerHTML = `
-      <div class="input-group-prepend">
-        <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
-      </div>
-      <input type="text" id="assignDue" name="assignDue" class="form-control" value="Weekdays" readonly>`;
-    } else if (task_class === '2') {
-      dueDateContainer.innerHTML = `
-      <div class="input-group-prepend">
-        <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
-      </div>
-      <select class="form-control selectpicker show-tick" data-style="border-secondary" data-actions-box="true" name="assignDue[]" id="assignDue" title="--Select a Day--" multiple>
-        <option value="Monday">Monday</option>
-        <option value="Tuesday">Tuesday</option>
-        <option value="Wednesday">Wednesday</option>
-        <option value="Thursday">Thursday</option>
-        <option value="Friday">Friday</option>
-      </select>`;
-      $('.selectpicker').selectpicker('refresh');
-    } else if (task_class === '3' || task_class === '6') {
-      let options = '';
-      for (let i = 1; i <= 31; i++) {
-        options += `<option value="Day ${i} of the Month">Day ${i} of the Month</option>`;
-      }
-      dueDateContainer.innerHTML = `
-      <div class="input-group-prepend">
-        <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
-      </div>
-      <select class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" title="--Select a Date--" name="assignDue" id="assignDue">${options}</select>`;
-      $('.selectpicker').selectpicker('refresh');
-    }
-  }
-
-  function assignTask(element) {
-    element.disabled = true;
-    if (
-      document.getElementById('assignClass').value === '' ||
-      document.getElementById('assignList').value === '' ||
-      document.getElementById('assignDue').value === '' ||
-      document.getElementById('assignFile').value === ''
-    ) {
-      document.getElementById('error_found').innerHTML = 'Empty field has been detected!';
-      $('#error').modal('show');
-      element.disabled = false;
-    } else {
-      var formDetails = new FormData(document.getElementById('taskAddDetails'));
-      formDetails.append('assignTask', true);
-      $.ajax({
-        method: "POST",
-        url: "../config/accounts.php",
-        data: formDetails,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-          $('#resultBody').html(response);
-          $('#result').modal('show');
-        }
-      });
-    }
-  }
-
-  function checkTasks(element) {
-    element.disabled = true;
-    var assignee_id = element.value;
-    // console.log(assignee_view);
-    $.ajax({
-      method: 'POST',
-      url: '../config/assign_tasks.php',
-      data: {
-        "viewTaskEmp": true,
-        "assignee_id": assignee_id,
-      },
-      success: function(response) {
-        $('#viewAssignedTaskTable').html(response);
-        $('#viewList').DataTable({
-          "responsive": true
-        });
-        openSpecificModal('viewTable', 'modal-xl');
-        element.disabled = false;
-      }
-    })
-  }
-
-  function taskDownload() {
-    var viewTableID = document.getElementById('viewTableID').value;
-    console.log(viewTableID);
-    window.location.href = '../config/accounts.php?taskDownload=true&username=' + viewTableID;
-  }
-
-  function EditTaskView(element) {
-    var editID = element.value;
-    $.ajax({
-      method: 'POST',
-      url: '../config/assign_tasks.php',
-      data: {
-        "EditTaskView": true,
-        "editID": editID
-      },
-      success: function(response) {
-        $('#taskPropertiesDetails').html(response);
-        $('#emptask_duedate').selectpicker('refresh');
-        $('#edit').modal('show');
-      }
-    })
-  }
-
-  function editTask(element) {
-    element.disabled = true;
-    var edit_task = document.getElementById('emptask_id').value;
-    var edit_taskName = document.getElementById('emptask_name').value;
-    var edit_requirement = document.getElementById('emptask_file').checked ? 1 : 0;
-    var edit_duedate_element = document.getElementById('emptask_duedate');
-    if (edit_duedate_element.multiple) {
-      var edit_duedate = Array.from(edit_duedate_element.selectedOptions).map(option => option.value);
-    } else {
-      var edit_duedate = edit_duedate_element.value;
-    }
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        "editTask": true,
-        "edit_task": edit_task,
-        "edit_taskName": edit_taskName,
-        "edit_requirement": edit_requirement,
-        "edit_duedate": edit_duedate,
-      },
-      success: function(response) {
-        if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = edit_taskName + ' information task of ' + document.getElementById('emptask_for').value + ' has been updated successfully.';
-          $('#edit').modal('hide');
-          $('#success').modal('show');
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#error').modal('show');
-          element.disabled = false;
-        }
-      }
-    })
-  }
-
-  function RemoveTaskView(element) {
-    var tbdeleteID = element.value;
-    document.getElementById('hidden_id').value = tbdeleteID;
-    $('#warning').modal('show');
-  }
-
-  function RemoveTask(element) {
-    element.disabled = true;
-    var deleteID = document.getElementById('hidden_id').value;
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'taskDelete': true,
-        'deleteID': deleteID,
-      },
-      success: function(response) {
-        if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = 'Operation completed successfully';
-          $('#warning').modal('hide');
-          $('#success').modal('show');
-          $('#destroyTable').on('click', function() {
-            dataTable.destroy();
-          });
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#error').modal('show');
-          element.disabled = false;
-        }
-      }
-    })
-  }
-
-  function selectDepartment(element) {
-    var departmentSelect = element.value;
-    var accessSelect = document.getElementById('create_access').value;
-
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        "selectDepartment": true,
-        "departmentSelect": departmentSelect,
-      },
-      success: function(response) {
-        var $sectionSelect = $("select[name='create_section']");
-        $sectionSelect.html(response).selectpicker('refresh');
-
-        if (accessSelect == 3) {
-          var nextOption = $sectionSelect.find("option").eq(1); // The second option (index 1)
-          var notAvailableValue = nextOption.length ? nextOption.val() : "";
-
-          var newOption = new Option("Not Available", notAvailableValue, true, true);
-
-          $sectionSelect.prepend(newOption).selectpicker('refresh');
-        }
-      }
+    listUsernames.forEach(function(checkbox) {
+      getUsernames.push(checkbox.value);
     });
+
+    console.log(getUsernames);
+    return getUsernames;
   }
+  // End Admin Functions
 </script>

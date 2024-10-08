@@ -1,3 +1,4 @@
+// Page Loading Animation
 window.onload = function () {
   document.getElementById('preloader').style.display = 'none';
   document.getElementById('wrapper').style.visibility = 'visible';
@@ -12,7 +13,10 @@ function togglePreloader(show) {
     // $('#wrapper').css('visibility', 'visible');
   }
 }
+// End Page Animation
 
+
+// System Session Reload
 document.addEventListener('DOMContentLoaded', function () {
   var inactivityTime = 900000;
   var timeout;
@@ -30,6 +34,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   resetTimeout();
 });
+// End Session Reload
+
+
 
 function openSpecificModal(modalId, size) {
   var modalDialog = document.querySelector(`#${modalId} .modal-dialog`);
@@ -94,6 +101,8 @@ $('#activityLogs').on('shown.bs.modal', function () {
   }
 });
 
+
+// Mark as Active the Current Page Navigator Bar
 document.addEventListener("DOMContentLoaded", function () {
   var currentPath = window.location.pathname.split("/").pop();
   var navItems = document.querySelectorAll('.nav-item');
@@ -116,7 +125,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+// End Navigator
 
+
+// Account Update
 function checkPasswordStrength() {
   var password = document.getElementById("new-password").value;
   var strengthBar = document.getElementById("strength-bar");
@@ -230,6 +242,7 @@ function detailsUpdate(element) {
           document.getElementById('error_found').innerHTML = response;
         } else {
           document.getElementById('error_found').innerHTML = 'There was an error processing your request.';
+          console.log(response);
         }
         $('#error').modal('show');
         element.disabled = false;
@@ -270,9 +283,9 @@ function permissionUpdate(element) {
 }
 
 function changeStatus(element) {
-  element.disabled    = true;
-  const status_value  = element.value;
-  const curret_user   = element.getAttribute('data-user');
+  element.disabled = true;
+  const status_value = element.value;
+  const curret_user = element.getAttribute('data-user');
   $.ajax({
     url: "../config/accounts.php",
     type: "POST",
@@ -281,7 +294,7 @@ function changeStatus(element) {
       "userName": curret_user,
       "status_value": status_value
     },
-    success: function(response) {
+    success: function (response) {
       if (response === 'Success') {
         $('#success').modal('show');
       } else {
@@ -298,8 +311,8 @@ function changeStatus(element) {
 }
 
 function changeAccess(element) {
-  const access  = element.value;
-  const user    = element.getAttribute('data-user');
+  const access = element.value;
+  const user = element.getAttribute('data-user');
   $.ajax({
     url: "../config/accounts.php",
     type: "POST",
@@ -323,3 +336,56 @@ function changeAccess(element) {
     }
   })
 }
+// End Account Update
+
+
+// Account Create
+function genUsername() {
+  const fname = document.getElementById('reg_fname').value;
+  const lname = document.getElementById('reg_lname').value;
+  if (fname !== '' && lname !== '') {
+    const fLetters = fname.split(' ').map(word => word.charAt(0)).join('');
+    const lLetters_temp1 = lname.split(' ');
+    const lastText = lLetters_temp1.pop();
+    const lLetters = lLetters_temp1.map(word => word.charAt(0)).join('');
+    document.getElementById('reg_user').value = fLetters + lLetters + lastText;
+  }
+}
+
+function deptList(element) {
+  const dept_id = element.value;
+  const access = document.getElementById('reg_access').value;
+  $.ajax({
+    method: "POST",
+    url: "../config/accounts.php",
+    data: {
+      "deptList": true,
+      "dept_id": dept_id,
+    },
+    success: function (response) {
+      const $sectionSelect = $("select[name='reg_sect']");
+      $sectionSelect.html(response).selectpicker('refresh');
+
+      if (access == 3) {
+        const nextOption = $sectionSelect.find("option").eq(1); // The second option (index 1)
+        const notAvailableValue = nextOption.length ? nextOption.val() : "";
+        if (notAvailableValue !== "EMPTY") {
+          const newOption = new Option("Not Available", notAvailableValue, true, true);
+          $sectionSelect.prepend(newOption).prop('disabled', true).selectpicker('refresh');
+        }
+      } else {
+        $sectionSelect.prop('disabled', false).selectpicker('refresh');
+      }
+    }
+  });
+}
+
+function accountAccess(element) {
+  const access = parseInt(element.value);
+  if (access === 3) {
+    $('#hideThis').addClass('d-none');
+  } else {
+    $('#hideThis').removeClass('d-none');
+  }
+}
+// End Account Create

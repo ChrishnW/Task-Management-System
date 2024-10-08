@@ -250,6 +250,17 @@ if (isset($_POST['changeAccess'])) {
     die('Error updating access:' . $con->error);
   }
 }
+if (isset($_POST['deptList'])) {
+  $id = $_POST['dept_id'];
+  $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='$id'");
+  if (mysqli_num_rows($query_result) > 0) {
+    while ($row = mysqli_fetch_assoc($query_result)) {
+      echo "<option value='{$row['sec_id']}' data-subtext='{$row['sec_id']}'>" . ucwords(strtolower($row['sec_name'])) . "</option>";
+    }
+  } else {
+    echo "<option value='EMPTY' selected>No Registered Section</option>";
+  }
+}
 
 
 if (isset($_POST['updatePassword'])) {
