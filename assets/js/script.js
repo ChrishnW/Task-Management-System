@@ -388,4 +388,29 @@ function accountAccess(element) {
     $('#hideThis').removeClass('d-none');
   }
 }
+
+function accountCreate() {
+  const accountDetails = new FormData(document.getElementById('accountRegister'));
+  accountDetails.append('accountCreate', true);
+  $.ajax({
+    method: "POST",
+    url: "../config/accounts.php",
+    data: accountDetails,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response === 'Success') {
+        $('#success').modal('show');
+      } else {
+        if (response !== '' && !response.includes('Warning')) {
+          document.getElementById('error_found').innerHTML = response;
+        } else {
+          document.getElementById('error_found').innerHTML = 'There was an error processing your request.';
+        }
+        $('#error').modal('show');
+        element.disabled = false;
+      }
+    }
+  });
+}
 // End Account Create

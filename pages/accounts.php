@@ -320,7 +320,7 @@ include('../include/header.php');
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-info">Create Account</button>
+        <button type="button" class="btn btn-info" onclick="accountCreate();">Create Account</button>
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>

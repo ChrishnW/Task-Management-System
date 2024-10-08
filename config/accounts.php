@@ -261,6 +261,8 @@ if (isset($_POST['deptList'])) {
     echo "<option value='EMPTY' selected>No Registered Section</option>";
   }
 }
+if (isset($_POST['accountCreate'])) {
+}
 
 
 if (isset($_POST['updatePassword'])) {
@@ -326,30 +328,6 @@ if (isset($_POST['statusUpdate'])) {
   $query_user   = mysqli_query($con, "SELECT * FROM accounts WHERE id='$id'");
   $row = mysqli_fetch_assoc($query_user);
   log_action("Status of user {$row['username']} changed to {$status}.");
-}
-if (isset($_POST['accountCreate'])) {
-  $error    = false;
-  $username       = strtoupper($_POST['createUsername']);
-  $fname          = strtoupper($_POST['createFname']);
-  $lname          = strtoupper($_POST['createLname']);
-  $card           = $_POST['createCard'];
-  $access         = $_POST['createAccess'];
-  $dep_id         = $_POST['createDepartment'];
-  $sec_id         = $_POST['createSection'];
-  $email          = strtolower($_POST['createEmail']);
-  if ($username === '' || $fname === '' || $lname === '' || $card === '' || $access === '' || $dep_id === '' || $sec_id === '' || $email === '') {
-    $error = true;
-    echo "Please fill in all required fields.";
-  }
-  if (!$error) {
-    $password_temp  = '12345';
-    $password       = password_hash($password_temp, PASSWORD_DEFAULT);
-    $query_result   = mysqli_query($con, "INSERT INTO `accounts`(`card`, `username`, `password`, `fname`, `lname`, `email`, `access`, `sec_id`, `status`) VALUES ('$card', '$username', '$password', '$fname', '$lname', '$email', '$access', '$sec_id', '1')");
-    if ($query_result) {
-      log_action("Account for user {$username} has been created.");
-      echo "Success";
-    }
-  }
 }
 if (isset($_POST['viewTaskEmp'])) {
   $userID = $_POST['assignee_id'];
