@@ -15,7 +15,7 @@ include('../include/header.php');
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+          <table class="table table-hover" id="accountList" width="100%" cellspacing="0">
             <thead class='table'>
               <tr>
                 <td></td>
@@ -28,7 +28,7 @@ include('../include/header.php');
               </tr>
             </thead>
             <tbody>
-              <?php $con->next_result();
+              <?php
               $result = mysqli_query($con, "SELECT * FROM department d JOIN section s ON s.dept_id=d.dept_id JOIN accounts ac ON ac.sec_id=s.sec_id JOIN access a ON ac.access=a.id WHERE a.access!='admin'");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
@@ -370,7 +370,12 @@ include('../include/header.php');
     $('#createAccount').modal('show');
   }
 
-  $('#dataTable').DataTable({
+  $('#accountList').DataTable({
+    "columnDefs": [{
+      "orderable": false,
+      "searchable": false,
+      "targets": [0, 6]
+    }],
     "order": [
       [4, "asc"],
       [2, "asc"]

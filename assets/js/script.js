@@ -51,7 +51,7 @@ function readNotification(element) {
   var id = element.value;
   $.ajax({
     method: "POST",
-    url: "../config/index.php",
+    url: "../ajax/index.php",
     data: {
       "readNotification": true,
       "id": id,
@@ -72,7 +72,7 @@ function readAllNotification(element) {
   });
   $.ajax({
     method: "POST",
-    url: "../config/index.php",
+    url: "../ajax/index.php",
     data: {
       "readAllNotification": true,
       "checkedIds": checkedIds,
@@ -182,7 +182,7 @@ function accountEdit(element) {
   var accountID = element.value;
   $.ajax({
     method: "POST",
-    url: "../config/accounts.php",
+    url: "../ajax/accounts.php",
     data: {
       'accountEdit': true,
       'accountID': accountID,
@@ -229,7 +229,7 @@ function detailsUpdate(element) {
   }
   accountDetails.append('detailsUpdate', true);
   $.ajax({
-    url: "../config/accounts.php",
+    url: "../ajax/accounts.php",
     type: "POST",
     data: accountDetails,
     processData: false,
@@ -256,7 +256,7 @@ function passwordUpdate(element) {
   const accountPassword = new FormData(document.getElementById('accountSecurity'));
   accountPassword.append('passwordUpdate', true);
   $.ajax({
-    url: "../config/accounts.php",
+    url: "../ajax/accounts.php",
     type: "POST",
     data: accountPassword,
     processData: false,
@@ -287,7 +287,7 @@ function changeStatus(element) {
   const status_value = element.value;
   const curret_user = element.getAttribute('data-user');
   $.ajax({
-    url: "../config/accounts.php",
+    url: "../ajax/accounts.php",
     type: "POST",
     data: {
       "statusUpdate": true,
@@ -314,7 +314,7 @@ function changeAccess(element) {
   const access = element.value;
   const user = element.getAttribute('data-user');
   $.ajax({
-    url: "../config/accounts.php",
+    url: "../ajax/accounts.php",
     type: "POST",
     data: {
       "changeAccess": true,
@@ -357,7 +357,7 @@ function deptList(element) {
   const access = document.getElementById('reg_access').value;
   $.ajax({
     method: "POST",
-    url: "../config/accounts.php",
+    url: "../ajax/accounts.php",
     data: {
       "deptList": true,
       "dept_id": dept_id,
@@ -394,7 +394,7 @@ function accountCreate() {
   accountDetails.append('accountCreate', true);
   $.ajax({
     method: "POST",
-    url: "../config/accounts.php",
+    url: "../ajax/accounts.php",
     data: accountDetails,
     processData: false,
     contentType: false,
