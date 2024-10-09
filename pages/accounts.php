@@ -15,8 +15,8 @@ include('../include/header.php');
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-hover" id="accountList" width="100%" cellspacing="0">
-            <thead class='table'>
+          <table class="table table-hover" id="accountList" width="100%" cellspacing="1">
+            <thead>
               <tr>
                 <td></td>
                 <th>Username</th>
@@ -377,7 +377,7 @@ include('../include/header.php');
       "targets": [0, 6]
     }],
     "order": [
-      [4, "asc"],
+      [5, "asc"],
       [2, "asc"]
     ]
   });
