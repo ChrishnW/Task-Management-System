@@ -676,7 +676,7 @@ include('../include/header.php');
       formData.append('addTask', true);
       $.ajax({
         type: 'POST',
-        url: '../config/tasks.php',
+        url: '../ajax/tasks.php',
         data: formData,
         processData: false,
         contentType: false,
@@ -705,7 +705,7 @@ include('../include/header.php');
     console.log(sec_id);
     $.ajax({
       method: "POST",
-      url: "../config/assign_tasks.php",
+      url: "../ajax/assign_tasks.php",
       data: {
         "assignSection": true,
         "sec_id": sec_id,
@@ -728,7 +728,7 @@ include('../include/header.php');
       $('#dataTableBody').empty();
       $.ajax({
         method: "POST",
-        url: "../config/tasks.php",
+        url: "../ajax/tasks.php",
         data: {
           "filterTable": true,
           "date_to": date_to,
@@ -762,7 +762,7 @@ include('../include/header.php');
       $('#dataTableBody').empty();
       $.ajax({
         method: "POST",
-        url: "../config/tasks.php",
+        url: "../ajax/tasks.php",
         data: {
           "filterTable": true,
           "date_to": date_to,
@@ -792,7 +792,7 @@ include('../include/header.php');
     var departmentSelect = element.value;
     $.ajax({
       method: "POST",
-      url: "../config/tasks.php",
+      url: "../ajax/tasks.php",
       data: {
         "sectionSelect": true,
         "departmentSelect": departmentSelect,
@@ -807,7 +807,7 @@ include('../include/header.php');
     var taskID = element.value;
     $.ajax({
       method: "POST",
-      url: "../config/tasks.php",
+      url: "../ajax/tasks.php",
       data: {
         "viewTask": true,
         "taskID": taskID,
@@ -824,7 +824,7 @@ include('../include/header.php');
     var editaskID = element.value;
     $.ajax({
       method: "POST",
-      url: "../config/tasks.php",
+      url: "../ajax/tasks.php",
       data: {
         "editTask": true,
         "taskID": editaskID,
@@ -846,7 +846,7 @@ include('../include/header.php');
     var status = document.getElementById('update_status').value;
     $.ajax({
       method: "POST",
-      url: "../config/tasks.php",
+      url: "../ajax/tasks.php",
       data: {
         "updateTask": true,
         "taskID": taskID,
@@ -878,7 +878,7 @@ include('../include/header.php');
       let reschedDate = document.getElementById('resched_date').value;
       let reschedReason = document.getElementById('resched_reason').value;
       $.ajax({
-        url: '../config/tasks.php',
+        url: '../ajax/tasks.php',
         method: 'POST',
         data: {
           "rescheduleTask": true,
@@ -909,7 +909,7 @@ include('../include/header.php');
     $('#confirmButton').off('click').on('click', function() {
       var taskId = $('#taskID').val();
       $.ajax({
-        url: '../config/tasks.php',
+        url: '../ajax/tasks.php',
         method: 'POST',
         data: {
           "startTask": true,
@@ -934,7 +934,7 @@ include('../include/header.php');
     var id = element.value;
     $.ajax({
       method: "POST",
-      url: "../config/tasks.php",
+      url: "../ajax/tasks.php",
       data: {
         "endTaskDeatails": true,
         "taskID": id,
@@ -953,7 +953,7 @@ include('../include/header.php');
       formData.append('endTask', true);
       $.ajax({
         method: "POST",
-        url: "../config/tasks.php",
+        url: "../ajax/tasks.php",
         data: formData,
         contentType: false,
         processData: false,
@@ -976,7 +976,7 @@ include('../include/header.php');
     var taskID = element.value;
     $.ajax({
       method: "POST",
-      url: "../config/tasks.php",
+      url: "../ajax/tasks.php",
       data: {
         "checkTask": true,
         "taskID": taskID,
@@ -1003,7 +1003,7 @@ include('../include/header.php');
     var taskID = element.value;
     $.ajax({
       method: "POST",
-      url: "../config/tasks.php",
+      url: "../ajax/tasks.php",
       data: {
         "reviewTask": true,
         "taskID": taskID,
@@ -1037,7 +1037,7 @@ include('../include/header.php');
     } else {
       $.ajax({
         method: "POST",
-        url: "../config/tasks.php",
+        url: "../ajax/tasks.php",
         data: formDetails,
         contentType: false,
         processData: false,
@@ -1063,7 +1063,7 @@ include('../include/header.php');
     $('#delete_id').off('click').on('click', function() {
       $.ajax({
         method: "POST",
-        url: "../config/tasks.php",
+        url: "../ajax/tasks.php",
         data: {
           "deleteFile": true,
           "id": id,
@@ -1084,7 +1084,7 @@ include('../include/header.php');
 
   function downloadFile(element) {
     var id = element.value;
-    window.location.href = '../config/tasks.php?downloadFile=true&id=' + id;
+    window.location.href = '../ajax/tasks.php?downloadFile=true&id=' + id;
   }
 
   function resetFileInput() {
@@ -1146,7 +1146,7 @@ include('../include/header.php');
           $('#start').modal('show');
           $('#confirmButton').off('click').on('click', function() {
             $.ajax({
-              url: '../config/tasks.php',
+              url: '../ajax/tasks.php',
               method: 'POST',
               data: {
                 "startTaskMultiple": true,
@@ -1200,7 +1200,7 @@ include('../include/header.php');
       $('#myTasks' + setTab).empty();
       $.ajax({
         method: "POST",
-        url: "../config/tasks.php",
+        url: "../ajax/tasks.php",
         data: {
           "filterTableTask": true,
           "dateFrom": dateFrom,
@@ -1243,7 +1243,7 @@ include('../include/header.php');
             $('#start').modal('show');
             $('#confirmButton').off('click').on('click', function() {
               $.ajax({
-                url: '../config/tasks.php',
+                url: '../ajax/tasks.php',
                 method: 'POST',
                 data: {
                   "startTaskMultiple": true,

@@ -152,7 +152,7 @@ include('../include/header.php');
     var regdept_code = document.getElementById('register_department_code').value;
     $.ajax({
       method: "POST",
-      url: "../config/departments.php",
+      url: "../ajax/departments.php",
       data: {
         "deparmentCreate": true,
         "regdept_name": regdept_name,
@@ -206,7 +206,7 @@ include('../include/header.php');
     }
     $.ajax({
       method: "POST",
-      url: "../config/departments.php",
+      url: "../ajax/departments.php",
       data: {
         'deparmentUpdate': true,
         'dept_id': dept_code,

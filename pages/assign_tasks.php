@@ -358,7 +358,7 @@ include('../include/header.php');
     if (task_class && task_for) {
       $.ajax({
         method: "POST",
-        url: "../config/assign_tasks.php",
+        url: "../ajax/assign_tasks.php",
         data: {
           "selectClass": true,
           "task_class": task_class,
@@ -392,7 +392,7 @@ include('../include/header.php');
     console.log(sec_id);
     $.ajax({
       method: "POST",
-      url: "../config/assign_tasks.php",
+      url: "../ajax/assign_tasks.php",
       data: {
         "assignSection": true,
         "sec_id": sec_id,
@@ -420,7 +420,7 @@ include('../include/header.php');
     console.log(assign_file);
     $.ajax({
       method: "POST",
-      url: "../config/assign_tasks.php",
+      url: "../ajax/assign_tasks.php",
       data: {
         "assignTask": true,
         "assign_section": assign_section,
@@ -443,7 +443,7 @@ include('../include/header.php');
     // console.log(assignee_view);
     $.ajax({
       method: 'POST',
-      url: '../config/assign_tasks.php',
+      url: '../ajax/assign_tasks.php',
       data: {
         "viewTaskEmp": true,
         "assignee_id": assignee_id,
@@ -496,7 +496,7 @@ include('../include/header.php');
     }
     $.ajax({
       method: "POST",
-      url: "../config/assign_tasks.php",
+      url: "../ajax/assign_tasks.php",
       data: {
         "editTask": true,
         "edit_task": edit_task,
@@ -528,7 +528,7 @@ include('../include/header.php');
     var deleteID = document.getElementById('hidden_id').value;
     $.ajax({
       method: "POST",
-      url: "../config/assign_tasks.php",
+      url: "../ajax/assign_tasks.php",
       data: {
         'taskDelete': true,
         'deleteID': deleteID,
@@ -548,6 +548,6 @@ include('../include/header.php');
   }
 
   function taskDownload(element) {
-    window.location.href = '../config/assign_tasks.php?taskDownload=true';
+    window.location.href = '../ajax/assign_tasks.php?taskDownload=true';
   }
 </script>

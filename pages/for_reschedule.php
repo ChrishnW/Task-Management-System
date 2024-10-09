@@ -181,7 +181,7 @@ include('../include/header.php');
     $('#dataTableBody').empty();
     $.ajax({
       method: "POST",
-      url: "../config/for_reschedule.php",
+      url: "../ajax/for_reschedule.php",
       data: {
         "filterTable": true,
         "taskClass": taskClass,
@@ -209,7 +209,7 @@ include('../include/header.php');
     var taskID = element.value;
     $.ajax({
       method: "POST",
-      url: "../config/for_reschedule.php",
+      url: "../ajax/for_reschedule.php",
       data: {
         "viewTask": true,
         "taskID": taskID,
@@ -237,7 +237,7 @@ include('../include/header.php');
       formData.append('approveTask', true);
       $.ajax({
         method: "POST",
-        url: "../config/for_reschedule.php",
+        url: "../ajax/for_reschedule.php",
         data: formData,
         contentType: false,
         processData: false,
@@ -270,7 +270,7 @@ include('../include/header.php');
           var reason    = document.getElementById('rejectReason').value;
           $.ajax({
             method: "POST",
-            url: "../config/for_reschedule.php",
+            url: "../ajax/for_reschedule.php",
             data: {
               "rejectTask": true,
               "taskID": taskID,

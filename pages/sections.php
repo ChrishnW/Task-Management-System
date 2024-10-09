@@ -223,7 +223,7 @@ include('../include/header.php');
     }
     $.ajax({
       method: "POST",
-      url: "../config/sections.php",
+      url: "../ajax/sections.php",
       data: {
         'sectionUpdate': true,
         'sec_code': sec_code,
@@ -263,7 +263,7 @@ include('../include/header.php');
     console.log(regsec_dept);
     $.ajax({
       method: "POST",
-      url: "../config/sections.php",
+      url: "../ajax/sections.php",
       data: {
         "sectionCreate": true,
         "regsec_name": regsec_name,

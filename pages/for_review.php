@@ -235,7 +235,7 @@ include('../include/header.php');
     $('#dataTableBody').empty();
     $.ajax({
       method: "POST",
-      url: "../config/for_review.php",
+      url: "../ajax/for_review.php",
       data: {
         "filterTable": true,
         "taskClass": taskClass,
@@ -261,7 +261,7 @@ include('../include/header.php');
     var taskID = element.value;
     $.ajax({
       method: "POST",
-      url: "../config/for_review.php",
+      url: "../ajax/for_review.php",
       data: {
         "viewTask": true,
         "taskID": taskID,
@@ -291,7 +291,7 @@ include('../include/header.php');
       console.log(formData);
       $.ajax({
         method: "POST",
-        url: "../config/for_review.php",
+        url: "../ajax/for_review.php",
         data: formData,
         contentType: false,
         processData: false,
@@ -312,14 +312,14 @@ include('../include/header.php');
 
   function downloadFile(element) {
     var id = element.value;
-    window.location.href = '../config/tasks.php?downloadFile=true&id=' + id;
+    window.location.href = '../ajax/tasks.php?downloadFile=true&id=' + id;
   }
 
   function viewFile(element) {
     var id = element.value;
     var modalBody = document.getElementById('modalBodyContent');
     modalBody.innerHTML = 'Loading...';
-    fetch('../config/for_review.php?getFile=true&id=' + id)
+    fetch('../ajax/for_review.php?getFile=true&id=' + id)
       .then(response => response.json())
       .then(data => {
         var filePath = data.filePath;
@@ -329,7 +329,7 @@ include('../include/header.php');
         if (allowedExtensions.includes(fileType)) {
           modalBody.innerHTML = '<iframe src="' + filePath + '" style="width:100%; height:500px;" frameborder="0"></iframe>';
         } else {
-          fetch('../config/for_review.php?loadFile=true&file=' + filePath)
+          fetch('../ajax/for_review.php?loadFile=true&file=' + filePath)
             .then(response => response.text())
             .then(data => {
               modalBody.innerHTML = data;
@@ -352,7 +352,7 @@ include('../include/header.php');
     $('#approve').modal('show');
     $('#confirmButton').off('click').on('click', function() {
       $.ajax({
-        url: '../config/for_review.php',
+        url: '../ajax/for_review.php',
         method: 'POST',
         data: {
           "approveMultiple": true,

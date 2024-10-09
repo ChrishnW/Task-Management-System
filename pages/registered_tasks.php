@@ -244,7 +244,7 @@
     console.log(taskEditID);
     $.ajax ({
       method: "POST",
-      url: "../config/registered_tasks.php",
+      url: "../ajax/registered_tasks.php",
       data: {
         'editSelect': true,
         'taskEditID': taskEditID,
@@ -273,7 +273,7 @@
 
     $.ajax({
       method: "POST",
-      url: "../config/registered_tasks.php",
+      url: "../ajax/registered_tasks.php",
       data: {
         'taskUpdate': true,
         'taskUpdate_id': taskUpdate_id,
@@ -308,7 +308,7 @@
     var delete_id  = document.getElementById('hidden_id').value;
     $.ajax({
       method: "POST",
-      url: "../config/registered_tasks.php",
+      url: "../ajax/registered_tasks.php",
       data: {
         'deleteTask': true,
         'delete_id': delete_id,
@@ -337,7 +337,7 @@
     console.log(task_details);
     $.ajax({
       method: "POST",
-      url: "../config/registered_tasks.php",
+      url: "../ajax/registered_tasks.php",
       data: {
         'taskRegister': true,
         'task_name': task_name,

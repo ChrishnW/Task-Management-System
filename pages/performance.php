@@ -323,7 +323,7 @@ include('../include/header.php');
     $('#dataTableBody').empty();
     $.ajax({
       method: "POST",
-      url: "../config/performance.php",
+      url: "../ajax/performance.php",
       data: sortdata,
       success: function(response) {
         $('#dataTableBody').append(response);
@@ -372,7 +372,7 @@ include('../include/header.php');
     }
     $.ajax({
       method: "POST",
-      url: "../config/performance.php",
+      url: "../ajax/performance.php",
       data: data,
       success: function(response) {
         $('#ajaxContents').html(response);
@@ -392,7 +392,7 @@ include('../include/header.php');
     var account_id = <?php echo json_encode($emp_id) ?>;
     $.ajax({
       method: "POST",
-      url: "../config/performance.php",
+      url: "../ajax/performance.php",
       data: {
         "showPerformance": true,
         "account_id": account_id
