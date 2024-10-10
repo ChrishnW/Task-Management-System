@@ -8,8 +8,8 @@ include('../include/header.php');
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold">User Management</h6>
         <div class="dropdown no-arrow">
-          <button type="button" onclick="showCreate(this)" class="btn btn-primary">
-            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> New Account
+          <button type="button" onclick="showCreate(this)" class="btn btn-circle btn-outline-primary">
+            <i class="fas fa-plus fa-sm"></i>
           </button>
         </div>
       </div>
@@ -54,7 +54,7 @@ include('../include/header.php');
                     <td><?php echo $status ?></td>
                     <td>
                       <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-block dropdown-toggle" data-toggle="dropdown"><i class="fas fa-cog fa-fw"></i> Settings</button>
+                        <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fas fa-cog fa-fw"></i> Settings</button>
                         <div class="dropdown-menu">
                           <button type="button" class="dropdown-item" value="<?php echo $row['username']; ?>" onclick="accountEdit(this)"><i class="fas fa-cog fa-fw"></i> Edit information</button>
                           <div class="dropdown-divider"></div>
