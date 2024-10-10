@@ -29,7 +29,7 @@ include('../include/header.php');
             </thead>
             <tbody>
               <?php
-              $result = mysqli_query($con, "SELECT * FROM department d JOIN section s ON s.dept_id=d.dept_id JOIN accounts ac ON ac.sec_id=s.sec_id JOIN access a ON ac.access=a.id WHERE a.access!='admin'");
+              $result = mysqli_query($con, "SELECT * FROM departments d JOIN sections s ON s.dept_id=d.dept_id JOIN accounts ac ON ac.sec_id=s.sec_id JOIN access a ON ac.access=a.id WHERE a.access!='admin'");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
                   $imageURL = empty($row["img"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row["img"];
@@ -107,7 +107,7 @@ include('../include/header.php');
             </tfoot>
             <tbody>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT accounts.fname, accounts.lname, accounts.file_name , accounts.username, accounts.email, section.sec_name, access.access, accounts.status, accounts.id, department.dept_name, section.sec_id FROM accounts LEFT JOIN section ON accounts.sec_id=section.sec_id LEFT JOIN access on accounts.access=access.id LEFT JOIN department ON department.dept_id=section.dept_id WHERE department.dept_id='$dept_id' AND accounts.access=2");
+              $result = mysqli_query($con, "SELECT accounts.fname, accounts.lname, accounts.file_name , accounts.username, accounts.email, sections.sec_name, access.access, accounts.status, accounts.id, departments.dept_name, sections.sec_id FROM accounts LEFT JOIN sections ON accounts.sec_id=sections.sec_id LEFT JOIN access on accounts.access=access.id LEFT JOIN departments ON departments.dept_id=sections.dept_id WHERE departments.dept_id='$dept_id' AND accounts.access=2");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
                   $member = $row['username'];
@@ -300,12 +300,12 @@ include('../include/header.php');
           </div>
           <div class="form-group">
             <label for="reg_dept">Department <small class="text-danger">*</small></label>
-            <select name="reg_dept" id="reg_dept" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" data-style="border-secondary" title="Select department here..." onchange="deptList(this);">
+            <select name="reg_dept" id="reg_dept" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" data-style="border-secondary" title="Select departments here..." onchange="deptList(this);">
               <option data-divider="true"></option>
               <option value="EMPTY" data-icon="fas fa-sync">Refresh Section</option>
               <option data-divider="true"></option>
               <?php
-              $dept_list = mysqli_query($con, "SELECT d.* FROM department d JOIN section s ON s.dept_id=d.dept_id WHERE d.status=1 GROUP BY d.dept_id ORDER BY d.dept_name ASC");
+              $dept_list = mysqli_query($con, "SELECT d.* FROM departments d JOIN sections s ON s.dept_id=d.dept_id WHERE d.status=1 GROUP BY d.dept_id ORDER BY d.dept_name ASC");
               while ($dept_row = mysqli_fetch_assoc($dept_list)) { ?>
                 <option value="<?php echo $dept_row['dept_id'] ?>"> <?php echo ucwords(strtolower($dept_row['dept_name'])); ?></option>
                 <option data-divider="true"></option>
@@ -314,7 +314,7 @@ include('../include/header.php');
           </div>
           <div class="form-group" id="hideThis">
             <label for="reg_sect">Section <small class="text-danger">*</small></label>
-            <select name="reg_sect" id="reg_sect" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" data-style="border-secondary" title="Select section here...">
+            <select name="reg_sect" id="reg_sect" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" data-style="border-secondary" title="Select sections here...">
             </select>
           </div>
         </form>
