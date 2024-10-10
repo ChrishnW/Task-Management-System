@@ -9,12 +9,12 @@ if (isset($_POST['deparmentCreate'])) {
     echo "Please fill in the required field.";
   }
   if (!$error) {
-    $check  = mysqli_query($con, "SELECT * FROM department WHERE dept_id='$dept_code' OR dept_name='$dept_name'");
+    $check  = mysqli_query($con, "SELECT * FROM departments WHERE dept_id='$dept_code' OR dept_name='$dept_name'");
     $result = mysqli_num_rows($check);
     if ($result > 0) {
-      echo "The department already exists.";
+      echo "The departments already exists.";
     } else {
-      $query_result = mysqli_query($con, "INSERT INTO department (`dept_id`, `dept_name`, `status`) VALUES ('$dept_code', '$dept_name', '1')");
+      $query_result = mysqli_query($con, "INSERT INTO departments (`dept_id`, `dept_name`, `status`) VALUES ('$dept_code', '$dept_name', '1')");
       if ($query_result) {
         echo "Success";
       }
@@ -32,7 +32,7 @@ if (isset($_POST['deparmentUpdate'])) {
     echo "Please fill in the required field.";
   }
   if (!$error) {
-    $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM department WHERE dept_id='$dept_id'"));
+    $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM departments WHERE dept_id='$dept_id'"));
     if ($row['dept_name'] !== $dept_name) {
       log_action("Updated Department Name from {$row['dept_name']} to {$dept_name}.");
     }
@@ -44,7 +44,7 @@ if (isset($_POST['deparmentUpdate'])) {
         log_action("Updated Department Status of {$dept_name} from Active to Inactive.");
       }
     }
-    $update_query = mysqli_query($con, "UPDATE department SET `dept_name`='$dept_name', `status`='$dept_status' WHERE dept_id='$dept_id'");
+    $update_query = mysqli_query($con, "UPDATE departments SET `dept_name`='$dept_name', `status`='$dept_status' WHERE dept_id='$dept_id'");
     if ($statusFlag) {
       echo "Success";
     }

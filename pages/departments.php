@@ -4,23 +4,24 @@ include('../include/header.php');
 
 <div class="container-fluid">
   <div class="card">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-      <h6 class="m-0 font-weight-bold text-white">Registered Department</h6>
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+      <h6 class="m-0 font-weight-bold">Department Management</h6>
       <div class="dropdown no-arrow">
-        <button type="button" onclick="showCreate(this)" class="btn btn-primary">
-          <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Register
+        <button type="button" onclick="showCreate(this)" class="btn btn-circle btn-outline-primary">
+          <i class="fas fa-plus fa-sm"></i>
         </button>
       </div>
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
-          <thead class='table table-success'>
+        <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead>
             <tr>
+              <th>#</th>
               <th>Department Name</th>
               <th>Total Secion(s)</th>
               <th>Status</th>
-              <th>Action</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -39,10 +40,11 @@ include('../include/header.php');
                 }
             ?>
                 <tr>
-                  <td><?php echo $row['dept_name'] ?></td>
+                  <td><?php echo $row['dept_id']; ?></td>
+                  <td><?php echo ucwords(strtolower($row['dept_name'])); ?></td>
                   <td><span class="badge badge-primary"><?php echo $total_section ?> Registered</span></td>
                   <td><?php echo $status ?></td>
-                  <td><button type="button" class="btn btn-info btn-block" onclick="editDepartment(this)" value="<?php echo $row['dept_id'] ?>" data-name="<?php echo $row['dept_name'] ?>" data-status="<?php echo $row['status'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
+                  <td><button type="button" class="btn btn-dark btn-sm" onclick="editDepartment(this)" value="<?php echo $row['dept_id'] ?>" data-name="<?php echo $row['dept_name'] ?>" data-status="<?php echo $row['status'] ?>"><i class="fas fa-pen-square fa-fw"></i> Edit</button></td>
                 </tr>
             <?php }
             } ?>
@@ -94,13 +96,15 @@ include('../include/header.php');
         <h5 class="modal-title">Edit Department</h5>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label>Department ID:</label>
-          <div class="input-group mb-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
+        <div class="form-row">
+          <div class="form-group col-4">
+            <label>Department ID:</label>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
+              </div>
+              <input type="text" id="department_code" class="form-control" readonly>
             </div>
-            <input type="text" id="department_code" class="form-control" readonly>
           </div>
         </div>
         <div class="form-group">
@@ -136,9 +140,14 @@ include('../include/header.php');
 
 <script>
   $('#dataTable').DataTable({
+    "columnDefs": [{
+      "orderable": false,
+      "searchable": false,
+      "targets": [0, 4]
+    }],
     "order": [
-      [1, "desc"],
-      [0, "asc"]
+      [2, "desc"],
+      [1, "asc"]
     ],
   });
 
@@ -196,8 +205,8 @@ include('../include/header.php');
 
   function deparmentUpdate(element) {
     element.disabled = true;
-    var dept_code         = document.getElementById('department_code').value;
-    var dept_name         = document.getElementById('department_name').value;
+    var dept_code = document.getElementById('department_code').value;
+    var dept_name = document.getElementById('department_name').value;
     var dept_status_check = document.getElementById('dept_status_check');
     if (dept_status_check.checked) {
       var dept_status = '1';
