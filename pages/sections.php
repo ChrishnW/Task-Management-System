@@ -4,35 +4,26 @@ include('../include/header.php');
 
 <div class="container-fluid">
   <div class="card">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-      <h6 class="m-0 font-weight-bold text-white">Registered Section</h6>
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+      <h6 class="m-0 font-weight-bold">Section Management</h6>
       <div class="dropdown no-arrow">
-        <button type="button" onclick="showCreate(this)" class="btn btn-primary">
-          <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Register
+        <button type="button" onclick="showCreate(this)" class="btn btn-circle btn-outline-primary">
+          <i class="fas fa-plus fa-sm"></i>
         </button>
       </div>
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
-          <thead class='table table-success'>
+        <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead>
             <tr>
-              <th>Action</th>
               <th>Section ID</th>
               <th>Section Name</th>
               <th>Department</th>
               <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
-          <tfoot class='table table-success'>
-            <tr>
-              <th>Action</th>
-              <th>Section ID</th>
-              <th>Section Name</th>
-              <th>Department</th>
-              <th>Status</th>
-            </tr>
-          </tfoot>
           <tbody>
             <?php
             $result = mysqli_query($con, "SELECT * FROM departments d JOIN sections s ON s.dept_id=d.dept_id");
@@ -45,11 +36,11 @@ include('../include/header.php');
                 }
             ?>
                 <tr>
-                  <td><button type="button" class="btn btn-info btn-block" onclick="editSection(this)" data-id="<?php echo $row['sec_id'] ?>" data-name="<?php echo $row['sec_name'] ?>" data-status="<?php echo $row['status'] ?>" data-departments="<?php echo $row['dept_id'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
                   <td><span class="badge badge-primary"><?php echo $row['sec_id'] ?></span></td>
-                  <td><?php echo $row['sec_name'] ?></td>
-                  <td><span class="badge badge-primary"><?php echo $row['dept_name'] ?></span></td>
+                  <td><?php echo ucwords(strtolower($row['sec_name'])); ?></td>
+                  <td><?php echo ucwords(strtolower($row['dept_name'])); ?></td>
                   <td><?php echo $status ?></td>
+                  <td><button type="button" class="btn btn-dark btn-sm" onclick="editSection(this)" data-id="<?php echo $row['sec_id'] ?>" data-name="<?php echo $row['sec_name'] ?>" data-status="<?php echo $row['status'] ?>" data-departments="<?php echo $row['dept_id'] ?>"><i class="fas fa-pen-square fa-fw"></i> Edit</button></td>
                 </tr>
             <?php }
             } ?>
@@ -62,8 +53,8 @@ include('../include/header.php');
 
 <div class="modal fade" id="createSection" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-    <div class="modal-content border-info">
-      <div class="modal-header bg-info text-white">
+    <div class="modal-content border-primary">
+      <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">Register Section</h5>
       </div>
       <div class="modal-body">
@@ -181,7 +172,13 @@ include('../include/header.php');
 
 <script>
   $('#dataTable').DataTable({
+    "columnDefs": [{
+      "orderable": false,
+      "searchable": false,
+      "targets": 4
+    }],
     "order": [
+      [1, "asc"],
       [3, "asc"]
     ],
     "pageLength": 5,
@@ -189,20 +186,20 @@ include('../include/header.php');
   });
 
   function editSection(element) {
-    var section_code        = element.getAttribute('data-id');
-    var section_name        = element.getAttribute('data-name');
-    var section_status      = element.getAttribute('data-status');
-    var section_department  = element.getAttribute('data-departments');
-    var status_check        = document.getElementById('status_text');
+    var section_code = element.getAttribute('data-id');
+    var section_name = element.getAttribute('data-name');
+    var section_status = element.getAttribute('data-status');
+    var section_department = element.getAttribute('data-departments');
+    var status_check = document.getElementById('status_text');
     $(document).ready(function() {
       if (section_status === '1') {
         document.getElementById('sec_status_check').checked = true;
       } else {
         document.getElementById('sec_status_check').checked = false;
       }
-      document.getElementById('section_code').value       = section_code;
-      document.getElementById('section_oldcode').value    = section_code;
-      document.getElementById('section_name').value       = section_name;
+      document.getElementById('section_code').value = section_code;
+      document.getElementById('section_oldcode').value = section_code;
+      document.getElementById('section_name').value = section_name;
       document.getElementById('section_department').value = section_department;
       $('#editSection').modal('show');
     })

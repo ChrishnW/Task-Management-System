@@ -15,7 +15,7 @@ if (isset($_POST['sectionUpdate'])) {
     echo "Section ID should not contain spaces between characters.";
   }
   if (!$error) {
-    $query_result = mysqli_query($con, "UPDATE section SET sec_id='$sec_code', sec_name='$sec_name', dept_id='$sec_department', status='$sec_status' WHERE sec_id='$sec_oldcode'");
+    $query_result = mysqli_query($con, "UPDATE sections SET sec_id='$sec_code', sec_name='$sec_name', dept_id='$sec_department', status='$sec_status' WHERE sec_id='$sec_oldcode'");
     if ($query_result) {
       die('Success');
     }
@@ -34,7 +34,7 @@ if (isset($_POST['sectionCreate'])) {
     echo "Section ID should not contain spaces between characters.";
   }
   if (!$error) {
-    $query_result = mysqli_query($con, "INSERT INTO section (`sec_id`, `sec_name`, `dept_id`, `status`) VALUES ('$section_code', '$section_name', '$section_dep', '1')");
+    $query_result = mysqli_query($con, "INSERT INTO sections (`sec_id`, `sec_name`, `dept_id`, `status`) VALUES ('$section_code', '$section_name', '$section_dep', '1')");
     if ($query_result) {
       echo "Success";
     } else {

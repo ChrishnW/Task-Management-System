@@ -57,8 +57,8 @@ include('../include/header.php');
 
 <div class="modal fade" id="createDepartment" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-    <div class="modal-content border-info">
-      <div class="modal-header bg-info text-white">
+    <div class="modal-content border-primary">
+      <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">Register Department</h5>
       </div>
       <div class="modal-body">
