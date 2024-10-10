@@ -374,7 +374,7 @@ include('../include/header.php');
     "columnDefs": [{
       "orderable": false,
       "searchable": false,
-      "targets": [0, 6]
+      "targets": [0, 4, 6]
     }],
     "order": [
       [5, "asc"],
