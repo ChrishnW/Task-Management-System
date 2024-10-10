@@ -625,3 +625,51 @@
     font-size: 0.9em;
     display  : none;
 }
+
+.file-drop-area {
+    border       : 2px dashed #ccc;
+    border-radius: 5px;
+    padding      : 30px;
+    text-align   : center;
+    color        : #666;
+    cursor       : pointer;
+}
+
+.file-drop-area.hover {
+    border-color: #007bff;
+}
+
+.file-drop-area p {
+    margin: 0;
+}
+
+.file-drop-area small {
+    display   : block;
+    margin-top: 10px;
+    color     : #999;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-list {
+    list-style-type: none;
+    padding        : 0;
+}
+
+.file-list li {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+    margin-top     : 10px;
+    border-bottom  : 1px solid #ddd;
+    padding-bottom : 5px;
+}
+
+.file-list li button {
+    background-color: transparent;
+    border          : none;
+    color           : red;
+    cursor          : pointer;
+}

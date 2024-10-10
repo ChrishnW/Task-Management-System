@@ -414,3 +414,88 @@ function accountCreate() {
   });
 }
 // End Account Create
+
+// File Upload Modal
+$(document).ready(function () {
+  $('#import').on('shown.bs.modal', function () {
+    var fileInput = document.getElementById('fileInput');
+
+    $('.file-drop-area').each(function () {
+      var fileDropArea = this;
+      var fileList = document.getElementById(fileDropArea.id.replace('DropArea', 'List'));
+      var filesArray = [];
+
+      fileDropArea.querySelector('.browseLink').addEventListener('click', function (e) {
+        e.preventDefault();
+        fileInput.click();
+      });
+
+      fileInput.addEventListener('change', function () {
+        addFiles(fileDropArea, this.files);
+      });
+
+      fileDropArea.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        fileDropArea.classList.add('hover');
+      });
+
+      fileDropArea.addEventListener('dragleave', function () {
+        fileDropArea.classList.remove('hover');
+      });
+
+      fileDropArea.addEventListener('drop', function (e) {
+        e.preventDefault();
+        fileDropArea.classList.remove('hover');
+        var files = e.dataTransfer.files;
+        addFiles(fileDropArea, files);
+      });
+
+      function addFiles(dropArea, files) {
+        var isMultiple = dropArea.getAttribute('data-multiple') === "true";
+
+        if (!isMultiple && files.length > 1) {
+          alert("This input only accepts one file.");
+          return;
+        }
+
+        if (!isMultiple) {
+          filesArray = []; // Clear previous files if it's a single file input
+        }
+
+        for (var i = 0; i < files.length; i++) {
+          filesArray.push(files[i]);
+        }
+        updateFileList();
+      }
+
+      function removeFile(index) {
+        filesArray.splice(index, 1);
+        updateFileList();
+      }
+
+      function updateFileList() {
+        fileList.innerHTML = '';
+        filesArray.forEach(function (file, index) {
+          var li = document.createElement('li');
+          li.innerHTML = file.name + ' <button type="button" data-index="' + index + '">Remove</button>';
+          fileList.appendChild(li);
+        });
+
+        var removeButtons = fileList.querySelectorAll('button');
+        removeButtons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            var index = this.getAttribute('data-index');
+            removeFile(index);
+          });
+        });
+      }
+    });
+  });
+
+  $('#import').on('hidden.bs.modal', function () {
+    $('.file-list').each(function () {
+      this.innerHTML = '';
+    });
+  });
+});
+// End File Upload Modal
