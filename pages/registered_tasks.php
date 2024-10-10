@@ -66,20 +66,16 @@ include('../include/header.php');
   <div class="modal-dialog modal-dialog-centered modal-md" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Import</h5>
+        <h5 class="modal-title"><i class="fas fa-file-import fa-fw"></i> Import</h5>
       </div>
-      <div class="modal-body">
-        <div class="file-drop-area" data-multiple="false" id="fileDropArea">
-          <i class="fas fa-cloud-download-alt fa-5x mb-2"></i>
-          <p>Drop a single document here or <a href="#" class="browseLink">browse file</a>.</p>
-          <small>Supported: XLSX</small>
-        </div>
-        <ul class="file-list" id="fileList"></ul>
-
-        <input type="file" id="fileInput" class="file-input" multiple>
+      <div class="modal-body text-center">
+        <input type="file" class="form-control-file" id="UploadedFile" />
+        <br>
+        <a onclick="downloadTemplate()" class="pull-left" style='cursor: pointer;'>Download Excel Template For Import</a>
+        <br>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="taskUpdate(this)" class="btn btn-primary" id="record_id">Import</button>
+        <button class="btn btn-primary d-none" id="importBtn">Import</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -89,4 +85,62 @@ include('../include/header.php');
 <?php include('../include/footer.php'); ?>
 
 <script>
+  $('#taskList').DataTable({
+    "columnDefs": [{
+      "orderable": false,
+      "searchable": false,
+      "targets": 4
+    }],
+    "order": [
+      [1, "asc"],
+      [2, "asc"]
+    ]
+  });
+
+  function downloadTemplate() {
+    window.open('../files/for_import_tasks_excel_template.xlsx', '_blank');
+  }
+
+  $(document).ready(function() {
+    $('#UploadedFile').on('change', function() {
+      if ($(this).val()) {
+        $('#importBtn').removeClass('d-none');
+      } else {
+        $('#importBtn').addClass('d-none');
+      }
+    });
+
+    $('#importBtn').on('click', function() {
+      $(this).prop('disabled', true);
+      const fileInput = $('#UploadedFile')[0];
+      const file = fileInput.files[0];
+
+      if (file) {
+        const formData = new FormData();
+        formData.append('importTask', true);
+        formData.append('file', file);
+
+        $.ajax({
+          url: '../ajax/registered_tasks.php',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            if (response === 'Success') {
+              $('#success').modal('show');
+            } else {
+              if (response !== '' && !response.includes('Warning')) {
+                document.getElementById('error_found').innerHTML = response;
+              } else {
+                document.getElementById('error_found').innerHTML = 'There was an error processing your request.';
+              }
+              $('#error').modal('show');
+              $('#importBtn').prop('disabled', false);
+            }
+          }
+        });
+      }
+    });
+  });
 </script>
