@@ -25,11 +25,11 @@ include('../include/header.php');
           </thead>
           <tbody>
             <?php $con->next_result();
-            $result = mysqli_query($con, "SELECT * FROM department");
+            $result = mysqli_query($con, "SELECT * FROM departments");
             if (mysqli_num_rows($result) > 0) {
               while ($row = $result->fetch_assoc()) {
                 $dept_id  = $row['dept_id'];
-                $count_section = mysqli_query($con, "SELECT COUNT(sec_id) as total_section FROM section WHERE dept_id='$dept_id'");
+                $count_section = mysqli_query($con, "SELECT COUNT(sec_id) as total_section FROM sections WHERE dept_id='$dept_id'");
                 $count_section_row = $count_section->fetch_assoc();
                 $total_section = $count_section_row['total_section'];
                 if ($row['status'] == 1) {
@@ -66,7 +66,7 @@ include('../include/header.php');
             <div class="input-group-prepend">
               <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
             </div>
-            <?php $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT dept_id FROM department ORDER BY dept_id DESC LIMIT 1")); ?>
+            <?php $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT dept_id FROM departments ORDER BY dept_id DESC LIMIT 1")); ?>
             <input type="text" id="register_department_code" class="form-control" value="<?php echo $row['dept_id'] + 1 ?>" readonly>
           </div>
         </div>
