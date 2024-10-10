@@ -34,8 +34,8 @@ include('../include/header.php');
             </tr>
           </tfoot>
           <tbody>
-            <?php $con->next_result();
-            $result = mysqli_query($con, "SELECT * FROM department d JOIN section s ON s.dept_id=d.dept_id");
+            <?php
+            $result = mysqli_query($con, "SELECT * FROM departments d JOIN sections s ON s.dept_id=d.dept_id");
             if (mysqli_num_rows($result) > 0) {
               while ($row = $result->fetch_assoc()) {
                 if ($row['status'] == 1) {
@@ -45,7 +45,7 @@ include('../include/header.php');
                 }
             ?>
                 <tr>
-                  <td><button type="button" class="btn btn-info btn-block" onclick="editSection(this)" data-id="<?php echo $row['sec_id'] ?>" data-name="<?php echo $row['sec_name'] ?>" data-status="<?php echo $row['status'] ?>" data-department="<?php echo $row['dept_id'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
+                  <td><button type="button" class="btn btn-info btn-block" onclick="editSection(this)" data-id="<?php echo $row['sec_id'] ?>" data-name="<?php echo $row['sec_name'] ?>" data-status="<?php echo $row['status'] ?>" data-departments="<?php echo $row['dept_id'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
                   <td><span class="badge badge-primary"><?php echo $row['sec_id'] ?></span></td>
                   <td><?php echo $row['sec_name'] ?></td>
                   <td><span class="badge badge-primary"><?php echo $row['dept_name'] ?></span></td>
@@ -95,7 +95,7 @@ include('../include/header.php');
               <option value="" selected disabled>--Select Department--</option>
               <?php
               $con->next_result();
-              $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1'");
+              $sql = mysqli_query($con, "SELECT * FROM departments WHERE status='1'");
               if (mysqli_num_rows($sql) > 0) {
                 while ($row = mysqli_fetch_assoc($sql)) { ?>
                   <option value='<?php echo $row['dept_id'] ?>' data-subtext='Department ID <?php echo $row['dept_id'] ?>'><?php echo $row['dept_name'] ?></option>
@@ -148,7 +148,7 @@ include('../include/header.php');
               <option value="" selected disabled>--Select Department--</option>
               <?php
               $con->next_result();
-              $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' ORDER BY dept_name");
+              $sql = mysqli_query($con, "SELECT * FROM departments WHERE status='1' ORDER BY dept_name");
               if (mysqli_num_rows($sql) > 0) {
                 while ($row = mysqli_fetch_assoc($sql)) { ?>
                   <option value='<?php echo $row['dept_id'] ?>' data-subtext='Department ID <?php echo $row['dept_id'] ?>'><?php echo $row['dept_name'] ?></option>
@@ -192,7 +192,7 @@ include('../include/header.php');
     var section_code        = element.getAttribute('data-id');
     var section_name        = element.getAttribute('data-name');
     var section_status      = element.getAttribute('data-status');
-    var section_department  = element.getAttribute('data-department');
+    var section_department  = element.getAttribute('data-departments');
     var status_check        = document.getElementById('status_text');
     $(document).ready(function() {
       if (section_status === '1') {
