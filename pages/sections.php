@@ -17,11 +17,11 @@ include('../include/header.php');
         <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Section ID</th>
+              <th>ID</th>
               <th>Section Name</th>
               <th>Department</th>
               <th>Status</th>
-              <th>Action</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
