@@ -3,7 +3,7 @@ include('../include/auth.php');
 
 if (isset($_POST['accountEdit'])) {
   $id = $_POST['accountID'];
-  $get = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM department d JOIN section s ON s.dept_id=d.dept_id JOIN accounts ac ON ac.sec_id=s.sec_id JOIN access a ON ac.access=a.id WHERE ac.username='$id'"));
+  $get = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM departments d JOIN sections s ON s.dept_id=d.dept_id JOIN accounts ac ON ac.sec_id=s.sec_id JOIN access a ON ac.access=a.id WHERE ac.username='$id'"));
   $lvl    = $get['access'];
   $user   = $get['username'];
   $fname  = $get['fname'];
@@ -63,12 +63,12 @@ if (isset($_POST['accountEdit'])) {
             </div>
             <div class="form-group">
               <label for="editDept">Department</label>
-              <input type="text" class="form-control" id="department" value="<?php echo $dept; ?>" readonly>
+              <input type="text" class="form-control" id="departments" value="<?php echo $dept; ?>" readonly>
             </div>
             <?php if (!in_array($lvl, ['admin', 'head'])) { ?>
               <div class="form-group">
                 <label for="editSec">Section</label>
-                <input type="text" class="form-control" id="section" value="<?php echo $sec; ?>" readonly>
+                <input type="text" class="form-control" id="sections" value="<?php echo $sec; ?>" readonly>
               </div>
             <?php } ?>
           </form>
@@ -252,7 +252,7 @@ if (isset($_POST['changeAccess'])) {
 }
 if (isset($_POST['deptList'])) {
   $id = $_POST['dept_id'];
-  $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='$id'");
+  $query_result = mysqli_query($con, "SELECT * FROM sections WHERE status=1 AND dept_id='$id'");
   if (mysqli_num_rows($query_result) > 0) {
     while ($row = mysqli_fetch_assoc($query_result)) {
       echo "<option value='{$row['sec_id']}' data-subtext='{$row['sec_id']}'>" . ucwords(strtolower($row['sec_name'])) . "</option>";
@@ -498,7 +498,7 @@ if (isset($_GET['taskDownload'])) {
 }
 if (isset($_POST['selectDepartment'])) {
   $id = $_POST['departmentSelect'];
-  $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='$id'");
+  $query_result = mysqli_query($con, "SELECT * FROM sections WHERE status=1 AND dept_id='$id'");
   if (mysqli_num_rows($query_result) > 0) {
     while ($row = mysqli_fetch_assoc($query_result)) {
       $sec_id   = $row['sec_id'];
@@ -511,7 +511,7 @@ if (isset($_POST['selectDepartment'])) {
 }
 if (isset($_POST['editDepartment'])) {
   $id = $_POST['departmentSelect'];
-  $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='$id'");
+  $query_result = mysqli_query($con, "SELECT * FROM sections WHERE status=1 AND dept_id='$id'");
   if (mysqli_num_rows($query_result) > 0) {
     while ($row = mysqli_fetch_assoc($query_result)) {
       $selected = ($row['sec_id'] == $get['dept_id']) ? "selected" : "";
