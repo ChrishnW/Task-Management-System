@@ -36,7 +36,7 @@
 
 <body id="page-top">
 
-  <div id="preloader"><img src="../assets/img/illustrations/loading.gif" alt="Loading..."></div>
+  <!-- <div id="preloader"><img src="../assets/img/illustrations/loading.gif" alt="Loading..."></div> -->
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -114,28 +114,15 @@
         </li>
       <?php } elseif ($access == 2) { ?>
         <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            <i class="fas fa-tasks"></i>
-            <span>My Tasks</span>
-          </a>
-          <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">
-                <center />Task Status
-              </h6>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#todo');window.location.href='tasks.php';">Not Yet Started</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#inprogress');window.location.href='tasks.php';">In Progress</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#review');window.location.href='tasks.php';">For Review</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#finished');window.location.href='tasks.php';">Finished</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#reschedule');window.location.href='tasks.php';">For Reschedule</span>
-            </div>
-          </div>
+          <a class="nav-link" href="tasks.php">
+            <i class="fas fa-folder-open"></i>
+            <span>Tasks</span></a>
         </li>
 
         <li class="nav-item">
           <a class="nav-link" href="assign_tasks.php">
-            <i class="fas fa-fw fa-tag"></i>
-            <span>Assigned Task</span></a>
+            <i class="fas fa-list"></i>
+            <span>My Tasks</span></a>
         </li>
 
         <hr class="sidebar-divider">

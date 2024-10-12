@@ -7,7 +7,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 if (isset($_POST['taskImport'])) {
   $fileName     = $_FILES['file']['name'];
-  log_action("Performed bulk import of tasks using Excel file {$fileName}.");
   $file_ext     = pathinfo($fileName, PATHINFO_EXTENSION);
   $allowed_ext  = ['xlsx'];
   if (in_array($file_ext, $allowed_ext)) {
@@ -57,7 +56,7 @@ if (isset($_POST['taskImport'])) {
         $taskTo       = strtoupper(mysqli_real_escape_string($con, $rowValues[0][4]));
         $taskDue      = mysqli_real_escape_string($con, $rowValues[0][5]);
         $taskReq      = mysqli_real_escape_string($con, $rowValues[0][6]);
-        $import_checker = mysqli_query($con, "SELECT t.*, tl.* FROM tasks t JOIN task_list tl ON t.task_id=tl.tl_ID WHERE tl.task_name = '$taskName' AND tl.task_class='$taskClass' AND t.in_charge = '$taskTo' AND t.submission = '$taskDue'");
+        $import_checker = mysqli_query($con, "SELECT * FROM tasks WHERE task_name = '$taskName' AND task_class='$taskClass' AND in_charge = '$taskTo' AND submission = '$taskDue'");
         if (mysqli_num_rows($import_checker) > 0) {
           $duplicateDataFound = true;
           $query_checker = mysqli_query($con, "INSERT INTO task_temp (`task_name`, `task_details`, `task_class`, `task_for`, `in_charge`, `submission`, `attachment`, `status`) values ('$taskName', '$taskDetails', '$taskClass', '$taskFor', '$taskTo', '$taskDue', '$taskReq', 'DUPLICATED')");
@@ -91,15 +90,23 @@ if (isset($_POST['taskImport'])) {
         $submission   = $row['submission'];
         $in_charge    = $row['in_charge'];
         $attachment   = $row['attachment'];
-
+        $status       = 'NOT YET STARTED';
         if (mysqli_num_rows(mysqli_query($con, "SELECT * FROM task_list WHERE task_name='$task_name' AND task_for='$task_for'")) == 0) {
-          $register_task = mysqli_query($con, "INSERT INTO task_list (`task_name`, `task_details`, `task_class`, `task_for`, `date_created`, `status`) VALUES ('$task_name', '$task_details', '$task_class', '$task_for', '$today', 1)");
-          $task_id = mysqli_insert_id($con);
+          $register_task = "INSERT INTO task_list (`task_name`, `task_details`, `task_class`, `task_for`, `date_created`, `status`) VALUES ('$task_name', '$task_details', '$task_class', '$task_for', '$today', 1)";
+          if (!mysqli_query($con, $register_task)) {
+            die("Error registering task: " . mysqli_error($con));
+            $success = false;
+          }
         }
-        $assign_task = mysqli_query($con, "INSERT INTO tasks (`task_id`, `in_charge`, `submission`, `attachment`) VALUES ('$task_id', '$in_charge', '$submission', '$attachment')");
+        if (mysqli_num_rows(mysqli_query($con, "SELECT * FROM tasks WHERE task_name='$task_name' AND in_charge='$in_charge'")) == 0) {
+          $assign_task = "INSERT INTO tasks (`task_name`, `task_class`, `task_details`, `task_for`, `requirement_status`, `in_charge`, `submission`) VALUES ('$task_name', '$task_class', '$task_details', '$task_for', '$attachment', '$in_charge', '$submission')";
+          if (!mysqli_query($con, $assign_task)) {
+            die("Error assigning task: " . mysqli_error($con));
+            $success = false;
+          }
+        }
       }
       if ($success) {
-        log_action("Bulk tasks imported successfully.");
         die("Success");
       }
     }
@@ -109,13 +116,11 @@ if (isset($_POST['taskImport'])) {
 }
 
 if (isset($_GET['importReport'])) {
-  log_action("Downloaded generated report for failed bulk import.");
   header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
   header("Content-Disposition: attachment; filename=Task-Import-Report.xls");
   header("Expires: 0");
   header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
   header("Cache-Control: private", false); ?>
-
   <body>
     <center>
       <b>TASK MANAGEMENT SYSTEM</b>

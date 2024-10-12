@@ -1,5 +1,10 @@
 <?php
-session_start();
-include('connect.php');
-$goto = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM accounts ac JOIN access a ON ac.access=a.id WHERE username='{$_SESSION['SESS_MEMBER_USERNAME']}'"));
-header("location: {$goto['link']}");
+  include('auth.php');
+
+  $con->next_result();
+  $query = mysqli_query($con,"SELECT * FROM accounts INNER JOIN access ON access.id=accounts.access WHERE username = '$username'");
+  $result = mysqli_fetch_assoc($query);
+  if($result){
+    header("location: ".$result['link']."");
+  }
+?>

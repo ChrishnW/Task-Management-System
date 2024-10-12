@@ -127,32 +127,28 @@ include('../include/header.php');
   <?php } elseif ($access == 2) { ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Task List</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Assigned Task List</h6>
         <div class="dropdown no-arrow">
-          <button type="button" onclick="taskDownload(this)" class="btn btn-sm"><i class="fas fa-file-pdf fa-fw text-success"></i> Download</button>
+          <button type="button" onclick="taskDownload(this)" class="btn text-success"><i class="fas fa-file-export fa-fw"></i> Export</button>
         </div>
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
-            <thead class='table table-success'>
+          <table class="table table-hover" id="myTaskTable" width="100%" cellspacing="0">
+            <thead>
               <tr>
-                <th>#</th>
                 <th>Title</th>
                 <th>Classification</th>
                 <th>Details</th>
                 <th>Condition</th>
-                <th>Due Date</th>
+                <th>Scheduled</th>
               </tr>
             </thead>
             <tbody>
-              <?php
-              $result = mysqli_query($con, "SELECT * FROM tasks t JOIN task_list tl ON tl.tl_ID=t.task_id WHERE in_charge='CLOPEZ' AND tl.task_class!=4");
+              <?php $con->next_result();
+              $result = mysqli_query($con, "SELECT * FROM task_list tl JOIN task_class tc ON tc.id=tl.class JOIN tasks t ON t.task_id=tl.id WHERE in_charge='$username' AND t.status=1");
               if (mysqli_num_rows($result) > 0) {
-                $count = 0;
                 while ($row = $result->fetch_assoc()) {
-                  $count += 1;
-                  $task_class = '<span class="badge badge-info">' . $row['task_class'] . '</span>';
                   if ($row['attachment'] == 1) {
                     $requirement = '<span class="badge badge-primary">File Attachment</span>';
                   } else {
@@ -160,12 +156,11 @@ include('../include/header.php');
                   }
               ?>
                   <tr>
-                    <td><?php echo $count ?></td>
                     <td><?php echo $row['task_name'] ?></td>
-                    <td><?php echo getTaskClass($row['task_class']); ?></td>
+                    <td><?php echo getTaskClass($row['class']); ?></td>
                     <td id="td-table-shrink"><?php echo $row['task_details']; ?></td>
                     <td><?php echo $requirement ?></td>
-                    <td><?php echo $row['submission'] ?></td>
+                    <td><?php echo $row['recurrance'] ?></td>
                   </tr>
               <?php }
               } ?>
@@ -341,9 +336,10 @@ include('../include/header.php');
   <?php
   } else { ?>
     $(document).ready(function() {
-      $('#dataTable').DataTable({
+      $('#myTaskTable').DataTable({
         "order": [
-          [0, "asc"]
+          [1, "asc"],
+          [0, "desc"]
         ],
         "pageLength": 10,
         "lengthMenu": [10, 25, 50, 100],

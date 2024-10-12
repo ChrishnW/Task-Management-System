@@ -491,9 +491,9 @@
 }
 
 .bg-image {
-    background-image : url('/assets/img/illustrations/background.png');
+    background-image   : url('/assets/img/illustrations/background.png');
     background-repeat: no-repeat;
-    background-size  : cover;
+    background-size    : cover;
 }
 
 .element::before {
@@ -603,25 +603,4 @@
 
 .v-hidden {
     visibility: hidden;
-}
-
-#error_found {
-    font-size: 12px;
-}
-
-#success_log {
-    font-size: 12px;
-}
-
-.profile-image {
-    width        : 100px;
-    height       : 100px;
-    object-fit   : cover;
-    border-radius: 50%;
-}
-
-.error-msg {
-    color    : red;
-    font-size: 0.9em;
-    display  : none;
 }

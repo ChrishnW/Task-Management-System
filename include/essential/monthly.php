@@ -15,27 +15,18 @@ if (mysqli_num_rows($query_tasks) > 0) {
     $taskFor    = $row['task_for'];
     $inCharge   = $row['in_charge'];
     $getFile    = $row['requirement_status'];
-    $day        = $row['submission'];
-    $dueDate = date("Y-m-d 16:00:00", strtotime("$currentYear-$currentMonth-$day"));
-
-    if (date('w', strtotime($dueDate)) == 0) {
-      $taskStatus = "RESCHEDULE";
-    } else {
-      $query_dayoff = mysqli_query($con, "SELECT * FROM day_off WHERE status=1 AND date_off='$dueDate'");
-      $dayoff = $query_dayoff->num_rows;
-      if ($dayoff > 0) {
-        $taskStatus = "RESCHEDULE";
-      } else {
-        $taskStatus = "NOT YET STARTED";
-      }
+    $dayNumbers = explode(', ', $row['submission']);
+    foreach ($dayNumbers as $day) {
+      $fetchDate = sprintf("%04d-%02d-%02d", $currentYear, $currentMonth, $day);
+      $dueDate   = $fetchDate . ' 16:00:00';
+      $latestcode = mysqli_fetch_assoc(mysqli_query($con, "SELECT MAX(task_code) AS latest_task_code FROM tasks_details WHERE task_class='$taskClass' AND task_for='$taskFor'"))['latest_task_code'];
+      $numeric_portion = intval(substr($latestcode, -6)) + 1;
+      $prefix = ($taskClass == 3) ? 'TM' : 'TR';
+      $taskCode = $taskFor . '-' . $prefix . '-' . str_pad($numeric_portion, 6, '0', STR_PAD_LEFT);
+      $insert_task = "INSERT INTO tasks_details (`task_code`, `task_name`, `task_class`, `task_for`, `in_charge`, `status`, `date_created`, `due_date`, `requirement_status`, `task_status`) VALUES ('$taskCode', '$taskName', '$taskClass', '$taskFor', '$inCharge', 1, '$date_today', '$dueDate', '$getFile', 1)";
+      $result_task = mysqli_query($con, $insert_task);
+      $taskCount += 1;
     }
-    $latestcode = mysqli_fetch_assoc(mysqli_query($con, "SELECT MAX(task_code) AS latest_task_code FROM tasks_details WHERE task_class='$taskClass' AND task_for='$taskFor'"))['latest_task_code'];
-    $numeric_portion = intval(substr($latestcode, -6)) + 1;
-    $prefix = ($taskClass == 3) ? 'TM' : 'TR';
-    $taskCode = $taskFor . '-' . $prefix . '-' . str_pad($numeric_portion, 6, '0', STR_PAD_LEFT);
-    $insert_task = "INSERT INTO tasks_details (`task_code`, `task_name`, `task_class`, `task_for`, `in_charge`, `status`, `date_created`, `due_date`, `requirement_status`, `task_status`) VALUES ('$taskCode', '$taskName', '$taskClass', '$taskFor', '$inCharge', '$taskStatus', '$date_today', '$dueDate', '$getFile', 1)";
-    $result_task = mysqli_query($con, $insert_task);
-    $taskCount += 1;
   }
   if ($result_task) {
     $systemAction = "$taskCount monthly routine & report tasks have been successfully generated.";

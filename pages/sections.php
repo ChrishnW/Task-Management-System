@@ -1,60 +1,74 @@
-<?php
-include('../include/header.php');
+<?php 
+  include('../include/header.php');
 ?>
 
 <div class="container-fluid">
-  <div class="card">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-      <h6 class="m-0 font-weight-bold">Section Management</h6>
-      <div class="dropdown no-arrow">
-        <button type="button" onclick="showCreate(this)" class="btn btn-circle btn-outline-primary">
-          <i class="fas fa-plus fa-sm"></i>
-        </button>
+  <?php if($access == 1) { ?>
+    <div class="card">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
+        <h6 class="m-0 font-weight-bold text-white">Registered Section</h6>
+        <div class="dropdown no-arrow">
+          <button type="button" onclick="showCreate(this)" class="btn btn-primary">
+            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Register New Section
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+            <thead class='table table-success'>
+              <tr>
+                <th>Action</th>
+                <th>Section ID</th>
+                <th>Section Name</th>
+                <th>Department</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tfoot class='table table-success'>
+              <tr>
+                <th>Action</th>
+                <th>Section ID</th>
+                <th>Section Name</th>
+                <th>Department</th>
+                <th>Status</th>
+              </tr>
+            </tfoot>
+            <tbody>
+              <?php $con->next_result();
+              $result = mysqli_query($con, "SELECT section.id, section.sec_id, section.sec_name, section.status, department.dept_name, department.dept_id FROM section JOIN department ON section.dept_id=department.dept_id");
+              if (mysqli_num_rows($result) > 0) {
+                while ($row = $result->fetch_assoc()) {
+                  if ($row['status'] == 1){
+                    $status = "<span class='badge badge-success'>Active</span>";
+                  }
+                  else{
+                    $status = "<span class='badge badge-danger'>Inactive</span>";
+                  }
+                  ?>
+                  <tr>
+                    <td><button type="button" class="btn btn-info btn-block" onclick="editSection(this)" value="<?php echo $row['id'] ?>" data-id="<?php echo $row['sec_id']?>" data-name="<?php echo $row['sec_name'] ?>" data-status="<?php echo $row['status']?>" data-department="<?php echo $row['dept_id']?>"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
+                    <td><span class="badge badge-primary"><?php echo $row['sec_id'] ?></span></td>
+                    <td><?php echo $row['sec_name'] ?></td>
+                    <td><span class="badge badge-primary"><?php echo $row['dept_name'] ?></span></td>
+                    <td><?php echo $status ?></td>
+                  </tr>
+              <?php }
+              } ?>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Section Name</th>
-              <th>Department</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
-            $result = mysqli_query($con, "SELECT * FROM departments d JOIN sections s ON s.dept_id=d.dept_id");
-            if (mysqli_num_rows($result) > 0) {
-              while ($row = $result->fetch_assoc()) {
-                if ($row['status'] == 1) {
-                  $status = "<span class='badge badge-success'>Active</span>";
-                } else {
-                  $status = "<span class='badge badge-danger'>Inactive</span>";
-                }
-            ?>
-                <tr>
-                  <td><span class="badge badge-primary"><?php echo $row['sec_id'] ?></span></td>
-                  <td><?php echo ucwords(strtolower($row['sec_name'])); ?></td>
-                  <td><?php echo ucwords(strtolower($row['dept_name'])); ?></td>
-                  <td><?php echo $status ?></td>
-                  <td><button type="button" class="btn btn-dark btn-sm" onclick="editSection(this)" data-id="<?php echo $row['sec_id'] ?>" data-name="<?php echo $row['sec_name'] ?>" data-status="<?php echo $row['status'] ?>" data-departments="<?php echo $row['dept_id'] ?>"><i class="fas fa-pen-square fa-fw"></i> Edit</button></td>
-                </tr>
-            <?php }
-            } ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+  <?php } elseif($access == 2) { ?>
+  <?php } elseif($access == 3) { ?>
+  <?php } ?>
 </div>
 
 <div class="modal fade" id="createSection" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-    <div class="modal-content border-primary">
-      <div class="modal-header bg-primary text-white">
+    <div class="modal-content border-info">
+      <div class="modal-header bg-info text-white">
         <h5 class="modal-title">Register Section</h5>
       </div>
       <div class="modal-body">
@@ -86,7 +100,7 @@ include('../include/header.php');
               <option value="" selected disabled>--Select Department--</option>
               <?php
               $con->next_result();
-              $sql = mysqli_query($con, "SELECT * FROM departments WHERE status='1'");
+              $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1'");
               if (mysqli_num_rows($sql) > 0) {
                 while ($row = mysqli_fetch_assoc($sql)) { ?>
                   <option value='<?php echo $row['dept_id'] ?>' data-subtext='Department ID <?php echo $row['dept_id'] ?>'><?php echo $row['dept_name'] ?></option>
@@ -98,7 +112,7 @@ include('../include/header.php');
       </div>
       <div class="modal-footer">
         <button type="button" onclick="sectionCreate(this)" class="btn btn-primary">Register</button>
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -139,7 +153,7 @@ include('../include/header.php');
               <option value="" selected disabled>--Select Department--</option>
               <?php
               $con->next_result();
-              $sql = mysqli_query($con, "SELECT * FROM departments WHERE status='1' ORDER BY dept_name");
+              $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' ORDER BY dept_name");
               if (mysqli_num_rows($sql) > 0) {
                 while ($row = mysqli_fetch_assoc($sql)) { ?>
                   <option value='<?php echo $row['dept_id'] ?>' data-subtext='Department ID <?php echo $row['dept_id'] ?>'><?php echo $row['dept_name'] ?></option>
@@ -161,8 +175,61 @@ include('../include/header.php');
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" onclick="sectionUpdate(this)">Update</button>
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="sectionUpdate(this)" id="section_id">Update</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="danger" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLongTitle">Caution!</h5>
+      </div>
+      <div class="modal-body text-center">
+        <input type="hidden" name="delete_sec" id="delete_sec">
+        <i class="fas fa-exclamation-triangle fa-5x text-danger"></i>
+        <br><br>
+        You're about to delete this section, <br> do you still want to proceed?
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="deleteSection(this)" class="btn btn-primary" id="delete_id">Proceed</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="error" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLongTitle">Caution!</h5>
+      </div>
+      <div class="modal-body text-center">
+        <i class="fas fa-sad-cry fa-5x text-danger"></i>
+        <br><br>
+        <p id="error_found"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="success" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
+      </div>
+      <div class="modal-body text-center">
+        <i class="far fa-check-circle fa-5x text-success"></i>
+        <br><br>
+        <p id="success_log"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -172,34 +239,30 @@ include('../include/header.php');
 
 <script>
   $('#dataTable').DataTable({
-    "columnDefs": [{
-      "orderable": false,
-      "searchable": false,
-      "targets": 4
-    }],
-    "order": [
-      [1, "asc"],
-      [3, "asc"]
-    ],
+    "order": [[3, "asc"]],
     "pageLength": 5,
     "lengthMenu": [5, 10, 25, 50, 100]
   });
 
   function editSection(element) {
-    var section_code = element.getAttribute('data-id');
-    var section_name = element.getAttribute('data-name');
-    var section_status = element.getAttribute('data-status');
-    var section_department = element.getAttribute('data-departments');
-    var status_check = document.getElementById('status_text');
+    var section_id          = element.value;
+    var section_code        = element.getAttribute('data-id');
+    var section_name        = element.getAttribute('data-name');
+    var section_status      = element.getAttribute('data-status');
+    var section_department  = element.getAttribute('data-department');
+    var status_check        = document.getElementById('status_text');
+    console.log(section_id);
     $(document).ready(function() {
-      if (section_status === '1') {
+      if (section_status === '1'){
         document.getElementById('sec_status_check').checked = true;
-      } else {
+      }
+      else{
         document.getElementById('sec_status_check').checked = false;
       }
-      document.getElementById('section_code').value = section_code;
-      document.getElementById('section_oldcode').value = section_code;
-      document.getElementById('section_name').value = section_name;
+      document.getElementById('section_id').value         = section_id;
+      document.getElementById('section_code').value       = section_code;
+      document.getElementById('section_oldcode').value    = section_code;
+      document.getElementById('section_name').value       = section_name;
       document.getElementById('section_department').value = section_department;
       $('#editSection').modal('show');
     })
@@ -207,15 +270,17 @@ include('../include/header.php');
 
   function sectionUpdate(element) {
     element.disabled = true;
-    var sec_code = document.getElementById('section_code').value;
+    var sec_id      = element.value;
+    var sec_code    = document.getElementById('section_code').value;
     var sec_oldcode = document.getElementById('section_oldcode').value;
-    var sec_name = document.getElementById('section_name').value;
-    var sec_dept = document.getElementById('section_department').value;
+    var sec_name    = document.getElementById('section_name').value;
+    var sec_dept    = document.getElementById('section_department').value;
     var sec_status_check = document.getElementById('sec_status_check');
     // console.log(update_record);
-    if (sec_status_check.checked) {
+    if (sec_status_check.checked){
       var sec_status = '1';
-    } else {
+    }
+    else {
       var sec_status = '0';
     }
     $.ajax({
@@ -223,6 +288,7 @@ include('../include/header.php');
       url: "../ajax/sections.php",
       data: {
         'sectionUpdate': true,
+        'sec_id': sec_id,
         'sec_code': sec_code,
         'sec_oldcode': sec_oldcode,
         'sec_name': sec_name,
@@ -230,17 +296,13 @@ include('../include/header.php');
         'sec_status': sec_status,
       },
       success: function(response) {
-        console.log(response);
-        if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = sec_name.toUpperCase() + ' details has been updated successfully.';
+        if (response === 'Success'){
+          document.getElementById('success_log').innerHTML = sec_name + ' information has been updated successfully.';
           $('#editSection').modal('hide');
           $('#success').modal('show');
-        } else {
-          if (response !== '' && !response.includes('Warning')) {
-            document.getElementById('error_found').innerHTML = response;
-          } else {
-            document.getElementById('error_found').innerHTML = 'There was an error processing your request.';
-          }
+        }
+        else {
+          document.getElementById('error_found').innerHTML = response;
           $('#error').modal('show');
           element.disabled = false;
         }
@@ -248,15 +310,15 @@ include('../include/header.php');
     })
   }
 
-  function showCreate(element) {
+  function showCreate(element){
     $('#createSection').modal('show');
   }
 
-  function sectionCreate(element) {
+  function sectionCreate(element){
     element.disabled = true;
-    var regsec_name = document.getElementById('register_section_name').value;
-    var regsec_code = document.getElementById('register_section_code').value;
-    var regsec_dept = document.getElementById('register_section_department').value;
+    var regsec_name  = document.getElementById('register_section_name').value;
+    var regsec_code  = document.getElementById('register_section_code').value;
+    var regsec_dept  = document.getElementById('register_section_department').value;
     console.log(regsec_dept);
     $.ajax({
       method: "POST",
@@ -267,17 +329,14 @@ include('../include/header.php');
         "regsec_code": regsec_code,
         "regsec_dept": regsec_dept,
       },
-      success: function(response) {
-        if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = regsec_name + ' has been successfully registered in the system.';
+      success: function(response){
+        if (response === 'Success'){
+          document.getElementById('success_log').innerHTML = regsec_name + ' has been created successfully.';
           $('#createSection').modal('hide');
           $('#success').modal('show');
-        } else {
-          if (response !== '' && !response.includes('Warning')) {
-            document.getElementById('error_found').innerHTML = response;
-          } else {
-            document.getElementById('error_found').innerHTML = 'There was an error processing your request.';
-          }
+        }
+        else {
+          document.getElementById('error_found').innerHTML = response;
           $('#error').modal('show');
           element.disabled = false;
         }

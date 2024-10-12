@@ -194,19 +194,18 @@ include('../include/auth.php');
               <th>Classification</th>
               <th>Details</th>
               <th>Condition</th>
-              <th>Due Date</th>
+              <th>Scheduled</th>
             </tr>
           </thead>
 
           <tbody>
             <?php
-            $result = mysqli_query($con, "SELECT tasks.task_name, tasks.task_details, tasks.submission, task_class.task_class, tasks.requirement_status FROM tasks JOIN task_class ON task_class.id=tasks.task_class WHERE tasks.in_charge='$username' AND tasks.task_class!=4");
+            $result = mysqli_query($con, "SELECT * FROM task_list tl JOIN task_class tc ON tc.id=tl.class JOIN tasks t ON t.task_id=tl.id WHERE in_charge='$username'");
             if (mysqli_num_rows($result) > 0) {
               $count = 0;
               while ($row = $result->fetch_assoc()) {
                 $count += 1;
-                $task_class = '<span class="badge badge-info">' . $row['task_class'] . '</span>';
-                if ($row['requirement_status'] == 1) {
+                if ($row['file'] == 1) {
                   $requirement = '<span class="badge badge-primary">File Attachment</span>';
                 } else {
                   $requirement = '<span class="badge badge-primary">None</span>';
@@ -217,14 +216,14 @@ include('../include/auth.php');
                   </td>
                   <td><?php echo $row['task_name'] ?></td>
                   <td>
-                    <center /><?php echo $task_class ?>
+                    <center /><?php echo $row['task_class'] ?>
                   </td>
                   <td style="white-space: nowrap;"><?php echo $row['task_details']; ?></td>
                   <td>
                     <center /><?php echo $requirement ?>
                   </td>
                   <td>
-                    <center /><?php echo $row['submission'] ?>
+                    <center /><?php echo $row['recurrance'] ?>
                   </td>
                 </tr>
             <?php }

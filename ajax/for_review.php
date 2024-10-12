@@ -29,7 +29,6 @@ if (isset($_POST['approveTask'])) {
     }
     $query_result = mysqli_query($con, "UPDATE tasks_details SET status='FINISHED', achievement='$score', head_name='$head_name', head_note='$head_comment' WHERE id='$id'");
     if ($query_result) {
-      log_action("You reviewed and approved task {$taskCode} for user {$inCharge} successfully.");
       echo "Success";
     } else {
       echo "Unable to complete the operation. Please try again later.";
@@ -39,7 +38,7 @@ if (isset($_POST['approveTask'])) {
 
 if (isset($_POST['viewTask'])) {
   $id = $_POST['taskID'];
-  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name WHERE tasks_details.id='$id'");
+  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name WHERE tasks_details.id='$id' GROUP BY tasks_details.id");
   while ($row = mysqli_fetch_assoc($query_result)) {
     $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
     $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
@@ -48,7 +47,7 @@ if (isset($_POST['viewTask'])) {
     $dueDated           = new DateTime($row['due_date']);
     $finDated           = new DateTime($row['date_accomplished']);
     $findings           = '';
-    if ($finDated->setTime(0,0,0) > $dueDated->setTime(0,0,0)) {
+    if ($finDated->setTime(0, 0, 0) > $dueDated->setTime(0, 0, 0)) {
       $findings .= '<span class="badge badge-danger">Late Submission</span>';
     }
     if ($row['old_date'] !== NULL) {
@@ -113,6 +112,17 @@ if (isset($_POST['viewTask'])) {
             </div>
           </div>
         </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Requirements:</label>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fas fa-info"></i></div>
+              </div>
+              <textarea class="form-control" name="approveDetails" id="approveDetails" readonly> <?php echo $row['task_details'] ?> </textarea>
+            </div>
+          </div>
+        </div>
         <div class="col-md-6">
           <div class="form-group">
             <label>Due Date:</label>
@@ -137,7 +147,7 @@ if (isset($_POST['viewTask'])) {
         </div>
         <div class="col-md-12">
           <div class="form-group">
-            <label>Remarks:</label>
+            <label>Action:</label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
@@ -167,7 +177,7 @@ if (isset($_POST['viewTask'])) {
                     while ($row = mysqli_fetch_assoc($query_result)) {
                       $size   = formatSize($row['file_size']);
                       $action = '<button type="button" class="btn btn-circle btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download"></i></button>';
-                      $action .= (in_array($row['file_type'], ['pdf', 'jpg', 'png', 'jpeg', 'xlsx'])) ? ' <button type="button" class="btn btn-circle btn-info" value="' . $row['id'] . '" onclick="viewFile(this)"><i class="fas fa-eye"></i></button>' : '';
+                      $action .= (in_array(strtolower($row['file_type']), ['pdf', 'jpg', 'png', 'jpeg', 'xlsx'])) ? ' <button type="button" class="btn btn-circle btn-info" value="' . $row['id'] . '" onclick="viewFile(this)"><i class="fas fa-eye"></i></button>' : '';
                       $date   = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
                     ?>
                       <tr>

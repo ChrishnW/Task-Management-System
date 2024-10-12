@@ -53,7 +53,7 @@ include('../include/header.php');
               $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
               return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
             }
-            $result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='RESCHEDULE' AND section.dept_id = '$dept_id'");
+            $result = mysqli_query($con, "SELECT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='RESCHEDULE' AND section.dept_id = '$dept_id' GROUP BY tasks_details.id");
             if (mysqli_num_rows($result) > 0) {
               while ($row = $result->fetch_assoc()) {
                 $due_date = date_format(date_create($row['due_date']), "Y-m-d");
@@ -264,10 +264,10 @@ include('../include/header.php');
           document.getElementById('rejectReason').classList.add('border-danger');
           document.getElementById('textValid').classList.remove('d-none');
         } else {
-          var taskID    = document.getElementById('reschedID').value;
-          var taskUser  = document.getElementById('reschedUser').value;
-          var taskCode  = document.getElementById('reschedCode').value;
-          var reason    = document.getElementById('rejectReason').value;
+          var taskID = document.getElementById('reschedID').value;
+          var taskUser = document.getElementById('reschedUser').value;
+          var taskCode = document.getElementById('reschedCode').value;
+          var reason = document.getElementById('rejectReason').value;
           $.ajax({
             method: "POST",
             url: "../ajax/for_reschedule.php",

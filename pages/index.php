@@ -3,7 +3,14 @@ include('../include/header.php');
 ?>
 
 <div class="container-fluid">
-  <?php if ($access == 1) { ?>
+  <?php if ($access == 1) {
+    $con->next_result();
+    $today = date('Y-m-d 16:00:00');
+    $query_result = mysqli_query($con, "SELECT COUNT(id) as total_tasks, (SELECT COUNT(id) FROM accounts WHERE status=1) as all_accounts, (SELECT COUNT(id) FROM tasks_details WHERE status='PROJECT' AND task_status=1) as project_tasks FROM tasks_details WHERE task_status=1");
+    $row = mysqli_fetch_assoc($query_result);
+    $total_tasks      = $row['total_tasks'];
+    $project_tasks    = $row['project_tasks'];
+    $all_accounts     = $row['all_accounts']; ?>
     <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
     <div class="row">
       <div class="col-xl-3 col-md-6 mb-4">
@@ -298,19 +305,20 @@ include('../include/header.php');
   <?php } elseif ($access == 2) {
     $con->next_result();
     $today = date('Y-m-d');
-    $query_result = mysqli_query($con, "SELECT COUNT(td_ID) as task_today, (SELECT COUNT(t_ID) FROM tasks t JOIN task_list tl ON tl.tl_ID=t.task_id WHERE in_charge='$username' AND task_class!=4) as assigned_task FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id WHERE in_charge='$username' AND task_status=1 AND progress NOT IN ('REVIEW', 'FINISHED', 'RESCHEDULE')");
+    $query_result = mysqli_query($con, "SELECT COUNT(id) as task_today, (SELECT COUNT(id) FROM tasks WHERE in_charge='$username' AND task_class!=4) as assigned_task, (SELECT COUNT(id) FROM tasks WHERE in_charge='$username' AND task_class=5) as total_project, (SELECT COUNT(id) FROM tasks_details WHERE in_charge='$username' AND task_status=1 AND status='IN PROGRESS' AND MONTH(due_date)='$currentMonth' AND YEAR(due_date)='$currentYear') as task_inprogress FROM tasks_details WHERE in_charge='$username' AND task_status=1 AND status='NOT YET STARTED' AND MONTH(due_date)='$currentMonth' AND YEAR(due_date)='$currentYear'");
     $row = mysqli_fetch_assoc($query_result);
-    $task_today       = $row['task_today'];
+    $task_today       = $row['task_today'] + $row['task_inprogress'];
     $assigned_task    = $row['assigned_task'];
-    $total_project    = 0; ?>
-    <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
+    $total_project    = $row['total_project'] ?>
+
+    <!-- <h1 class="h3 mb-4 text-gray-800">Dashboard</h1> -->
     <div class="row">
       <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
           <div class="card-body">
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Current Tasks</div>
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tasks Today</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $task_today ?></div>
               </div>
               <div class="col-auto">
@@ -329,7 +337,7 @@ include('../include/header.php');
           <div class="card-body">
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">List of Assigned Tasks</div>
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Assigned Tasks</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $assigned_task ?></div>
               </div>
               <div class="col-auto">
@@ -473,7 +481,7 @@ include('../include/header.php');
           <?php
           $con->next_result();
           $today = date('Y-m-d 16:00:00');
-          $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON t.t_ID=td.task_id JOIN task_list tl ON tl.tl_ID=t.task_id WHERE task_class=6 AND in_charge='$username' AND date_accomplished IS NULL ORDER BY due_date ASC");
+          $query_result = mysqli_query($con, "SELECT DISTINCT td.task_name, tl.task_details, td.due_date, s.sec_name, s.dept_id FROM tasks_details td JOIN task_list tl ON tl.task_name=td.task_name JOIN section s ON s.sec_id=td.task_for WHERE td.task_class=6 AND td.in_charge='$username' AND td.date_accomplished IS NULL ORDER BY td.due_date ASC");
           if (mysqli_num_rows($query_result) > 0) { ?>
             <div class="card-body scrollable-card-body-md">
               <?php while ($row = $query_result->fetch_assoc()) {
