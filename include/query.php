@@ -27,11 +27,37 @@ function getProgressBadge($status)
 
   return "<span class='badge badge-pill {$badgeClass}'>{$status}</span>";
 }
+
+function formatDBSize($size, $units)
+{
+  for ($i = 0; $size >= 1024 && $i < count($units) - 1; $i++) {
+    $size /= 1024;
+  }
+  return round($size, 2) . ' ' . $units[$i];
+}
+
+function getDirectorySize($dir)
+{
+  $size = 0;
+  foreach (glob(rtrim($dir, '/') . '/*', GLOB_NOSORT) as $each) {
+    $size += is_file($each) ? filesize($each) : getDirectorySize($each);
+  }
+  return $size;
+}
+
+function formatSize($bytes)
+{
+  $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  for ($i = 0; $bytes >= 1024 && $i < count($units) - 1; $i++) {
+    $bytes /= 1024;
+  }
+  return round($bytes, 2) . ' ' . $units[$i];
+}
 // Functions End
 
-// User Task Counter
-$row = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS `Rows`, `progress` FROM `tasks_details` GROUP BY `progress` ORDER BY `progress`"));
-
+// Count Lables
+$deployedTasks = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS total FROM tasks_details WHERE status=1"));
+$activeAccounts = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS total FROM accounts WHERE status=1"));
 
 // Account Profile Picture
 $con->next_result();
@@ -81,42 +107,20 @@ if ($access == 3) {
   $members           = $row['members'];
 }
 
-// Server Statistics
+// Server Database Statistics
 $con->next_result();
-$db_size_query = mysqli_query($con, "SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema='gtms'");
+$db_size_query = mysqli_query($con, "SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema='$db_database'");
 $row    = $db_size_query->fetch_assoc();
 $size   = $row['size'] ? $row['size'] : 0;
 $units  = ['B', 'KB', 'MB', 'GB', 'TB'];
-function formatDBSize($size, $units)
-{
-  for ($i = 0; $size >= 1024 && $i < count($units) - 1; $i++) {
-    $size /= 1024;
-  }
-  return round($size, 2) . ' ' . $units[$i];
-}
 $db_size = formatDBSize($size, $units);
 
-$con->next_result();
-function getDirectorySize($dir)
-{
-  $size = 0;
-  foreach (glob(rtrim($dir, '/') . '/*', GLOB_NOSORT) as $each) {
-    $size += is_file($each) ? filesize($each) : getDirectorySize($each);
-  }
-  return $size;
+// Project Size Statistics
+$rootDir = __DIR__;
+while (!file_exists($rootDir . '/composer.json') && dirname($rootDir) != $rootDir) {
+  $rootDir = dirname($rootDir);
 }
-
-function formatSize($bytes)
-{
-  $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  for ($i = 0; $bytes >= 1024 && $i < count($units) - 1; $i++) {
-    $bytes /= 1024;
-  }
-  return round($bytes, 2) . ' ' . $units[$i];
-}
-
-$projectDir   = 'C:\xampp\htdocs\GTMS';
-$projectSize  = formatSize(getDirectorySize($projectDir));
+$projectSize  = formatSize(getDirectorySize($rootDir));
 
 // Notification Counter
 $con->next_result();
