@@ -257,7 +257,7 @@ include('../include/header.php');
         Do you want to start this task?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal" id="confirmButton">Confirm</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmButton">Confirm</button>
         <button class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -287,7 +287,7 @@ include('../include/header.php');
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-success" data-dismiss="modal" id="requestButton">Request</button>
+        <button class="btn btn-primary" id="requestButton">Request</button>
         <button class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -302,7 +302,7 @@ include('../include/header.php');
       <div class="modal-body text-center" id="finishDetails">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal" id="submitTask">Submit</button>
+        <button type="button" class="btn btn-primary" id="submitTask">Submit</button>
         <button class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -361,8 +361,7 @@ include('../include/header.php');
 
   function endModal(element) {
     element.disabled = true;
-    var id = element.value;
-    console.log(id);
+    const id = element.value;
     $.ajax({
       method: "POST",
       url: "../ajax/tasks.php",
@@ -378,9 +377,9 @@ include('../include/header.php');
     });
 
     $('#submitTask').off('click').on('click', function() {
-      var $button = $(this);
+      const $button = $(this);
       $button.prop('disabled', true);
-      var formData = new FormData(document.getElementById('submitDetails'));
+      const formData = new FormData(document.getElementById('taskEndDetails'));
       formData.append('submitTask', true);
       $.ajax({
         method: "POST",
@@ -450,29 +449,39 @@ include('../include/header.php');
     $('#finish').on('shown.bs.modal', function() {
       const fileInput = document.getElementById('fileInput');
       const fileList = document.getElementById('fileList');
+      const errorMessage = document.getElementById('error-message');
 
       fileInputChangeHandler = function() {
+        errorMessage.textContent = '';
+        const filesArray = Array.from(fileInput.files);
+
+        if (filesArray.length > 5) {
+          errorMessage.textContent = 'You can only upload a maximum of 5 files.';
+          return;
+        }
+
         fileList.innerHTML = '';
 
-        if (fileInput.files.length > 0) {
-          fileList.classList.remove('d-none');
+        filesArray.forEach((file, index) => {
+          const fileItem = document.createElement('div');
+          fileItem.classList.add('file-item');
 
-          Array.from(fileInput.files).forEach((file, index) => {
-            const fileItem = document.createElement('div');
-            fileItem.classList.add('file-item');
+          fileItem.innerHTML = `
+                    <span>${file.name} (${(file.size / 1024).toFixed(2)} KB)</span>
+                    <span class="remove-btn" data-index="${index}">
+                        <i class="fas fa-trash-alt fa-fw"></i>
+                    </span>
+                `;
 
-            fileItem.innerHTML = `<span>${file.name} (${(file.size / 1024).toFixed(2)} KB)</span><i class="fas fa-times remove-btn" data-index="${index}"></i></span>`;
-
-            fileList.appendChild(fileItem);
-          });
-        } else {
-          fileList.classList.add('d-none');
-        }
+          fileList.appendChild(fileItem);
+        });
       };
 
       fileListClickHandler = function(e) {
-        if (e.target.classList.contains('remove-btn')) {
-          const index = e.target.getAttribute('data-index');
+        e.stopPropagation();
+
+        if (e.target.closest('.remove-btn')) {
+          const index = e.target.closest('.remove-btn').getAttribute('data-index');
           const filesArray = Array.from(fileInput.files);
 
           filesArray.splice(index, 1);
@@ -492,13 +501,14 @@ include('../include/header.php');
     $('#finish').on('hidden.bs.modal', function() {
       const fileInput = document.getElementById('fileInput');
       const fileList = document.getElementById('fileList');
+      const errorMessage = document.getElementById('error-message');
 
       fileInput.removeEventListener('change', fileInputChangeHandler);
       fileList.removeEventListener('click', fileListClickHandler);
 
       fileList.innerHTML = '';
       fileInput.value = '';
-      fileList.classList.add('d-none');
+      errorMessage.textContent = '';
     });
   });
 
