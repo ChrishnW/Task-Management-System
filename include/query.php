@@ -28,6 +28,17 @@ function getProgressBadge($status)
   return "<span class='badge badge-pill {$badgeClass}'>{$status}</span>";
 }
 
+function getUser($username)
+{
+  global $con;
+  $user = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM accounts WHERE username='$username'"));
+  $name = ucwords(strtolower($user['fname'] . ' ' . $user['lname']));
+  $image = empty($user["file_name"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $user["file_name"];
+  $userDetails = "<img src='$image' class='img-table'>$name";
+
+  return $userDetails;
+}
+
 function formatDBSize($size, $units)
 {
   for ($i = 0; $size >= 1024 && $i < count($units) - 1; $i++) {
