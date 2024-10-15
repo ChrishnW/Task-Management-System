@@ -53,26 +53,11 @@ include('../include/header.php');
             </thead>
             <tbody id='dataTableBody'>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id = '$dept_id' GROUP BY tasks_details.id");
+              $result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND td.status='REVIEW' AND s.dept_id = '$dept_id'");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
-                  if (empty($row['file_name'])) {
-                    $assigneeURL = '../assets/img/user-profiles/nologo.png';
-                  } else {
-                    $assigneeURL = '../assets/img/user-profiles/' . $row['file_name'];
-                  }
-                  $task_classes = [1 => ['name' => 'DAILY ROUTINE', 'badge' => 'info'], 2 => ['name' => 'WEEKLY ROUTINE', 'badge' => 'info'], 3 => ['name' => 'MONTHLY ROUTINE', 'badge' => 'info'], 4 => ['name' => 'ADDITIONAL TASK', 'badge' => 'info'], 5 => ['name' => 'PROJECT', 'badge' => 'info'], 6 => ['name' => 'MONTHLY REPORT', 'badge' => 'danger']];
-                  if (isset($task_classes[$row['task_class']])) {
-                    $class = $task_classes[$row['task_class']]['name'];
-                    $badge = $task_classes[$row['task_class']]['badge'];
-                  } else {
-                    $class = 'Unknown';
-                    $badge = 'secondary';
-                  }
-                  $task_class         = '<span class="badge badge-' . $badge . '">' . $class . '</span>';
                   $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
                   $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-                  $assignee           = '<img src=' . $assigneeURL . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . '';
                   $icon = "<i class='fas fa-info-circle' data-toggle='tooltip' data-placement='right' title='{$row['task_details']}'></i>";
                   if ((new DateTime($row['date_accomplished']))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0)) {
                     $icon .= " <i class='fas fa-hourglass-end text-danger' data-toggle='tooltip' data-placement='right' title='Late Submission'></i>";
@@ -89,10 +74,10 @@ include('../include/header.php');
                     <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
                     <td><?php echo $row['task_code'] ?></td>
                     <td><?php echo $row['task_name'] . ' ' . $icon ?></td>
-                    <td><?php echo $task_class ?></td>
+                    <td><?php echo getTaskClass($row['task_class']); ?></td>
                     <td><?php echo $due_date ?></td>
                     <td><?php echo $date_accomplished ?></td>
-                    <td><?php echo $assignee ?></td>
+                    <td><?php echo getUser($row['in_charge']); ?></td>
                   </tr>
               <?php }
               } ?>
@@ -209,6 +194,11 @@ include('../include/header.php');
 
 <script>
   $('#dataTable').DataTable({
+    "columnDefs": [{
+      "orderable": false,
+      "searchable": false,
+      "targets": 0
+    }],
     "order": [
       [6, "desc"],
       [3, "asc"]
@@ -235,7 +225,7 @@ include('../include/header.php');
     $('#dataTableBody').empty();
     $.ajax({
       method: "POST",
-      url: "../ajax/for_review.php",
+      url: "../config/for_review.php",
       data: {
         "filterTable": true,
         "taskClass": taskClass,
@@ -261,7 +251,7 @@ include('../include/header.php');
     var taskID = element.value;
     $.ajax({
       method: "POST",
-      url: "../ajax/for_review.php",
+      url: "../config/for_review.php",
       data: {
         "viewTask": true,
         "taskID": taskID,
@@ -291,7 +281,7 @@ include('../include/header.php');
       console.log(formData);
       $.ajax({
         method: "POST",
-        url: "../ajax/for_review.php",
+        url: "../config/for_review.php",
         data: formData,
         contentType: false,
         processData: false,
@@ -312,24 +302,29 @@ include('../include/header.php');
 
   function downloadFile(element) {
     var id = element.value;
-    window.location.href = '../ajax/tasks.php?downloadFile=true&id=' + id;
+    window.location.href = '../config/tasks.php?downloadFile=true&id=' + id;
   }
 
   function viewFile(element) {
     var id = element.value;
     var modalBody = document.getElementById('modalBodyContent');
     modalBody.innerHTML = 'Loading...';
-    fetch('../ajax/for_review.php?getFile=true&id=' + id)
+    fetch('../config/for_review.php?getFile=true&id=' + id)
       .then(response => response.json())
       .then(data => {
         var filePath = data.filePath;
         var fileType = data.fileType;
-        var allowedExtensions = ['pdf', 'jpg', 'png', 'jpeg'];
+        var allowedExtensions = [
+          'pdf', 'jpg', 'jpeg', 'png', 'gif', 'bmp',
+          'tiff', 'tif', 'webp', 'svg', 'heif', 'heic',
+          'PDF', 'JPG', 'JPEG', 'PNG', 'GIF', 'BMP',
+          'TIFF', 'TIF', 'WEBP', 'SVG', 'HEIF', 'HEIC'
+        ];
 
         if (allowedExtensions.includes(fileType)) {
           modalBody.innerHTML = '<iframe src="' + filePath + '" style="width:100%; height:500px;" frameborder="0"></iframe>';
         } else {
-          fetch('../ajax/for_review.php?loadFile=true&file=' + filePath)
+          fetch('../config/for_review.php?loadFile=true&file=' + filePath)
             .then(response => response.text())
             .then(data => {
               modalBody.innerHTML = data;
@@ -352,7 +347,7 @@ include('../include/header.php');
     $('#approve').modal('show');
     $('#confirmButton').off('click').on('click', function() {
       $.ajax({
-        url: '../ajax/for_review.php',
+        url: '../config/for_review.php',
         method: 'POST',
         data: {
           "approveMultiple": true,

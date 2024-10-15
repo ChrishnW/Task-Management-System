@@ -19,10 +19,22 @@ if (isset($_POST['sectionUpdate'])) {
   if (!$error) {
     $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM section WHERE id='$sec_id'"));
     if ($row['sec_id'] !== $sec_code) {
+      log_action("Updated Section ID from {$row['sec_id']} to {$sec_code}.");
       $codeFlag = true;
+    }
+    if ($row['sec_name'] !== $sec_name) {
+      log_action("Updated Section Name from {$row['sec_name']} to {$sec_name}.");
+    }
+    if ($row['dept_id'] !== $sec_department) {
+      log_action("Updated Section Department from {$row['dept_id']} to {$sec_department}.");
     }
     if ($row['status'] !== $sec_status) {
       $statusFlag = true;
+      if ($sec_status == 1) {
+        log_action("Updated Section Status of {$sec_name} from Inactive to Active.");
+      } else {
+        log_action("Updated Section Status of {$sec_name} from Active to Inactive.");
+      }
     }
     $query_update = mysqli_query($con, "UPDATE section SET sec_id='$sec_code', sec_name='$sec_name', dept_id='$sec_department', status='$sec_status' WHERE id='$sec_id'");
     if ($codeFlag) {

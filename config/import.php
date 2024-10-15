@@ -7,6 +7,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 if (isset($_POST['taskImport'])) {
   $fileName     = $_FILES['file']['name'];
+  log_action("Performed bulk import of tasks using Excel file {$fileName}.");
   $file_ext     = pathinfo($fileName, PATHINFO_EXTENSION);
   $allowed_ext  = ['xlsx'];
   if (in_array($file_ext, $allowed_ext)) {
@@ -107,6 +108,7 @@ if (isset($_POST['taskImport'])) {
         }
       }
       if ($success) {
+        log_action("Bulk tasks imported successfully.");
         die("Success");
       }
     }
@@ -116,6 +118,7 @@ if (isset($_POST['taskImport'])) {
 }
 
 if (isset($_GET['importReport'])) {
+  log_action("Downloaded generated report for failed bulk import.");
   header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
   header("Content-Disposition: attachment; filename=Task-Import-Report.xls");
   header("Expires: 0");

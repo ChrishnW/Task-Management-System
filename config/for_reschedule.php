@@ -31,6 +31,7 @@ if (isset($_POST['rejectTask'])) {
     $action = mysqli_real_escape_string($con, "window.location.href='tasks.php';");
     $query_insert = mysqli_query($con, "INSERT INTO `notification` (`user`, `icon`, `type`, `body`, `action`, `date_created`, `status`) VALUES ('$taskUser', 'fas fa-times', 'danger', 'Request for reschedule of task $taskCode has been rejected for the following reason:<br><b>$reason.</b>', '$action', '$datetime_current', '1')");
     if ($query_insert) {
+      log_action("You have rejected the reschedule request of user {$taskUser} for task {$taskCode}.");
       echo "Success";
     } else {
       die('An unexpected error has occurred. Please try again.');
@@ -40,7 +41,7 @@ if (isset($_POST['rejectTask'])) {
 
 if (isset($_POST['viewTask'])) {
   $id = $_POST['taskID'];
-  $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name WHERE tasks_details.id='$id'")); ?>
+  $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.id='$id'")); ?>
   <form id="approveRequest" enctype="multipart/form-data">
     <input type="hidden" id="reschedID" name="reschedID" value="<?php echo $row['id']; ?>">
     <input type="hidden" id="reschedCode" name="reschedCode" value="<?php echo $row['task_code']; ?>">
@@ -50,7 +51,7 @@ if (isset($_POST['viewTask'])) {
       <div class="input-group-prepend">
         <div class="input-group-text"><i class="fas fa-user"></i></div>
       </div>
-      <input type="text" id="resched_user" name="resched_user" class="form-control" value="<?php echo ucwords(strtolower($row['Mname'])); ?>" readonly>
+      <input type="text" id="resched_user" name="resched_user" class="form-control" value="<?php echo getName($row['in_charge']); ?>" readonly>
     </div>
     <label for="">Task Name:</label>
     <div class="input-group mb-2">
@@ -91,24 +92,18 @@ if (isset($_POST['filterTable'])) {
   $taskClass  = $_POST['taskClass'];
   $date_to    = $_POST['date_to'];
   $date_from  = $_POST['date_from'];
-  function getTaskClass($taskClassNumber)
-  {
-    $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
-    return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
-  }
-  $query = "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='RESCHEDULE' AND section.dept_id = '$dept_id'";
-  if ($date_to != NULL && $date_from != NULL) {
-    $query .= " AND DATE(tasks_details.date_accomplished) >= '$date_to' AND DATE(tasks_details.date_accomplished) <= '$date_from'";
+  $query = "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND td.status='RESCHEDULE' AND s.dept_id = '$dept_id'";
+  if ($date_from != NULL && $date_to != NULL) {
+    $query .= " AND DATE(td.old_date) >= '$date_from' AND DATE(td.old_date) <= '$date_to'";
   }
   if ($taskClass != '') {
-    $query .= " AND tasks_details.task_class='$taskClass'";
+    $query .= " AND tl.task_class='$taskClass'";
   }
   $result = mysqli_query($con, $query);
   if (mysqli_num_rows($result) > 0) {
     while ($row = $result->fetch_assoc()) {
       $due_date = date_format(date_create($row['due_date']), "Y-m-d");
-      $old_date = date_format(date_create($row['old_date']), "Y-m-d");
-      $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
+      $old_date = date_format(date_create($row['old_date']), "Y-m-d"); ?>
       <tr>
         <td><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
         <td><?php echo $row['task_code'] ?></td>
@@ -116,7 +111,7 @@ if (isset($_POST['filterTable'])) {
         <td><?php echo getTaskClass($row['task_class']); ?></td>
         <td><?php echo $due_date ?></td>
         <td><?php echo $old_date ?></td>
-        <td><?php echo $assignee ?></td>
+        <td><?php echo getUser($row['in_charge']); ?></td>
       </tr>
 <?php }
   }

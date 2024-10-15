@@ -38,6 +38,15 @@
             </tr>
           </thead>
           <tbody id='dataTableBody'>
+            <?php
+            $query_activity = mysqli_query($con, "SELECT * FROM system_log WHERE user='$username'");
+            while ($row = $query_activity->fetch_assoc()) { ?>
+              <tr>
+                <td><?php echo date_format(date_create($row['date_created']), "Y-m-d H:i:s"); ?></td>
+                <td><?php echo $row['action']; ?></td>
+              </tr>
+            <?php }
+            ?>
           </tbody>
         </table>
       </div>
@@ -222,36 +231,6 @@
   </div>
 </div>
 
-<!-- Global Modal -->
-<div class="modal fade" id="error" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-danger justify-content-center">
-        <i class="far fa-times-circle fa-5x text-white"></i>
-      </div>
-      <div class="modal-body text-center">
-        <h4 class="modal-title">Ooops!</h4>
-        <p id="error_found"></p>
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="success" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-success justify-content-center">
-        <i class="far fa-check-circle fa-5x text-white"></i>
-      </div>
-      <div class="modal-body text-center">
-        <h4 class="modal-title">Success!</h4>
-        <p id="success_log"></p>
-        <button type="button" class="btn btn-outline-secondary" onclick="location.reload();">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- Bootstrap core JavaScript-->
 <script src="../vendor/jquery/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
@@ -276,7 +255,7 @@
 <!-- Custom Scripts Global -->
 <script>
   window.onload = function() {
-    // document.getElementById('preloader').style.display = 'none';
+    document.getElementById('preloader').style.display = 'none';
     document.getElementById('wrapper').style.visibility = 'visible';
   };
 

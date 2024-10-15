@@ -60,7 +60,7 @@ include('../include/header.php');
                         <textarea id="task_details" class="form-control"></textarea>
                       </div>
                       <button onclick="location.reload();" class="btn btn-danger">Clear</button>
-                      <button onclick="taskRegister(this);" type="button" class="btn btn-success">Register</button>
+                      <button onclick="taskRegister(this);" type="button" class="btn btn-success" disabled>Register</button>
                     </form>
                   </div>
                 </div>
@@ -80,6 +80,7 @@ include('../include/header.php');
                         <th>Task Name</th>
                         <th>Details</th>
                         <th>Classification</th>
+                        <th>Registered</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -87,11 +88,11 @@ include('../include/header.php');
                     <tbody>
                       <?php
                       $sectionID = $row['sec_id'];
-                      $taskTable = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.class WHERE task_for = '$sectionID'");
+                      $taskTable = mysqli_query($con, "SELECT task_list.id, task_list.task_name, task_list.task_details, task_class.task_class, section.sec_name, task_list.date_created, task_list.status FROM task_list LEFT JOIN task_class ON task_class.id = task_list.task_class LEFT JOIN section ON section.sec_id = task_list.task_for WHERE task_list.status = '1' AND task_list.task_for = '$sectionID'");
                       $number = 0;
                       while ($taskRow = mysqli_fetch_array($taskTable)) {
                         $number += 1;
-                        $date = date('F d, Y', strtotime($taskRow['registered']));
+                        $date = date('F d, Y', strtotime($taskRow['date_created']));
                         if ($taskRow['status'] == 1) {
                           $status = '<span class="badge badge-success">Active</span>';
                         } else {
@@ -101,20 +102,13 @@ include('../include/header.php');
                           <td><?php echo $number ?></td>
                           <td><?php echo $taskRow['task_name']; ?></td>
                           <td id="td-table-shrink"><?php echo $taskRow['task_details'] ?></td>
-                          <td><?php echo getTaskClass($taskRow['class']); ?></td>
+                          <td><?php echo $taskRow['task_class'] ?></td>
+                          <td><?php echo $date ?></td>
                           <td>
                             <center /><?php echo $status ?>
                           </td>
                           <td>
-                            <div class="btn-group">
-                              <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fas fa-cog fa-fw"></i> Settings</button>
-                              <div class="dropdown-menu">
-                                <button type="button" class="dropdown-item" value="<?php echo $taskRow['id']; ?>" onclick="editSelect(this)"><i class="fas fa-cog fa-fw"></i> Edit information</button>
-                                <div class="dropdown-divider"></div>
-                                <?php echo $taskRow['status'] == 0 ? '<button type="button" class="dropdown-item" value="1" data-user=' . $taskRow['id'] . ' onclick="changeStatus(this)"><i class="fas fa-toggle-on fa-fw"></i> Activate user</button>' : '<button type="button" class="dropdown-item" value="0" data-user=' . $taskRow['id'] . ' onclick="changeStatus(this)"><i class="fas fa-toggle-off fa-fw"></i> Deactivate task</button>'; ?>
-                                <button type="button" class="dropdown-item" disabled><i class="fas fa-trash fa-fw"></i> Delete task</button>
-                              </div>
-                            </div>
+                            <center /><button type="button" onclick="deleteSelect(this);" value="<?php echo $taskRow['id']; ?>" class="btn btn-danger btn-circle btn-md" disabled><i class="fas fa-trash"></i></button> <button type="button" onclick="editSelect(this);" value="<?php echo $taskRow['id']; ?>" class="btn btn-info btn-circle btn-md"><i class="fas fa-pen"></i></button>
                           </td>
                         </tr>
                       <?php } ?>
@@ -254,7 +248,7 @@ include('../include/header.php');
     console.log(taskEditID);
     $.ajax({
       method: "POST",
-      url: "../ajax/registered_tasks.php",
+      url: "../config/registered_tasks.php",
       data: {
         'editSelect': true,
         'taskEditID': taskEditID,
@@ -283,7 +277,7 @@ include('../include/header.php');
 
     $.ajax({
       method: "POST",
-      url: "../ajax/registered_tasks.php",
+      url: "../config/registered_tasks.php",
       data: {
         'taskUpdate': true,
         'taskUpdate_id': taskUpdate_id,
@@ -317,7 +311,7 @@ include('../include/header.php');
     var delete_id = document.getElementById('hidden_id').value;
     $.ajax({
       method: "POST",
-      url: "../ajax/registered_tasks.php",
+      url: "../config/registered_tasks.php",
       data: {
         'deleteTask': true,
         'delete_id': delete_id,
@@ -345,7 +339,7 @@ include('../include/header.php');
     console.log(task_details);
     $.ajax({
       method: "POST",
-      url: "../ajax/registered_tasks.php",
+      url: "../config/registered_tasks.php",
       data: {
         'taskRegister': true,
         'task_name': task_name,

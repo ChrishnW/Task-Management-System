@@ -8,23 +8,7 @@ include('../include/header.php');
 <div class="container-fluid">
   <?php if ($access == 1) { ?>
   <?php } elseif ($access == 2) {
-    function getPercentage($average)
-    {
-      if ($average == 5.0) {
-        return 105;
-      } elseif ($average >= 4.0 && $average <= 4.99) {
-        return 100 + (($average - 4.0) / (4.99 - 4.0)) * (104 - 100);
-      } elseif ($average >= 3.0 && $average <= 3.99) {
-        return 90 + (($average - 3.0) / (3.99 - 3.0)) * (99 - 90);
-      } elseif ($average >= 2.0 && $average <= 2.99) {
-        return 80 + (($average - 2.0) / (2.99 - 2.0)) * (89 - 80);
-      } elseif ($average >= 0.0 && $average <= 1.99) {
-        return 70 + (($average - 0.0) / (1.99 - 0.0)) * (79 - 70);
-      } else {
-        return 0;
-      }
-    }
-    $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT *, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$username' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class != 6) AS routineTotal, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$username' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS reportTotal, (SELECT SUM(achievement) FROM tasks_details WHERE in_charge = '$username' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class != 6) AS routineSUM, (SELECT SUM(achievement) FROM tasks_details WHERE in_charge = '$username' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS reportSUM FROM tasks_details WHERE task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND in_charge = '$username'"));
+    $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS overall_tasks_count, SUM(CASE WHEN tl.task_class!=6 THEN 1 ELSE 0 END) AS routineTotal, SUM(CASE WHEN tl.task_class != 6 THEN td.achievement ELSE 0 END) AS routineSUM, SUM(CASE WHEN tl.task_class=6 THEN 1 ELSE 0 END) AS reportTotal, SUM(CASE WHEN tl.task_class = 6 THEN td.achievement ELSE 0 END) AS reportSUM FROM task_list tl JOIN tasks t ON tl.id = t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status = 1 AND MONTH(td.due_date) = MONTH(CURRENT_DATE) AND YEAR(td.due_date) = YEAR(CURRENT_DATE) AND t.in_charge='$username'"));
     $routine_average    = $row['routineTotal'] > 0 ? number_format(($row['routineSUM'] / $row['routineTotal']), 2) : 0;
     $routine_percentage = $row['routineTotal'] > 0 ? number_format(getPercentage($routine_average), 2) : 0;
     $report_average     = $row['reportTotal'] > 0 ? number_format(($row['reportSUM'] / $row['reportTotal']), 2) : 0;
@@ -188,7 +172,6 @@ include('../include/header.php');
           <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
             <thead class='table table-success'>
               <tr>
-                <th class="col col-md-1">Rank</th>
                 <th>Member</th>
                 <th>Section</th>
                 <th>Task Count</th>
@@ -199,31 +182,12 @@ include('../include/header.php');
             </thead>
             <tbody id='dataTableBody' id="print-include">
               <?php
-              $con->next_result();
-              function getPercentage($average)
-              {
-                if ($average == 5.0) {
-                  return 105;
-                } elseif ($average >= 4.0 && $average <= 4.99) {
-                  return 100 + (($average - 4.0) / (4.99 - 4.0)) * (104 - 100);
-                } elseif ($average >= 3.0 && $average <= 3.99) {
-                  return 90 + (($average - 3.0) / (3.99 - 3.0)) * (99 - 90);
-                } elseif ($average >= 2.0 && $average <= 2.99) {
-                  return 80 + (($average - 2.0) / (2.99 - 2.0)) * (89 - 80);
-                } elseif ($average >= 0.0 && $average <= 1.99) {
-                  return 70 + (($average - 0.0) / (1.99 - 0.0)) * (79 - 70);
-                } else {
-                  return 0;
-                }
-              }
-
               $query = "SELECT accounts.*, section.dept_id, section.sec_name FROM accounts JOIN section ON section.sec_id = accounts.sec_id WHERE section.dept_id = '$dept_id' AND accounts.access = 2";
               $result = mysqli_query($con, $query);
               while ($row = $result->fetch_assoc()) {
                 $imageURL = empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name'];
                 $assignee = $row['username'];
-                $rows = mysqli_fetch_assoc(mysqli_query($con, "SELECT *, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class != 6) AS routineTotal, (SELECT COUNT(id) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS reportTotal, (SELECT SUM(achievement) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class != 6) AS routineSUM, (SELECT SUM(achievement) FROM tasks_details WHERE in_charge = '$assignee' AND task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND task_class = 6) AS reportSUM FROM tasks_details WHERE task_status = 1 AND MONTH(due_date) = MONTH(CURRENT_DATE) AND YEAR(due_date) = YEAR(CURRENT_DATE) AND in_charge = '$assignee'"));
-
+                $rows = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS overall_tasks_count, SUM(CASE WHEN tl.task_class!=6 THEN 1 ELSE 0 END) AS routineTotal, SUM(CASE WHEN tl.task_class != 6 THEN td.achievement ELSE 0 END) AS routineSUM, SUM(CASE WHEN tl.task_class=6 THEN 1 ELSE 0 END) AS reportTotal, SUM(CASE WHEN tl.task_class = 6 THEN td.achievement ELSE 0 END) AS reportSUM FROM task_list tl JOIN tasks t ON tl.id = t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status = 1 AND MONTH(td.due_date) = MONTH(CURRENT_DATE) AND YEAR(td.due_date) = YEAR(CURRENT_DATE) AND t.in_charge='$assignee'"));
                 $task_total         = $rows['routineTotal'] + $rows['reportTotal'];
                 $routine_average    = $rows['routineTotal'] > 0 ? number_format(($rows['routineSUM'] / $rows['routineTotal']), 2) : 0;
                 $routine_percentage = $rows['routineTotal'] > 0 ? number_format(getPercentage($routine_average), 2) : 0;
@@ -231,7 +195,6 @@ include('../include/header.php');
                 $report_percentage  = $rows['reportTotal'] > 0 ? number_format(getPercentage($report_average), 2) : 0;
               ?>
                 <tr>
-                  <td></td>
                   <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
                   <td><?php echo $row['sec_name']; ?></td>
                   <td id="print-exclude">
@@ -241,7 +204,7 @@ include('../include/header.php');
                   </td>
                   <td><?php echo $routine_percentage ?? '0'; ?> (Routine) <p class="text-danger"><?php echo $report_percentage ?? '0' ?> (Report)</p>
                   </td>
-                  <td id="print-exclude"><button class="btn btn-block btn-primary btn-sm" value="<?php echo $row['id']; ?>" onclick="viewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
+                  <td id="print-exclude"><button class="btn btn-block btn-primary btn-sm" value="<?php echo $row['username']; ?>" onclick="viewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
                 </tr>
               <?php } ?>
             </tbody>
@@ -272,31 +235,15 @@ include('../include/header.php');
 
 <script>
   $('#dataTable').DataTable({
+    "columnDefs": [{
+      "orderable": false,
+      "searchable": false,
+      "targets": 5
+    }],
     "order": [
-      [4, "desc"],
-      [3, "desc"]
-    ],
-    "pageLength": 5,
-    "lengthMenu": [5, 10, 25, 50, 100],
-    "drawCallback": function(settings) {
-      var api = this.api();
-      var pageInfo = api.page.info();
-      api.column(0, {
-        page: 'current'
-      }).nodes().each(function(cell, i) {
-        var globalIndex = i + 1 + pageInfo.start;
-        $(cell).addClass('rank-cell').removeClass('top1 top2 top3');
-        if (globalIndex === 1) {
-          $(cell).addClass('top1').html('<i class="fas fa-crown"></i> 1');
-        } else if (globalIndex === 2) {
-          $(cell).addClass('top2').html('<i class="fas fa-medal"></i> 2');
-        } else if (globalIndex === 3) {
-          $(cell).addClass('top3').html('<i class="fas fa-medal"></i> 3');
-        } else {
-          $(cell).html(globalIndex);
-        }
-      });
-    }
+      [3, "desc"],
+      [2, "desc"]
+    ]
   });
 
   function calculate(element) {
@@ -323,36 +270,20 @@ include('../include/header.php');
     $('#dataTableBody').empty();
     $.ajax({
       method: "POST",
-      url: "../ajax/performance.php",
+      url: "../config/performance.php",
       data: sortdata,
       success: function(response) {
         $('#dataTableBody').append(response);
         $('#dataTable').DataTable({
+          "columnDefs": [{
+            "orderable": false,
+            "searchable": false,
+            "targets": 5
+          }],
           "order": [
-            [4, "desc"],
-            [3, "desc"]
-          ],
-          "pageLength": 5,
-          "lengthMenu": [5, 10, 25, 50, 100],
-          "drawCallback": function(settings) {
-            var api = this.api();
-            var pageInfo = api.page.info();
-            api.column(0, {
-              page: 'current'
-            }).nodes().each(function(cell, i) {
-              var globalIndex = i + 1 + pageInfo.start;
-              $(cell).addClass('rank-cell').removeClass('top1 top2 top3');
-              if (globalIndex === 1) {
-                $(cell).addClass('top1').html('<i class="fas fa-crown"></i> 1');
-              } else if (globalIndex === 2) {
-                $(cell).addClass('top2').html('<i class="fas fa-medal"></i> 2');
-              } else if (globalIndex === 3) {
-                $(cell).addClass('top3').html('<i class="fas fa-medal"></i> 3');
-              } else {
-                $(cell).html(globalIndex);
-              }
-            });
-          }
+            [3, "desc"],
+            [2, "desc"]
+          ]
         });
       }
     })
@@ -372,7 +303,7 @@ include('../include/header.php');
     }
     $.ajax({
       method: "POST",
-      url: "../ajax/performance.php",
+      url: "../config/performance.php",
       data: data,
       success: function(response) {
         $('#ajaxContents').html(response);
@@ -389,13 +320,13 @@ include('../include/header.php');
   }
 
   function showPerformance(element) {
-    var account_id = <?php echo json_encode($emp_id) ?>;
+    var id = <?php echo json_encode($username) ?>;
     $.ajax({
       method: "POST",
-      url: "../ajax/performance.php",
+      url: "../config/performance.php",
       data: {
         "showPerformance": true,
-        "account_id": account_id
+        "id": id
       },
       success: function(response) {
         $('#ajaxContents').html(response);

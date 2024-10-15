@@ -98,7 +98,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
       formData.append('taskImport', true);
       $.ajax({
         type: 'POST',
-        url: "../ajax/import.php",
+        url: "../config/import.php",
         data: formData,
         contentType: false,
         processData: false,
@@ -121,6 +121,6 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
   }
 
   function generateReport() {
-    window.open('../ajax/import.php?importReport=true');
+    window.open('../config/import.php?importReport=true');
   }
 </script>

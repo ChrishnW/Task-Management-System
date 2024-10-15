@@ -36,7 +36,7 @@
 
 <body id="page-top">
 
-  <!-- <div id="preloader"><img src="../assets/img/illustrations/loading.gif" alt="Loading..."></div> -->
+  <div id="preloader"><img src="../assets/img/illustrations/loading.gif" alt="Loading..."></div>
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -58,13 +58,12 @@
 
       <li class="nav-item">
         <a class="nav-link" href="index.php">
-          <i class="fas fa-th-large fa-fw "></i>
+          <i class="fas fa-th fa-fw "></i>
           <span>Dashboard</span></a>
       </li>
 
       <hr class="sidebar-divider">
 
-      <div class="sidebar-heading"> Components </div>
       <?php if ($access == 1) { ?>
         <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -113,16 +112,30 @@
           </div>
         </li>
       <?php } elseif ($access == 2) { ?>
+        <div class="sidebar-heading"> Components </div>
         <li class="nav-item">
-          <a class="nav-link" href="tasks.php">
-            <i class="fas fa-folder-open"></i>
-            <span>Tasks</span></a>
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <i class="fas fa-tasks"></i>
+            <span>My Tasks</span>
+          </a>
+          <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header">
+                <center />Task Status
+              </h6>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#todo');window.location.href='tasks.php';">Not Yet Started</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#inprogress');window.location.href='tasks.php';">In Progress</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#review');window.location.href='tasks.php';">For Review</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#finished');window.location.href='tasks.php';">Finished</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#reschedule');window.location.href='tasks.php';">For Reschedule</span>
+            </div>
+          </div>
         </li>
 
         <li class="nav-item">
           <a class="nav-link" href="assign_tasks.php">
-            <i class="fas fa-list"></i>
-            <span>My Tasks</span></a>
+            <i class="fas fa-fw fa-tag"></i>
+            <span>Assigned Task</span></a>
         </li>
 
         <hr class="sidebar-divider">
@@ -133,6 +146,8 @@
             <span>Performance</span></a>
         </li>
       <?php } elseif ($access == 3) { ?>
+        <div class="sidebar-heading"> Components </div>
+
         <li class="nav-item">
           <a class="nav-link" href="accounts.php">
             <i class="fas fa-fw fa-tag"></i>
@@ -270,10 +285,10 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <button class="dropdown-item" value="<?php echo $username; ?>" onclick="accountEdit(this)">
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#profileModal">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
-                </button>
+                </a>
                 <button class="dropdown-item" data-toggle="modal" data-target="#activityLogs">
                   <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                   Activity Log

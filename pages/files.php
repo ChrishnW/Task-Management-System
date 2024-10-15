@@ -53,6 +53,6 @@ include('../include/header.php');
 
   function downloadFile(element) {
     var id = element.value;
-    window.location.href = '../ajax/tasks.php?downloadFile=true&id=' + id;
+    window.location.href = '../config/tasks.php?downloadFile=true&id=' + id;
   }
 </script>

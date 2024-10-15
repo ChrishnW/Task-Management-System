@@ -412,7 +412,7 @@ include('../include/header.php');
     var prj_id = element.value;
     $.ajax({
       method: "POST",
-      url: "../ajax/project.php",
+      url: "../config/project.php",
       data: {
         "actionView": true,
         "prj_id": prj_id,
@@ -430,7 +430,7 @@ include('../include/header.php');
     var prjDept = <?php echo json_encode($dept_id); ?>;
     $.ajax({
       method: "POST",
-      url: "../ajax/project.php",
+      url: "../config/project.php",
       data: {
         "actionEdit": true,
         "prjID": prjID,
@@ -461,7 +461,7 @@ include('../include/header.php');
         console.log(formDetails);
         $.ajax({
           method: "POST",
-          url: "../ajax/project.php",
+          url: "../config/project.php",
           data: formDetails,
           contentType: false,
           processData: false,
@@ -498,7 +498,7 @@ include('../include/header.php');
         formDetails.append('createActivity', true);
         $.ajax({
           method: "POST",
-          url: "../ajax/project.php",
+          url: "../config/project.php",
           data: formDetails,
           contentType: false,
           processData: false,
@@ -555,7 +555,7 @@ include('../include/header.php');
     } else {
       $.ajax({
         method: "POST",
-        url: "../ajax/project.php",
+        url: "../config/project.php",
         data: projectData,
         processData: false,
         contentType: false,

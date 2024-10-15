@@ -5,12 +5,12 @@ include('../include/header.php');
 <div class="container-fluid">
   <div class="row">
     <div class="form-group col-md-2">
-      <label>To</label>
-      <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTable(this)">
-    </div>
-    <div class="form-group col-md-2">
       <label>From</label>
       <input type="date" name="date_from" id="date_from" class="form-control" onchange="filterTable(this)">
+    </div>
+    <div class="form-group col-md-2">
+      <label>To</label>
+      <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTable(this)">
     </div>
     <div class="form-group col-md-2">
       <label>Classification</label>
@@ -48,17 +48,11 @@ include('../include/header.php');
           </thead>
           <tbody id='dataTableBody'>
             <?php
-            function getTaskClass($taskClassNumber)
-            {
-              $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
-              return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
-            }
-            $result = mysqli_query($con, "SELECT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE tasks_details.task_status=1 AND tasks_details.status='RESCHEDULE' AND section.dept_id = '$dept_id' GROUP BY tasks_details.id");
+            $result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND td.status='RESCHEDULE' AND s.dept_id = '$dept_id'");
             if (mysqli_num_rows($result) > 0) {
               while ($row = $result->fetch_assoc()) {
                 $due_date = date_format(date_create($row['due_date']), "Y-m-d");
-                $old_date = date_format(date_create($row['old_date']), "Y-m-d");
-                $assignee = '<img src=' . (empty($row['file_name']) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row['file_name']) . ' class="img-table-solo"> ' . ucwords(strtolower($row['Mname'])) . ''; ?>
+                $old_date = date_format(date_create($row['old_date']), "Y-m-d"); ?>
                 <tr>
                   <td><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
                   <td><?php echo $row['task_code'] ?></td>
@@ -66,7 +60,7 @@ include('../include/header.php');
                   <td><?php echo getTaskClass($row['task_class']); ?></td>
                   <td><?php echo $due_date ?></td>
                   <td><?php echo $old_date ?></td>
-                  <td><?php echo $assignee ?></td>
+                  <td><?php echo getUser($row['in_charge']); ?></td>
                 </tr>
             <?php }
             } ?>
@@ -181,7 +175,7 @@ include('../include/header.php');
     $('#dataTableBody').empty();
     $.ajax({
       method: "POST",
-      url: "../ajax/for_reschedule.php",
+      url: "../config/for_reschedule.php",
       data: {
         "filterTable": true,
         "taskClass": taskClass,
@@ -209,7 +203,7 @@ include('../include/header.php');
     var taskID = element.value;
     $.ajax({
       method: "POST",
-      url: "../ajax/for_reschedule.php",
+      url: "../config/for_reschedule.php",
       data: {
         "viewTask": true,
         "taskID": taskID,
@@ -237,7 +231,7 @@ include('../include/header.php');
       formData.append('approveTask', true);
       $.ajax({
         method: "POST",
-        url: "../ajax/for_reschedule.php",
+        url: "../config/for_reschedule.php",
         data: formData,
         contentType: false,
         processData: false,
@@ -270,7 +264,7 @@ include('../include/header.php');
           var reason = document.getElementById('rejectReason').value;
           $.ajax({
             method: "POST",
-            url: "../ajax/for_reschedule.php",
+            url: "../config/for_reschedule.php",
             data: {
               "rejectTask": true,
               "taskID": taskID,

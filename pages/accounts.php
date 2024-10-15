@@ -81,7 +81,7 @@ include('../include/header.php');
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
         <h6 class="m-0 font-weight-bold text-white">Deparment Members</h6>
         <div class="dropdown no-arrow">
-          <button type="button" onclick="showCreate(this)" class="btn btn-primary">
+          <button type="button" onclick="showCreate(this)" class="btn btn-primary" disabled>
             <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Register New Member
           </button>
         </div>
@@ -115,7 +115,7 @@ include('../include/header.php');
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
                   $member = $row['username'];
-                  $query = mysqli_query($con, "SELECT COUNT(id) AS total_task FROM tasks WHERE tasks.in_charge='$member' AND tasks.task_class!=4");
+                  $query = mysqli_query($con, "SELECT COUNT(*) AS total_task FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id WHERE t.in_charge='$member' AND tl.task_class!=4");
                   $query_result = mysqli_fetch_assoc($query);
                   if (empty($row['file_name'])) {
                     $imageURL = '../assets/img/user-profiles/nologo.png';
@@ -704,7 +704,7 @@ include('../include/header.php');
     if (task_class && task_for) {
       $.ajax({
         method: "POST",
-        url: "../ajax/accounts.php",
+        url: "../config/accounts.php",
         data: {
           "taskList": true,
           "task_class": task_class,
@@ -765,7 +765,7 @@ include('../include/header.php');
       formDetails.append('assignTask', true);
       $.ajax({
         method: "POST",
-        url: "../ajax/accounts.php",
+        url: "../config/accounts.php",
         data: formDetails,
         contentType: false,
         processData: false,
@@ -783,7 +783,7 @@ include('../include/header.php');
     // console.log(assignee_view);
     $.ajax({
       method: 'POST',
-      url: '../ajax/assign_tasks.php',
+      url: '../config/assign_tasks.php',
       data: {
         "viewTaskEmp": true,
         "assignee_id": assignee_id,
@@ -802,14 +802,14 @@ include('../include/header.php');
   function taskDownload() {
     var viewTableID = document.getElementById('viewTableID').value;
     console.log(viewTableID);
-    window.location.href = '../ajax/accounts.php?taskDownload=true&username=' + viewTableID;
+    window.location.href = '../config/accounts.php?taskDownload=true&username=' + viewTableID;
   }
 
   function EditTaskView(element) {
     var editID = element.value;
     $.ajax({
       method: 'POST',
-      url: '../ajax/assign_tasks.php',
+      url: '../config/assign_tasks.php',
       data: {
         "EditTaskView": true,
         "editID": editID
@@ -823,11 +823,11 @@ include('../include/header.php');
   }
 
   function editTask(element) {
-    element.disabled          = true;
-    var edit_task             = document.getElementById('emptask_id').value;
-    var edit_taskName         = document.getElementById('emptask_name').value;
-    var edit_requirement      = document.getElementById('emptask_file').checked ? 1 : 0;
-    var edit_duedate_element  = document.getElementById('emptask_duedate');
+    element.disabled = true;
+    var edit_task = document.getElementById('emptask_id').value;
+    var edit_taskName = document.getElementById('emptask_name').value;
+    var edit_requirement = document.getElementById('emptask_file').checked ? 1 : 0;
+    var edit_duedate_element = document.getElementById('emptask_duedate');
     if (edit_duedate_element.multiple) {
       var edit_duedate = Array.from(edit_duedate_element.selectedOptions).map(option => option.value);
     } else {
@@ -835,7 +835,7 @@ include('../include/header.php');
     }
     $.ajax({
       method: "POST",
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: {
         "editTask": true,
         "edit_task": edit_task,
@@ -845,7 +845,7 @@ include('../include/header.php');
       },
       success: function(response) {
         if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = edit_taskName + ' information task of '+ document.getElementById('emptask_for').value +' has been updated successfully.';
+          document.getElementById('success_log').innerHTML = edit_taskName + ' information task of ' + document.getElementById('emptask_for').value + ' has been updated successfully.';
           $('#edit').modal('hide');
           $('#success').modal('show');
         } else {
@@ -868,7 +868,7 @@ include('../include/header.php');
     var deleteID = document.getElementById('hidden_id').value;
     $.ajax({
       method: "POST",
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: {
         'taskDelete': true,
         'deleteID': deleteID,
@@ -895,7 +895,7 @@ include('../include/header.php');
     // console.log(accountID);
     $.ajax({
       method: "POST",
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: {
         'accountEdit': true,
         'accountID': accountID,
@@ -941,7 +941,7 @@ include('../include/header.php');
     // console.log(resetID);
     $.ajax({
       method: "POST",
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: {
         'accountReset': true,
         'resetID': resetID,
@@ -960,7 +960,7 @@ include('../include/header.php');
     // console.log(statusID);
     $.ajax({
       method: "POST",
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: {
         'statusUpdate': true,
         'statusID': statusID,
@@ -986,7 +986,7 @@ include('../include/header.php');
     var updateEmail = document.getElementById('account_email').value;
     $.ajax({
       method: "POST",
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: {
         'accountUpdate': true,
         'updateID': updateID,
@@ -1020,7 +1020,7 @@ include('../include/header.php');
     var accountID = document.getElementById('account_id').value;
     $.ajax({
       method: "POST",
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: {
         'updatePassword': true,
         'accountID': accountID,
@@ -1051,7 +1051,7 @@ include('../include/header.php');
     var deleteID = document.getElementById('hidden_id').value;
     $.ajax({
       method: "POST",
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: {
         'accountDelete': true,
         'deleteID': deleteID,
@@ -1092,7 +1092,7 @@ include('../include/header.php');
 
     $.ajax({
       type: 'POST',
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: formData,
       contentType: false,
       processData: false,
@@ -1117,7 +1117,7 @@ include('../include/header.php');
     console.log(userName);
     $.ajax({
       method: "POST",
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: {
         "deleteImage": true,
         "fileName": fileName,
@@ -1154,7 +1154,7 @@ include('../include/header.php');
     var createEmail = document.getElementById('create_email').value;
     $.ajax({
       method: "POST",
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: {
         'accountCreate': true,
         'createUsername': createUsername,
@@ -1187,7 +1187,7 @@ include('../include/header.php');
 
     $.ajax({
       method: "POST",
-      url: "../ajax/accounts.php",
+      url: "../config/accounts.php",
       data: {
         "selectDepartment": true,
         "departmentSelect": departmentSelect,

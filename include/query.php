@@ -1,31 +1,11 @@
 <?php
 date_default_timezone_set('Asia/Manila');
 
-// For System Audit Log Use
-$setUserQuery = "SET @current_user = '$username'";
-mysqli_query($con, $setUserQuery);
-// End Log 
-
-
 // Functions
 function getTaskClass($taskClassNumber)
 {
   $taskClasses = [1 => ['DAILY ROUTINE', 'info'], 2 => ['WEEKLY ROUTINE', 'info'], 3 => ['MONTHLY ROUTINE', 'info'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'info'], 6 => ['MONTHLY REPORT', 'danger']];
   return '<span class="badge badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
-}
-
-function getProgressBadge($status)
-{
-  $badgeClasses = [
-    'To-Do' => 'badge-info',
-    'Pending' => 'badge-danger',
-    'On-Hold' => 'badge-secondary',
-    'Completed' => 'badge-success'
-  ];
-
-  $badgeClass = isset($badgeClasses[$status]) ? $badgeClasses[$status] : 'badge-secondary';
-
-  return "<span class='badge badge-pill {$badgeClass}'>{$status}</span>";
 }
 
 function getUser($username)
@@ -39,36 +19,63 @@ function getUser($username)
   return $userDetails;
 }
 
-function formatDBSize($size, $units)
+function getName($username)
 {
-  for ($i = 0; $size >= 1024 && $i < count($units) - 1; $i++) {
-    $size /= 1024;
-  }
-  return round($size, 2) . ' ' . $units[$i];
+  global $con;
+  $user = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM accounts WHERE username='$username'"));
+  $name = ucwords(strtolower($user['fname'] . ' ' . $user['lname']));
+
+  return $name;
 }
 
-function getDirectorySize($dir)
+function getPercentage($average)
 {
-  $size = 0;
-  foreach (glob(rtrim($dir, '/') . '/*', GLOB_NOSORT) as $each) {
-    $size += is_file($each) ? filesize($each) : getDirectorySize($each);
+  if ($average == 5.0) {
+    return 105;
+  } elseif ($average >= 4.0 && $average <= 4.99) {
+    return 100 + (($average - 4.0) / (4.99 - 4.0)) * (104 - 100);
+  } elseif ($average >= 3.0 && $average <= 3.99) {
+    return 90 + (($average - 3.0) / (3.99 - 3.0)) * (99 - 90);
+  } elseif ($average >= 2.0 && $average <= 2.99) {
+    return 80 + (($average - 2.0) / (2.99 - 2.0)) * (89 - 80);
+  } elseif ($average >= 0.0 && $average <= 1.99) {
+    return 70 + (($average - 0.0) / (1.99 - 0.0)) * (79 - 70);
+  } else {
+    return 0;
   }
-  return $size;
 }
 
-function formatSize($bytes)
+function getProgressBadge($status)
 {
-  $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  for ($i = 0; $bytes >= 1024 && $i < count($units) - 1; $i++) {
-    $bytes /= 1024;
-  }
-  return round($bytes, 2) . ' ' . $units[$i];
-}
-// Functions End
+  $badgeClasses = [
+    'NOT YET STARTED' => 'badge-success',
+    'IN PROGRESS' => 'badge-danger',
+    'REVIEW' => 'badge-warning',
+    'FINISHED' => 'badge-primary',
+    'RESCHEDULE' => 'badge-secondary'
+  ];
 
-// Count Lables
-$deployedTasks = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS total FROM tasks_details WHERE status=1"));
-$activeAccounts = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS total FROM accounts WHERE status=1"));
+  $badgeClass = isset($badgeClasses[$status]) ? $badgeClasses[$status] : 'badge-secondary';
+
+  return "<span class='badge badge-pill {$badgeClass}'>{$status}</span>";
+}
+// End of Functions
+
+// Server Database Statistics
+$con->next_result();
+$db_size_query = mysqli_query($con, "SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema='$db_database'");
+$row    = $db_size_query->fetch_assoc();
+$size   = $row['size'] ? $row['size'] : 0;
+$units  = ['B', 'KB', 'MB', 'GB', 'TB'];
+$db_size = formatDBSize($size, $units);
+
+// Project Size Statistics
+$rootDir = __DIR__;
+while (!file_exists($rootDir . '/composer.json') && dirname($rootDir) != $rootDir) {
+  $rootDir = dirname($rootDir);
+}
+$projectSize  = formatSize(getDirectorySize($rootDir));
+
 
 // Account Profile Picture
 $con->next_result();
@@ -104,13 +111,26 @@ while ($row = mysqli_fetch_assoc($query_result)) {
   $section        = ucwords(strtolower($row['sec_name']));
 }
 
+// Task Counter
+$con->next_result();
+$today = date('Y-m-d 16:00:00');
+$currentMonth = date('m');
+$currentYear = date('Y');
+$query_result = mysqli_query($con, "SELECT COUNT(*) AS total_tasks, SUM(CASE WHEN td.status = 'FINISHED' THEN 1 ELSE 0 END) AS completed_tasks, SUM(CASE WHEN td.status != 'FINISHED' THEN 1 ELSE 0 END) AS incomplete_tasks, SUM(CASE WHEN td.status = 'REVIEW' THEN 1 ELSE 0 END) AS review_tasks, SUM(CASE WHEN td.status NOT IN ('REVIEW', 'FINISHED') AND DATE(td.due_date) = CURRENT_DATE() THEN 1 ELSE 0 END) AS today_tasks FROM tasks t  JOIN tasks_details td ON t.id = td.task_id WHERE td.task_status = 1  AND t.in_charge = '$username'");
+$row = mysqli_fetch_assoc($query_result);
+$total_tasks      = $row['total_tasks'];
+$completed_tasks  = $row['completed_tasks'];
+$incomplete_tasks = $row['incomplete_tasks'];
+$review_tasks     = $row['review_tasks'];
+$today_tasks      = $row['today_tasks'];
+
 if ($access == 3) {
   $con->next_result();
   $today = date('Y-m-d 16:00:00');
-  $query_result = mysqli_query($con, "SELECT COUNT(tasks_details.id) as total_tasks, (SELECT COUNT(tasks_details.id) FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND tasks_details.status='REVIEW' AND section.dept_id='$dept_id') as for_review_tasks, (SELECT COUNT(tasks_details.id) FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND tasks_details.status='RESCHEDULE' AND section.dept_id='$dept_id') as for_resched_tasks, (SELECT COUNT(tasks_details.id) FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND section.dept_id='$dept_id' AND tasks_details.status='PROJECT') as project_tasks, (SELECT COUNT('accounts.id') FROM accounts JOIN section ON section.sec_id=accounts.sec_id WHERE dept_id='$dept_id' AND access=2) as members, (SELECT COUNT(td.id) FROM tasks_details td JOIN section s ON s.sec_id=td.task_for WHERE td.task_status=1 AND DATE(td.due_date)=CURRENT_DATE() AND td.status IN ('FINISHED', 'REVIEW') AND s.dept_id='$dept_id') as ftasks, (SELECT COUNT(td.id) FROM tasks_details td JOIN section s ON s.sec_id=td.task_for WHERE td.task_status=1 AND DATE(td.due_date)=CURRENT_DATE() AND td.status NOT IN ('FINISHED', 'REVIEW') AND s.dept_id='$dept_id') as utasks FROM tasks_details JOIN section ON section.sec_id=tasks_details.task_for WHERE tasks_details.task_status=1 AND section.dept_id='$dept_id'");
+  $query_result = mysqli_query($con, "SELECT COUNT(*) AS total_tasks, SUM(CASE WHEN td.status = 'REVIEW' THEN 1 ELSE 0 END) AS for_review_tasks, SUM(CASE WHEN td.status = 'RESCHEDULE' THEN 1 ELSE 0 END) AS for_resched_tasks, SUM(CASE WHEN td.status IN ('FINISHED', 'REVIEW') AND DATE(td.due_date)=CURRENT_DATE() THEN 1 ELSE 0 END) AS ftasks, SUM(CASE WHEN td.status NOT IN ('FINISHED', 'REVIEW') AND DATE(td.due_date)=CURRENT_DATE() THEN 1 ELSE 0 END) AS utasks, COUNT(DISTINCT t.in_charge) AS members FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id = t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status = 1 AND s.dept_id='$dept_id'");
   $row = mysqli_fetch_assoc($query_result);
   $total_tasks       = $row['total_tasks'];
-  $project_tasks     = $row['project_tasks'];
+  $project_tasks     = 0;
   $for_review_tasks  = $row['for_review_tasks'];
   $for_resched_tasks = $row['for_resched_tasks'];
   $ftasks            = $row['ftasks'];
@@ -118,20 +138,41 @@ if ($access == 3) {
   $members           = $row['members'];
 }
 
-// Server Database Statistics
+// Server Statistics
 $con->next_result();
-$db_size_query = mysqli_query($con, "SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema='$db_database'");
+$db_size_query = mysqli_query($con, "SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema='gtms'");
 $row    = $db_size_query->fetch_assoc();
 $size   = $row['size'] ? $row['size'] : 0;
 $units  = ['B', 'KB', 'MB', 'GB', 'TB'];
-$db_size = formatDBSize($size, $units);
-
-// Project Size Statistics
-$rootDir = __DIR__;
-while (!file_exists($rootDir . '/composer.json') && dirname($rootDir) != $rootDir) {
-  $rootDir = dirname($rootDir);
+function formatDBSize($size, $units)
+{
+  for ($i = 0; $size >= 1024 && $i < count($units) - 1; $i++) {
+    $size /= 1024;
+  }
+  return round($size, 2) . ' ' . $units[$i];
 }
-$projectSize  = formatSize(getDirectorySize($rootDir));
+
+$con->next_result();
+function getDirectorySize($dir)
+{
+  $size = 0;
+  foreach (glob(rtrim($dir, '/') . '/*', GLOB_NOSORT) as $each) {
+    $size += is_file($each) ? filesize($each) : getDirectorySize($each);
+  }
+  return $size;
+}
+
+function formatSize($bytes)
+{
+  $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  for ($i = 0; $bytes >= 1024 && $i < count($units) - 1; $i++) {
+    $bytes /= 1024;
+  }
+  return round($bytes, 2) . ' ' . $units[$i];
+}
+
+$projectDir   = 'C:\xampp\htdocs\GTMS';
+$projectSize  = formatSize(getDirectorySize($projectDir));
 
 // Notification Counter
 $con->next_result();
@@ -144,6 +185,15 @@ $con->next_result();
 $query_result = mysqli_query($con, "SELECT COUNT(id) AS file_counter FROM task_files WHERE file_owner='$username'");
 $row = mysqli_fetch_assoc($query_result);
 $file_counter = $row['file_counter'];
+
+// Activity Logs
+function log_action($action)
+{
+  global $con;
+  $datetime = date("Y-m-d H:i:s");
+  $username = $_SESSION['SESS_MEMBER_USERNAME'];
+  $query_insert = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$action', '$datetime', '$username')");
+}
 
 // Used for Input Type Date Min
 $minDay = date('Y-m-d', strtotime('+1 day'));

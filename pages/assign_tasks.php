@@ -127,40 +127,45 @@ include('../include/header.php');
   <?php } elseif ($access == 2) { ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Assigned Task List</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Task List</h6>
         <div class="dropdown no-arrow">
-          <button type="button" onclick="taskDownload(this)" class="btn text-success"><i class="fas fa-file-export fa-fw"></i> Export</button>
+          <button type="button" onclick="taskDownload(this)" class="btn btn-sm"><i class="fas fa-file-pdf fa-fw text-success"></i> Download</button>
         </div>
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-hover" id="myTaskTable" width="100%" cellspacing="0">
-            <thead>
+          <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
+            <thead class='table table-success'>
               <tr>
+                <th>#</th>
                 <th>Title</th>
                 <th>Classification</th>
                 <th>Details</th>
                 <th>Condition</th>
-                <th>Scheduled</th>
+                <th>Due Date</th>
               </tr>
             </thead>
             <tbody>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT * FROM task_list tl JOIN task_class tc ON tc.id=tl.class JOIN tasks t ON t.task_id=tl.id WHERE in_charge='$username' AND t.status=1");
+              $result = mysqli_query($con, "SELECT * FROM task_list tl JOIN task_class tc ON tl.task_class=tc.id JOIN tasks t ON tl.id=t.task_id WHERE t.in_charge='$username' AND tl.task_class!=4");
               if (mysqli_num_rows($result) > 0) {
+                $count = 0;
                 while ($row = $result->fetch_assoc()) {
-                  if ($row['attachment'] == 1) {
+                  $count += 1;
+                  $task_class = '<span class="badge badge-info">' . $row['task_class'] . '</span>';
+                  if ($row['requirement_status'] == 1) {
                     $requirement = '<span class="badge badge-primary">File Attachment</span>';
                   } else {
                     $requirement = '<span class="badge badge-primary">None</span>';
                   }
               ?>
                   <tr>
+                    <td><?php echo $count ?></td>
                     <td><?php echo $row['task_name'] ?></td>
-                    <td><?php echo getTaskClass($row['class']); ?></td>
+                    <td><?php echo $task_class ?></td>
                     <td id="td-table-shrink"><?php echo $row['task_details']; ?></td>
                     <td><?php echo $requirement ?></td>
-                    <td><?php echo $row['recurrance'] ?></td>
+                    <td><?php echo $row['submission'] ?></td>
                   </tr>
               <?php }
               } ?>
@@ -336,10 +341,9 @@ include('../include/header.php');
   <?php
   } else { ?>
     $(document).ready(function() {
-      $('#myTaskTable').DataTable({
+      $('#dataTable').DataTable({
         "order": [
-          [1, "asc"],
-          [0, "desc"]
+          [0, "asc"]
         ],
         "pageLength": 10,
         "lengthMenu": [10, 25, 50, 100],
@@ -354,7 +358,7 @@ include('../include/header.php');
     if (task_class && task_for) {
       $.ajax({
         method: "POST",
-        url: "../ajax/assign_tasks.php",
+        url: "../config/assign_tasks.php",
         data: {
           "selectClass": true,
           "task_class": task_class,
@@ -388,7 +392,7 @@ include('../include/header.php');
     console.log(sec_id);
     $.ajax({
       method: "POST",
-      url: "../ajax/assign_tasks.php",
+      url: "../config/assign_tasks.php",
       data: {
         "assignSection": true,
         "sec_id": sec_id,
@@ -416,7 +420,7 @@ include('../include/header.php');
     console.log(assign_file);
     $.ajax({
       method: "POST",
-      url: "../ajax/assign_tasks.php",
+      url: "../config/assign_tasks.php",
       data: {
         "assignTask": true,
         "assign_section": assign_section,
@@ -439,7 +443,7 @@ include('../include/header.php');
     // console.log(assignee_view);
     $.ajax({
       method: 'POST',
-      url: '../ajax/assign_tasks.php',
+      url: '../config/assign_tasks.php',
       data: {
         "viewTaskEmp": true,
         "assignee_id": assignee_id,
@@ -492,7 +496,7 @@ include('../include/header.php');
     }
     $.ajax({
       method: "POST",
-      url: "../ajax/assign_tasks.php",
+      url: "../config/assign_tasks.php",
       data: {
         "editTask": true,
         "edit_task": edit_task,
@@ -524,7 +528,7 @@ include('../include/header.php');
     var deleteID = document.getElementById('hidden_id').value;
     $.ajax({
       method: "POST",
-      url: "../ajax/assign_tasks.php",
+      url: "../config/assign_tasks.php",
       data: {
         'taskDelete': true,
         'deleteID': deleteID,
@@ -544,6 +548,6 @@ include('../include/header.php');
   }
 
   function taskDownload(element) {
-    window.location.href = '../ajax/assign_tasks.php?taskDownload=true';
+    window.location.href = '../config/assign_tasks.php?taskDownload=true';
   }
 </script>

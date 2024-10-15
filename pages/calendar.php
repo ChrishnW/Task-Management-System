@@ -250,7 +250,7 @@
     console.log(date_from);
     $.ajax({
       method: "POST",
-      url: "../ajax/calendar.php",
+      url: "../config/calendar.php",
       data:{
         "getDates": true,
         "date_from": date_from,
@@ -268,7 +268,7 @@
     console.log(register_dates);
     $.ajax({
       method: "POST",
-      url: "../ajax/calendar.php",
+      url: "../config/calendar.php",
       data:{
         "dayoffCreate": true,
         "register_dates": register_dates,
@@ -302,7 +302,7 @@
     var id = element.value;
     $.ajax({
       method: "POST",
-      url: "../ajax/calendar.php",
+      url: "../config/calendar.php",
       data: {
         "recordDelete": true,
         "id": id,
@@ -344,7 +344,7 @@
     var update_remarks  = document.getElementById('edit_remarks').value;
     $.ajax({
       method: "POST",
-      url: "../ajax/calendar.php",
+      url: "../config/calendar.php",
       data: {
         "dayoffUpdate": true,
         "update_id": update_id,

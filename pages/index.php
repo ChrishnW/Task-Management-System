@@ -3,7 +3,13 @@ include('../include/header.php');
 ?>
 
 <div class="container-fluid">
-  <?php if ($access == 1) : ?>
+  <?php if ($access == 1) {
+    $con->next_result();
+    $today = date('Y-m-d 16:00:00');
+    $query_result = mysqli_query($con, $query = "SELECT (SELECT COUNT(*) FROM tasks t JOIN tasks_details td ON t.id = td.task_id WHERE td.task_status = 1) AS total_tasks,(SELECT COUNT(*) FROM accounts ac WHERE ac.status = 1) AS all_accounts");
+    $row = mysqli_fetch_assoc($query_result);
+    $total_tasks      = $row['total_tasks'];
+    $all_accounts     = $row['all_accounts']; ?>
     <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
     <div class="row">
       <div class="col-xl-3 col-md-6 mb-4">
@@ -32,7 +38,7 @@ include('../include/header.php');
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Deployed Tasks</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $deployedTasks['total']; ?></div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $total_tasks ?></div>
               </div>
               <div class="col-auto">
                 <i class="fas fa-calendar-day fa-3x text-gray-500"></i>
@@ -51,8 +57,7 @@ include('../include/header.php');
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Registered Accounts</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $activeAccounts['total']; ?></div>
-
+                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $all_accounts ?></div>
               </div>
               <div class="col-auto">
                 <i class="fas fa-users fa-3x text-gray-500"></i>
@@ -148,144 +153,9 @@ include('../include/header.php');
           </div>
         </div>
       </div>
-
-      <div class="col-xl-5">
-        <div class="card border-left-info shadow mb-4">
-          <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-info">Upcoming Reports</h6>
-          </div>
-          <div class="card-body scrollable-card-body">
-            <?php
-            $con->next_result();
-            $today = date('Y-m-d 16:00:00');
-            $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE task_status=1 AND in_charge='$username' AND due_date!='$today' AND status='NOT YET STARTED' ORDER BY due_date ASC");
-            if (mysqli_num_rows($query_result) > 0) {
-              while ($row = $query_result->fetch_assoc()) {
-                $currentDate = new DateTime();
-                $dueDate     = new DateTime($row['due_date']);
-                $interval    = $currentDate->diff($dueDate);
-                if ($currentDate < $dueDate) {
-                  if ($interval->days > 0 && $interval->days >= 1) {
-                    $remainingTime = $interval->days . ' days remaining';
-                  } elseif ($interval->days == 0) {
-                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes remaining';
-                  }
-                } else {
-                  if ($interval->days > 0 && $interval->days >= 1) {
-                    $remainingTime = $interval->days . ' days overdue';
-                  } elseif ($interval->days == 0) {
-                    $remainingTime = $interval->h . ' hours and ' . $interval->i . ' minutes overdue';
-                  }
-                }
-                $border         = array('primary', 'danger', 'info', 'success');
-                $randomBorder   = array_rand($border);
-                $selectBorder   = $border[$randomBorder];
-                $due_date_temp  = date_create($row['due_date']);
-                $due_date       = date_format($due_date_temp, "jS \of F Y");
-                $due_day        = date_format($due_date_temp, "l"); ?>
-                <div class="card mb-4 py-3 border-bottom-<?php echo $selectBorder ?>">
-                  <div class="card-body custom-card">
-                    <div class="left-content text-<?php echo $selectBorder ?>">
-                      <div class="display-8 font-weight-bold"><?php echo $due_date ?></div>
-                      <div class="font-weight-bold"><?php echo $due_day ?></div>
-                    </div>
-                    <div class="middle-content text-center">
-                      <div class="font-weight-bold display-7"><?php echo $row['task_name'] ?></div>
-                      <div class="text-<?php echo $selectBorder ?> font-weight-bold">Monthly Report</div>
-                    </div>
-                    <div class="right-content text-center">
-                      <i class="far fa-clock fa-spin display-5"></i>
-                      <h6 class="font-weight-bold text-<?php echo $selectBorder ?>"><?php echo $remainingTime ?></h6>
-                    </div>
-                  </div>
-                </div>
-              <?php }
-            } else { ?>
-              <div class="card-body text-center">
-                No scheduled monthly report.
-              </div>
-            <?php } ?>
-          </div>
-        </div>
-
-        <div class="card border-left-danger shadow mb-4">
-          <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Project Progression</h6>
-          </div>
-          <div class="card-body scrollable-card-body">
-            <?php
-            $con->next_result();
-            $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE status='PROJECT' AND task_status=1 AND in_charge='$username'");
-            if (mysqli_num_rows($query_result) > 0) {
-            } else { ?>
-              <div class="card-body text-center">
-                No current in-progress project.
-              </div>
-            <?php } ?>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-xl-3">
-        <div class="card border-left-secondary shadow mb-4">
-          <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-secondary">Rating Criteria for Task and Reports</h6>
-          </div>
-          <div class="card-body scrollable-card-body-md">
-            <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rating 5: 105% Achievement</h6>
-              </div>
-              <div class="card-body display-9 font-weight-bolder">
-                <p><b>Excellent:</b> The task was completed to an outstanding standard. The result far exceeds expectations, showing exceptional quality, thoroughness, and skill.</p>
-              </div>
-            </div>
-            <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rating 4: 100% Achievement</h6>
-              </div>
-              <div class="card-body display-9 font-weight-bolder">
-                <p><b>Good:</b> The task was completed well, with only minor issues. The result meets and occasionally exceeds expectations, showing a high level of competence and quality.</p>
-              </div>
-            </div>
-            <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rating 3: 90% Achievement</h6>
-              </div>
-              <div class="card-body display-9 font-weight-bolder">
-                <p><b>Satisfactory:</b> The task was completed to an acceptable standard. The result meets the basic requirements and expectations, but there is room for improvement in certain areas.</p>
-              </div>
-            </div>
-            <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rating 2: 80% Achievement</h6>
-              </div>
-              <div class="card-body display-9 font-weight-bolder">
-                <p><b>Fair:</b> The task was completed but with noticeable issues. The result meets some but not all expectations, and there is a need for improvement in several areas.</p>
-              </div>
-            </div>
-            <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rating 1: 70% Achievement</h6>
-              </div>
-              <div class="card-body display-9 font-weight-bolder">
-                <p><b>Poor:</b> The task was not completed or was done incorrectly. The result is far below the expected standard, and significant improvement is needed.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  <?php elseif ($access == 2) :
-    $con->next_result();
-    $today = date('Y-m-d');
-    $query_result = mysqli_query($con, "SELECT COUNT(id) as task_today, (SELECT COUNT(id) FROM tasks WHERE in_charge='$username' AND task_class!=4) as assigned_task, (SELECT COUNT(id) FROM tasks WHERE in_charge='$username' AND task_class=5) as total_project, (SELECT COUNT(id) FROM tasks_details WHERE in_charge='$username' AND task_status=1 AND status='IN PROGRESS' AND MONTH(due_date)='$currentMonth' AND YEAR(due_date)='$currentYear') as task_inprogress FROM tasks_details WHERE in_charge='$username' AND task_status=1 AND status='NOT YET STARTED' AND MONTH(due_date)='$currentMonth' AND YEAR(due_date)='$currentYear'");
-    $row = mysqli_fetch_assoc($query_result);
-    $task_today       = $row['task_today'] + $row['task_inprogress'];
-    $assigned_task    = $row['assigned_task'];
-    $total_project    = $row['total_project'] ?>
-
-    <!-- <h1 class="h3 mb-4 text-gray-800">Dashboard</h1> -->
+  <?php } elseif ($access == 2) { ?>
+    <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
     <div class="row">
       <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
@@ -293,7 +163,7 @@ include('../include/header.php');
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tasks Today</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $task_today ?></div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $today_tasks ?></div>
               </div>
               <div class="col-auto">
                 <i class="fas fa-calendar-day fa-3x text-gray-500"></i>
@@ -307,39 +177,19 @@ include('../include/header.php');
         </div>
       </div>
       <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
+        <div class="card border-left-warning shadow h-100 py-2">
           <div class="card-body">
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Assigned Tasks</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $assigned_task ?></div>
+                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Under Review Tasks</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $review_tasks ?></div>
               </div>
               <div class="col-auto">
                 <i class="fas fa-list fa-3x text-gray-500"></i>
               </div>
             </div>
             <div class="row mt-3">
-              <div class="col"><a href="assign_tasks.php" class="btn btn-info btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Projects</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $total_project ?></div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-project-diagram fa-3x text-gray-500"></i>
-              </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col">
-                <a href="404.php" class="btn btn-danger btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
+              <div class="col"><a href="javascript:void(0);" onclick="localStorage.setItem('activeTab', '#review');window.location.href='tasks.php';" class="btn btn-warning btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
           </div>
@@ -350,7 +200,26 @@ include('../include/header.php');
           <div class="card-body">
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">My Files</div>
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Completed Tasks</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $completed_tasks ?></div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-list fa-3x text-gray-500"></i>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col"><a href="javascript:void(0);" onclick="localStorage.setItem('activeTab', '#finished');window.location.href='tasks.php';" class="btn btn-success btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-secondary shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">My Files</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $file_counter ?></div>
               </div>
               <div class="col-auto">
@@ -358,7 +227,7 @@ include('../include/header.php');
               </div>
             </div>
             <div class="row mt-3">
-              <div class="col"><a href="files.php" class="btn btn-success btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
+              <div class="col"><a href="files.php" class="btn btn-secondary btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
           </div>
@@ -454,8 +323,7 @@ include('../include/header.php');
           <div class="card-header m-0 font-weight-bolder text-primary">Upcoming Report</div>
           <?php
           $con->next_result();
-          $today = date('Y-m-d 16:00:00');
-          $query_result = mysqli_query($con, "SELECT DISTINCT td.task_name, tl.task_details, td.due_date, s.sec_name, s.dept_id FROM tasks_details td JOIN task_list tl ON tl.task_name=td.task_name JOIN section s ON s.sec_id=td.task_for WHERE td.task_class=6 AND td.in_charge='$username' AND td.date_accomplished IS NULL ORDER BY td.due_date ASC");
+          $query_result = mysqli_query($con, "SELECT * FROM task_list tl JOIN task_class tc ON tl.task_class=tc.id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE in_charge='$username' AND tc.task_class=6");
           if (mysqli_num_rows($query_result) > 0) { ?>
             <div class="card-body scrollable-card-body-md">
               <?php while ($row = $query_result->fetch_assoc()) {
@@ -547,7 +415,7 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php elseif ($access == 3) : ?>
+  <?php } elseif ($access == 3) { ?>
     <div class="row">
       <div class="col-md-9 col-auto">
         <h2 class="mb-2 font-weight-bolder">Dashboard</h2>
@@ -771,7 +639,7 @@ include('../include/header.php');
           <?php
           $con->next_result();
           $today = date('Y-m-d 16:00:00');
-          $query_result = mysqli_query($con, "SELECT DISTINCT td.task_name, tl.task_details, td.due_date, s.sec_name, s.dept_id FROM tasks_details td JOIN task_list tl ON tl.task_name=td.task_name JOIN section s ON s.sec_id=td.task_for WHERE td.task_class=6 AND dept_id='$dept_id' AND td.date_accomplished IS NULL ORDER BY td.due_date ASC");
+          $query_result = mysqli_query($con, "SELECT * FROM task_list tl JOIN task_class tc ON tl.task_class=tc.id JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE tc.task_class=6 AND s.dept_id='$dept_id'");
           if (mysqli_num_rows($query_result) > 0) { ?>
             <div class="card-body scrollable-card-body-md">
               <?php while ($row = $query_result->fetch_assoc()) {
@@ -864,7 +732,7 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php endif; ?>
+  <?php } ?>
 </div>
 
 <div class="modal fade" id="systemInfo" tabindex="-1" data-backdrop="static" data-keyboard="false">

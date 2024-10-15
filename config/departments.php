@@ -35,8 +35,16 @@
     }
     if(!$error) {
       $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM department WHERE dept_id='$dept_id'"));
+      if ($row['dept_name'] !== $dept_name) {
+        log_action("Updated Department Name from {$row['dept_name']} to {$dept_name}.");
+      }
       if ($row['status'] !== $dept_status) {
         $statusFlag = true;
+        if ($dept_status == 1) {
+          log_action("Updated Department Status of {$dept_name} from Inactive to Active.");
+        } else {
+          log_action("Updated Department Status of {$dept_name} from Active to Inactive.");
+        }
       }
       $update_query = mysqli_query($con, "UPDATE department SET `dept_name`='$dept_name', `status`='$dept_status' WHERE id='$dept_id'");
       if ($statusFlag) {
