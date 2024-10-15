@@ -444,71 +444,84 @@ include('../include/header.php');
   }
 
   $(document).ready(function() {
+    // Initialize variables for event handlers (file input and file list click handlers)
     let fileInputChangeHandler, fileListClickHandler;
 
-    $('#finish').on('shown.bs.modal', function() {
+    // When modal is shown, attach the event listeners
+    $('#fileUploadModal').on('shown.bs.modal', function() {
       const fileInput = document.getElementById('fileInput');
       const fileList = document.getElementById('fileList');
       const errorMessage = document.getElementById('error-message');
 
+      // Handle file input change and display selected files
       fileInputChangeHandler = function() {
-        errorMessage.textContent = '';
+        errorMessage.textContent = ''; // Clear previous error messages
         const filesArray = Array.from(fileInput.files);
 
+        // Check the number of selected files
         if (filesArray.length > 5) {
           errorMessage.textContent = 'You can only upload a maximum of 5 files.';
-          return;
+          return; // Exit if the limit is exceeded
         }
 
-        fileList.innerHTML = '';
+        fileList.innerHTML = ''; // Clear previous file list
 
         filesArray.forEach((file, index) => {
           const fileItem = document.createElement('div');
           fileItem.classList.add('file-item');
 
           fileItem.innerHTML = `
-                    <span>${file.name} (${(file.size / 1024).toFixed(2)} KB)</span>
-                    <span class="remove-btn" data-index="${index}">
-                        <i class="fas fa-trash-alt fa-fw"></i>
-                    </span>
-                `;
+                            <span>${file.name} (${(file.size / 1024).toFixed(2)} KB)</span>
+                            <span class="remove-btn" data-index="${index}">
+                                <i class="fas fa-trash-alt fa-fw"></i>
+                            </span>
+                        `;
 
           fileList.appendChild(fileItem);
         });
       };
 
+      // Handle remove file click
       fileListClickHandler = function(e) {
+        // Prevent event propagation to avoid closing the modal
         e.stopPropagation();
 
         if (e.target.closest('.remove-btn')) {
           const index = e.target.closest('.remove-btn').getAttribute('data-index');
           const filesArray = Array.from(fileInput.files);
 
+          // Remove file from the input's file list
           filesArray.splice(index, 1);
 
+          // Create a new FileList object
           const newFileList = new DataTransfer();
           filesArray.forEach(file => newFileList.items.add(file));
           fileInput.files = newFileList.files;
 
+          // Re-render the file list
           fileInput.dispatchEvent(new Event('change'));
         }
       };
 
+      // Attach the event handlers when the modal is shown
       fileInput.addEventListener('change', fileInputChangeHandler);
       fileList.addEventListener('click', fileListClickHandler);
     });
 
-    $('#finish').on('hidden.bs.modal', function() {
+    // When modal is hidden, remove event listeners and reset file input
+    $('#fileUploadModal').on('hidden.bs.modal', function() {
       const fileInput = document.getElementById('fileInput');
       const fileList = document.getElementById('fileList');
       const errorMessage = document.getElementById('error-message');
 
+      // Remove the event listeners to prevent errors when modal is closed
       fileInput.removeEventListener('change', fileInputChangeHandler);
       fileList.removeEventListener('click', fileListClickHandler);
 
+      // Clear the file list display and reset file input value
       fileList.innerHTML = '';
-      fileInput.value = '';
-      errorMessage.textContent = '';
+      fileInput.value = ''; // Reset file input value
+      errorMessage.textContent = ''; // Clear any error messages
     });
   });
 

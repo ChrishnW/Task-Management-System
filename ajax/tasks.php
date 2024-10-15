@@ -97,14 +97,21 @@ if (isset($_POST['endModal'])) {
     <div class="textarea-container">
       <textarea class="form-control textarea-bottom-border textarea-height" rows="5" cols="50" name="taskRemarks" id="taskRemarks" placeholder="Remarks *" maxlength="500" oninput="updateCounter()"></textarea>
     </div>
-    <div class="upload-box">
-      <label for="fileInput">
-        <input type="file" name="fileInput[]" id="fileInput" class="form-control-file" multiple>
-      </label>
+    <div class="upload-box border p-3">
+      <div class="upload-content">
+        <i class="fas fa-cloud-upload-alt fa-3x"></i> <!-- FontAwesome icon -->
+        <span class="mt-2">Drag & Drop to Upload File</span>
+        <span> OR </span>
+        <button class="btn btn-secondary upload-button"
+          onclick="document.getElementById('fileInput').click();">
+          Browse File
+        </button>
+        <input type="file" id="fileInput" class="form-control-file" multiple>
+      </div>
       <small class="form-text text-muted mt-2">Maximum file size 50 MB. Up to 5 files.</small>
-      <div id="error-message" class="error-message"></div>
+      <div id="error-message" class="error-message"></div> <!-- Error message placeholder -->
     </div>
-    <div id="fileList"></div>
+    <div id="fileList"></div> <!-- Scrollable file list container -->
   </form>
 <?php }
 if (isset($_POST['submitTask'])) {
