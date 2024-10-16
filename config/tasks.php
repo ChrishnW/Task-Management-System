@@ -180,9 +180,7 @@ if (isset($_POST['editTask'])) {
       </div>
       <div class="form-group col-md-4">
         <label>Current Progress:</label>
-        <select name="update_progress" id="update_progress" class="form-control" <?php if ($row['status'] == 'FINISHED' || $row['status'] == 'REVIEW') {
-                                                                                    echo "disabled";
-                                                                                  } ?>>
+        <select name="update_progress" id="update_progress" class="form-control" <?php if ($row['status'] == 'FINISHED' || $row['status'] == 'REVIEW') echo "disabled"; ?>>
           <?php if ($row['status'] == 'NOT YET STARTED') { ?>
             <option value="NOT YET STARTED" selected>Not Yet Started</option>
             <option value="IN PROGRESS">In-Progress</option>

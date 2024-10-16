@@ -3,7 +3,7 @@ include('../include/header.php');
 ?>
 
 <div class="container-fluid">
-  <?php if ($access == 1) { ?>
+  <?php if ($access == 1) : ?>
     <div class="row">
       <div class="form-group col-md-2">
         <label>To</label>
@@ -94,34 +94,29 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php } elseif ($access == 2) { ?>
-    <div class="row">
-      <div class="form-group col-md-2">
-        <label>From</label>
-        <input type="date" name="date_from" id="date_from" class="form-control" onchange="checkDateInputs(this)">
-      </div>
-      <div class="form-group col-md-2">
-        <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control" onchange="checkDateInputs(this)" disabled>
-      </div>
-    </div>
+  <?php elseif ($access == 2) : ?>
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">My Task</h5>
+        <div class="row">
+          <div class="form-group col-md-2">
+            <label>From</label>
+            <input type="date" name="date_from" id="date_from" class="form-control" onchange="checkDateInputs(this)">
+          </div>
+          <div class="form-group col-md-2">
+            <label>To</label>
+            <input type="date" name="date_to" id="date_to" class="form-control" onchange="checkDateInputs(this)" disabled>
+          </div>
+        </div>
         <?php
         $query_result = mysqli_query($con, "SELECT COUNT(*) AS deployed, SUM(CASE WHEN td.status = 'NOT YET STARTED' THEN 1 ELSE 0 END) AS todo, SUM(CASE WHEN td.status = 'IN PROGRESS' THEN 1 ELSE 0 END) AS inprogress, SUM(CASE WHEN td.status = 'REVIEW' THEN 1 ELSE 0 END) AS review, SUM(CASE WHEN td.status = 'FINISHED' THEN 1 ELSE 0 END) AS finished, SUM(CASE WHEN td.status = 'RESCHEDULE' THEN 1 ELSE 0 END) AS resched FROM tasks t  JOIN tasks_details td ON t.id = td.task_id WHERE td.task_status = 1  AND t.in_charge = '$username'");
         $row = mysqli_fetch_assoc($query_result);
         ?>
-        <ul class="nav nav-tabs" id="myTabs">
-          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#todo" data-status="NOT YET STARTED"><i class="fas fa-list-ul"></i> To-do <span class="badge badge-success"><?php echo $row['todo'] ?></span></a>
+        <ul class="nav nav-pills justify-content-center mb-3" id="myTabs">
+          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#todo" data-status="NOT YET STARTED"><i class="fas fa-list-ul fa-fw"></i> To Do <span class="badge badge-success"><?php echo $row['todo'] ?></span></a>
           </li>
-          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#inprogress" data-status="IN PROGRESS"><i class="fas fa-hourglass-start"></i> In-Progress <span class="badge badge-danger"><?php echo $row['inprogress'] ?></span></a>
+          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#review" data-status="REVIEW"><i class="fas fa-tasks fa-fw"></i> In Review <span class="badge badge-warning"><?php echo $row['review'] ?></span></a>
           </li>
-          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#review" data-status="REVIEW"><i class="fas fa-hand-paper"></i> For Review <span class="badge badge-warning"><?php echo $row['review'] ?></span></a>
-          </li>
-          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#finished" data-status="FINISHED"><i class="fas fa-tasks"></i> Finished <span class="badge badge-primary"><?php echo $row['finished'] ?></span></a>
-          </li>
-          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#reschedule" data-status="RESCHEDULE"><i class="fas fa-clock"></i> Rescheduling <span class="badge badge-secondary"><?php echo $row['resched'] ?></span></a>
+          <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#finished" data-status="FINISHED"><i class="fas fa-star fa-fw"></i> Completed <span class="badge badge-primary"><?php echo $row['finished'] ?></span></a>
           </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -131,68 +126,64 @@ include('../include/header.php');
                 <button id="multiStart" class="btn btn-success pull-right"><i class="fas fa-play"></i> Start All</button>
               </div>
               <div class="card-body table-responsive">
-                <table id="myTasksTableTodo" class="table table-striped">
-                  <thead class="table table-success">
+                <table id="myTasksTableTodo" class="table table-hover">
+                  <thead>
                     <tr>
-                      <th><input type='checkbox' id='selectAll' class='tasksCheckboxes' style="transform: scale(2.0);"></th>
-                      <th>Code</th>
-                      <th>Title</th>
-                      <th>Classification</th>
-                      <th>Due Date</th>
-                      <th>Assignee</th>
-                      <th>Action</th>
+                      <th class="col-1 text-center">
+                        <input type='checkbox' id='selectAll' class='tasksCheckboxes form-control'>
+                      </th>
+                      <th class="col-1">Code</th>
+                      <th class="col-5">Task</th>
+                      <th class="col-1">Classification</th>
+                      <th class="col-2">Due Date</th>
+                      <th class="col-1">Status</th>
+                      <th class="col-1">Action</th>
                     </tr>
                   </thead>
                   <tbody id="myTasksTodo">
                     <?php
-                    $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status='NOT YET STARTED'");
+                    $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status NOT IN ('REVIEW', 'FINISHED')");
                     while ($row = $query_result->fetch_assoc()) {
                       $current_date = date('Y-m-d');
-                      $action = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) ? '<button type="button" class="btn btn-block btn-secondary fa-fw" disabled><i class="fas fa-ban"></i> Pending</button>' : '<button type="button" class="btn btn-block btn-success" value="' . $row['id'] . '" onclick="startTask(this)"><i class="fas fa-play fa-fw"></i> Start</button>';
                       $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
-                      $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a"); ?>
+                      $due_date = date_format(date_create($row['due_date']), "F d"); ?>
                       <tr>
-                        <td><?php echo $checkbox ?></td>
+                        <td>
+                          <?php if ($row['status'] === 'NOT YET STARTED') {
+                            echo '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
+                          } else {
+                            echo '<input type="checkbox" name="selected_ids[]" class="form-control" disabled>';
+                          } ?>
+                        </td>
                         <td><?php echo $row['task_code'] ?></td>
-                        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+                        <td>
+                          <?php echo $row['task_name'] ?>
+                          <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i>
+                          <?php if ($row['requirement_status'] === '1') : ?>
+                            <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i>
+                          <?php elseif ($row['requirement_status'] === '1') : ?>
+                          <?php endif; ?>
+                        </td>
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
-                        <td><?php echo getUser($row['in_charge']); ?></td>
-                        <td><?php echo $action;
-                            if ($row['old_date'] === NULL) echo '<button type="button" class="btn btn-block btn-secondary" value="' . $row['id'] . '" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button>'; ?></td>
-                      </tr>
-                    <?php } ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="tab-pane fade" id="inprogress">
-            <div class="card">
-              <div class="card-body table-responsive">
-                <table id="myTasksTableInprogress" class="table table-striped">
-                  <thead class="table table-danger">
-                    <tr>
-                      <th>Code</th>
-                      <th>Title</th>
-                      <th>Classification</th>
-                      <th>Due Date</th>
-                      <th>Assignee</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="myTasksInprogress">
-                    <?php
-                    $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status='IN PROGRESS'");
-                    while ($row = $query_result->fetch_assoc()) {
-                      $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a"); ?>
-                      <tr>
-                        <td><?php echo $row['task_code'] ?></td>
-                        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-                        <td><?php echo getTaskClass($row['task_class']); ?></td>
-                        <td><?php echo $due_date ?></td>
-                        <td><?php echo getUser($row['in_charge']); ?></td>
-                        <td><button type="button" class="btn btn-block btn-danger" value='<?php echo $row['id']; ?>' onclick="endTask(this)"><i class="fas fa-stop fa-fw"></i> Finish</button></td>
+                        <td><?php echo getProgressBadge($row['status']); ?></td>
+                        <td>
+                          <?php if ($row['status'] === 'NOT YET STARTED') {
+                            if (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) {
+                              echo '<button class="btn btn-secondary btn-block" disabled>On Hold</button>';
+                            } else {
+                              echo '<button class="btn btn-success btn-block" value="' . $row['id'] . '" onclick="startTask(this)"><i class="fas fa-play-circle fa-fw"></i> Start</button>';
+                            }
+                          } elseif ($row['status'] === 'IN PROGRESS') {
+                            echo '<button class="btn btn-danger btn-block" value="' . $row['id'] . '" onclick="endTask(this)"><i class="fas fa-check-circle fa-fw"></i> Submit</button>';
+                          } else {
+                            echo '<button class="btn btn-dark btn-block"><i class="fas fa-ban fa-fw"></i> Cancel</button>';
+                          }
+
+                          if ($row['old_date'] === NULL) {
+                            echo '<button class="btn btn-secondary btn-block" value="' . $row['id'] . '" onclick="rescheduleTask(this)">Reschedule</button>';
+                          } ?>
+                        </td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -203,15 +194,14 @@ include('../include/header.php');
           <div class="tab-pane fade" id="review">
             <div class="card">
               <div class="card-body table-responsive">
-                <table id="myTasksTableReview" class="table table-striped">
-                  <thead class="table table-warning">
+                <table id="myTasksTableReview" class="table table-hover">
+                  <thead>
                     <tr>
                       <th>Code</th>
                       <th>Title</th>
                       <th>Classification</th>
                       <th>Due Date</th>
                       <th>Finished Date</th>
-                      <th>Assignee</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -227,7 +217,6 @@ include('../include/header.php');
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $date_accomplished ?></td>
-                        <td><?php echo getUser($row['in_charge']); ?></td>
                         <td><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
                       </tr>
                     <?php } ?>
@@ -246,9 +235,7 @@ include('../include/header.php');
                       <th>Title</th>
                       <th>Classification</th>
                       <th>Due Date</th>
-                      <th>Finished Date</th>
                       <th>Rating</th>
-                      <th>Assignee</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -263,44 +250,10 @@ include('../include/header.php');
                         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
-                        <td><?php echo $date_accomplished ?></td>
-                        <td><span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span></td>
-                        <td><?php echo getUser($row['in_charge']); ?></td>
+                        <td class="text-center">
+                          <span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span>
+                        </td>
                         <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="checkTask(this)"><i class="fas fa-history fa-fw"></i> Details</button></td>
-                      </tr>
-                    <?php } ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="tab-pane fade" id="reschedule">
-            <div class="card">
-              <div class="card-body table-responsive">
-                <table id="myTasksTableReschedule" class="table table-striped">
-                  <thead class="table table-secondary">
-                    <tr>
-                      <th>Code</th>
-                      <th>Title</th>
-                      <th>Classification</th>
-                      <th>Original Due Date</th>
-                      <th>Requested Due Date</th>
-                      <th>Assignee</th>
-                    </tr>
-                  </thead>
-                  <tbody id="myTasksReschedule">
-                    <?php
-                    $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status='RESCHEDULE'");
-                    while ($row = $query_result->fetch_assoc()) {
-                      $due_date = date_format(date_create($row['due_date']), "Y-m-d");
-                      $old_date = date_format(date_create($row['old_date']), "Y-m-d"); ?>
-                      <tr>
-                        <td><?php echo $row['task_code'] ?></td>
-                        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-                        <td><?php echo getTaskClass($row['task_class']); ?></td>
-                        <td><?php echo $due_date ?></td>
-                        <td><?php echo $old_date ?></td>
-                        <td><?php echo getUser($row['in_charge']); ?></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -311,7 +264,7 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php } elseif ($access == 3) { ?>
+  <?php elseif ($access == 3) : ?>
     <div class="row">
       <div class="form-group col-md-2">
         <label>From</label>
@@ -408,7 +361,7 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php } ?>
+  <?php endif; ?>
 </div>
 
 <div class="modal fade" id="taskRegistrationModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
@@ -1093,10 +1046,18 @@ include('../include/header.php');
           [3, "desc"],
           [1, "asc"]
         ];
+        const column = tableId === 'myTasksTableTodo' ? [{
+          "orderable": false,
+          "searchable": false,
+          "targets": [0, 6]
+        }] : [{
+          "orderable": false,
+          "searchable": false,
+          "targets": 5
+        }];
         const table = $('#' + tableId).DataTable({
+          "columnDefs": column,
           "order": order,
-          pageLength: 5,
-          lengthMenu: [5, 10, 25, 50, 100],
           "drawCallback": function(settings) {
             $('[data-toggle="tooltip"]').tooltip();
           }
