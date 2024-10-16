@@ -261,7 +261,7 @@ if (isset($_POST['startTaskMultiple'])) {
 }
 if (isset($_POST['endTaskDeatails'])) {
   $id = $_POST['taskID'];
-  $query_result = mysqli_query($con, "SELECT * FROM tasks_details WHERE task_status=1 AND id='$id'");
+  $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.id='$id'");
   while ($row = mysqli_fetch_assoc($query_result)) {
     $require = $row['requirement_status'];
   }
