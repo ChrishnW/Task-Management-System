@@ -60,92 +60,90 @@ if (isset($_POST['filterTable'])) {
         <td><?php echo getUser($row['in_charge']); ?></td>
         <td><?php echo getProgressBadge($row['status']); ?></td>
       </tr>
-    <?php }
+      <?php }
   }
 }
 if (isset($_POST['filterTableTask'])) {
   $from   = $_POST['dateFrom'];
   $to     = $_POST['dateTo'];
-  $status = ['TODO' => 'NOT YET STARTED', 'INPROGRESS' => 'IN PROGRESS', 'REVIEW' => 'REVIEW', 'FINISHED' => 'FINISHED', 'RESCHEDULE' => 'RESCHEDULE'][$_POST['status']];
+  $table  = $_POST['status'];
   if ($from !== '' && $to !== '') {
-    if ($status == 'NOT YET STARTED' || $status == 'IN PROGRESS' || $status == 'RESCHEDULE') {
-      $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status = 1 AND td.status='$status' AND t.in_charge='$username' AND DATE(td.due_date) >= '$from' AND DATE(td.due_date) <= '$to'");
-    } else {
-      $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, accounts.file_name, tasks.task_details, section.dept_id, CONCAT(accounts.fname,' ',accounts.lname) AS Mname FROM tasks_details JOIN accounts ON tasks_details.in_charge = accounts.username JOIN tasks ON tasks_details.task_name = tasks.task_name JOIN section ON tasks_details.task_for = section.sec_id WHERE td.task_status = 1 AND td.status='$status' AND t.in_charge='$username' AND DATE(td.date_accomplished) >= '$from' AND DATE(td.date_accomplished) <= '$to'");
-    }
-  } else {
-    $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status = 1 AND td.status='$status' AND t.in_charge='$username'");
-  }
-  if ($status == 'NOT YET STARTED') {
-    while ($row = $query_result->fetch_assoc()) {
-      $current_date = date('Y-m-d');
-      $action       = (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) ? '<button type="button" class="btn btn-block btn-secondary fa-fw" disabled><i class="fas fa-ban"></i> Pending</button>' : '<button type="button" class="btn btn-block btn-success" value="' . $row['id'] . '" onclick="startTask(this)"><i class="fas fa-play fa-fw"></i> Start</button>';
-      $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
-      $due_date     = date_format(date_create($row['due_date']), "Y-m-d h:i a"); ?>
-      <tr>
-        <td><?php echo $checkbox ?></td>
-        <td><?php echo $row['task_code'] ?></td>
-        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-        <td><?php echo getTaskClass($row['task_class']); ?></td>
-        <td><?php echo $due_date ?></td>
-        <td><?php echo getUser($row['in_charge']); ?></td>
-        <td><?php echo $action ?><button type="button" class="btn btn-block btn-secondary" value="<?php echo $row['id']; ?>" onclick="rescheduleTask(this)"><i class="fas fa-calendar-alt fa-fw"></i> Reschedule</button></td>
-      </tr>
+    if ($table === 'TODO') :
+      $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status NOT IN ('REVIEW', 'FINISHED') AND DATE(td.due_date) >= '$from' AND DATE(td.due_date) <= '$to'");
+      while ($row = $query_result->fetch_assoc()) {
+        $current_date = date('Y-m-d');
+        $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
+        $due_date = date_format(date_create($row['due_date']), "F d"); ?>
+        <tr>
+          <td>
+            <?php if ($row['status'] === 'NOT YET STARTED') {
+              echo '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
+            } else {
+              echo '<input type="checkbox" name="selected_ids[]" class="form-control" disabled>';
+            } ?>
+          </td>
+          <td><?php echo $row['task_code'] ?></td>
+          <td>
+            <?php echo $row['task_name'] ?>
+            <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i>
+            <?php if ($row['requirement_status'] === '1') : ?>
+              <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i>
+            <?php elseif ($row['requirement_status'] === '1') : ?>
+            <?php endif; ?>
+          </td>
+          <td><?php echo getTaskClass($row['task_class']); ?></td>
+          <td><?php echo $due_date ?></td>
+          <td><?php echo getProgressBadge($row['status']); ?></td>
+          <td>
+            <?php if ($row['status'] === 'NOT YET STARTED') {
+              if (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) {
+                echo '<button class="btn btn-secondary btn-block" disabled>On Hold</button>';
+              } else {
+                echo '<button class="btn btn-success btn-block" value="' . $row['id'] . '" onclick="startTask(this)"><i class="fas fa-play-circle fa-fw"></i> Start</button>';
+              }
+            } elseif ($row['status'] === 'IN PROGRESS') {
+              echo '<button class="btn btn-danger btn-block" value="' . $row['id'] . '" onclick="endTask(this)"><i class="fas fa-check-circle fa-fw"></i> Submit</button>';
+            } else {
+              echo '<button class="btn btn-dark btn-block"><i class="fas fa-ban fa-fw"></i> Cancel</button>';
+            }
+
+            if ($row['old_date'] === NULL) {
+              echo '<button class="btn btn-secondary btn-block" value="' . $row['id'] . '" onclick="rescheduleTask(this)">Reschedule</button>';
+            } ?>
+          </td>
+        </tr>
+      <?php }
+    elseif ($table === 'REVIEW') :
+      $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status='REVIEW' AND DATE(td.due_date) >= '$from' AND DATE(td.due_date) <= '$to'");
+      while ($row = $query_result->fetch_assoc()) {
+        $due_date = date_format(date_create($row['due_date']), "F d");
+        $date_accomplished = date_format(date_create($row['date_accomplished']), "F d"); ?>
+        <tr>
+          <td><?php echo $row['task_code'] ?></td>
+          <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+          <td><?php echo getTaskClass($row['task_class']); ?></td>
+          <td><?php echo $due_date ?></td>
+          <td><?php echo $date_accomplished ?></td>
+          <td><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
+        </tr>
+      <?php }
+    else :
+      $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status='FINISHED' AND DATE(td.due_date) >= '$from' AND DATE(td.due_date) <= '$to'");
+      while ($row = $query_result->fetch_assoc()) {
+        $due_date = date_format(date_create($row['due_date']), "F d");
+        $date_accomplished = date_format(date_create($row['date_accomplished']), "F d"); ?>
+        <tr>
+          <td><?php echo $row['task_code'] ?></td>
+          <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+          <td><?php echo getTaskClass($row['task_class']); ?></td>
+          <td><?php echo $due_date ?></td>
+          <td class="text-center">
+            <span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span>
+          </td>
+          <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="checkTask(this)"><i class="fas fa-history fa-fw"></i> Details</button></td>
+        </tr>
     <?php }
-  } elseif ($status == 'IN PROGRESS') {
-    while ($row = $query_result->fetch_assoc()) {
-      $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a"); ?>
-      <tr>
-        <td><?php echo $row['task_code'] ?></td>
-        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-        <td><?php echo getTaskClass($row['task_class']); ?></td>
-        <td><?php echo $due_date ?></td>
-        <td><?php echo getUser($row['in_charge']); ?></td>
-        <td><button type="button" class="btn btn-block btn-danger" value='<?php echo $row['id']; ?>' onclick="endTask(this)"><i class="fas fa-stop fa-fw"></i> Finish</button></td>
-      </tr>
-    <?php }
-  } elseif ($status == 'REVIEW') {
-    while ($row = $query_result->fetch_assoc()) {
-      $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-      $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a"); ?>
-      <tr>
-        <td><?php echo $row['task_code'] ?></td>
-        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-        <td><?php echo getTaskClass($row['task_class']); ?></td>
-        <td><?php echo $due_date ?></td>
-        <td><?php echo $date_accomplished ?></td>
-        <td><?php echo getUser($row['in_charge']); ?></td>
-        <td><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
-      </tr>
-    <?php }
-  } elseif ($status == 'FINISHED') {
-    while ($row = $query_result->fetch_assoc()) {
-      $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-      $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a"); ?>
-      <tr>
-        <td><?php echo $row['task_code'] ?></td>
-        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-        <td><?php echo getTaskClass($row['task_class']); ?></td>
-        <td><?php echo $due_date ?></td>
-        <td><?php echo $date_accomplished ?></td>
-        <td><span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span></td>
-        <td><?php echo getUser($row['in_charge']); ?></td>
-        <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="checkTask(this)"><i class="fas fa-history fa-fw"></i> Details</button></td>
-      </tr>
-    <?php }
-  } elseif ($status == 'RESCHEDULE') {
-    while ($row = $query_result->fetch_assoc()) {
-      $due_date = date_format(date_create($row['due_date']), "Y-m-d");
-      $old_date = date_format(date_create($row['old_date']), "Y-m-d"); ?>
-      <tr>
-        <td><?php echo $row['task_code'] ?></td>
-        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-        <td><?php echo getTaskClass($row['task_class']); ?></td>
-        <td><?php echo $due_date ?></td>
-        <td><?php echo $old_date ?></td>
-        <td><?php echo getUser($row['in_charge']); ?></td>
-      </tr>
-    <?php }
+    endif;
   }
 }
 if (isset($_POST['editTask'])) {

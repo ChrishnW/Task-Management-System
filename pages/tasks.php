@@ -209,8 +209,8 @@ include('../include/header.php');
                     <?php
                     $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status='REVIEW'");
                     while ($row = $query_result->fetch_assoc()) {
-                      $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                      $date_accomplished = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a"); ?>
+                      $due_date = date_format(date_create($row['due_date']), "F d");
+                      $date_accomplished = date_format(date_create($row['date_accomplished']), "F d"); ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
                         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
@@ -243,8 +243,8 @@ include('../include/header.php');
                     <?php
                     $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status='FINISHED'");
                     while ($row = $query_result->fetch_assoc()) {
-                      $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                      $date_accomplished = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a"); ?>
+                      $due_date = date_format(date_create($row['due_date']), "F d");
+                      $date_accomplished = date_format(date_create($row['date_accomplished']), "F d"); ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
                         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
