@@ -58,7 +58,7 @@
 
       <li class="nav-item">
         <a class="nav-link" href="index.php">
-          <i class="fas fa-th fa-fw "></i>
+          <i class="fas fa-th-large fa-fw"></i>
           <span>Dashboard</span></a>
       </li>
 
@@ -120,14 +120,9 @@
           </a>
           <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">
-                <center />Task Status
-              </h6>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#todo');window.location.href='tasks.php';">Not Yet Started</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#inprogress');window.location.href='tasks.php';">In Progress</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#review');window.location.href='tasks.php';">For Review</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#finished');window.location.href='tasks.php';">Finished</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#reschedule');window.location.href='tasks.php';">For Reschedule</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#todo');window.location.href='tasks.php';">To Do</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#review');window.location.href='tasks.php';">In Review</span>
+              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#finished');window.location.href='tasks.php';">Completed</span>
             </div>
           </div>
         </li>
