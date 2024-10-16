@@ -108,7 +108,7 @@ include('../include/header.php');
           </div>
         </div>
         <?php
-        $query_result = mysqli_query($con, "SELECT COUNT(*) AS deployed, SUM(CASE WHEN td.status = 'NOT YET STARTED' THEN 1 ELSE 0 END) AS todo, SUM(CASE WHEN td.status = 'IN PROGRESS' THEN 1 ELSE 0 END) AS inprogress, SUM(CASE WHEN td.status = 'REVIEW' THEN 1 ELSE 0 END) AS review, SUM(CASE WHEN td.status = 'FINISHED' THEN 1 ELSE 0 END) AS finished, SUM(CASE WHEN td.status = 'RESCHEDULE' THEN 1 ELSE 0 END) AS resched FROM tasks t  JOIN tasks_details td ON t.id = td.task_id WHERE td.task_status = 1  AND t.in_charge = '$username'");
+        $query_result = mysqli_query($con, "SELECT COUNT(*) AS deployed, SUM(CASE WHEN td.status NOT IN ('REVIEW', 'FINISHED') THEN 1 ELSE 0 END) AS todo, SUM(CASE WHEN td.status = 'REVIEW' THEN 1 ELSE 0 END) AS review, SUM(CASE WHEN td.status = 'FINISHED' THEN 1 ELSE 0 END) AS finished FROM tasks t  JOIN tasks_details td ON t.id = td.task_id WHERE td.task_status = 1  AND t.in_charge = '$username'");
         $row = mysqli_fetch_assoc($query_result);
         ?>
         <ul class="nav nav-pills justify-content-center mb-3" id="myTabs">
@@ -175,7 +175,7 @@ include('../include/header.php');
                               echo '<button class="btn btn-success btn-block" value="' . $row['id'] . '" onclick="startTask(this)"><i class="fas fa-play-circle fa-fw"></i> Start</button>';
                             }
                           } elseif ($row['status'] === 'IN PROGRESS') {
-                            echo '<button class="btn btn-danger btn-block" value="' . $row['id'] . '" onclick="endTask(this)"><i class="fas fa-check-circle fa-fw"></i> Submit</button>';
+                            echo '<button class="btn btn-danger btn-block" value="' . $row['id'] . '" onclick="endTask(this)"><i class="fas fa-check-circle fa-fw"></i> Finish</button>';
                           } else {
                             echo '<button class="btn btn-dark btn-block"><i class="fas fa-ban fa-fw"></i> Cancel</button>';
                           }
@@ -607,7 +607,6 @@ include('../include/header.php');
   });
 
   function addTask(element) {
-    // element.disabled = true;
     if (document.getElementById('taskName').value !== '' && document.getElementById('dueDate').value !== '' && document.getElementById('taskAssignee').value !== '' && document.getElementById('addDetails').value !== '') {
       const formData = new FormData(document.getElementById('taskRegistrationForm'));
       formData.append('addTask', true);

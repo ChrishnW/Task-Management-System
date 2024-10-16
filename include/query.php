@@ -116,7 +116,7 @@ $con->next_result();
 $today = date('Y-m-d 16:00:00');
 $currentMonth = date('m');
 $currentYear = date('Y');
-$query_result = mysqli_query($con, "SELECT COUNT(*) AS total_tasks, SUM(CASE WHEN td.status = 'FINISHED' THEN 1 ELSE 0 END) AS completed_tasks, SUM(CASE WHEN td.status != 'FINISHED' THEN 1 ELSE 0 END) AS incomplete_tasks, SUM(CASE WHEN td.status = 'REVIEW' THEN 1 ELSE 0 END) AS review_tasks, SUM(CASE WHEN td.status NOT IN ('REVIEW', 'FINISHED') AND DATE(td.due_date) = CURRENT_DATE() THEN 1 ELSE 0 END) AS today_tasks FROM tasks t  JOIN tasks_details td ON t.id = td.task_id WHERE td.task_status = 1  AND t.in_charge = '$username'");
+$query_result = mysqli_query($con, "SELECT COUNT(*) AS total_tasks, SUM(CASE WHEN td.status = 'FINISHED' THEN 1 ELSE 0 END) AS completed_tasks, SUM(CASE WHEN td.status != 'FINISHED' THEN 1 ELSE 0 END) AS incomplete_tasks, SUM(CASE WHEN td.status = 'REVIEW' THEN 1 ELSE 0 END) AS review_tasks, SUM(CASE WHEN td.status NOT IN ('REVIEW', 'FINISHED') THEN 1 ELSE 0 END) AS today_tasks FROM tasks t  JOIN tasks_details td ON t.id = td.task_id WHERE td.task_status = 1  AND t.in_charge = '$username'");
 $row = mysqli_fetch_assoc($query_result);
 $total_tasks      = $row['total_tasks'];
 $completed_tasks  = $row['completed_tasks'];
