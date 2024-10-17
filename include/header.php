@@ -41,157 +41,7 @@
   <!-- Page Wrapper -->
   <div id="wrapper">
 
-    <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
-      <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
-        <div class="sidebar-brand-icon">
-          <!-- <i class="fas fa-business-time"></i> -->
-          <img src="../assets/img/Logo.png" class="system-logo">
-        </div>
-        <div class="sidebar-brand-text mx-3">TMS</div>
-      </a>
-
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-
-      <li class="nav-item">
-        <a class="nav-link" href="index.php">
-          <i class="fas fa-th-large fa-fw"></i>
-          <span>Dashboard</span></a>
-      </li>
-
-      <hr class="sidebar-divider">
-
-      <?php if ($access == 1) { ?>
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            <i class="fas fa-users-cog"></i>
-            <span>Account Management</span>
-          </a>
-          <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="departments.php">Department</a>
-              <a class="collapse-item" href="sections.php">Section</a>
-              <a class="collapse-item" href="accounts.php">User Account</a>
-            </div>
-          </div>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-tasks"></i>
-            <span>Task Management</span>
-          </a>
-          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="import.php">Task Import</a>
-              <a class="collapse-item" href="registered_tasks.php">Registered Task</a>
-              <a class="collapse-item" href="assign_tasks.php">Assigned Task</a>
-            </div>
-          </div>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="404.php">
-            <i class="fas fa-chart-bar"></i>
-            <span>Project Management</span></a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
-            <i class="fas fa-wrench"></i>
-            <span>System Management</span>
-          </a>
-          <div id="collapseFour" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="system_logs.php">System Logs</a>
-              <a class="collapse-item" href="calendar.php">Dayoff Calendar</a>
-            </div>
-          </div>
-        </li>
-      <?php } elseif ($access == 2) { ?>
-        <div class="sidebar-heading"> Components </div>
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            <i class="fas fa-tasks"></i>
-            <span>My Tasks</span>
-          </a>
-          <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#todo');window.location.href='tasks.php';">To Do</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#review');window.location.href='tasks.php';">In Review</span>
-              <span class="collapse-item btn btn-sm" onclick="localStorage.setItem('activeTab', '#finished');window.location.href='tasks.php';">Completed</span>
-            </div>
-          </div>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="assign_tasks.php">
-            <i class="fas fa-fw fa-tag"></i>
-            <span>Assigned Task</span></a>
-        </li>
-
-        <hr class="sidebar-divider">
-        <div class="sidebar-heading"> Ratings </div>
-        <li class="nav-item">
-          <a class="nav-link" href="performance.php">
-            <i class="fas fa-chart-bar"></i>
-            <span>Performance</span></a>
-        </li>
-      <?php } elseif ($access == 3) { ?>
-        <div class="sidebar-heading"> Components </div>
-
-        <li class="nav-item">
-          <a class="nav-link" href="accounts.php">
-            <i class="fas fa-fw fa-tag"></i>
-            <span>Assigned Task</span></a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="tasks.php">
-            <i class="fas fa-fw fa-list"></i>
-            <span>Deployed Task</span></a>
-        </li>
-
-        <hr class="sidebar-divider">
-        <div class="sidebar-heading"> Approval </div>
-
-        <li class="nav-item">
-          <a class="nav-link" href="for_review.php">
-            <span class="badge badge-danger badge-counter mx-4" style="font-size: 15px;"><?php echo ($for_review_tasks >= 100) ? '99+' : $for_review_tasks; ?></span>
-            <i class="fas fa-fw fa-bell"></i>
-            <span>Review Task</span></a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="for_reschedule.php">
-            <span class="badge badge-danger badge-counter mx-4" style="font-size: 15px;"><?php echo ($for_resched_tasks >= 100) ? '99+' : $for_resched_tasks; ?></span>
-            <i class="fas fa-calendar-day"></i>
-            <span>Reschedule Task</span></a>
-        </li>
-
-        <hr class="sidebar-divider">
-        <div class="sidebar-heading"> Ratings </div>
-
-        <li class="nav-item">
-          <a class="nav-link" href="../pages/performance.php">
-            <i class="fas fa-award"></i>
-            <span>Member Perfromance</span></a>
-        </li>
-
-      <?php } ?>
-
-      <!-- Divider -->
-      <hr class="sidebar-divider d-none d-md-block">
-
-      <!-- Sidebar Toggler (Sidebar) -->
-      <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-      </div>
-    </ul>
-    <!-- End of Sidebar -->
 
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
@@ -202,40 +52,38 @@
         <!-- Topbar -->
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-          <!-- Sidebar Toggle (Topbar) -->
-          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-            <i class="fa fa-bars"></i>
-          </button>
+          <!-- Left Navbar -->
+          <a class="navbar-brand" href="index.php">
+            <img src="../assets/img/Logo.png" width="40" height="40">
+          </a>
+          <span class="d-none d-xl-block position-absolute" style="margin-left: 45px; cursor: default;">Task Management System</span>
 
-          <!-- Topbar Navbar -->
+          <!-- Center Navbar -->
+          <ul class="navbar-nav navbar-collapse justify-content-center position-static">
+            <li class="nav-item m-3" data-toggle="tooltip" data-placement="bottom" title="Dashboard">
+              <a class="nav-link" href="index.php"><i class="fas fa-tachometer-alt fa-2x"></i></a>
+            </li>
+            <li class="nav-item m-3" data-toggle="tooltip" data-placement="bottom" title="To Do">
+              <a class="nav-link" href="tasks.php"><i class="fas fa-tasks fa-2x"></i></i></a>
+            </li>
+            <li class="nav-item m-3" data-toggle="tooltip" data-placement="bottom" title="Assigned Tasks">
+              <a class="nav-link" href="assign_tasks.php"><i class="fas fa-sticky-note fa-2x"></i></a>
+            </li>
+            <li class="nav-item m-3" data-toggle="tooltip" data-placement="bottom" title="Performance">
+              <a class="nav-link" href="performance.php"><i class="fas fa-trophy fa-2x"></i></a>
+            </li>
+          </ul>
+
+          <!-- Right Navbar -->
           <ul class="navbar-nav ml-auto">
 
-            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-            <li class="nav-item dropdown no-arrow d-sm-none">
-              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-fw"></i>
-              </a>
-              <!-- Dropdown - Messages -->
-              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-                <form class="form-inline mr-auto w-100 navbar-search">
-                  <div class="input-group">
-                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                      <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search fa-sm"></i>
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </li>
+            <!-- <div class="topbar-divider d-none d-sm-block"></div> -->
 
             <!-- Nav Item - Alerts -->
-            <li class="nav-item dropdown no-arrow mx-1">
+            <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-2x fa-fw"></i>
-                <!-- Counter - Alerts -->
-                <span class="badge badge-danger badge-counter" style="font-size: large;"><?php echo $total_notification ?></span>
+                <i class="fas fa-bell" style="font-size: x-large;"></i>
+                <span class="badge badge-pill badge-danger badge-counter"><?php echo $total_notification ?></span>
               </a>
               <!-- Dropdown - Alerts -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
@@ -270,12 +118,10 @@
               </div>
             </li>
 
-            <div class="topbar-divider d-none d-sm-block"></div>
-
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $fname ?></span>
+                <!-- <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $fname ?></span> -->
                 <img class="img-profile rounded-circle" src="<?php echo $profileURL ?>">
               </a>
               <!-- Dropdown - User Information -->

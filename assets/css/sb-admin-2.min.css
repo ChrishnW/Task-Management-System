@@ -1781,9 +1781,9 @@ pre code {
 
 .table td,
 .table th {
-  padding       : .75rem;
+  padding          : .75rem;
   /* vertical-align: top; */
-  border-top    : 1px solid #e3e6f0
+  border-top       : 1px solid #e3e6f0
 }
 
 .table thead th {
@@ -11509,16 +11509,25 @@ a:focus {
   color: #fff
 }
 
-.topbar.navbar-light .navbar-nav .nav-item .nav-link {
+/* .topbar.navbar-light .navbar-nav .nav-item .nav-link {
   color: #d1d3e2
-}
+} */
+
+/* .topbar.navbar-light .navbar-nav .nav-item .nav-link:hover {
+  color: #b7b9cc
+} */
 
 .topbar.navbar-light .navbar-nav .nav-item .nav-link:hover {
-  color: #b7b9cc
+  color: #0090ff
 }
 
 .topbar.navbar-light .navbar-nav .nav-item .nav-link:active {
   color: #858796
+}
+
+.topbar.navbar-light .navbar-nav .nav-item.active .nav-link {
+  border-bottom: 4px solid #007bff;
+  color        : #007bff
 }
 
 .sidebar {
@@ -12104,7 +12113,7 @@ a:focus {
 .bg-login-image {
   background         : url(../img/Logo.png);
   background-position: center;
-  background-size    :contain;
+  background-size    : contain;
   background-repeat  : no-repeat;
 }
 
