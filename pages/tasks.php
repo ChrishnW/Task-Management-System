@@ -161,7 +161,6 @@ include('../include/header.php');
                           <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i>
                           <?php if ($row['requirement_status'] === '1') : ?>
                             <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i>
-                          <?php elseif ($row['requirement_status'] === '1') : ?>
                           <?php endif; ?>
                         </td>
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
@@ -213,7 +212,13 @@ include('../include/header.php');
                       $date_accomplished = date_format(date_create($row['date_accomplished']), "F d"); ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
-                        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+                        <td>
+                          <?php echo $row['task_name'] ?>
+                          <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i>
+                          <?php if ($row['requirement_status'] === '1') : ?>
+                            <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i>
+                          <?php endif; ?>
+                        </td>
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $date_accomplished ?></td>
@@ -247,7 +252,13 @@ include('../include/header.php');
                       $date_accomplished = date_format(date_create($row['date_accomplished']), "F d"); ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
-                        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+                        <td>
+                          <?php echo $row['task_name'] ?>
+                          <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i>
+                          <?php if ($row['requirement_status'] === '1') : ?>
+                            <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i>
+                          <?php endif; ?>
+                        </td>
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
                         <td class="text-center">
