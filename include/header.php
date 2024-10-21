@@ -121,13 +121,13 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="project.php">
+          <a class="nav-link disabled" href="project.php">
             <i class="fas fa-fw fa-folder-open"></i>
             <span>Projects</span></a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="accounts.php">
+          <a class="nav-link disabled" href="accounts.php">
             <i class="fas fa-fw fa-users"></i>
             <span>Team</span></a>
         </li>
