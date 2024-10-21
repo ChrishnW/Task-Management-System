@@ -266,15 +266,29 @@ if (isset($_POST['endTaskDeatails'])) {
     $require = $row['requirement_status'];
   }
   if ($require == 1) { ?>
-    <input type="hidden" id="finish_taskID" name="finish_taskID" value="<?php echo $id ?>">
-    <textarea class="form-control border-dark" rows="5" cols="50" name="taskRemarks" id="taskRemarks" placeholder="Write your remarks for this task..."></textarea>
+    <form id="submitDetails" enctype="multipart/form-data">
+      <input type="hidden" id="finish_taskID" name="finish_taskID" value="<?php echo $id ?>">
+      <!-- <textarea class="form-control border-dark" rows="5" cols="50" name="taskRemarks" id="taskRemarks" placeholder="Write your remarks for this task..."></textarea>
     <br>
     <center><input type="file" name="file-1[]" id="file-1" class="form-control-file col-sm-5 mb-2" multiple /></center>
-    <button type="button" class="btn btn-sm btn-secondary" onclick="resetFileInput()">Remove Selected Files</button>
+    <button type="button" class="btn btn-sm btn-secondary" onclick="resetFileInput()">Remove Selected Files</button> -->
+      <div class="form-group">
+        <textarea class="form-control" name="taskRemarks" id="taskRemarks" rows="5" placeholder="Enter your remarks here..."></textarea>
+      </div>
+      <div class="form-group">
+        <div class="file-drop-area" id="fileDropArea">
+          Drag & Drop files here or click to upload
+          <input type="file" name="file-1[]" id="file-1" multiple>
+        </div>
+        <div id="fileList" class="mt-2"></div>
+      </div>
+    </form>
   <?php } else { ?>
-    <input type="hidden" id="finish_taskID" name="finish_taskID" value="<?php echo $id ?>">
-    <textarea class="form-control border-dark" rows="5" cols="50" name="taskRemarks" id="taskRemarks" placeholder="Write your remarks for this task..."></textarea>
-  <?php }
+    <form id="submitDetails" enctype="multipart/form-data">
+      <input type="hidden" id="finish_taskID" name="finish_taskID" value="<?php echo $id ?>">
+      <textarea class="form-control border-dark" rows="5" cols="50" name="taskRemarks" id="taskRemarks" placeholder="Write your remarks for this task..."></textarea>
+    </form>
+    <?php }
 }
 if (isset($_POST['endTask'])) {
   $currentDateTime  = date('Y-m-d H:i:s');
@@ -365,139 +379,139 @@ if (isset($_POST['checkTask'])) {
     $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
     $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
     $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
-    <form id="editDetails" enctype="multipart/form-data">
-      <div class="row">
-        <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['id'] ?>">
-        <input type="hidden" name="taskReview_owner" id="taskReview_owner" value="<?php echo $row['in_charge'] ?>">
-        <div class="col-md-3">
-          <div class="form-group">
-            <label>Code:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
-              </div>
-              <input type="text" class="form-control" name="taskReview_code" id="taskReview_code" value="<?php echo $row['task_code'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-7">
-          <div class="form-group">
-            <label>Title:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-tag"></i></div>
-              </div>
-              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['task_name'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class="form-group">
-            <label>Achievement:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-trophy"></i></div>
-              </div>
-              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['achievement'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Due Date:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-calendar-day"></i></div>
-              </div>
-              <input type="datetime-local" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['due_date'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Date Accomplished:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-calendar-check"></i></div>
-              </div>
-              <input type="datetime-local" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['date_accomplished'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <div class="form-group">
-            <label>Remarks:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
-              </div>
-              <textarea class="form-control" rows="4" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['remarks'] ?></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-auto">
-          <div class="form-group">
-            <label>Approved By:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-user"></i></div>
-              </div>
-              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['head_name'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <?php if ($row['head_note'] != '' || $row['head_note'] != NULL) { ?>
-          <div class="col-md-12">
+      <form id="editDetails" enctype="multipart/form-data">
+        <div class="row">
+          <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['id'] ?>">
+          <input type="hidden" name="taskReview_owner" id="taskReview_owner" value="<?php echo $row['in_charge'] ?>">
+          <div class="col-md-3">
             <div class="form-group">
-              <label>Comment:</label>
+              <label>Code:</label>
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
-                  <div class="input-group-text"><i class="fas fa-comments"></i></div>
+                  <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
                 </div>
-                <textarea class="form-control" rows="3" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['head_note'] ?></textarea>
+                <input type="text" class="form-control" name="taskReview_code" id="taskReview_code" value="<?php echo $row['task_code'] ?>" readonly>
               </div>
             </div>
           </div>
-        <?php }
-        if ($row['requirement_status'] == 1) { ?>
+          <div class="col-md-7">
+            <div class="form-group">
+              <label>Title:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-tag"></i></div>
+                </div>
+                <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['task_name'] ?>" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>Achievement:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-trophy"></i></div>
+                </div>
+                <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['achievement'] ?>" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Due Date:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-calendar-day"></i></div>
+                </div>
+                <input type="datetime-local" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['due_date'] ?>" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Date Accomplished:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-calendar-check"></i></div>
+                </div>
+                <input type="datetime-local" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['date_accomplished'] ?>" readonly>
+              </div>
+            </div>
+          </div>
           <div class="col-md-12">
             <div class="form-group">
-              <label>Attachments:</label>
-              <div class="table-responsive">
-                <table id="taskView_table" class="table table-sm table-hover table-borderless">
-                  <thead>
-                    <tr>
-                      <th>File</th>
-                      <th>Size</th>
-                      <th>Uploaded Date</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="taskReview_files">
-                    <?php
-                    $task_code  = $row['task_code'];
-                    $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code'");
-                    while ($row = mysqli_fetch_assoc($query_result)) {
-                      $size   = formatSize($row['file_size']);
-                      $action = '<button type="button" class="btn btn-circle btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download"></i></button>';
-                      $date = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
-                    ?>
-                      <tr>
-                        <td><?php echo $row['file_name'] ?></td>
-                        <td><?php echo $size ?></td>
-                        <td><?php echo $date ?></td>
-                        <td><?php echo $action ?></td>
-                      </tr>
-                    <?php } ?>
-                  </tbody>
-                </table>
+              <label>Remarks:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
+                </div>
+                <textarea class="form-control" rows="4" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['remarks'] ?></textarea>
               </div>
             </div>
           </div>
-        <?php } ?>
-      </div>
-    </form>
-  <?php }
+          <div class="col-md-auto">
+            <div class="form-group">
+              <label>Approved By:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-user"></i></div>
+                </div>
+                <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['head_name'] ?>" readonly>
+              </div>
+            </div>
+          </div>
+          <?php if ($row['head_note'] != '' || $row['head_note'] != NULL) { ?>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Comment:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-comments"></i></div>
+                  </div>
+                  <textarea class="form-control" rows="3" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['head_note'] ?></textarea>
+                </div>
+              </div>
+            </div>
+          <?php }
+          if ($row['requirement_status'] == 1) { ?>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Attachments:</label>
+                <div class="table-responsive">
+                  <table id="taskView_table" class="table table-sm table-hover table-borderless">
+                    <thead>
+                      <tr>
+                        <th>File</th>
+                        <th>Size</th>
+                        <th>Uploaded Date</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="taskReview_files">
+                      <?php
+                      $task_code  = $row['task_code'];
+                      $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code'");
+                      while ($row = mysqli_fetch_assoc($query_result)) {
+                        $size   = formatSize($row['file_size']);
+                        $action = '<button type="button" class="btn btn-circle btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download"></i></button>';
+                        $date = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
+                      ?>
+                        <tr>
+                          <td><?php echo $row['file_name'] ?></td>
+                          <td><?php echo $size ?></td>
+                          <td><?php echo $date ?></td>
+                          <td><?php echo $action ?></td>
+                        </tr>
+                      <?php } ?>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          <?php } ?>
+        </div>
+      </form>
+    <?php }
 }
 if (isset($_POST['reviewTask'])) {
   $id = $_POST['taskID'];
@@ -507,117 +521,117 @@ if (isset($_POST['reviewTask'])) {
     $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
     $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
     $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
-    <form id="editDetails" enctype="multipart/form-data">
-      <div class="row">
-        <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['id'] ?>">
-        <input type="hidden" name="taskReview_owner" id="taskReview_owner" value="<?php echo $row['in_charge'] ?>">
-        <div class="col-md-3">
-          <div class="form-group">
-            <label>Code:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
-              </div>
-              <input type="text" class="form-control" name="taskReview_code" id="taskReview_code" value="<?php echo $row['task_code'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-7">
-          <div class="form-group">
-            <label>Title:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-tag"></i></div>
-              </div>
-              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['task_name'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class="form-group">
-            <label>Achievement:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-trophy"></i></div>
-              </div>
-              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['achievement'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="form-group col-md-4">
-          <label>Classification:</label>
-          <input type="text" value="<?php echo $task_class ?>" class="form-control" disabled>
-        </div>
-        <div class="form-group col-md-4">
-          <label>Due Date:</label>
-          <input type="text" value="<?php echo $due_date ?>" class="form-control" disabled>
-        </div>
-        <div class="form-group col-md-4">
-          <label>Date Accomplished:</label>
-          <input type="text" value="<?php echo $date_accomplished ?>" class="form-control" disabled>
-        </div>
-        <div class="col-md-12">
-          <div class="form-group">
-            <label>Remarks:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
-              </div>
-              <textarea class="form-control" rows="4" cols="50" name="taskReview_remarks" id="taskReview_remarks"><?php echo $row['remarks'] ?></textarea>
-            </div>
-          </div>
-        </div>
-        <?php if ($row['requirement_status'] == 1) { ?>
-          <div class="col-md-12">
+      <form id="editDetails" enctype="multipart/form-data">
+        <div class="row">
+          <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['id'] ?>">
+          <input type="hidden" name="taskReview_owner" id="taskReview_owner" value="<?php echo $row['in_charge'] ?>">
+          <div class="col-md-3">
             <div class="form-group">
-              <label>Add Attachment:</label>
+              <label>Code:</label>
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
-                  <div class="input-group-text"><i class="fas fa-file-upload"></i></div>
+                  <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
                 </div>
-                <input class="form-control" type="file" name="taskReview_upload[]" id="taskReview_upload" multiple>
-                <button type="button" class="btn btn-secondary" onclick="resetFileInput()">Remove Selected Files</button>
+                <input type="text" class="form-control" name="taskReview_code" id="taskReview_code" value="<?php echo $row['task_code'] ?>" readonly>
               </div>
             </div>
+          </div>
+          <div class="col-md-7">
+            <div class="form-group">
+              <label>Title:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-tag"></i></div>
+                </div>
+                <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['task_name'] ?>" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>Achievement:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-trophy"></i></div>
+                </div>
+                <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['achievement'] ?>" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Classification:</label>
+            <input type="text" value="<?php echo $task_class ?>" class="form-control" disabled>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Due Date:</label>
+            <input type="text" value="<?php echo $due_date ?>" class="form-control" disabled>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Date Accomplished:</label>
+            <input type="text" value="<?php echo $date_accomplished ?>" class="form-control" disabled>
           </div>
           <div class="col-md-12">
             <div class="form-group">
-              <label>Current Attachments:</label>
-              <div class="table-responsive">
-                <table id="taskReview_table" class="table table-sm table-hover table-borderless">
-                  <thead>
-                    <tr>
-                      <th>File</th>
-                      <th>Size</th>
-                      <th>Uploaded Date</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="taskReview_files">
-                    <?php
-                    $task_code  = $row['task_code'];
-                    $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code'");
-                    while ($row = mysqli_fetch_assoc($query_result)) {
-                      $size   = formatSize($row['file_size']);
-                      $action = '<button type="button" class="btn btn-circle btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download"></i></button> <button type="button" class="btn btn-circle btn-danger" value="' . $row['id'] . '" onclick="deleteFile(this)"><i class="fas fa-trash"></i></button>';
-                      $date   = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
-                    ?>
-                      <tr>
-                        <td><?php echo $row['file_name'] ?></td>
-                        <td><?php echo $size ?></td>
-                        <td><?php echo $date ?></td>
-                        <td><?php echo $action ?></td>
-                      </tr>
-                    <?php } ?>
-                  </tbody>
-                </table>
+              <label>Remarks:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
+                </div>
+                <textarea class="form-control" rows="4" cols="50" name="taskReview_remarks" id="taskReview_remarks"><?php echo $row['remarks'] ?></textarea>
               </div>
             </div>
           </div>
-        <?php } ?>
-      </div>
-    </form>
-  <?php }
+          <?php if ($row['requirement_status'] == 1) { ?>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Add Attachment:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-file-upload"></i></div>
+                  </div>
+                  <input class="form-control" type="file" name="taskReview_upload[]" id="taskReview_upload" multiple>
+                  <button type="button" class="btn btn-secondary" onclick="resetFileInput()">Remove Selected Files</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Current Attachments:</label>
+                <div class="table-responsive">
+                  <table id="taskReview_table" class="table table-sm table-hover table-borderless">
+                    <thead>
+                      <tr>
+                        <th>File</th>
+                        <th>Size</th>
+                        <th>Uploaded Date</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="taskReview_files">
+                      <?php
+                      $task_code  = $row['task_code'];
+                      $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code'");
+                      while ($row = mysqli_fetch_assoc($query_result)) {
+                        $size   = formatSize($row['file_size']);
+                        $action = '<button type="button" class="btn btn-circle btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download"></i></button> <button type="button" class="btn btn-circle btn-danger" value="' . $row['id'] . '" onclick="deleteFile(this)"><i class="fas fa-trash"></i></button>';
+                        $date   = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
+                      ?>
+                        <tr>
+                          <td><?php echo $row['file_name'] ?></td>
+                          <td><?php echo $size ?></td>
+                          <td><?php echo $date ?></td>
+                          <td><?php echo $action ?></td>
+                        </tr>
+                      <?php } ?>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          <?php } ?>
+        </div>
+      </form>
+    <?php }
 }
 if (isset($_POST['updateDetails'])) {
   $success          = true;
@@ -727,152 +741,152 @@ if (isset($_POST['viewTask'])) {
   while ($row = mysqli_fetch_assoc($query_result)) {
     $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
     $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
-    <form id="editDetails" enctype="multipart/form-data">
-      <div class="row">
-        <div class="col-md-5">
-          <div class="form-group">
-            <label>Assignee:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-user"></i></div>
-              </div>
-              <input type="text" class="form-control" value="<?php echo getName($row['in_charge']); ?>" readonly>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['id'] ?>">
-        <input type="hidden" name="taskReview_owner" id="taskReview_owner" value="<?php echo $row['in_charge'] ?>">
-        <div class="col-md-3">
-          <div class="form-group">
-            <label>Code:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
-              </div>
-              <input type="text" class="form-control" name="taskReview_code" id="taskReview_code" value="<?php echo $row['task_code'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-7">
-          <div class="form-group">
-            <label>Title:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-tag"></i></div>
-              </div>
-              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['task_name'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class="form-group">
-            <label>Achievement:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-trophy"></i></div>
-              </div>
-              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['achievement'] ?? 'TO BE DETERMINED' ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Due Date:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-calendar-day"></i></div>
-              </div>
-              <input type="datetime-local" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['due_date'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Date Accomplished:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-calendar-check"></i></div>
-              </div>
-              <input type="datetime-local" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['date_accomplished'] ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <div class="form-group">
-            <label>Remarks:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
-              </div>
-              <textarea class="form-control" rows="4" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['remarks'] ?? 'TO BE DETERMINED' ?></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-auto">
-          <div class="form-group">
-            <label>Approved By:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-user"></i></div>
-              </div>
-              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['head_name'] ?? 'TO BE DETERMINED' ?>" readonly>
-            </div>
-          </div>
-        </div>
-        <?php if ($row['head_note'] != '' || $row['head_note'] != NULL) { ?>
-          <div class="col-md-12">
+      <form id="editDetails" enctype="multipart/form-data">
+        <div class="row">
+          <div class="col-md-5">
             <div class="form-group">
-              <label>Comment:</label>
+              <label>Assignee:</label>
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
-                  <div class="input-group-text"><i class="fas fa-comments"></i></div>
+                  <div class="input-group-text"><i class="fas fa-user"></i></div>
                 </div>
-                <textarea class="form-control" rows="3" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['head_note'] ?></textarea>
+                <input type="text" class="form-control" value="<?php echo getName($row['in_charge']); ?>" readonly>
               </div>
             </div>
           </div>
-        <?php }
-        if ($row['requirement_status'] == 1) { ?>
+        </div>
+        <div class="row">
+          <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['id'] ?>">
+          <input type="hidden" name="taskReview_owner" id="taskReview_owner" value="<?php echo $row['in_charge'] ?>">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Code:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
+                </div>
+                <input type="text" class="form-control" name="taskReview_code" id="taskReview_code" value="<?php echo $row['task_code'] ?>" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-7">
+            <div class="form-group">
+              <label>Title:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-tag"></i></div>
+                </div>
+                <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['task_name'] ?>" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>Achievement:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-trophy"></i></div>
+                </div>
+                <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['achievement'] ?? 'TO BE DETERMINED' ?>" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Due Date:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-calendar-day"></i></div>
+                </div>
+                <input type="datetime-local" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['due_date'] ?>" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Date Accomplished:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-calendar-check"></i></div>
+                </div>
+                <input type="datetime-local" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['date_accomplished'] ?>" readonly>
+              </div>
+            </div>
+          </div>
           <div class="col-md-12">
             <div class="form-group">
-              <label>Attachments:</label>
-              <div class="table-responsive">
-                <table id="taskView_table" class="table table-sm table-hover table-borderless">
-                  <thead>
-                    <tr>
-                      <th>File</th>
-                      <th>Size</th>
-                      <th>Uploaded Date</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="taskReview_files">
-                    <?php
-                    $task_code  = $row['task_code'];
-                    $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code'");
-                    while ($row = mysqli_fetch_assoc($query_result)) {
-                      $size   = formatSize($row['file_size']);
-                      $action = '<button type="button" class="btn btn-sm btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download fa-fw"></i> Download</button>';
-                      $date = date_format(date_create($row['file_dated']), "F d, Y h:i a");
-                    ?>
-                      <tr>
-                        <td><?php echo $row['file_name'] ?></td>
-                        <td><?php echo $size ?></td>
-                        <td><?php echo $date ?></td>
-                        <td><?php echo $action ?></td>
-                      </tr>
-                    <?php } ?>
-                  </tbody>
-                </table>
+              <label>Remarks:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
+                </div>
+                <textarea class="form-control" rows="4" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['remarks'] ?? 'TO BE DETERMINED' ?></textarea>
               </div>
             </div>
           </div>
-        <?php } ?>
-      </div>
-    </form>
-<?php
+          <div class="col-md-auto">
+            <div class="form-group">
+              <label>Approved By:</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fas fa-user"></i></div>
+                </div>
+                <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['head_name'] ?? 'TO BE DETERMINED' ?>" readonly>
+              </div>
+            </div>
+          </div>
+          <?php if ($row['head_note'] != '' || $row['head_note'] != NULL) { ?>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Comment:</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-comments"></i></div>
+                  </div>
+                  <textarea class="form-control" rows="3" cols="50" name="taskReview_remarks" id="taskReview_remarks" readonly><?php echo $row['head_note'] ?></textarea>
+                </div>
+              </div>
+            </div>
+          <?php }
+          if ($row['requirement_status'] == 1) { ?>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Attachments:</label>
+                <div class="table-responsive">
+                  <table id="taskView_table" class="table table-sm table-hover table-borderless">
+                    <thead>
+                      <tr>
+                        <th>File</th>
+                        <th>Size</th>
+                        <th>Uploaded Date</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="taskReview_files">
+                      <?php
+                      $task_code  = $row['task_code'];
+                      $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code'");
+                      while ($row = mysqli_fetch_assoc($query_result)) {
+                        $size   = formatSize($row['file_size']);
+                        $action = '<button type="button" class="btn btn-sm btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download fa-fw"></i> Download</button>';
+                        $date = date_format(date_create($row['file_dated']), "F d, Y h:i a");
+                      ?>
+                        <tr>
+                          <td><?php echo $row['file_name'] ?></td>
+                          <td><?php echo $size ?></td>
+                          <td><?php echo $date ?></td>
+                          <td><?php echo $action ?></td>
+                        </tr>
+                      <?php } ?>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          <?php } ?>
+        </div>
+      </form>
+  <?php
   }
 }
 if (isset($_POST['rescheduleTask'])) {
@@ -943,4 +957,4 @@ if (isset($_POST['addTask'])) {
     echo '<hr class="sidebar-divider d-none d-md-block">';
   }
 }
-?>
+  ?>

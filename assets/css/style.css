@@ -612,3 +612,45 @@
 #success_log {
     font-size: 12px;
 }
+
+.file-drop-area {
+    border       : 2px dashed #d1d7dd;
+    padding      : 20px;
+    text-align   : center;
+    cursor       : pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    position     : relative;
+}
+
+.file-drop-area input[type="file"] {
+    position: absolute;
+    top     : 0;
+    left    : 0;
+    width   : 100%;
+    height  : 100%;
+    opacity : 0;
+    cursor  : pointer;
+}
+
+.file-drop-area.dragover {
+    background-color: #e9ecef;
+}
+
+.file-item {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+    padding        : 5px 10px;
+    border         : 1px solid #ddd;
+    border-radius  : 5px;
+    margin-bottom  : 5px;
+}
+
+.file-item button {
+    background-color: #dc3545;
+    color           : white;
+    border          : none;
+    border-radius   : 5px;
+    padding         : 2px 5px;
+}

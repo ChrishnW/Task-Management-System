@@ -414,19 +414,18 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="finish" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content border-danger">
       <div class="modal-header bg-danger text-white">
         <h5 class="modal-title" id="exampleModalLongTitle"><i class="fas fa-pen-square fa-fw"></i> Finish Task</h5>
       </div>
-      <form id="submitDetails" enctype="multipart/form-data">
-        <div class="modal-body text-center" id="finishDetails">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-dismiss="modal" id="submitTask">Submit</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </form>
+      <div class="modal-body" id="finishDetails">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal" id="submitTask">Submit</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1065,4 +1064,58 @@ include('../include/header.php');
       });
     }
   <?php } ?>
+
+  $('#finish').on('shown.bs.modal', function() {
+    var fileDropArea = $('#fileDropArea');
+    var fileInput = $('#file-1');
+    var fileList = $('#fileList');
+    var dt = new DataTransfer();
+
+    fileDropArea.on('dragover', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(this).addClass('dragover');
+    });
+
+    fileDropArea.on('dragleave', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(this).removeClass('dragover');
+    });
+
+    fileDropArea.on('drop', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(this).removeClass('dragover');
+      var files = e.originalEvent.dataTransfer.files;
+      handleFiles(files);
+    });
+
+    fileDropArea.on('click', function() {
+      fileInput.click();
+    });
+
+    fileInput.on('change', function() {
+      var files = $(this)[0].files;
+      handleFiles(files);
+    });
+
+    function handleFiles(files) {
+      for (var i = 0; i < files.length; i++) {
+        dt.items.add(files[i]);
+        var fileItem = $('<div class="file-item"></div>');
+        fileItem.append('<span>' + files[i].name + '</span>');
+        var removeButton = $('<button type="button">Remove</button>');
+        removeButton.on('click', function() {
+          var index = $(this).parent().index();
+          dt.items.remove(index);
+          fileInput[0].files = dt.files;
+          $(this).parent().remove();
+        });
+        fileItem.append(removeButton);
+        fileList.append(fileItem);
+      }
+      fileInput[0].files = dt.files;
+    }
+  });
 </script>
