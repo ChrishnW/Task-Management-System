@@ -172,12 +172,12 @@ include('../include/header.php');
                             if (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) {
                               echo '<button class="btn btn-secondary btn-block" disabled>On Hold</button>';
                             } else {
-                              echo '<button class="btn btn-success btn-block" value="' . $row['id'] . '" onclick="startTask(this)"><i class="fas fa-play-circle fa-fw"></i> Start</button>';
+                              echo '<button class="btn btn-success btn-block" value="' . $row['id'] . '" onclick="startTask(this)">Start</button>';
                             }
                           } elseif ($row['status'] === 'IN PROGRESS') {
-                            echo '<button class="btn btn-danger btn-block" value="' . $row['id'] . '" onclick="endTask(this)"><i class="fas fa-check-circle fa-fw"></i> Finish</button>';
+                            echo '<button class="btn btn-danger btn-block" value="' . $row['id'] . '" onclick="endTask(this)">Finish</button>';
                           } else {
-                            echo '<button class="btn btn-dark btn-block"><i class="fas fa-ban fa-fw"></i> Cancel</button>';
+                            echo '<button class="btn btn-dark btn-block" disabled>On Hold</button>';
                           }
 
                           if ($row['old_date'] === NULL) {
@@ -217,7 +217,7 @@ include('../include/header.php');
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td><?php echo $due_date ?></td>
                         <td><?php echo $date_accomplished ?></td>
-                        <td><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="fas fa-eye fa-fw"></i> View</button></td>
+                        <td><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)">View</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -253,7 +253,7 @@ include('../include/header.php');
                         <td class="text-center">
                           <span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span>
                         </td>
-                        <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="checkTask(this)"><i class="fas fa-history fa-fw"></i> Details</button></td>
+                        <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="checkTask(this)">Details</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
