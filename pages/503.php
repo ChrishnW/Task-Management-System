@@ -30,10 +30,10 @@
   <div class="row justify-content-center">
     <div class="col-lg-4">
       <div class="text-center mt-4">
-        <img class="img-fluid" src="../assets/img/illustrations/401-error-unauthorized.svg" alt="">
-        <p class="lead">Session timed out. Please log in again.</p>
-        <a class="text-arrow-icon" href="../index.php">
-          Return to Login
+        <img class="img-fluid p-4" src="../assets/img/illustrations/503-error-service-unavailable.svg" alt="">
+        <p class="lead">The server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later.</p>
+        <a class="text-arrow-icon" href="index.php">
+          Return to Dashboard
         </a>
       </div>
     </div>

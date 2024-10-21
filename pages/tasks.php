@@ -196,12 +196,12 @@ include('../include/header.php');
                 <table id="myTasksTableReview" class="table table-hover">
                   <thead>
                     <tr>
-                      <th>Code</th>
-                      <th>Title</th>
-                      <th>Classification</th>
-                      <th>Due Date</th>
-                      <th>Finished Date</th>
-                      <th></th>
+                      <th class="col-1">Code</th>
+                      <th class="col-5">Title</th>
+                      <th class="col-1">Classification</th>
+                      <th class="col-2">Due Date</th>
+                      <th class="col-2">Finished Date</th>
+                      <th class="col-1"></th>
                     </tr>
                   </thead>
                   <tbody id="myTasksReview">
@@ -233,15 +233,15 @@ include('../include/header.php');
           <div class="tab-pane fade" id="finished">
             <div class="card">
               <div class="card-body table-responsive">
-                <table id="myTasksTableFinished" class="table table-striped">
-                  <thead class="table table-primary">
+                <table id="myTasksTableFinished" class="table table-hover">
+                  <thead>
                     <tr>
-                      <th>Code</th>
-                      <th>Title</th>
-                      <th>Classification</th>
-                      <th>Due Date</th>
-                      <th>Rating</th>
-                      <th></th>
+                      <th class="col-1">Code</th>
+                      <th class="col-5">Title</th>
+                      <th class="col-1">Classification</th>
+                      <th class="col-2">Due Date</th>
+                      <th class="col-1">Rating</th>
+                      <th class="col-1"></th>
                     </tr>
                   </thead>
                   <tbody id="myTasksFinished">
