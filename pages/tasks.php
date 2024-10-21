@@ -137,7 +137,7 @@ include('../include/header.php');
                       <th class="col-1">Classification</th>
                       <th class="col-2">Due Date</th>
                       <th class="col-1">Status</th>
-                      <th class="col-1">Action</th>
+                      <th class="col-1"></th>
                     </tr>
                   </thead>
                   <tbody id="myTasksTodo">
@@ -201,7 +201,7 @@ include('../include/header.php');
                       <th>Classification</th>
                       <th>Due Date</th>
                       <th>Finished Date</th>
-                      <th>Action</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody id="myTasksReview">
@@ -241,7 +241,7 @@ include('../include/header.php');
                       <th>Classification</th>
                       <th>Due Date</th>
                       <th>Rating</th>
-                      <th>Action</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody id="myTasksFinished">
