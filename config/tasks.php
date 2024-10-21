@@ -580,13 +580,10 @@ if (isset($_POST['reviewTask'])) {
         <?php if ($row['requirement_status'] == 1) { ?>
           <div class="col-md-12">
             <div class="form-group">
-              <label>Add Attachment:</label>
-              <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                  <div class="input-group-text"><i class="fas fa-file-upload"></i></div>
-                </div>
-                <input class="form-control" type="file" name="taskReview_upload[]" id="taskReview_upload" multiple>
-                <button type="button" class="btn btn-secondary" onclick="resetFileInput()">Remove Selected Files</button>
+              <label for="fileInput">Add Attachment</label>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" name="taskReview_upload[]" id="taskReview_upload" multiple>
+                <label class="custom-file-label" for="fileInput">Choose file</label>
               </div>
             </div>
           </div>
@@ -599,7 +596,6 @@ if (isset($_POST['reviewTask'])) {
                     <tr>
                       <th>File</th>
                       <th>Size</th>
-                      <th>Uploaded Date</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -611,12 +607,19 @@ if (isset($_POST['reviewTask'])) {
                       $size   = formatSize($row['file_size']);
                       $action = '<button type="button" class="btn btn-circle btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download"></i></button> <button type="button" class="btn btn-circle btn-danger" value="' . $row['id'] . '" onclick="deleteFile(this)"><i class="fas fa-trash"></i></button>';
                       $date   = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
+                      $filescount = mysqli_num_rows(mysqli_query($con, "SELECT * FROM task_files WHERE task_code='{$row['task_code']}'"));
                     ?>
                       <tr>
                         <td><?php echo $row['file_name'] ?></td>
                         <td><?php echo $size ?></td>
-                        <td><?php echo $date ?></td>
-                        <td><?php echo $action ?></td>
+                        <td>
+                          <button type="button" class="btn btn-success" value="<?php echo $row['id']; ?>" onclick="downloadFile(this)">Download</button>
+                          <?php if ($filescount > 1) : ?>
+                            <button type="button" class="btn btn-danger" value="<?php echo $row['id']; ?>" onclick="deleteFile(this)">Delete</button>
+                          <?php else: ?>
+                            <button type="button" class="btn btn-danger" value="<?php echo $row['id']; ?>" onclick="deleteFile(this)" disabled>Delete</button>
+                          <?php endif; ?>
+                        </td>
                       </tr>
                     <?php } ?>
                   </tbody>
