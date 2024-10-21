@@ -108,40 +108,6 @@ include('../include/header.php');
     </div>
   </div>
 </div>
-<div class="modal fade" id="error" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Caution!</h5>
-      </div>
-      <div class="modal-body text-center">
-        <i class="fas fa-sad-cry fa-5x text-danger"></i>
-        <br><br>
-        <p id="error_found"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="success" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
-      </div>
-      <div class="modal-body text-center">
-        <i class="far fa-check-circle fa-5x text-success"></i>
-        <br><br>
-        <p id="success_log"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <?php include('../include/footer.php'); ?>
 

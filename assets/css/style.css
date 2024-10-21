@@ -604,3 +604,11 @@
 .v-hidden {
     visibility: hidden;
 }
+
+#error_found {
+    font-size: 12px;
+}
+
+#success_log {
+    font-size: 12px;
+}

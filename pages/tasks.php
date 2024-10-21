@@ -364,71 +364,6 @@ include('../include/header.php');
   <?php endif; ?>
 </div>
 
-<div class="modal fade" id="taskRegistrationModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-md">
-    <div class="modal-content border-info">
-      <div class="modal-header bg-info text-white">
-        <h5 class="modal-title" id="taskRegistrationModalLabel">Additional Task</h5>
-      </div>
-      <div class="modal-body">
-        <form id="taskRegistrationForm">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="mb-3">
-                <label for="taskName" class="form-label">Title</label>
-                <input type="text" class="form-control" id="taskName" name="taskName" autocomplete="off">
-              </div>
-            </div>
-            <div class="col-md-12">
-              <div class="mb-3">
-                <label for="taskName" class="form-label">Details</label>
-                <textarea id="addDetails" name="addDetails" class="form-control"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="dueDate" class="form-label">Due Date</label>
-                <input type="date" class="form-control" id="dueDate" name="dueDate">
-              </div>
-              <div class="mb-3">
-                <label for="taskFor">Section</label>
-                <select id="assignTask_section" name="assignTask_section" class="form-control selectpicker show-tick" data-dropup-auto="false" data-style="border-secondary" onchange="assignSection(this);">
-                  <option value="" disabled>Select Section</option>
-                  <option data-divider="true"></option>
-                  <?php
-                  $taskFor = mysqli_query($con, "SELECT section.sec_id, section.sec_name FROM section WHERE section.dept_id='$dept_id'");
-                  while ($forRow = mysqli_fetch_array($taskFor)) { ?>
-                    <option value="<?php echo $forRow['sec_id'] ?>"><?php echo ucwords(strtolower($forRow['sec_name'])) ?></option>
-                  <?php } ?>
-                </select>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="require" class="form-label">Attachment Required</label>
-                <select name="require" id="require" class="form-control">
-                  <option value="0">No</option>
-                  <option value="1">Yes</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="assignee" class="form-label">Assignee</label>
-                <select class="form-control selectpicker show-tick" data-style="border-secondary" data-live-search="true" data-size="5" name="taskAssignee[]" id="taskAssignee" data-dropup-auto="false" multiple>
-                </select>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success" onclick="addTask(this)">Save</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="modal fade" id="start" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content border-success">
@@ -557,40 +492,6 @@ include('../include/header.php');
     </div>
   </div>
 </div>
-<div class="modal fade" id="error" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Caution!</h5>
-      </div>
-      <div class="modal-body text-center">
-        <i class="fas fa-sad-cry fa-5x text-danger"></i>
-        <br><br>
-        <p id="error_found"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="success" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
-      </div>
-      <div class="modal-body text-center">
-        <i class="far fa-check-circle fa-5x text-success"></i>
-        <br><br>
-        <p id="success_log"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <?php include('../include/footer.php'); ?>
 
@@ -605,43 +506,6 @@ include('../include/header.php');
       $('[data-toggle="tooltip"]').tooltip();
     },
   });
-
-  function addTask(element) {
-    if (document.getElementById('taskName').value !== '' && document.getElementById('dueDate').value !== '' && document.getElementById('taskAssignee').value !== '' && document.getElementById('addDetails').value !== '') {
-      const formData = new FormData(document.getElementById('taskRegistrationForm'));
-      formData.append('addTask', true);
-      $.ajax({
-        type: 'POST',
-        url: '../config/tasks.php',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-          $('#resultBody').html(data);
-          $('#result').modal('show');
-        }
-      });
-    } else {
-      element.disabled = false;
-      document.getElementById('error_found').innerHTML = 'Required fields are empty.';
-      $('#error').modal('show');
-    }
-  }
-
-  function assignSection(element) {
-    var sec_id = element.value;
-    $.ajax({
-      method: "POST",
-      url: "../config/assign_tasks.php",
-      data: {
-        "assignSection": true,
-        "sec_id": sec_id,
-      },
-      success: function(response) {
-        $("select[name='taskAssignee[]']").html(response).selectpicker('refresh');
-      }
-    })
-  }
 
   function filterTable() {
     <?php if ($access == 1) { ?>
