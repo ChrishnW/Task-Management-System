@@ -65,6 +65,8 @@
       <hr class="sidebar-divider">
 
       <?php if ($access == 1) { ?>
+        <div class="sidebar-heading"> Account Management </div>
+
         <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             <i class="fas fa-users-cog"></i>
@@ -78,6 +80,10 @@
             </div>
           </div>
         </li>
+
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading"> Task Management </div>
 
         <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
@@ -93,11 +99,19 @@
           </div>
         </li>
 
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading"> Project Management </div>
+
         <li class="nav-item">
           <a class="nav-link" href="404.php">
             <i class="fas fa-chart-bar"></i>
             <span>Project Management</span></a>
         </li>
+
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading"> System Management </div>
 
         <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
