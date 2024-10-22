@@ -36,3 +36,7 @@ var finishedSettings = {
     "targets": 5,
   }],
 };
+
+var ToDoTable = $('#myTasksTableTodo').DataTable(todoSettings);
+var ReviewTable = $('#myTasksTableReview').DataTable(reviewSettings);
+var FinishedTable = $('#myTasksTableFinished').DataTable(finishedSettings);

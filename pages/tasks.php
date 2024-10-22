@@ -508,12 +508,6 @@ include('../include/header.php');
 <script src="../assets/js/member-datatable-settings.js"></script>
 
 <script>
-  // Active Table on this Page
-  var ToDoTable = $('#myTasksTableTodo').DataTable(todoSettings);
-  var ReviewTable = $('#myTasksTableReview').DataTable(reviewSettings);
-  var FinishedTable = $('#myTasksTableFinished').DataTable(finishedSettings);
-  // End Active Table
-
   function startSelectButton() {
     var selectCount = ToDoTable.$('.bodyCheckbox:checked').length;
     if (selectCount > 0) {
