@@ -88,8 +88,8 @@ include('../include/header.php');
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" onclick="deparmentCreate(this)" class="btn btn-primary">Register</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -122,8 +122,8 @@ include('../include/header.php');
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" onclick="deparmentUpdate(this)" class="btn btn-primary" id="department_id">Update</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
