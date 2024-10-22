@@ -5,7 +5,7 @@ include('../include/header.php');
 <div class="container-fluid">
   <div class="card">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-      <h6 class="m-0 font-weight-bold">Registered Department</h6>
+      <h6 class="m-0 font-weight-bold">Department Management</h6>
       <div class="dropdown no-arrow">
         <button type="button" onclick="showCreate(this)" class="btn btn-primary">
           <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create
