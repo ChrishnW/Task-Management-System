@@ -3,76 +3,67 @@ include('../include/header.php');
 ?>
 
 <div class="container-fluid">
-  <?php if ($access == 1) { ?>
-    <div class="card">
-      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-        <h6 class="m-0 font-weight-bold text-white">Registered Department</h6>
-        <div class="dropdown no-arrow">
-          <button type="button" onclick="showCreate(this)" class="btn btn-primary">
-            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Register New Department
-          </button>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
-            <thead class='table table-success'>
-              <tr>
-                <th>Action</th>
-                <th>Department ID</th>
-                <th>Department Name</th>
-                <th>Total Secion(s)</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tfoot class='table table-success'>
-              <tr>
-                <th>Action</th>
-                <th>Deparment ID</th>
-                <th>Name</th>
-                <th>Total Secion(s)</th>
-                <th>Status</th>
-              </tr>
-            </tfoot>
-            <tbody>
-              <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT * FROM department");
-              if (mysqli_num_rows($result) > 0) {
-                while ($row = $result->fetch_assoc()) {
-                  $dept_id  = $row['dept_id'];
-                  $count_section = mysqli_query($con, "SELECT COUNT(id) as total_section FROM section WHERE dept_id='$dept_id'");
-                  $count_section_row = $count_section->fetch_assoc();
-                  $total_section = $count_section_row['total_section'];
-                  if ($row['status'] == 1) {
-                    $status = "<span class='badge badge-success'>Active</span>";
-                  } else {
-                    $status = "<span class='badge badge-danger'>Inactive</span>";
-                  }
-              ?>
-                  <tr>
-                    <td><button type="button" class="btn btn-info btn-block" onclick="editDepartment(this)" value="<?php echo $row['id'] ?>" data-id="<?php echo $row['dept_id'] ?>" data-name="<?php echo $row['dept_name'] ?>" data-status="<?php echo $row['status'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button></td>
-                    <td><span class="badge badge-primary"><?php echo $row['dept_id'] ?></span></td>
-                    <td><?php echo $row['dept_name'] ?></td>
-                    <td><span class="badge badge-primary"><?php echo $total_section ?> Registered</span></td>
-                    <td><?php echo $status ?></td>
-                  </tr>
-              <?php }
-              } ?>
-            </tbody>
-          </table>
-        </div>
+  <div class="card">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+      <h6 class="m-0 font-weight-bold">Registered Department</h6>
+      <div class="dropdown no-arrow">
+        <button type="button" onclick="showCreate(this)" class="btn btn-primary">
+          <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create
+        </button>
       </div>
     </div>
-  <?php } elseif ($access == 2) { ?>
-  <?php } elseif ($access == 3) { ?>
-
-  <?php } ?>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover" id="departmentTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Department</th>
+              <th>Total Secion(s)</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php $con->next_result();
+            $result = mysqli_query($con, "SELECT * FROM department");
+            if (mysqli_num_rows($result) > 0) {
+              while ($row = $result->fetch_assoc()) {
+                $dept_id  = $row['dept_id'];
+                $count_section = mysqli_query($con, "SELECT COUNT(id) as total_section FROM section WHERE dept_id='$dept_id'");
+                $count_section_row = $count_section->fetch_assoc();
+                $total_section = $count_section_row['total_section'];
+                if ($row['status'] == 1) {
+                  $status = "<span class='badge badge-success'>Active</span>";
+                } else {
+                  $status = "<span class='badge badge-danger'>Inactive</span>";
+                }
+            ?>
+                <tr>
+                  <td><?php echo $row['dept_name'] ?></td>
+                  <td><span class="badge badge-primary"><?php echo $total_section ?> Registered</span></td>
+                  <td><?php echo $status ?></td>
+                  <td>
+                    <button type="button" class="btn btn-info btn-block btn-sm" onclick="editDepartment(this)" value="<?php echo $row['id'] ?>" data-id="<?php echo $row['dept_id'] ?>" data-name="<?php echo $row['dept_name'] ?>" data-status="<?php echo $row['status'] ?>">Edit</button>
+                    <?php if ($row['status'] === '1'): ?>
+                      <button class="btn btn-danger btn-block btn-sm" value="<?php echo $row['id']; ?>" data-status="0" onclick="changeStatus(this)">Deactive</button>
+                    <?php else: ?>
+                      <button class="btn btn-success btn-block btn-sm" value="<?php echo $row['id']; ?>" data-status="1" onclick="changeStatus(this)">Activate</button>
+                    <?php endif; ?>
+                  </td>
+                </tr>
+            <?php }
+            } ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="modal fade" id="createDepartment" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-    <div class="modal-content border-info">
-      <div class="modal-header bg-info text-white">
+    <div class="modal-content">
+      <div class="modal-header">
         <h5 class="modal-title">Register Department</h5>
       </div>
       <div class="modal-body">
@@ -105,8 +96,8 @@ include('../include/header.php');
 </div>
 <div class="modal fade" id="editDepartment" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-    <div class="modal-content border-info">
-      <div class="modal-header bg-info text-white">
+    <div class="modal-content">
+      <div class="modal-header">
         <h5 class="modal-title">Edit Department</h5>
       </div>
       <div class="modal-body">
@@ -129,17 +120,6 @@ include('../include/header.php');
             <input type="text" id="department_name" class="form-control">
           </div>
         </div>
-        <div class="form-group">
-          <label>Status:</label>
-          <div class="input-group mb-2">
-            <label class="toggle-switchy" for="dept_status_check" data-size="lg">
-              <input checked type="checkbox" id="dept_status_check" name="dept_status_check">
-              <span class="toggle">
-                <span class="switch"></span>
-              </span>
-            </label>
-          </div>
-        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -148,36 +128,39 @@ include('../include/header.php');
     </div>
   </div>
 </div>
-<div class="modal fade" id="danger" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Caution!</h5>
-
-      </div>
-      <div class="modal-body text-center">
-        <i class="fas fa-exclamation-triangle fa-5x text-danger"></i>
-        <br><br>
-        You're about to delete this department, <br> do you still want to proceed?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" onclick="deleteDepartment(this)" class="btn btn-primary" id="delete_id">Proceed</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <?php include('../include/footer.php'); ?>
 
 <script>
-  $('#dataTable').DataTable({
+  $('#departmentTable').DataTable({
+    "columnDefs": [{
+      "orderable": false,
+      "searchable": false,
+      "targets": 3,
+    }],
     "order": [
-      [2, "asc"]
-    ],
-    "pageLength": 5,
-    "lengthMenu": [5, 10, 25, 50, 100]
+      [1, "desc"],
+      [0, "asc"]
+    ]
   });
+
+  function changeStatus(element) {
+    element.disabled = true;
+    const id = element.value;
+    const status = element.getAttribute('data-status');
+    $.ajax({
+      type: "POST",
+      url: "../config/departments.php",
+      data: {
+        "id": id,
+        "status": status,
+        "changeStatus": true
+      },
+      success: function(response) {
+        location.reload();
+      }
+    });
+  }
 
   function showCreate(element) {
     $('#createDepartment').modal('show');
@@ -210,44 +193,11 @@ include('../include/header.php');
     })
   }
 
-  function deleteDepartmentView(element) {
-    var view_delete_id = element.value;
-    document.getElementById('delete_id').value = view_delete_id;
-    $('#danger').modal('show');
-  }
-
-  function deleteDepartment(element) {
-    element.disabled = true;
-    var delete_id = element.value;
-    $.ajax({
-      method: "POST",
-      url: "../config/departments.php",
-      data: {
-        "deleteDepartment": true,
-        "delete_id": delete_id,
-      },
-      success: function(respone) {
-        if (respone === "Success") {
-          document.getElementById('success_log').innerHTML = 'The selected department has been deleted successfully.';
-          $('#danger').modal('hide');
-          $('#success').modal('show');
-        }
-      }
-    })
-  }
-
   function editDepartment(element) {
     var department_id = element.value;
     var department_code = element.getAttribute('data-id');
     var department_name = element.getAttribute('data-name');
-    var department_status = element.getAttribute('data-status');
-    var status_check = document.getElementById('status_text');
     $(document).ready(function() {
-      if (department_status === '1') {
-        document.getElementById('dept_status_check').checked = true;
-      } else {
-        document.getElementById('dept_status_check').checked = false;
-      }
       document.getElementById('department_id').value = department_id;
       document.getElementById('department_code').value = department_code;
       document.getElementById('department_oldcode').value = department_code;
@@ -262,12 +212,6 @@ include('../include/header.php');
     var dept_code = document.getElementById('department_code').value;
     var dept_oldcode = document.getElementById('department_oldcode').value;
     var dept_name = document.getElementById('department_name').value;
-    var dept_status_check = document.getElementById('dept_status_check');
-    if (dept_status_check.checked) {
-      var dept_status = '1';
-    } else {
-      var dept_status = '0';
-    }
     $.ajax({
       method: "POST",
       url: "../config/departments.php",
@@ -277,7 +221,6 @@ include('../include/header.php');
         'dept_code': dept_code,
         'dept_oldcode': dept_oldcode,
         'dept_name': dept_name,
-        'dept_status': dept_status,
       },
       success: function(response) {
         if (response === 'Success') {
