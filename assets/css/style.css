@@ -295,17 +295,13 @@
 }
 
 .calendar {
-    width: 100%;
+    width : 100%;
+    cursor: default;
 }
 
 .calendar th,
 .calendar td {
     text-align: center;
-}
-
-.calendar th {
-    background-color: #4e73df;
-    color           : #fff;
 }
 
 .calendar .today {
