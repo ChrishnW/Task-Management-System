@@ -333,10 +333,8 @@ include('../include/header.php');
       success: function(response) {
         $('#ajaxContents').html(response);
         $('#ViewFinishedTaskTable').DataTable({
-          "order": [
-            [6, "desc"],
-            [4, "asc"]
-          ]
+          "autoWidth": false,
+          "order": [4, "desc"]
         });
         $('[data-toggle="tooltip"]').tooltip();
         openSpecificModal('view', 'modal-xl');
