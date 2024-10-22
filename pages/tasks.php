@@ -456,7 +456,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="re-view" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
     <div class="modal-content border-warning">
       <div class="modal-header bg-warning text-white">
         <h5 class="modal-title">Review Task</h5>
@@ -506,16 +506,11 @@ include('../include/header.php');
 <?php include('../include/footer.php'); ?>
 
 <script>
-  $('#dataTable').DataTable({
-    "order": [
-      [6, "desc"],
-      [4, "desc"],
-      [2, "asc"],
-    ],
-    "drawCallback": function(settings) {
-      $('[data-toggle="tooltip"]').tooltip();
-    },
-  });
+  // Active Table on this Page
+  var ToDoTable = $('#myTasksTableTodo').DataTable();
+  var ReviewTable = $('#myTasksTableReview').DataTable();
+  var FinishedTable = $('#myTasksTableFinished').DataTable();
+  // End Active Table
 
   function filterTable() {
     <?php if ($access == 1) { ?>
@@ -911,86 +906,12 @@ include('../include/header.php');
         document.querySelector('.tab-pane').classList.add('show', 'active');
       }
 
-      function initializeDataTable(tableId) {
-        const order = tableId === 'myTasksTableTodo' ? [
-          [4, "asc"],
-          [2, "asc"]
-        ] : [
-          [3, "desc"],
-          [1, "asc"]
-        ];
-        const column = tableId === 'myTasksTableTodo' ? [{
-          "orderable": false,
-          "searchable": false,
-          "targets": [0, 6]
-        }] : [{
-          "orderable": false,
-          "searchable": false,
-          "targets": 5
-        }];
-        const table = $('#' + tableId).DataTable({
-          "columnDefs": column,
-          "order": order,
-          "drawCallback": function(settings) {
-            $('[data-toggle="tooltip"]').tooltip();
-          }
-        });
-
-        $('#selectAll').on('click', function() {
-          $('input[name="selected_ids[]"]:not(:disabled)', table.rows().nodes()).prop('checked', this.checked);
-          toggleActionButton();
-        });
-
-        $(document).on('change', 'input[name="selected_ids[]"]:not(:disabled)', toggleActionButton);
-
-        function toggleActionButton() {
-          $('#actionButton').toggleClass('d-none', !$('input[name="selected_ids[]"]:checked:not(:disabled)', table.rows().nodes()).length);
-        }
-
-        $('#actionButton').on('click', function() {
-          const selectedValues = $('input[name="selected_ids[]"]:checked:not(:disabled)', table.rows().nodes()).map(function() {
-            return $(this).val();
-          }).get();
-          // console.log(selectedValues);
-          $('#start').modal('show');
-          $('#confirmButton').off('click').on('click', function() {
-            $.ajax({
-              url: '../config/tasks.php',
-              method: 'POST',
-              data: {
-                "startTaskMultiple": true,
-                "checkedIds": selectedValues
-              },
-              success: function(response) {
-                if (response === 'Success') {
-                  document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-                  $('#start').modal('hide');
-                  $('#success').modal('show');
-                } else {
-                  document.getElementById('error_found').innerHTML = response;
-                  $('#error').modal('show');
-                }
-              },
-            });
-          });
-        });
-      }
-
-
       $('#myTabs a').on('shown.bs.tab', function(e) {
         var href = $(e.target).attr('href');
         localStorage.setItem('activeTab', href);
 
         var tableId = $(href).find('table').attr('id');
-        if (tableId && !$.fn.DataTable.isDataTable('#' + tableId)) {
-          initializeDataTable(tableId);
-        }
       });
-
-      var initialTableId = $('.tab-pane.show.active').find('table').attr('id');
-      if (initialTableId && !$.fn.DataTable.isDataTable('#' + initialTableId)) {
-        initializeDataTable(initialTableId);
-      }
     });
 
     function checkDateInputs() {
