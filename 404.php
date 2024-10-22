@@ -1,5 +1,5 @@
 <?php
-include('../include/header.php');
+include('include/header.php');
 ?>
 
 <div class="container-fluid">
@@ -10,4 +10,4 @@ include('../include/header.php');
     <a href="index.php">&larr; Back to Dashboard</a>
   </div>
 </div>
-<?php include('../include/footer.php'); ?>
+<?php include('include/footer.php'); ?>

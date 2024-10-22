@@ -13,12 +13,12 @@ if (!isset($_SESSION['SESS_MEMBER_ID']) || trim($_SESSION['SESS_MEMBER_ID']) == 
     // Check for session timeout
     if (isset($_SESSION['last_activity'])) {
         $elapsed_time = time() - $_SESSION['last_activity'];
-        
+
         if ($elapsed_time > $timeout_duration) {
             // Session has expired, destroy session and redirect to 401 page
             session_unset();
             session_destroy();
-            header('location: ../pages/401.php');
+            header('location: ../401.php');
             exit();
         }
     }
