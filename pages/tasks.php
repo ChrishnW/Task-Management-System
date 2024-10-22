@@ -137,7 +137,7 @@ include('../include/header.php');
                       <th class="col-1">Classification</th>
                       <th class="col-2">Due Date</th>
                       <th class="col-1">Status</th>
-                      <th class="col-1"></th>
+                      <th class="col-1"><button class="btn btn-success btn-block d-none" id="startSelect"></button></th>
                     </tr>
                   </thead>
                   <tbody id="myTasksTodo">
@@ -150,9 +150,9 @@ include('../include/header.php');
                       <tr>
                         <td>
                           <?php if ($row['status'] === 'NOT YET STARTED') {
-                            echo '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
+                            echo '<input type="checkbox" name="selected_ids[]" class="form-control bodyCheckbox" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
                           } else {
-                            echo '<input type="checkbox" name="selected_ids[]" class="form-control" disabled>';
+                            echo '<input type="checkbox" name="selected_ids[]" class="form-control bodyCheckbox" disabled>';
                           } ?>
                         </td>
                         <td><?php echo $row['task_code'] ?></td>
@@ -171,7 +171,7 @@ include('../include/header.php');
                             if (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) {
                               echo '<button class="btn btn-secondary btn-block" disabled>On Hold</button>';
                             } else {
-                              echo '<button class="btn btn-success btn-block" value="' . $row['id'] . '" onclick="startTask(this)">Start</button>';
+                              echo '<button class="singleStart btn btn-success btn-block" value="' . $row['id'] . '" onclick="startTask(this)">Start</button>';
                             }
                           } elseif ($row['status'] === 'IN PROGRESS') {
                             echo '<button class="btn btn-danger btn-block" value="' . $row['id'] . '" onclick="endTask(this)">Finish</button>';
@@ -248,8 +248,7 @@ include('../include/header.php');
                     <?php
                     $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status='FINISHED'");
                     while ($row = $query_result->fetch_assoc()) {
-                      $due_date = date_format(date_create($row['due_date']), "F d");
-                      $date_accomplished = date_format(date_create($row['date_accomplished']), "F d"); ?>
+                      $due_date = date_format(date_create($row['due_date']), "F d, Y"); ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
                         <td>
@@ -385,7 +384,7 @@ include('../include/header.php');
         <input type="hidden" id="taskID">
         <i class="fas fa-question fa-5x text-success"></i>
         <br><br>
-        Do you want to start this task/s?
+        <span id="startNote"></span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal" id="confirmButton">Confirm</button>
@@ -506,13 +505,97 @@ include('../include/header.php');
 <?php include('../include/footer.php'); ?>
 
 <script src="../assets/js/drag-drop.js"></script>
+<script src="../assets/js/member-datatable-settings.js"></script>
 
 <script>
   // Active Table on this Page
-  var ToDoTable = $('#myTasksTableTodo').DataTable();
-  var ReviewTable = $('#myTasksTableReview').DataTable();
-  var FinishedTable = $('#myTasksTableFinished').DataTable();
+  var ToDoTable = $('#myTasksTableTodo').DataTable(todoSettings);
+  var ReviewTable = $('#myTasksTableReview').DataTable(reviewSettings);
+  var FinishedTable = $('#myTasksTableFinished').DataTable(finishedSettings);
   // End Active Table
+
+  function startSelectButton() {
+    var selectCount = ToDoTable.$('.bodyCheckbox:checked').length;
+    if (selectCount > 0) {
+      $('#startSelect').removeClass('d-none').text('Start (' + selectCount + ')');
+      ToDoTable.$('.singleStart').prop('disabled', true);
+    } else {
+      $('#startSelect').addClass('d-none');
+      ToDoTable.$('.singleStart').prop('disabled', false);
+    }
+  }
+
+  $(document).ready(function() {
+    $('#selectAll').on('click', function() {
+      var isChecked = this.checked;
+      ToDoTable.rows().every(function() {
+        var row = this.node();
+        $(row).find('.bodyCheckbox').each(function() {
+          if (!this.disabled) {
+            this.checked = isChecked;
+          }
+        });
+      });
+      startSelectButton();
+    });
+
+    $('#myTasksTableTodo tbody').on('change', '.bodyCheckbox', function() {
+      if (!this.checked) {
+        $('#selectAll').prop('checked', false);
+      } else {
+        var allChecked = true;
+        $('.bodyCheckbox').each(function() {
+          if (!this.checked && !this.disabled) {
+            allChecked = false;
+          }
+        });
+        $('#selectAll').prop('checked', allChecked);
+      }
+      startSelectButton();
+    });
+
+    // Ensure all checkboxes are checked/unchecked across all pages
+    $('#selectAll').on('click', function() {
+      var isChecked = this.checked;
+      ToDoTable.rows().every(function() {
+        var row = this.node();
+        $(row).find('.bodyCheckbox').each(function() {
+          if (!this.disabled) {
+            this.checked = isChecked;
+          }
+        });
+      });
+    });
+
+    $('#startSelect').on('click', function() {
+      var checkedValues = [];
+      ToDoTable.$('.bodyCheckbox:checked').each(function() {
+        checkedValues.push($(this).val());
+      });
+      document.getElementById("startNote").innerHTML = 'You’re about to start ' + checkedValues.length + ' tasks.<br>Do you wish to continue?';
+      $('#start').modal('show');
+      $('#confirmButton').off('click').on('click', function() {
+        $.ajax({
+          url: '../config/tasks.php',
+          method: 'POST',
+          data: {
+            "startTaskMultiple": true,
+            "checkedIds": checkedValues
+          },
+          success: function(response) {
+            if (response === 'Success') {
+              document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+              $('#start').modal('hide');
+              $('#success').modal('show');
+            } else {
+              document.getElementById('error_found').innerHTML = response;
+              $('#error').modal('show');
+            }
+          },
+        });
+      });
+    });
+  });
 
   function filterTable() {
     <?php if ($access == 1) { ?>
@@ -702,6 +785,7 @@ include('../include/header.php');
   function startTask(element) {
     var id = element.value;
     $('#taskID').val(id);
+    document.getElementById("startNote").innerHTML = 'Do you want to start this task?';
     $('#start').modal('show');
 
     $('#confirmButton').off('click').on('click', function() {
@@ -885,117 +969,57 @@ include('../include/header.php');
     window.location.href = '../config/tasks.php?downloadFile=true&id=' + id;
   }
 
-  function resetFileInput() {
-    const fileInput = document.getElementById('file-1');
-    if (typeof fileInput !== 'undefined' && fileInput !== null) {
-      fileInput.value = '';
+  document.addEventListener('DOMContentLoaded', function() {
+    var activeTab = localStorage.getItem('activeTab');
+    if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
+      document.querySelector(`a[href="${activeTab}"]`).classList.add('active');
+      document.querySelector(activeTab).classList.add('show', 'active');
+    } else {
+      document.querySelector('.nav-link').classList.add('active');
+      document.querySelector('.tab-pane').classList.add('show', 'active');
     }
 
-    const fileInput2 = document.getElementById('taskReview_upload');
-    if (typeof fileInput2 !== 'undefined' && fileInput2 !== null) {
-      fileInput2.value = '';
-    }
-  }
+    $('#myTabs a').on('shown.bs.tab', function(e) {
+      var href = $(e.target).attr('href');
+      localStorage.setItem('activeTab', href);
 
-  <?php if ($access == 2 || $access == 4) { ?>
-    document.addEventListener('DOMContentLoaded', function() {
-      var activeTab = localStorage.getItem('activeTab');
-      if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
-        document.querySelector(`a[href="${activeTab}"]`).classList.add('active');
-        document.querySelector(activeTab).classList.add('show', 'active');
-      } else {
-        document.querySelector('.nav-link').classList.add('active');
-        document.querySelector('.tab-pane').classList.add('show', 'active');
-      }
-
-      $('#myTabs a').on('shown.bs.tab', function(e) {
-        var href = $(e.target).attr('href');
-        localStorage.setItem('activeTab', href);
-
-        var tableId = $(href).find('table').attr('id');
-      });
+      var tableId = $(href).find('table').attr('id');
     });
+  });
 
-    function checkDateInputs() {
-      var dateFrom = document.getElementById('date_from').value;
-      var dateTo = document.getElementById('date_to');
-      var status = localStorage.getItem('activeTab').replace('#', '').toUpperCase();
-      var setTab = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-      if (dateFrom) {
-        dateTo.setAttribute('min', dateFrom);
-        dateTo.disabled = false;
-      } else {
-        dateTo.removeAttribute('min');
-        dateTo.disabled = true;
-      }
-      $('#myTasksTable' + setTab).DataTable().destroy();
-      $('#myTasks' + setTab).empty();
-      $.ajax({
-        method: "POST",
-        url: "../config/tasks.php",
-        data: {
-          "filterTableTask": true,
-          "dateFrom": dateFrom,
-          "dateTo": dateTo.value,
-          "status": status
-        },
-        success: function(response) {
-          $('#myTasks' + setTab).append(response);
-          const orderConfig = setTab === 'Todo' ? [
-            [4, "asc"],
-            [2, "asc"]
-          ] : [
-            [3, "desc"],
-            [1, "asc"]
-          ];
-          const table = $('#myTasksTable' + setTab).DataTable({
-            "order": orderConfig,
-            "pageLength": 5,
-            "lengthMenu": [5, 10, 25, 50, 100],
-            "drawCallback": function(settings) {
-              $('[data-toggle="tooltip"]').tooltip();
-            }
-          });
-          $('#selectAll').on('click', function() {
-            $('input[name="selected_ids[]"]:not(:disabled)', table.rows().nodes()).prop('checked', this.checked);
-            toggleActionButton();
-          });
-
-          $(document).on('change', 'input[name="selected_ids[]"]:not(:disabled)', toggleActionButton);
-
-          function toggleActionButton() {
-            $('#actionButton').toggleClass('d-none', !$('input[name="selected_ids[]"]:checked:not(:disabled)', table.rows().nodes()).length);
-          }
-
-          $('#actionButton').on('click', function() {
-            const selectedValues = $('input[name="selected_ids[]"]:checked:not(:disabled)', table.rows().nodes()).map(function() {
-              return $(this).val();
-            }).get();
-            // console.log(selectedValues);
-            $('#start').modal('show');
-            $('#confirmButton').off('click').on('click', function() {
-              $.ajax({
-                url: '../config/tasks.php',
-                method: 'POST',
-                data: {
-                  "startTaskMultiple": true,
-                  "checkedIds": selectedValues
-                },
-                success: function(response) {
-                  if (response === 'Success') {
-                    document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-                    $('#start').modal('hide');
-                    $('#success').modal('show');
-                  } else {
-                    document.getElementById('error_found').innerHTML = response;
-                    $('#error').modal('show');
-                  }
-                },
-              });
-            });
-          });
-        }
-      });
+  function checkDateInputs() {
+    var dateFrom = document.getElementById('date_from').value;
+    var dateTo = document.getElementById('date_to');
+    var status = localStorage.getItem('activeTab').replace('#', '').toUpperCase();
+    var setTab = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+    if (dateFrom) {
+      dateTo.setAttribute('min', dateFrom);
+      dateTo.disabled = false;
+    } else {
+      dateTo.removeAttribute('min');
+      dateTo.disabled = true;
     }
-  <?php } ?>
+    $('#myTasksTable' + setTab).DataTable().destroy();
+    $('#myTasks' + setTab).empty();
+    $.ajax({
+      method: "POST",
+      url: "../config/tasks.php",
+      data: {
+        "filterTableTask": true,
+        "dateFrom": dateFrom,
+        "dateTo": dateTo.value,
+        "status": status
+      },
+      success: function(response) {
+        $('#myTasks' + setTab).append(response);
+        if (setTab === 'Todo') {
+          $('#myTasksTableTodo').DataTable(todoSettings);
+        } else if (setTab === 'Review') {
+          $('#myTasksTableReview').DataTable(reviewSettings);
+        } else if (setTab === 'Finished') {
+          $('#myTasksTableFinished').DataTable(finishedSettings);
+        }
+      }
+    });
+  }
 </script>

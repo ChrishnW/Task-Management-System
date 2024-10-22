@@ -233,6 +233,8 @@ include('../include/header.php');
 
 <?php include('../include/footer.php'); ?>
 
+<script src="../assets/js/print-page.js"></script>
+
 <script>
   $('#dataTable').DataTable({
     "columnDefs": [{

@@ -11,7 +11,7 @@ if (date('N') >= 1 && date('N') <= 5) {
   if ($dayoff_count > 0) {
     $systemAction = "Today's date is set as a day off; no tasks have been generated.";
   } else {
-    $loadDailyTasks = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id WHERE tl.status=1 AND tl.task_class=1 ORDER BY tl.task_name ASC");
+    $loadDailyTasks = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id WHERE t.status=1 AND tl.task_class=1 ORDER BY tl.task_name ASC");
     if (mysqli_num_rows($loadDailyTasks) > 0) {
       while ($row = $loadDailyTasks->fetch_assoc()) {
         $task_id  = $row['id'];
