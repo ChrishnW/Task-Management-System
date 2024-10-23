@@ -260,8 +260,8 @@ include('../include/header.php');
           <button id="resetUserPass" class="btn btn-danger" onclick='resetPassword(this)'>Reset Password</button>
         </div>
         <div>
-          <button type="button" onclick="accountUpdate(this)" class="btn btn-success" name="account_update">Update</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button onclick="accountUpdate(this)" class="btn btn-success" name="account_update">Update</button>
+          <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         </div>
       </div>
       </form>
@@ -522,34 +522,23 @@ include('../include/header.php');
   }
 
   function accountUpdate(element) {
-    var updateID = document.getElementById('account_id').value;
-    var updateUsername = document.getElementById('account_username').value;
-    var updateFname = document.getElementById('account_fname').value;
-    var updateLname = document.getElementById('account_lname').value;
-    var updateNumber = document.getElementById('account_number').value;
-    var updateCard = document.getElementById('account_card').value;
-    var updateAccess = document.getElementById('account_access').value;
-    var updateSection = document.getElementById('account_section').value;
-    var updateEmail = document.getElementById('account_email').value;
+    const formData = new FormData(document.getElementById('accountDetails'));
+    formData.append('accountUpdate', true);
     $.ajax({
       method: "POST",
       url: "../config/accounts.php",
-      data: {
-        'accountUpdate': true,
-        'updateID': updateID,
-        'updateUsername': updateUsername,
-        'updateFname': updateFname,
-        'updateLname': updateLname,
-        'updateNumber': updateNumber,
-        'updateCard': updateCard,
-        'updateAccess': updateAccess,
-        'updateSection': updateSection,
-        'updateEmail': updateEmail,
-      },
-      success: function(respone) {
-        document.getElementById('success_log').innerHTML = 'Account information has been changed successfully.';
-        $('#accountEdit').modal('hide');
-        $('#success').modal('show');
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(response) {
+        console.log(response);
+        if (response === 'Success') {
+          document.getElementById('success_log').innerHTML = 'Account information has been changed successfully.';
+          $('#success').modal('show');
+        } else {
+          document.getElementById('success_log').innerHTML = response;
+          $('#error').modal('show');
+        }
       }
     })
   }

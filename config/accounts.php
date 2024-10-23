@@ -14,53 +14,57 @@ if (isset($_POST['changeStatus'])) {
 if (isset($_POST['accountEdit'])) {
   $getDetail = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM department d JOIN section s ON d.dept_id=s.dept_id JOIN accounts a ON s.sec_id=a.sec_id WHERE a.id='{$_POST['id']}'")); ?>
   <form id="accountDetails" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="<?php echo $getDetail['id'] ?>">
     <div class="form-row">
       <div class="form-group col-md-6">
-        <label for="profilePicture">Profile Picture</label>
-        <input type="file" class="form-control-file" id="profilePicture" name="profilePicture" accept="image/*">
-        <button type="button" class="btn btn-danger mt-2" id="removePicture">Remove Picture</button>
-      </div>
-      <div class="form-group col-md-3">
         <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" name="username">
+        <input type="text" class="form-control uppercase" id="username" name="username" value="<?php echo $getDetail['username']; ?>">
       </div>
-      <div class="form-group col-md-3">
+      <div class="form-group col-md-6">
         <label for="employeeId">Employee ID</label>
-        <input type="text" class="form-control" id="employeeId" name="employeeId">
+        <input type="text" class="form-control uppercase" id="employeeId" name="employeeId" value="<?php echo $getDetail['card']; ?>">
       </div>
     </div>
     <div class="form-row">
       <div class="form-group col-md-6">
         <label for="firstName">First Name</label>
-        <input type="text" class="form-control" id="firstName" name="firstName">
+        <input type="text" class="form-control capitalize" id="firstName" name="firstName" value="<?php echo $getDetail['fname']; ?>">
       </div>
       <div class="form-group col-md-6">
         <label for="lastName">Last Name</label>
-        <input type="text" class="form-control" id="lastName" name="lastName">
+        <input type="text" class="form-control capitalize" id="lastName" name="lastName" value="<?php echo $getDetail['lname']; ?>">
       </div>
     </div>
     <div class="form-row">
       <div class="form-group col-md-6">
         <label for="systemAccess">System Access</label>
         <select class="form-control" id="systemAccess" name="systemAccess">
-          <option value="admin">Admin</option>
-          <option value="user">User</option>
-          <option value="guest">Guest</option>
+          <?php $getAccess = mysqli_query($con, "SELECT * FROM access");
+          while ($getAccessRow = mysqli_fetch_assoc($getAccess)) :
+            $selected = ($getDetail['access'] === $getAccessRow['id']) ? 'selected' : ''; ?>
+            <option value="<?php echo $getAccessRow['id']; ?>" <?php echo $selected ?>><?php echo ucwords($getAccessRow['access']); ?></option>
+          <?php endwhile; ?>
         </select>
       </div>
       <div class="form-group col-md-6">
         <label for="department">Department</label>
-        <input type="text" class="form-control" id="department" name="department">
+        <input type="text" class="form-control" id="department" name="department" value="<?php echo ucwords(strtolower($getDetail['dept_name'])); ?>" readonly>
       </div>
     </div>
-    <div class="form-row">
+    <div class="form-row <?php if ($getDetail['access'] === '3') echo 'd-none'; ?>">
       <div class="form-group col-md-6">
         <label for="section">Section</label>
-        <input type="text" class="form-control" id="section" name="section">
+        <select class="form-control" name="section" id="section">
+          <?php $getSection = mysqli_query($con, "SELECT * FROM section WHERE status=1");
+          while ($getSectionRow = mysqli_fetch_assoc($getSection)) :
+            $selected = ($getDetail['sec_id'] === $getSectionRow['sec_id']) ? 'selected' : ''; ?>
+            <option value="<?php echo $getSectionRow['sec_id']; ?>" <?php echo $selected ?>><?php echo ucwords(strtolower($getSectionRow['sec_name'])); ?></option>
+          <?php endwhile; ?>
+        </select>
       </div>
       <div class="form-group col-md-6">
         <label for="email">Email</label>
-        <input type="email" class="form-control" id="email" name="email">
+        <input type="email" class="form-control" id="email" name="email" value="<?php echo $getDetail['email']; ?>">
       </div>
     </div>
   </form>
@@ -115,18 +119,12 @@ if (isset($_POST['statusUpdate'])) {
 }
 
 if (isset($_POST['accountUpdate'])) {
-  $id       = $_POST['updateID'];
-  $username = strtoupper($_POST['updateUsername']);
-  $fname    = strtoupper($_POST['updateFname']);
-  $lname    = strtoupper($_POST['updateLname']);
-  $card     = $_POST['updateCard'];
-  $access   = $_POST['updateAccess'];
-  $sec_id   = $_POST['updateSection'];
-  $email    = strtolower($_POST['updateEmail']);
-  $update_query = mysqli_query($con, "UPDATE accounts SET username='$username', fname='$fname', lname='$lname', card='$card', access='$access', sec_id='$sec_id', email='$email' WHERE id = '$id'");
-  $query_user   = mysqli_query($con, "SELECT * FROM accounts WHERE id='$id'");
-  $row = mysqli_fetch_assoc($query_user);
-  log_action("Account details of user {$row['username']} have been changed.");
+  $query_update = mysqli_query($con, "UPDATE accounts SET username='{$_POST['username']}', fname='{$_POST['firstName']}', lname='{$_POST['lastName']}', email='{$_POST['email']}', access='{$_POST['systemAccess']}', sec_id='{$_POST['section']}', card='{$_POST['employeeId']}' WHERE id='{$_POST['id']}'");
+  if ($query_update) :
+    die('Success');
+  else :
+    die('Unable to complete the operation. Please try again later.');
+  endif;
 }
 
 if (isset($_POST['accountDelete'])) {

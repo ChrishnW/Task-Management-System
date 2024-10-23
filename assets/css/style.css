@@ -650,3 +650,11 @@
     border-radius   : 5px;
     padding         : 2px 5px;
 }
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
