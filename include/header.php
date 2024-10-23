@@ -29,9 +29,7 @@
   <link rel="stylesheet" href="../vendor/snapappointments/bootstrap-select/dist/css/bootstrap-select.min.css">
   <link rel="stylesheet" href="../assets/css/toggle-switchy.css">
   <link rel="stylesheet" href="../assets/css/style.css">
-
-  <!-- Custome scripts for this page -->
-  <script src="../assets/js/moment.min.js"></script>
+  <link rel="stylesheet" href="../vendor/select2-4.1.0-rc.0/dist/css/select2.min.css">
 </head>
 
 <body id="page-top">

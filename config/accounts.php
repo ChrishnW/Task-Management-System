@@ -1,39 +1,71 @@
 <?php
 include('../include/auth.php');
 date_default_timezone_set('Asia/Manila');
-if (isset($_POST['accountEdit'])) {
-  $id           = $_POST['accountID'];
-  $arrayresult  = [];
 
-  $fetch_query  = mysqli_query($con, "SELECT * FROM accounts WHERE id = '$id'");
-  if (mysqli_num_rows($fetch_query) > 0) {
-    while ($row = mysqli_fetch_array($fetch_query)) {
-      array_push($arrayresult, $row);
-      header('content-type: application/json');
-      echo json_encode($arrayresult);
-    }
-  }
-}
-if (isset($_POST['updatePassword'])) {
-  $id             = $_POST['accountID'];
-  $password_temp  = $_POST['newPassword'];
-  $new_password   = password_hash($password_temp, PASSWORD_DEFAULT);
-  $query_result = mysqli_query($con, "SELECT * FROM accounts WHERE id = '$id'");
-  if (mysqli_num_rows($query_result) > 0) {
-    while ($row = mysqli_fetch_assoc($query_result)) {
-      $current_password = $row['password'];
-      if ($new_password == $current_password) {
-        echo "New password cannot be the same as the old password.";
-      } else {
-        $update_query = mysqli_query($con, "UPDATE accounts SET password='$new_password' WHERE id='$id'");
-        log_action("Changed password for user {$row['username']}.");
-        echo "Success";
-      }
-    }
+if (isset($_POST['changeStatus'])) {
+  $query_result = mysqli_query($con, "UPDATE accounts SET status='{$_POST['status']}' WHERE id='{$_POST['id']}'");
+  if ($query_result) {
+    die('Success');
   } else {
-    echo "Unable to complete the operation. Please try again later.";
+    die('Error');
   }
 }
+
+if (isset($_POST['accountEdit'])) {
+  $getDetail = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM department d JOIN section s ON d.dept_id=s.dept_id JOIN accounts a ON s.sec_id=a.sec_id WHERE a.id='{$_POST['id']}'")); ?>
+  <form id="accountDetails" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="profilePicture">Profile Picture</label>
+        <input type="file" class="form-control-file" id="profilePicture" name="profilePicture" accept="image/*">
+        <button type="button" class="btn btn-danger mt-2" id="removePicture">Remove Picture</button>
+      </div>
+      <div class="form-group col-md-3">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" name="username">
+      </div>
+      <div class="form-group col-md-3">
+        <label for="employeeId">Employee ID</label>
+        <input type="text" class="form-control" id="employeeId" name="employeeId">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="firstName">First Name</label>
+        <input type="text" class="form-control" id="firstName" name="firstName">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="lastName">Last Name</label>
+        <input type="text" class="form-control" id="lastName" name="lastName">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="systemAccess">System Access</label>
+        <select class="form-control" id="systemAccess" name="systemAccess">
+          <option value="admin">Admin</option>
+          <option value="user">User</option>
+          <option value="guest">Guest</option>
+        </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="department">Department</label>
+        <input type="text" class="form-control" id="department" name="department">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="section">Section</label>
+        <input type="text" class="form-control" id="section" name="section">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="email">
+      </div>
+    </div>
+  </form>
+<?php }
+
 if (isset($_POST['passUpdate'])) {
   $userAcc = $_POST['userAcc'];
   $setPass = password_hash($_POST['setPass'], PASSWORD_DEFAULT);
@@ -47,6 +79,7 @@ if (isset($_POST['passUpdate'])) {
     }
   }
 }
+
 if (isset($_POST['checkPassword'])) {
   $check    = $_POST['check'];
   $current  = $_POST['current'];
@@ -56,6 +89,7 @@ if (isset($_POST['checkPassword'])) {
     echo "Success";
   }
 }
+
 if (isset($_POST['accountReset'])) {
   $id             = $_POST['resetID'];
   $password_temp  = '12345';
@@ -65,6 +99,7 @@ if (isset($_POST['accountReset'])) {
   $row = mysqli_fetch_assoc($query_user);
   log_action("Password for user {$row['username']} has been reset to default .");
 }
+
 if (isset($_POST['statusUpdate'])) {
   $id     = $_POST['statusID'];
   $status = $_POST['status'];
@@ -78,6 +113,7 @@ if (isset($_POST['statusUpdate'])) {
   $row = mysqli_fetch_assoc($query_user);
   log_action("Status of user {$row['username']} changed to {$status}.");
 }
+
 if (isset($_POST['accountUpdate'])) {
   $id       = $_POST['updateID'];
   $username = strtoupper($_POST['updateUsername']);
@@ -92,6 +128,7 @@ if (isset($_POST['accountUpdate'])) {
   $row = mysqli_fetch_assoc($query_user);
   log_action("Account details of user {$row['username']} have been changed.");
 }
+
 if (isset($_POST['accountDelete'])) {
   $id           = $_POST['deleteID'];
   $query_result = mysqli_query($con, "DELETE FROM `accounts` WHERE id='$id'");
@@ -102,6 +139,7 @@ if (isset($_POST['accountDelete'])) {
     echo "Success";
   }
 }
+
 if (isset($_POST['deleteImage'])) {
   $oldFileName  = $_POST['fileName'];
   $username     = $_POST['userName'];
@@ -120,6 +158,7 @@ if (isset($_POST['deleteImage'])) {
     echo "No current photo has been set for this account.";
   }
 }
+
 if (isset($_POST['uploadImage'])) {
   $fileUser       = $_POST['fileUser'];
   $number         = rand(1000, 9999);
@@ -164,6 +203,7 @@ if (isset($_POST['uploadImage'])) {
     echo "File extensions are not supported. Try 'jpg/png/jpeg' types only.";
   }
 }
+
 if (isset($_POST['accountCreate'])) {
   $error    = false;
   $username       = strtoupper($_POST['createUsername']);
@@ -188,6 +228,7 @@ if (isset($_POST['accountCreate'])) {
     }
   }
 }
+
 if (isset($_POST['viewTaskEmp'])) {
   $userID = $_POST['assignee_id'];
   $query_result = mysqli_query($con, "SELECT * FROM tasks WHERE in_charge='$userID'");
@@ -234,6 +275,7 @@ if (isset($_POST['viewTaskEmp'])) {
   mysqli_close($con);
   echo json_encode($dataList);
 }
+
 if (isset($_POST['editTask'])) {
   $editTask_id          = $_POST['edit_task'];
   $editTaskName         = $_POST['edit_taskName'];
@@ -252,6 +294,7 @@ if (isset($_POST['editTask'])) {
     echo "Success";
   }
 }
+
 if (isset($_POST['taskDelete'])) {
   $taskID = $_POST['deleteID'];
   $query_get = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id WHERE t.id='$taskID'");
@@ -267,6 +310,7 @@ if (isset($_POST['taskDelete'])) {
     echo "Unable to complete the operation. Please try again later.";
   }
 }
+
 if (isset($_POST['taskList'])) {
   $task_class = $_POST['task_class'];
   $task_for   = $_POST['task_for'];
@@ -278,6 +322,7 @@ if (isset($_POST['taskList'])) {
     echo "<option value='$id'>$task_name</option>";
   }
 }
+
 if (isset($_GET['taskDownload'])) {
   $assignee = $_GET['username'];
   header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
@@ -355,6 +400,7 @@ if (isset($_GET['taskDownload'])) {
   </html>
 <?php
 }
+
 if (isset($_POST['selectDepartment'])) {
   $id = $_POST['departmentSelect'];
   $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='$id'");
@@ -368,6 +414,7 @@ if (isset($_POST['selectDepartment'])) {
     echo "<option value='' selected>No Registered Section</option>";
   }
 }
+
 if (isset($_POST['assignTask'])) {
   $in_charge  = $_POST['assigneeID'];
   $sec_id     = $_POST['assigneeSEC'];
@@ -406,6 +453,7 @@ if (isset($_POST['assignTask'])) {
     echo $result;
   }
 }
+
 if (isset($_POST['getBody'])) { ?>
   <div class="col-md-12">
     <div class="form-group">

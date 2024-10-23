@@ -5,47 +5,32 @@ include('../include/header.php');
 <div class="container-fluid">
   <?php if ($access == 1) { ?>
     <div class="card">
-      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-        <h6 class="m-0 font-weight-bold text-white">Registered Accounts</h6>
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold">Registered Accounts</h6>
         <div class="dropdown no-arrow">
           <button type="button" onclick="showCreate(this)" class="btn btn-primary">
-            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Register New Account
+            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create
           </button>
         </div>
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
-            <thead class='table table-success'>
+          <table class="table table-hover" id="accountTable" width="100%" cellspacing="0">
+            <thead>
               <tr>
-                <th>Action</th>
                 <th>Username</th>
                 <th>Name</th>
                 <th>Section & Department</th>
                 <th>Access</th>
                 <th>Status</th>
+                <th></th>
               </tr>
             </thead>
-            <tfoot class='table table-success'>
-              <tr>
-                <th>Action</th>
-                <th>Username</th>
-                <th>Name</th>
-                <th>Section & Department</th>
-                <th>Access</th>
-                <th>Status</th>
-              </tr>
-            </tfoot>
             <tbody>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT accounts.fname, accounts.lname, accounts.file_name , accounts.username, accounts.email, section.sec_name, access.access, accounts.status, accounts.id, department.dept_name FROM accounts LEFT JOIN section ON accounts.sec_id=section.sec_id LEFT JOIN access on accounts.access=access.id LEFT JOIN department ON department.dept_id=section.dept_id");
+              $result = mysqli_query($con, "SELECT a.*, d.dept_name, s.sec_name, c.access FROM department d JOIN section s ON d.dept_id=s.dept_id JOIN accounts a ON s.sec_id=a.sec_id JOIN access c ON a.access=c.id WHERE a.access!=1");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
-                  if (empty($row['file_name'])) {
-                    $imageURL = '../assets/img/user-profiles/nologo.png';
-                  } else {
-                    $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-                  }
                   if ($row['status'] == 1) {
                     $status = 'Active';
                     $btn = 'success';
@@ -54,19 +39,24 @@ include('../include/header.php');
                     $btn = 'danger';
                   } ?>
                   <tr>
-                    <td>
-                      <center /><button type="button" class="btn btn-info" value="<?php echo $row['id']; ?>" onclick="accountEdit(this)"><i class="fas fa-pen fa-fw"></i> Edit</button>
-                    </td>
                     <td><?php echo $row['username']; ?></td>
-                    <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
+                    <td><?php echo getUser($row['username']); ?></td>
                     <td>
                       <?php if ($row['access'] != 'head') {
                         echo $row['sec_name'];
                       } ?>
                       <p class="form-text text-danger"><?php echo $row['dept_name']; ?></p>
                     </td>
-                    <td><?php echo strtoupper($row['access']) ?></td>
+                    <td><span class="badge badge-pill badge-light"><?php echo strtoupper($row['access']) ?></span></td>
                     <td><span class="badge badge-<?php echo $btn ?>"><?php echo $status ?></span></td>
+                    <td>
+                      <center /><button type="button" class="btn btn-info btn-block btn-sm" value="<?php echo $row['id']; ?>" onclick="accountEdit(this)">Edit</button>
+                      <?php if ($row['status'] === '1'): ?>
+                        <button class="btn btn-danger btn-block btn-sm" value="<?php echo $row['id']; ?>" data-status="0" onclick="changeStatus(this)">Deactive</button>
+                      <?php else: ?>
+                        <button class="btn btn-success btn-block btn-sm" value="<?php echo $row['id']; ?>" data-status="1" onclick="changeStatus(this)">Activate</button>
+                      <?php endif; ?>
+                    </td>
                   </tr>
               <?php }
               } ?>
@@ -257,184 +247,24 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="accountEdit" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-xl">
-    <div class="modal-content border-info">
-      <div class="modal-header bg-info">
-        <h5 class="modal-title text-white">Account Update</h5>
-      </div>
-      <form method="POST">
-        <div class="modal-body">
-          <div class="row">
-            <div class="col">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label>Picture:</label>
-                    <img class="img-profile mb-2" id="perview_image">
-                    <input type="file" class="form-control-file mb-2" id="account_image" name="account_image">
-                    <button type="button" class="btn btn-success ml-3 btn-sm" onclick="uploadImage(this)">Upload</button>
-                    <button type="button" class="btn btn-secondary btn-sm" id="old_image" onclick="deleteImage(this)">Remove</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-10">
-              <div class="row">
-                <div class="col-md-4">
-                  <input type="hidden" class="form-control" name="account_id" id="account_id">
-                  <div class="form-group">
-                    <label>User Name:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-user-circle"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter User Name" class="form-control" name="account_username" id="account_username">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>First Name:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-font"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter First Name" class="form-control" name="account_fname" id="account_fname">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>Last Name:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-font"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter Last Name" class="form-control" name="account_lname" id="account_lname">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>Employee ID:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-id-card"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter Employee ID" class="form-control" name="account_number" id="account_number" disabled>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>ID Number:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter ID Number" class="form-control" name="account_card" id="account_card">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>Access:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-key"></i></div>
-                      </div>
-                      <select class="form-control custom-select" name="account_access" id="account_access">
-                        <?php
-                        $con->next_result();
-                        $sql = mysqli_query($con, "SELECT * FROM access WHERE id!=1 ORDER BY access ASC");
-                        if (mysqli_num_rows($sql) > 0) {
-                          while ($row = mysqli_fetch_assoc($sql)) { ?>
-                            <option value='<?php echo $row['id'] ?>'><?php echo strtoupper($row['access']) ?></option>
-                        <?php }
-                        } ?>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>Section:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-users"></i></div>
-                      </div>
-                      <select name="account_section" id="account_section" class="form-control custom-select">
-                        <?php
-                        $con->next_result();
-                        $sql = mysqli_query($con, "SELECT * FROM section WHERE status='1'");
-                        if (mysqli_num_rows($sql) > 0) {
-                          while ($row = mysqli_fetch_assoc($sql)) { ?>
-                            <option value='<?php echo $row['sec_id'] ?>'><?php echo $row['sec_name'] ?></option>
-                        <?php }
-                        } ?>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>E-mail:</label>
-                    <div class="input-group mb-2">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-solid fa-at"></i></div>
-                      </div>
-                      <input type="text" placeholder="Enter E-mail" class="form-control" name="account_email" id="account_email">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="form-group">
-                    <label>Password:</label>
-                    <div>
-                      <button type="button" class="btn btn-outline-danger btn-sm" onclick='resetPassword(this)'>Reset</button>
-                      <button type="button" class="btn btn-outline-secondary btn-sm" onclick='changePassword(this)'>Change</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="form-group">
-                    <label>Status:</label>
-                    <div>
-                      <button type="button" class="btn btn-sm" id='statusBtn' onclick='changeStatus(this)'>Active</button>
-                      <button type="button" class="btn btn-outline-secondary btn-sm" id='account_delete' onclick='alert(this)'>Delete</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" onclick="accountUpdate(this)" class="btn btn-success" name="account_update">Update Account</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="accountPassword" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="accountUsername"></h5>
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Account</h5>
       </div>
-      <div class="modal-body">
-        <form method="POST">
-          <div class="col-md-12">
-            <label>Enter a new password for this account:</label>
-            <input type="text" class="form-control" id="account_password" name="account_password" placeholder="New Password">
-          </div>
-        </form>
+
+      <div class="modal-body" id="accountDetailsBody">
       </div>
-      <div class="modal-footer">
-        <button type="button" onclick="updatePassword(this);" class="btn btn-success" name="account_update">Change Password</button>
-        <button type="button" onclick="location.reload();" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      <div class="modal-footer justify-content-between">
+        <div>
+          <button id="resetUserPass" class="btn btn-danger" onclick='resetPassword(this)'>Reset Password</button>
+        </div>
+        <div>
+          <button type="button" onclick="accountUpdate(this)" class="btn btn-success" name="account_update">Update</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
       </div>
+      </form>
     </div>
   </div>
 </div>
@@ -604,25 +434,6 @@ include('../include/header.php');
     </div>
   </div>
 </div>
-<div class="modal fade" id="warning" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Caution!</h5>
-      </div>
-      <div class="modal-body text-center">
-        <input type="hidden" id="hidden_id">
-        <i class="fas fa-exclamation-triangle fa-5x text-danger"></i>
-        <br><br>
-        You're about to delete this assignee's task, <br> do you still want to proceed?
-      </div>
-      <div class="modal-footer">
-        <button type="button" onclick="RemoveTask(this)" class="btn btn-success">Proceed</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="modal fade" id="danger" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -646,258 +457,48 @@ include('../include/header.php');
 <?php include('../include/footer.php'); ?>
 
 <script>
-  $('#dataTable').DataTable({
+  $('#accountTable').DataTable({
+    "columnDefs": [{
+      "orderable": false,
+      "searchable": false,
+      "targets": 5,
+    }],
     "order": [
-      [2, "asc"]
+      [0, "asc"]
     ]
   });
 
-  function addTasks(element) {
-    var assignee = element.value;
-    var section = element.getAttribute('data-for');
-    $(document).ready(function() {
-      document.getElementById('assigneeID').value = assignee;
-      document.getElementById('assigneeSEC').value = section;
-      $('#addtask').modal('show');
-    })
-  }
-
-  function taskList(element) {
-    var task_for = document.getElementById('assigneeSEC').value;
-    var task_class = element.value;
-    var dueDateContainer = document.getElementById('dueDateContainer');
-
-    if (task_class && task_for) {
-      $.ajax({
-        method: "POST",
-        url: "../config/accounts.php",
-        data: {
-          "taskList": true,
-          "task_class": task_class,
-          "task_for": task_for,
-        },
-        success: function(response) {
-          $("select[name='assignList[]']").html(response).selectpicker('refresh');
-        }
-      });
-    }
-
-    if (task_class === '1') {
-      dueDateContainer.innerHTML = `
-      <div class="input-group-prepend">
-        <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
-      </div>
-      <input type="text" id="assignDue" name="assignDue" class="form-control" value="Weekdays" readonly>`;
-    } else if (task_class === '2') {
-      dueDateContainer.innerHTML = `
-      <div class="input-group-prepend">
-        <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
-      </div>
-      <select class="form-control selectpicker show-tick" data-style="border-secondary" data-actions-box="true" name="assignDue[]" id="assignDue" title="--Select a Day--" multiple>
-        <option value="Monday">Monday</option>
-        <option value="Tuesday">Tuesday</option>
-        <option value="Wednesday">Wednesday</option>
-        <option value="Thursday">Thursday</option>
-        <option value="Friday">Friday</option>
-      </select>`;
-      $('.selectpicker').selectpicker('refresh');
-    } else if (task_class === '3' || task_class === '6') {
-      let options = '';
-      for (let i = 1; i <= 31; i++) {
-        options += `<option value="Day ${i} of the Month">Day ${i} of the Month</option>`;
-      }
-      dueDateContainer.innerHTML = `
-      <div class="input-group-prepend">
-        <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
-      </div>
-      <select class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" title="--Select a Date--" name="assignDue" id="assignDue">${options}</select>`;
-      $('.selectpicker').selectpicker('refresh');
-    }
-  }
-
-  function assignTask(element) {
+  function changeStatus(element) {
     element.disabled = true;
-    if (
-      document.getElementById('assignClass').value === '' ||
-      document.getElementById('assignList').value === '' ||
-      document.getElementById('assignDue').value === '' ||
-      document.getElementById('assignFile').value === ''
-    ) {
-      document.getElementById('error_found').innerHTML = 'Empty field has been detected!';
-      $('#error').modal('show');
-      element.disabled = false;
-    } else {
-      var formDetails = new FormData(document.getElementById('taskAddDetails'));
-      formDetails.append('assignTask', true);
-      $.ajax({
-        method: "POST",
-        url: "../config/accounts.php",
-        data: formDetails,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-          $('#resultBody').html(response);
-          $('#result').modal('show');
-        }
-      });
-    }
-  }
-
-  function checkTasks(element) {
-    element.disabled = true;
-    var assignee_id = element.value;
-    // console.log(assignee_view);
+    const id = element.value;
+    const status = element.getAttribute('data-status');
     $.ajax({
-      method: 'POST',
-      url: '../config/assign_tasks.php',
-      data: {
-        "viewTaskEmp": true,
-        "assignee_id": assignee_id,
-      },
-      success: function(response) {
-        $('#viewAssignedTaskTable').html(response);
-        $('#viewList').DataTable({
-          "responsive": true
-        });
-        openSpecificModal('viewTable', 'modal-xl');
-        element.disabled = false;
-      }
-    })
-  }
-
-  function taskDownload() {
-    var viewTableID = document.getElementById('viewTableID').value;
-    console.log(viewTableID);
-    window.location.href = '../config/accounts.php?taskDownload=true&username=' + viewTableID;
-  }
-
-  function EditTaskView(element) {
-    var editID = element.value;
-    $.ajax({
-      method: 'POST',
-      url: '../config/assign_tasks.php',
-      data: {
-        "EditTaskView": true,
-        "editID": editID
-      },
-      success: function(response) {
-        $('#taskPropertiesDetails').html(response);
-        $('#emptask_duedate').selectpicker('refresh');
-        $('#edit').modal('show');
-      }
-    })
-  }
-
-  function editTask(element) {
-    element.disabled = true;
-    var edit_task = document.getElementById('emptask_id').value;
-    var edit_taskName = document.getElementById('emptask_name').value;
-    var edit_requirement = document.getElementById('emptask_file').checked ? 1 : 0;
-    var edit_duedate_element = document.getElementById('emptask_duedate');
-    if (edit_duedate_element.multiple) {
-      var edit_duedate = Array.from(edit_duedate_element.selectedOptions).map(option => option.value);
-    } else {
-      var edit_duedate = edit_duedate_element.value;
-    }
-    $.ajax({
-      method: "POST",
+      type: "POST",
       url: "../config/accounts.php",
       data: {
-        "editTask": true,
-        "edit_task": edit_task,
-        "edit_taskName": edit_taskName,
-        "edit_requirement": edit_requirement,
-        "edit_duedate": edit_duedate,
+        "id": id,
+        "status": status,
+        "changeStatus": true
       },
       success: function(response) {
-        if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = edit_taskName + ' information task of ' + document.getElementById('emptask_for').value + ' has been updated successfully.';
-          $('#edit').modal('hide');
-          $('#success').modal('show');
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#error').modal('show');
-          element.disabled = false;
-        }
+        location.reload();
       }
-    })
-  }
-
-  function RemoveTaskView(element) {
-    var tbdeleteID = element.value;
-    document.getElementById('hidden_id').value = tbdeleteID;
-    $('#warning').modal('show');
-  }
-
-  function RemoveTask(element) {
-    element.disabled = true;
-    var deleteID = document.getElementById('hidden_id').value;
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'taskDelete': true,
-        'deleteID': deleteID,
-      },
-      success: function(response) {
-        if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = 'Operation completed successfully';
-          $('#warning').modal('hide');
-          $('#success').modal('show');
-          $('#destroyTable').on('click', function() {
-            dataTable.destroy();
-          });
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#error').modal('show');
-          element.disabled = false;
-        }
-      }
-    })
+    });
   }
 
   function accountEdit(element) {
     var accountID = element.value;
-    // console.log(accountID);
     $.ajax({
       method: "POST",
       url: "../config/accounts.php",
       data: {
         'accountEdit': true,
-        'accountID': accountID,
+        'id': accountID,
       },
-      success: function(respone) {
-        // console.log(respone);
-        $.each(respone, function(Key, value) {
-          $('#account_id').val(value['id']);
-          $('#account_username').val(value['username']);
-          $('#account_fname').val(value['fname']);
-          $('#account_lname').val(value['lname']);
-          $('#account_number').val(value['emp_id']);
-          $('#account_card').val(value['card']);
-          $('#account_access').val(value['access']);
-          $('#account_section').val(value['sec_id']);
-          $('#account_email').val(value['email']);
-          $('#account_delete').val(value['id']);
-          $('#statusBtn').val(value['status']);
-          $('#old_image').val(value['file_name']);
-          if (value['file_name'] === null) {
-            $("#perview_image").attr("src", "../assets/img/user-profiles/nologo.png");
-          } else {
-            $("#perview_image").attr("src", "../assets/img/user-profiles/" + value['file_name']);
-          }
-        });
-        var checkStatus = document.getElementById('statusBtn').value;
-        var btn = document.getElementById('statusBtn');
-        if (checkStatus === '1') {
-          btn.textContent = 'Active';
-          btn.classList.add('btn-success');
-        } else {
-          btn.textContent = 'Inactive';
-          btn.classList.add('btn-danger');
-        }
-        // console.log('Select Account:', checkStatus);
-        $('#accountEdit').modal('show');
+      success: function(response) {
+        $('#resetUserPass').val(accountID);
+        $('#accountDetailsBody').html(response);
+        openSpecificModal('accountEdit', 'modal-lg');
       }
     })
   }
@@ -914,26 +515,6 @@ include('../include/header.php');
       },
       success: function(respone) {
         document.getElementById('success_log').innerHTML = 'Password has been reset to default 12345.';
-        $('#accountEdit').modal('hide');
-        $('#success').modal('show');
-      }
-    })
-  }
-
-  function changeStatus(element) {
-    var statusID = document.getElementById('account_id').value;
-    var status = element.value;
-    // console.log(statusID);
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'statusUpdate': true,
-        'statusID': statusID,
-        'status': status,
-      },
-      success: function(respone) {
-        document.getElementById('success_log').innerHTML = 'Account status has been changed successfully.';
         $('#accountEdit').modal('hide');
         $('#success').modal('show');
       }
@@ -980,32 +561,6 @@ include('../include/header.php');
     $('#accountPassword').modal('show');
   }
 
-  function updatePassword(element) {
-    element.disabled = true;
-    var newPassword = document.getElementById('account_password').value;
-    var accountID = document.getElementById('account_id').value;
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'updatePassword': true,
-        'accountID': accountID,
-        'newPassword': newPassword,
-      },
-      success: function(response) {
-        if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-          $('#accountPassword').modal('hide');
-          $('#success').modal('show');
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#error').modal('show');
-          element.disabled = false;
-        }
-      }
-    })
-  }
-
   function alert(element) {
     var alertID = document.getElementById('account_id').value;
     document.getElementById('hidden_id').value = alertID;
@@ -1031,22 +586,6 @@ include('../include/header.php');
       }
     })
   }
-
-  $(document).ready(function() {
-    const imageInput = document.getElementById('account_image');
-    const previewImage = document.getElementById('perview_image');
-
-    imageInput.addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          previewImage.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  });
 
   function uploadImage(element) {
     var formData = new FormData();
