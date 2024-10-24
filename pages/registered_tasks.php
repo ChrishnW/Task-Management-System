@@ -47,6 +47,22 @@ include('../include/header.php');
   </div>
 </div>
 
+<div class="modal fade" id="edit" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content border-primary">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Edit Task</h5>
+      </div>
+      <div class="modal-body" id="taskInfo">
+      </div>
+      <div class="modal-footer">
+        <button onclick="updateTask(this)" class="btn btn-success" id="updateButton">Update</button>
+        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php include('../include/footer.php'); ?>
 
 <script>
@@ -98,7 +114,7 @@ include('../include/header.php');
     details.forEach(function(detail) {
       html += '<tr>' +
         '<td>' + detail.status + '</td>' +
-        '<td>' + detail.task_name + ':</td>' +
+        '<td>' + detail.task_name + '</td>' +
         '<td>' + detail.task_details + '</td>' +
         '<td>' + detail.task_class + '</td>' +
         '<td><button class="btn btn-secondary btn-sm" value="' + detail.id + '" onclick="editTask(this)"> Edit </button></td>' +
@@ -110,6 +126,40 @@ include('../include/header.php');
 
   function editTask(element) {
     var id = element.value;
-    console.log(id);
+    $.ajax({
+      url: '../config/registered_tasks.php',
+      method: 'POST',
+      data: {
+        "editTask": true,
+        "id": id
+      },
+      success: function(response) {
+        $('#taskInfo').html(response);
+        $('#edit').modal('show');
+        document.getElementById('updateButton').onclick = function() {
+          const taskName = document.getElementById('taskName').value;
+          const taskDetails = document.getElementById('taskDetails').value;
+          $.ajax({
+            url: '../config/registered_tasks.php',
+            method: 'POST',
+            data: {
+              "updateTask": true,
+              "id": id,
+              "taskName": taskName,
+              "taskDetails": taskDetails
+            },
+            success: function(result) {
+              if (result == 'Success') {
+                document.getElementById('success_log').innerHTML = 'Task information updated successfully.';
+                $('#success').modal('show');
+              } else {
+                document.getElementById('error_found').innerHTML = result;
+                $('#error').modal('show');
+              }
+            }
+          })
+        }
+      },
+    });
   }
 </script>
