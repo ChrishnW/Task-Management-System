@@ -128,13 +128,11 @@ if (isset($_POST['accountUpdate'])) {
 }
 
 if (isset($_POST['accountDelete'])) {
-  $id           = $_POST['deleteID'];
-  $query_result = mysqli_query($con, "DELETE FROM `accounts` WHERE id='$id'");
+  $query_result = mysqli_query($con, "DELETE FROM `accounts` WHERE id='{$_POST['id']}'");
   if ($query_result) {
-    $query_user   = mysqli_query($con, "SELECT * FROM accounts WHERE id='$id'");
-    $row = mysqli_fetch_assoc($query_user);
-    log_action("Account for user {$row['username']} has been deleted.");
-    echo "Success";
+    die('Success');
+  } else {
+    die('Unable to complete the operation. Please try again later.');
   }
 }
 

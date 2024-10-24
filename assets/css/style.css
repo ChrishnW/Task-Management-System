@@ -658,3 +658,8 @@
 .capitalize {
     text-transform: capitalize;
 }
+
+.modal-note {
+    font-size : 0.7rem;
+    color     : #6c757d;
+}

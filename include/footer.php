@@ -342,6 +342,24 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="delete" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLongTitle"><i class="fas fa-shield-alt fa-fw"></i> Security Check</h5>
+      </div>
+      <div class="modal-body text-center">
+        <i class="fas fa-hand-paper fa-5x"></i>
+        <br><br>
+        Are you sure you want to proceed?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" id="confirmBtn">Confirm</button>
+        <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Bootstrap core JavaScript-->
 <script src="../vendor/jquery/jquery.min.js"></script>

@@ -586,4 +586,28 @@ include('../include/header.php');
     $("select[name='newDepartment']").val('').selectpicker('refresh');
     $("select[name='newSection']").val('').selectpicker('refresh');
   }
+
+  function accountDelete(element) {
+    var accountID = element.value;
+    $('#delete').modal('show');
+    document.getElementById('confirmBtn').onclick = function() {
+      $('#delete').modal('hide');
+      $.ajax({
+        method: "POST",
+        url: "../config/accounts.php",
+        data: {
+          'accountDelete': true,
+          'id': accountID,
+        },
+        success: function(response) {
+          if (response == 'Success') {
+            window.location.reload();
+          } else {
+            document.getElementById('success_log').innerHTML = response;
+            $('#error').modal('show');
+          }
+        }
+      });
+    };
+  }
 </script>
