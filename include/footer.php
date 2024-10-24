@@ -404,22 +404,6 @@
     })
   }
 
-  $(document).ready(function() {
-    const currentPath = window.location.pathname.split("/").pop();
-
-    const navItems = $('.nav-item');
-
-    navItems.each(function() {
-      const link = $(this).find('a').attr('href');
-
-      if (link === currentPath) {
-        navItems.removeClass('active');
-
-        $(this).addClass('active');
-      }
-    });
-  });
-
   window.onload = function() {
     document.getElementById('preloader').style.display = 'none';
     document.getElementById('wrapper').style.visibility = 'visible';
