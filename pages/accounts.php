@@ -603,7 +603,7 @@ include('../include/header.php');
           if (response == 'Success') {
             window.location.reload();
           } else {
-            document.getElementById('success_log').innerHTML = response;
+            document.getElementById('error_log').innerHTML = response;
             $('#error').modal('show');
           }
         }
