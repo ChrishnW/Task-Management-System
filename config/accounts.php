@@ -203,27 +203,16 @@ if (isset($_POST['uploadImage'])) {
 }
 
 if (isset($_POST['accountCreate'])) {
-  $error    = false;
-  $username       = strtoupper($_POST['createUsername']);
-  $fname          = strtoupper($_POST['createFname']);
-  $lname          = strtoupper($_POST['createLname']);
-  $card           = $_POST['createCard'];
-  $access         = $_POST['createAccess'];
-  $dep_id         = $_POST['createDepartment'];
-  $sec_id         = $_POST['createSection'];
-  $email          = strtolower($_POST['createEmail']);
-  if ($username === '' || $fname === '' || $lname === '' || $card === '' || $access === '' || $dep_id === '' || $sec_id === '' || $email === '') {
-    $error = true;
-    echo "Please fill in all required fields.";
-  }
-  if (!$error) {
-    $password_temp  = '12345';
-    $password       = password_hash($password_temp, PASSWORD_DEFAULT);
-    $query_result   = mysqli_query($con, "INSERT INTO `accounts`(`card`, `username`, `password`, `fname`, `lname`, `email`, `access`, `sec_id`, `status`) VALUES ('$card', '$username', '$password', '$fname', '$lname', '$email', '$access', '$sec_id', '1')");
-    if ($query_result) {
-      log_action("Account for user {$username} has been created.");
-      echo "Success";
+  if ($_POST['newUsername'] !== '' && $_POST['newFname'] !== '' && $_POST['newLname'] !== '' && $_POST['newEmployeeId'] !== '' && $_POST['newDepartment'] !== '' && $_POST['newSection'] !== '' && $_POST['newEmail'] !== '') {
+    $password = password_hash('12345', PASSWORD_DEFAULT);
+    $query_insert = mysqli_query($con, "INSERT INTO accounts (`card`, `username`, `password`, `fname`, `lname`, `email`, `access`, `sec_id`) VALUES ('{$_POST['newEmployeeId']}', '{$_POST['newUsername']}', '{$password}', '{$_POST['newFname']}', '{$_POST['newLname']}', '{$_POST['newEmail']}', '{$_POST['newSystemAccess']}', '{$_POST['newSection']}')");
+    if ($query_insert) {
+      die('Success');
+    } else {
+      die('Unable to complete the operation. Please try again later.');
     }
+  } else {
+    die('Missing Data!');
   }
 }
 
@@ -400,8 +389,7 @@ if (isset($_GET['taskDownload'])) {
 }
 
 if (isset($_POST['selectDepartment'])) {
-  $id = $_POST['departmentSelect'];
-  $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='$id'");
+  $query_result = mysqli_query($con, "SELECT * FROM section WHERE status=1 AND dept_id='{$_POST['id']}'");
   if (mysqli_num_rows($query_result) > 0) {
     while ($row = mysqli_fetch_assoc($query_result)) {
       $sec_id   = $row['sec_id'];

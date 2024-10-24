@@ -1,6 +1,9 @@
 <?php
 date_default_timezone_set('Asia/Manila');
 
+// Use fo System Logs
+mysqli_query($con, "SET @current_user = '$username'");
+
 // Functions
 function getTaskClass($taskClassNumber)
 {

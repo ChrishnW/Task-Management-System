@@ -50,7 +50,15 @@ include('../include/header.php');
                     <td><span class="badge badge-pill badge-light"><?php echo strtoupper($row['access']) ?></span></td>
                     <td><span class="badge badge-<?php echo $btn ?>"><?php echo $status ?></span></td>
                     <td>
-                      <center /><button type="button" class="btn btn-info btn-block btn-sm" value="<?php echo $row['id']; ?>" onclick="accountEdit(this)">Edit</button>
+                      <div class="dropdown mb-1">
+                        <button class="btn btn-secondary btn-block btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                          Settings
+                        </button>
+                        <div class="dropdown-menu">
+                          <button class="dropdown-item" value="<?php echo $row['id']; ?>" onclick="accountEdit(this)">Edit</button>
+                          <button class="dropdown-item" value="<?php echo $row['id']; ?>" onclick="accountDelete(this)">Delete</button>
+                        </div>
+                      </div>
                       <?php if ($row['status'] === '1'): ?>
                         <button class="btn btn-danger btn-block btn-sm" value="<?php echo $row['id']; ?>" data-status="0" onclick="changeStatus(this)">Deactive</button>
                       <?php else: ?>
@@ -269,154 +277,128 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="createAccount" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-    <div class="modal-content border-primary">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">Create New Account</h5>
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Account</h5>
       </div>
-      <form method="POST">
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>User Name:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-user-circle"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter User Name" class="form-control" name="create_username" id="create_username">
+      <div class="modal-body">
+        <form id="createAccountDetails" enctype="multipart/form-data">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="newUsername">Username</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
                 </div>
+                <input type="text" class="form-control" id="newUsername" name="newUsername"
+                  placeholder="Enter username">
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>First Name:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-font"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter First Name" class="form-control" name="create_fname" id="create_fname">
+            <div class="form-group col-md-6">
+              <label for="newFname">First Name</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
                 </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Last Name:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-font"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter Last Name" class="form-control" name="create_lname" id="create_lname">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Employee ID:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-id-card"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter Employee ID" class="form-control" name="create_number" id="create_number" disabled>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>ID Number:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter ID Number" class="form-control" name="create_card" id="create_card">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Access:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-key"></i></div>
-                  </div>
-                  <select class="form-control selectpicker show-tick" data-style="border-secondary" name="create_access" id="create_access" onchange="accessLevel(this)">
-                    <option value="" disabled selected>Select Access</option>
-                    <option data-divider="true"></option>
-                    <?php if ($access == 3) {
-                      echo '<option value="2">Member</option>';
-                      echo '<option value="4">Leader</option>';
-                    } else {
-                      $con->next_result();
-                      $sql = mysqli_query($con, "SELECT * FROM access WHERE id!=1 ORDER BY access ASC");
-                      if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_assoc($sql)) { ?>
-                          <option value='<?php echo $row['id'] ?>'><?php echo ucwords(strtolower($row['access'])) ?></option>
-                    <?php }
-                      }
-                    } ?>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Department:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-warehouse"></i></div>
-                  </div>
-                  <select name="create_department" id="create_department" class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" data-dropup-auto="false" title="Select Department" onchange="selectDepartment(this)">
-                    <?php if ($access == 3) {
-                      $con->next_result();
-                      $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' AND dept_id='$dept_id' ORDER BY dept_name ASC");
-                      if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_assoc($sql)) { ?>
-                          <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>'><?php echo ucwords(strtolower($row['dept_name'])) ?></option>
-                        <?php }
-                      }
-                    } else {
-                      $con->next_result();
-                      $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' ORDER BY dept_name ASC");
-                      if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_assoc($sql)) { ?>
-                          <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>'><?php echo ucwords(strtolower($row['dept_name'])) ?></option>
-                    <?php }
-                      }
-                    } ?>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Section:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-users"></i></div>
-                  </div>
-                  <select name="create_section" id="create_section" class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" title="Select Section" data-live-search="true" data-dropup-auto="false">
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>E-mail:</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fas fa-solid fa-at"></i></div>
-                  </div>
-                  <input type="text" placeholder="Enter E-mail" class="form-control" name="create_email" id="create_email">
-                </div>
+                <input type="text" class="form-control" id="newFname" name="newFname"
+                  placeholder="Enter first name">
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" onclick="accountCreate(this)" class="btn btn-success" name="create_update">Create Account</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-        </div>
-      </form>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="newLname">Last Name</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+                </div>
+                <input type="text" class="form-control" id="newLname" name="newLname"
+                  placeholder="Enter last name">
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="newEmployeeId">Employee ID</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                </div>
+                <input type="text" class="form-control" id="newEmployeeId" name="newEmployeeId"
+                  placeholder="Enter employee ID">
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="newSystemAccess">System Access</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-key"></i></span>
+                </div>
+                <select class="form-control" id="newSystemAccess" name="newSystemAccess" onchange="accessLevel(this)">
+                  <?php $getAccess = mysqli_query($con, "SELECT * FROM access");
+                  while ($getAccessRow = mysqli_fetch_assoc($getAccess)) : ?>
+                    <option value=" <?php echo $getAccessRow['id']; ?>"><?php echo ucwords($getAccessRow['access']); ?></option>
+                  <?php endwhile; ?>
+                </select>
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="newDepartment">Department</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-building"></i></span>
+                </div>
+                <select name="newDepartment" id="newDepartment" class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" data-live-search="true" data-dropup-auto="false" title="Select Department" onchange="selectDepartment(this)">
+                  <?php if ($access == 3) {
+                    $con->next_result();
+                    $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' AND dept_id='$dept_id' ORDER BY dept_name ASC");
+                    if (mysqli_num_rows($sql) > 0) {
+                      while ($row = mysqli_fetch_assoc($sql)) { ?>
+                        <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>'><?php echo ucwords(strtolower($row['dept_name'])) ?></option>
+                      <?php }
+                    }
+                  } else {
+                    $con->next_result();
+                    $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' ORDER BY dept_name ASC");
+                    if (mysqli_num_rows($sql) > 0) {
+                      while ($row = mysqli_fetch_assoc($sql)) { ?>
+                        <option value='<?php echo $row['dept_id'] ?>' data-subtext='<?php echo $row['dept_id'] ?>'><?php echo ucwords(strtolower($row['dept_name'])) ?></option>
+                  <?php }
+                    }
+                  } ?>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-row" id="accessHide">
+            <div class="form-group col-md-6">
+              <label for="newSection">Section</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-sitemap"></i></span>
+                </div>
+                <select name="newSection" id="newSection" class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" title="Select Section" data-live-search="true" data-dropup-auto="false">
+                </select>
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="newEmail">Email</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                </div>
+                <input type="email" class="form-control" id="newEmail" name="newEmail"
+                  placeholder="Enter email">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button onclick="accountCreate(this)" class="btn btn-success" name="create_update">Save</button>
+        <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
     </div>
   </div>
 </div>
@@ -543,129 +525,22 @@ include('../include/header.php');
     })
   }
 
-  function changePassword(element) {
-    var accountID = document.getElementById('account_username').value;
-    document.getElementById('accountUsername').innerHTML = accountID;
-    $('#accountEdit').modal('hide');
-    $('#accountPassword').modal('show');
-  }
-
-  function alert(element) {
-    var alertID = document.getElementById('account_id').value;
-    document.getElementById('hidden_id').value = alertID;
-    $('#accountEdit').modal('hide');
-    $('#danger').modal('show');
-  }
-
-  function accountDelete(element) {
-    var deleteID = document.getElementById('hidden_id').value;
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        'accountDelete': true,
-        'deleteID': deleteID,
-      },
-      success: function(respone) {
-        if (respone === "Success") {
-          document.getElementById('success_log').innerHTML = 'Account has been deleted successfully.';
-          $('#danger').modal('hide');
-          $('#success').modal('show');
-        }
-      }
-    })
-  }
-
-  function uploadImage(element) {
-    var formData = new FormData();
-    var fileImage = document.getElementById('account_image');
-    var fileUser = document.getElementById('account_username').value;
-    formData.append('image', fileImage.files[0]);
-    formData.append('fileUser', fileUser);
-    formData.append('uploadImage', true);
-
-    $.ajax({
-      type: 'POST',
-      url: "../config/accounts.php",
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function(response) {
-        console.log(response);
-        if (response === "Success") {
-          document.getElementById('success_log').innerHTML = 'Account photo uploaded and changed successfully.';
-          $('#accountEdit').modal('hide');
-          $('#success').modal('show');
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#accountEdit').modal('hide');
-          $('#error').modal('show');
-        }
-      }
-    });
-  }
-
-  function deleteImage(element) {
-    var fileName = element.value;
-    var userName = document.getElementById('account_username').value;
-    console.log(userName);
-    $.ajax({
-      method: "POST",
-      url: "../config/accounts.php",
-      data: {
-        "deleteImage": true,
-        "fileName": fileName,
-        "userName": userName,
-      },
-      success: function(response) {
-        console.log(response);
-        if (response === "Success") {
-          document.getElementById('success_log').innerHTML = 'Account photo removed successfully.';
-          $('#accountEdit').modal('hide');
-          $('#success').modal('show');
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#accountEdit').modal('hide');
-          $('#error').modal('show');
-        }
-      }
-    })
-  }
-
   function showCreate(element) {
     $('#createAccount').modal('show');
   }
 
   function accountCreate(element) {
-    var createUsername = document.getElementById('create_username').value;
-    var createFname = document.getElementById('create_fname').value;
-    var createLname = document.getElementById('create_lname').value;
-    var createNumber = document.getElementById('create_number').value;
-    var createCard = document.getElementById('create_card').value;
-    var createAccess = document.getElementById('create_access').value;
-    var createDepartment = document.getElementById('create_department').value;
-    var createSection = document.getElementById('create_section').value;
-    var createEmail = document.getElementById('create_email').value;
+    const formData = new FormData(document.getElementById('createAccountDetails'));
+    formData.append('accountCreate', true);
     $.ajax({
       method: "POST",
       url: "../config/accounts.php",
-      data: {
-        'accountCreate': true,
-        'createUsername': createUsername,
-        'createFname': createFname,
-        'createLname': createLname,
-        'createNumber': createNumber,
-        'createCard': createCard,
-        'createAccess': createAccess,
-        'createDepartment': createDepartment,
-        'createSection': createSection,
-        'createEmail': createEmail,
-      },
+      data: formData,
+      processData: false,
+      contentType: false,
       success: function(response) {
-        console.log(response);
         if (response === "Success") {
           document.getElementById('success_log').innerHTML = 'Account has been created successfully.';
-          $('#createAccount').modal('hide');
           $('#success').modal('show');
         } else {
           document.getElementById('error_found').innerHTML = response;
@@ -677,17 +552,16 @@ include('../include/header.php');
 
   function selectDepartment(element) {
     var departmentSelect = element.value;
-    var accessSelect = document.getElementById('create_access').value;
-
+    var accessSelect = document.getElementById('newSystemAccess').value;
     $.ajax({
       method: "POST",
       url: "../config/accounts.php",
       data: {
         "selectDepartment": true,
-        "departmentSelect": departmentSelect,
+        "id": departmentSelect,
       },
       success: function(response) {
-        var $sectionSelect = $("select[name='create_section']");
+        var $sectionSelect = $("select[name='newSection']");
         $sectionSelect.html(response).selectpicker('refresh');
 
         if (accessSelect == 3) {
@@ -704,15 +578,12 @@ include('../include/header.php');
 
   function accessLevel(element) {
     var access = element.value;
-    console.log(access);
-
     if (access != 3) {
-      document.getElementById('create_section').disabled = false;
+      document.getElementById('accessHide').classList.remove('d-none');
     } else {
-      document.getElementById('create_section').disabled = true;
+      document.getElementById('accessHide').classList.add('d-none');
     }
-
-    $("select[name='create_department']").val('').selectpicker('refresh');
-    $("select[name='create_section']").val('').selectpicker('refresh');
+    $("select[name='newDepartment']").val('').selectpicker('refresh');
+    $("select[name='newSection']").val('').selectpicker('refresh');
   }
 </script>
