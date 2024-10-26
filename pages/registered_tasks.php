@@ -137,8 +137,8 @@ include('../include/header.php');
         $('#taskInfo').html(response);
         $('#edit').modal('show');
         document.getElementById('updateButton').onclick = function() {
-          const taskName = document.getElementById('taskName').value;
-          const taskDetails = document.getElementById('taskDetails').value;
+          const taskName = document.getElementById('editTaskName').value;
+          const taskDetails = document.getElementById('editTaskDetails').value;
           $.ajax({
             url: '../config/registered_tasks.php',
             method: 'POST',

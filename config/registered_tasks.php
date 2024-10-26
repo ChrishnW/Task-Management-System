@@ -19,24 +19,27 @@ if (isset($_POST['toggleDetails'])) {
 if (isset($_POST['editTask'])) {
   $getDetails = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM task_list WHERE id='{$_POST['id']}'")); ?>
   <div class="form-group">
-    <label for="taskName">Task Name</label>
-    <input type="text" class="form-control" id="taskName" value="<?php echo $getDetails['task_name']; ?>" placeholder="Enter task name">
+    <label for="editTaskName">Task Name</label>
+    <input type="text" class="form-control" id="editTaskName" value="<?php echo $getDetails['task_name']; ?>" placeholder="Enter task name">
   </div>
   <div class="form-group">
-    <label for="taskDetails">Task Details</label>
-    <textarea class="form-control" id="taskDetails" rows="3" placeholder="Enter task details"><?php echo $getDetails['task_details']; ?></textarea>
+    <label for="editTaskDetails">Task Details</label>
+    <textarea class="form-control" id="editTaskDetails" rows="3" placeholder="Enter task details"><?php echo $getDetails['task_details']; ?></textarea>
   </div>
 <?php }
 
 if (isset($_POST['updateTask'])) {
-  if ($_POST['taskName'] !== '' && $_POST['taskDetails'] !== '') {
-    $query_update = mysqli_query($con, "UPDATE task_list SET task_name='{$_POST['taskName']}' AND task_details='{$_POST['taskDetails']}' WHERE id='{$_POST['id']}'");
+  $taskID       = $_POST['id'];
+  $taskName     = $_POST['taskName'];
+  $taskDetails  = $_POST['taskDetails'];
+  if ($taskName !== '' && $taskDetails !== '') {
+    $query_update = mysqli_query($con, "UPDATE `task_list` SET `task_name`='$taskName', `task_details`='$taskDetails' WHERE `id`='$taskID'");
     if ($query_update) {
       die('Success');
     } else {
       die('Unable to complete the operation. Please try again later.');
     }
   } else {
-    die('Missing Data!');
+    die('Please fill in all the fields.');
   }
 }
