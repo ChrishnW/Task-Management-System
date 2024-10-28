@@ -83,17 +83,8 @@ include('../include/header.php');
     $('.export-sec-list:checked').each(function() {
       selectedValues.push($(this).val());
     });
-    // Create a URLSearchParams object
-    const params = new URLSearchParams();
 
-    // Append each selected value to the params
-    selectedValues.forEach((value, index) => {
-      params.append(`selectedValue${index}`, value);
-    });
-
-    // Construct the full URL
-    const baseURL = '../config/export.php';
-    const fullURL = `${baseURL}?importReport=true&${params.toString()}`;
+    const fullURL = `../config/export.php?exportTaskList=true&section=${selectedValues}`;
 
     // Open the new URL in a new window
     window.open(fullURL);
