@@ -120,7 +120,6 @@ include('../include/header.php');
   }
 
   function format(data) {
-    console.log(data);
     // `data` is the response from the AJAX call
     var details = JSON.parse(data);
     var html = '<table class="table table-striped table-hover">';
@@ -151,9 +150,12 @@ include('../include/header.php');
       success: function(response) {
         $('#taskInfo').html(response);
         $('#edit').modal('show');
+        $('select').selectpicker();
         document.getElementById('updateButton').onclick = function() {
           const taskName = document.getElementById('editTaskName').value;
           const taskDetails = document.getElementById('editTaskDetails').value;
+          const submission = document.getElementById('editSubmission').value;
+          const dueDate = document.getElementById('editAttachment').value;
           $.ajax({
             url: '../config/registered_tasks.php',
             method: 'POST',
@@ -161,9 +163,12 @@ include('../include/header.php');
               "updateTask": true,
               "id": id,
               "taskName": taskName,
-              "taskDetails": taskDetails
+              "taskDetails": taskDetails,
+              "submission": submission,
+              "editAttachment": dueDate,
             },
             success: function(result) {
+              console.log(result);
               if (result == 'Success') {
                 document.getElementById('success_log').innerHTML = 'Task information updated successfully.';
                 $('#success').modal('show');

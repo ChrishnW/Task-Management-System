@@ -27,9 +27,9 @@
   <!-- Custom styles for this page -->
   <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../vendor/snapappointments/bootstrap-select/dist/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="../vendor/select2-4.1.0-rc.0/dist/css/select2.min.css">
   <link rel="stylesheet" href="../assets/css/toggle-switchy.css">
   <link rel="stylesheet" href="../assets/css/style.css">
-  <link rel="stylesheet" href="../vendor/select2-4.1.0-rc.0/dist/css/select2.min.css">
 </head>
 
 <body id="page-top">
