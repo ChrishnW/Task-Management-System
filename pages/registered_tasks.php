@@ -8,7 +8,7 @@ include('../include/header.php');
       <h6 class="m-0 font-weight-bold">Task List</h6>
       <div>
         <button class="btn btn-secondary"><i class="fas fa-file-import fa-fw"></i> Import</button>
-        <button class="btn btn-secondary"><i class="fas fa-file-export fa-fw"></i> Export</button>
+        <button class="btn btn-secondary" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
       </div>
       <div>
         <button class="btn btn-secondary" onclick="showCreate(this)"><i class="fas fa-plus fa-fw"></i> Add</button>
@@ -30,7 +30,7 @@ include('../include/header.php');
             while ($row = mysqli_fetch_assoc($getTaskList)) {
               $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}'")); ?>
               <tr>
-                <td><input type="checkbox" class="form-control"></td>
+                <td><input type="checkbox" class="form-control export-sec-list" value="<?php echo $row['sec_id']; ?>"></td>
                 <td><button class="btn btn-circle btn-sm btn-primary" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)">+</button> <?php echo $row['sec_name']; ?></td>
                 <td><?php echo $row['dept_name']; ?></td>
                 <td class="text-center">
@@ -78,6 +78,27 @@ include('../include/header.php');
     ]
   });
 
+  function exportThis() {
+    const selectedValues = [];
+    $('.export-sec-list:checked').each(function() {
+      selectedValues.push($(this).val());
+    });
+    // Create a URLSearchParams object
+    const params = new URLSearchParams();
+
+    // Append each selected value to the params
+    selectedValues.forEach((value, index) => {
+      params.append(`selectedValue${index}`, value);
+    });
+
+    // Construct the full URL
+    const baseURL = '../config/export.php';
+    const fullURL = `${baseURL}?importReport=true&${params.toString()}`;
+
+    // Open the new URL in a new window
+    window.open(fullURL);
+  }
+
   function toggleDetails(button) {
     var id = button.value;
     var tr = $(button).closest('tr');
@@ -108,6 +129,7 @@ include('../include/header.php');
   }
 
   function format(data) {
+    console.log(data);
     // `data` is the response from the AJAX call
     var details = JSON.parse(data);
     var html = '<table class="table table-striped table-hover">';
@@ -117,6 +139,8 @@ include('../include/header.php');
         '<td>' + detail.task_name + '</td>' +
         '<td>' + detail.task_details + '</td>' +
         '<td>' + detail.task_class + '</td>' +
+        '<td>' + detail.submission + '</td>' +
+        '<td><div class="d-flex justify-content-center">' + detail.in_charge_list + '</td></td>' +
         '<td><button class="btn btn-secondary btn-sm" value="' + detail.id + '" onclick="editTask(this)"> Edit </button></td>' +
         '</tr>';
     });

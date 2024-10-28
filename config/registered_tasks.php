@@ -1,8 +1,34 @@
 <?php
 include('../include/auth.php');
 
+function assignee($user)
+{
+  global $con;
+
+  $userlist = strpos($user, ',') !== false ? explode(',', $user) : [$user];
+
+  $images = [];
+
+  foreach ($userlist as $username) {
+    $username = trim($username);
+
+    $result = mysqli_query($con, "SELECT *, CONCAT(accounts.fname,' ',accounts.lname) AS fullName FROM accounts WHERE username='$username'");
+
+    if ($row = mysqli_fetch_assoc($result)) {
+      $image = empty($row["file_name"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row["file_name"];
+    } else {
+      $image = '../assets/img/user-profiles/nologo.png';
+    }
+
+    $images[] = "<img src='$image' alt='$username' class='user-table' data-toggle='tooltip' data-placement='top' title='{$row['fullName']}'>";
+  }
+
+  return $images;
+}
+
+
 if (isset($_POST['toggleDetails'])) {
-  $query_result = mysqli_query($con, "SELECT tl.* FROM  task_list tl WHERE tl.task_for='{$_POST['id']}' AND tl.task_class != 4");
+  $query_result = mysqli_query($con, "SELECT tl.*, GROUP_CONCAT(t.in_charge SEPARATOR ', ') AS in_charge_list, t.submission FROM tasks t JOIN task_list tl ON t.task_id=tl.id WHERE tl.task_for='{$_POST['id']}' AND tl.task_class != 4 GROUP BY tl.task_name");
   $data = array();
   while ($row = mysqli_fetch_assoc($query_result)) {
     if ($row['status'] === '1') {
@@ -10,6 +36,7 @@ if (isset($_POST['toggleDetails'])) {
     } else {
       $row['status'] = '<i class="fas fa-dot-circle text-danger" data-toggle="tooltip" data-placement="right" title="Inactive"></i>';
     }
+    $row['in_charge_list'] = assignee($row['in_charge_list']);
     $row['task_class'] = getTaskClass($row['task_class']);
     $data[] = $row;
   }

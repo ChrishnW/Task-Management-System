@@ -660,6 +660,28 @@
 }
 
 .modal-note {
-    font-size : 0.7rem;
-    color     : #6c757d;
+    font-size: 0.7rem;
+    color    : #6c757d;
+}
+
+.group-img {
+    width        : 40px;
+    height       : 40px;
+    border-radius: 50%;
+    object-fit   : cover;
+    margin-left  : -20px;
+}
+
+.user-table {
+    width        : 40px;
+    /* Adjust size as needed */
+    height       : 40px;
+    border-radius: 50%;
+    object-fit   : cover;
+    margin-left  : -20px;
+    transition: transform 0.3s ease;
+}
+
+.user-table:hover {
+    transform: scale(1.2);
 }
