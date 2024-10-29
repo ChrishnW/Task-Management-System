@@ -156,6 +156,12 @@ include('../include/header.php');
           const taskDetails = document.getElementById('editTaskDetails').value;
           const submission = document.getElementById('editSubmission').value;
           const dueDate = document.getElementById('editAttachment').value;
+          const assignList = [];
+          for (let option of document.getElementById('editEmplist').options) {
+            if (option.selected) {
+              assignList.push(option.value);
+            }
+          }
           $.ajax({
             url: '../config/registered_tasks.php',
             method: 'POST',
@@ -166,6 +172,7 @@ include('../include/header.php');
               "taskDetails": taskDetails,
               "submission": submission,
               "editAttachment": dueDate,
+              "assignList": assignList,
             },
             success: function(result) {
               console.log(result);
