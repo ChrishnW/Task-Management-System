@@ -90,9 +90,8 @@
           </a>
           <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="import.php">Task Import</a>
-              <a class="collapse-item" href="registered_tasks.php">Registered Task</a>
-              <a class="collapse-item" href="assign_tasks.php">Assigned Task</a>
+              <a class="collapse-item" href="registered_tasks.php">Task List</a>
+              <a class="collapse-item" href="tasks.php">Deployed Tasks</a>
             </div>
           </div>
         </li>
