@@ -46,7 +46,7 @@ if (isset($_GET['exportTaskList'])) {
               <?php foreach ($userList as $inCharge) { ?>
                 <td>
                   <!-- <center /><input type="checkbox" <?php echo is_array($inChargeArray) && in_array($inCharge, $inChargeArray) ? 'checked' : ''; ?>> -->
-                  <center /><?php echo is_array($inChargeArray) && in_array($inCharge, $inChargeArray) ? 'Checked' : ''; ?>
+                  <center /><?php echo is_array($inChargeArray) && in_array($inCharge, $inChargeArray) ? 'Selected' : ''; ?>
                 </td>
               <?php } ?>
             </tr>
