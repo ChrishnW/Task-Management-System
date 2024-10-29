@@ -100,7 +100,7 @@ if (isset($_POST['updateTask'])) {
     //     echo ('Set to Inactive');
     //   }
     // }
-    $queryCheck = mysqli_query($con, "SELECT * FROM `tasks` WHERE `task_id`='$taskID' ORDER BY in_charge ASC");
+    $queryCheck = mysqli_query($con, "SELECT * FROM `tasks` WHERE `task_id`='$taskID' AND `status`=1 ORDER BY in_charge ASC");
     $assignList = [];
     while ($row = mysqli_fetch_assoc($queryCheck)) {
       $assignList[] = $row['in_charge'];
@@ -114,10 +114,19 @@ if (isset($_POST['updateTask'])) {
 
       if (!empty($inserted)) {
         foreach ($inserted as $newIncharge) {
-          $insertQuery = "INSERT INTO tasks (task_id, requirement_status, in_charge, submission) VALUES ('$taskID', '$requirement', '$newIncharge', '$submission')";
-          if (!mysqli_query($con, $insertQuery)) {
-            $success = false;
-            break;
+          $checkIncharge = mysqli_query($con, "SELECT * FROM tasks WHERE task_id = '$taskID' AND in_charge = '$newIncharge'");
+          if (mysqli_num_rows($checkIncharge) > 0) {
+            $reupQuery = "UPDATE tasks SET status = 1 WHERE task_id = '$taskID' AND in_charge = '$newIncharge'";
+            if (!mysqli_query($con, $reupQuery)) {
+              $success = false;
+              break;
+            }
+          } else {
+            $insertQuery = "INSERT INTO tasks (task_id, requirement_status, in_charge, submission) VALUES ('$taskID', '$requirement', '$newIncharge', '$submission')";
+            if (!mysqli_query($con, $insertQuery)) {
+              $success = false;
+              break;
+            }
           }
         }
       }
