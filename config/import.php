@@ -88,6 +88,35 @@ if (isset($_POST['validateFile'])) {
   }
 }
 
+if (isset($_POST['taskImport'])) {
+  mysqli_begin_transaction($con);
+  $success = true;
+  $getTemplist = mysqli_query($con, "SELECT *, GROUP_CONCAT(in_charge SEPARATOR ', ') AS in_charge_list FROM task_temp GROUP BY task_name ASC");
+  while ($row = mysqli_fetch_assoc($getTemplist)) {
+    $inchargeList = array_map('trim', explode(',', $row['in_charge_list']));
+    $registerTaskList = "INSERT INTO `task_list` (`task_name`, `task_details`, `task_class`, `task_for`) VALUES ('{$row['task_name']}', '{$row['task_details']}', '{$row['task_class']}', '{$row['task_for']}')";
+    if (!mysqli_query($con, $registerTaskList)) {
+      $success = false;
+      break;
+    }
+    $id = mysqli_insert_id($con);
+    foreach ($inchargeList as $in_charge) {
+      $registerTask = "INSERT INTO `tasks` (`task_id`, `requirement_status`, `in_charge`, `submission`) VALUES ('{$id}', '{$row['attachment']}', '{$in_charge}', '{$row['submission']}')";
+      if (!mysqli_query($con, $registerTask)) {
+        $success = false;
+        break;
+      }
+    }
+  }
+  if ($success) {
+    mysqli_commit($con);
+    die("Success");
+  } else {
+    mysqli_rollback($con);
+    die("An error occurred. Changes were not applied.");
+  }
+}
+
 if (isset($_GET['importReport'])) {
   log_action("Downloaded generated report for failed bulk import.");
   header("Content-Type:   application/vnd.ms-excel; charset=utf-8");

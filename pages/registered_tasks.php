@@ -1,5 +1,6 @@
 <?php
 include('../include/header.php');
+$result = mysqli_query($con, "TRUNCATE task_temp");
 ?>
 
 <div class="container-fluid">
@@ -277,9 +278,12 @@ include('../include/header.php');
 
   // Final import function to process the validated file
   function importFile() {
+    document.getElementById('importBtn').disabled = true;
     const formData = new FormData();
     formData.append('file', selectedFile);
     formData.append('taskImport', true);
+
+    togglePreloader(true);
 
     $.ajax({
       type: 'POST',
@@ -288,10 +292,14 @@ include('../include/header.php');
       contentType: false,
       processData: false,
       success: function(response) {
-        if (response === 'Success') {
-          alert("File imported successfully!");
+        togglePreloader(false);
+        if (result == 'Success') {
+          document.getElementById('success_log').innerHTML = 'Task information updated successfully.';
+          $('#success').modal('show');
         } else {
-          alert("Error during import: " + response);
+          document.getElementById('importBtn').disabled = false;
+          document.getElementById('error_found').innerHTML = response;
+          $('#error').modal('show');
         }
       },
       error: function() {
