@@ -679,9 +679,22 @@
     border-radius: 50%;
     object-fit   : cover;
     margin-left  : -20px;
-    transition: transform 0.3s ease;
+    transition   : transform 0.3s ease;
 }
 
 .user-table:hover {
     transform: scale(1.2);
+}
+
+.drop-zone {
+    border       : 2px dashed #007bff;
+    padding      : 20px;
+    border-radius: 8px;
+    text-align   : center;
+    color        : #007bff;
+    transition   : background-color 0.3s ease;
+}
+
+.drop-zone.dragover {
+    background-color: #e6f7ff;
 }

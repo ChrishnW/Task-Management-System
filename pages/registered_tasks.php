@@ -7,7 +7,7 @@ include('../include/header.php');
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
       <h6 class="m-0 font-weight-bold">Task List</h6>
       <div>
-        <button class="btn btn-secondary"><i class="fas fa-file-import fa-fw"></i> Import</button>
+        <button class="btn btn-secondary" data-toggle="modal" data-target="#importModal"><i class="fas fa-file-import fa-fw"></i> Import</button>
         <button class="btn btn-secondary" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
       </div>
       <div>
@@ -47,6 +47,37 @@ include('../include/header.php');
   </div>
 </div>
 
+<div class="modal fade" id="importModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importModalLabel">Import Task</h5>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <i id="loadingIcon" class="fas fa-spinner fa-7x fa-spin text-primary d-none"></i>
+          <i id="validateIcon" class="fas fa-check-circle fa-7x text-success d-none"></i>
+          <i id="errorIcon" class="fas fa-times-circle fa-7x text-danger d-none"></i>
+        </div>
+        <div id="dropZone" class="drop-zone">
+          Drag and drop an Excel file here, or <br>
+          <button type="button" class="btn btn-link" onclick="document.getElementById('fileInput').click()">click to select a file</button>
+        </div>
+        <!-- Hidden file input -->
+        <input type="file" id="fileInput" accept=".xlsx, .xls" style="display: none;" />
+        <p id="fileName" class="mt-3 text-muted"></p>
+        <!-- Progress Bar -->
+        <div class="progress mt-3 d-none" id="progressContainer">
+          <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="importBtn" type="button" class="btn btn-primary d-none" onclick="importFile()">Import</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="edit" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content border-primary">
@@ -64,6 +95,8 @@ include('../include/header.php');
 </div>
 
 <?php include('../include/footer.php'); ?>
+
+<script src="../assets/js/import.js"></script>
 
 <script>
   $('#regTaskTable').DataTable({
@@ -175,7 +208,6 @@ include('../include/header.php');
               "assignList": assignList,
             },
             success: function(result) {
-              console.log(result);
               if (result == 'Success') {
                 document.getElementById('success_log').innerHTML = 'Task information updated successfully.';
                 $('#success').modal('show');
@@ -187,6 +219,84 @@ include('../include/header.php');
           })
         }
       },
+    });
+  }
+
+  function validateFile() {
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('validateFile', true);
+
+    $.ajax({
+      type: 'POST',
+      url: "../config/import.php",
+      data: formData,
+      contentType: false,
+      processData: false,
+      xhr: function() {
+        const xhr = new window.XMLHttpRequest();
+        xhr.upload.addEventListener("progress", (e) => {
+          if (e.lengthComputable) {
+            const percentComplete = Math.round((e.loaded / e.total) * 100);
+            updateProgressBar(percentComplete, "bg-info");
+          }
+        }, false);
+        return xhr;
+      },
+      success: function(response) {
+        if (response === 'Valid') { // Assuming 'Valid' indicates a valid file
+          updateProgressBar(100, "bg-success");
+          loadingIcon.classList.add('d-none'); // Hide loading icon
+          validateIcon.classList.remove('d-none'); // Show success icon
+          importBtn.classList.remove('d-none'); // Show Import button
+        } else {
+          handleError(response);
+        }
+      },
+      error: function() {
+        // Display error at the last completed percentage
+        updateProgressBar(progressBar.style.width.replace('%', ''), "bg-danger");
+        fileNameDisplay.textContent = "An error occurred during validation.";
+      }
+    });
+  }
+
+  // Update progress bar
+  function updateProgressBar(percent, className) {
+    progressBar.style.width = percent + '%';
+    progressBar.className = `progress-bar progress-bar-striped ${className}`;
+  }
+
+  // Error handling function to manage icons and messages
+  function handleError(message) {
+    loadingIcon.classList.add('d-none'); // Hide loading icon
+    errorIcon.classList.remove('d-none'); // Show error icon
+    fileNameDisplay.textContent = "Error: " + message;
+    updateProgressBar(progressBar.style.width.replace('%', ''), "bg-danger");
+  }
+
+  // Final import function to process the validated file
+  function importFile() {
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('taskImport', true);
+
+    $.ajax({
+      type: 'POST',
+      url: "../config/import.php",
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function(response) {
+        if (response === 'Success') {
+          alert("File imported successfully!");
+        } else {
+          alert("Error during import: " + response);
+        }
+      },
+      error: function() {
+        alert("An error occurred during the import process.");
+      }
     });
   }
 </script>

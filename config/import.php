@@ -5,7 +5,7 @@ include('../vendor/autoload.php');
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-if (isset($_POST['taskImport'])) {
+if (isset($_POST['validateFile'])) {
   $fileName     = $_FILES['file']['name'];
   log_action("Performed bulk import of tasks using Excel file {$fileName}.");
   $file_ext     = pathinfo($fileName, PATHINFO_EXTENSION);
@@ -50,14 +50,14 @@ if (isset($_POST['taskImport'])) {
 
       if ($isRowValid) {
         $validDataFound = true;
-        $taskName     = ucwords(strtolower(preg_replace('/\s+/', ' ', mysqli_real_escape_string($con, $rowValues[0][0]))));
-        $taskDetails  = ucwords(strtolower(preg_replace('/\s+/', ' ', mysqli_real_escape_string($con, $rowValues[0][1]))));
+        $taskName     = preg_replace('/\s+/', ' ', mysqli_real_escape_string($con, $rowValues[0][0]));
+        $taskDetails  = preg_replace('/\s+/', ' ', mysqli_real_escape_string($con, $rowValues[0][1]));
         $taskClass    = mysqli_real_escape_string($con, $rowValues[0][2]);
         $taskFor      = strtoupper(mysqli_real_escape_string($con, $rowValues[0][3]));
         $taskTo       = strtoupper(mysqli_real_escape_string($con, $rowValues[0][4]));
         $taskDue      = mysqli_real_escape_string($con, $rowValues[0][5]);
         $taskReq      = mysqli_real_escape_string($con, $rowValues[0][6]);
-        $import_checker = mysqli_query($con, "SELECT * FROM tasks WHERE task_name = '$taskName' AND task_class='$taskClass' AND in_charge = '$taskTo' AND submission = '$taskDue'");
+        $import_checker = mysqli_query($con, "SELECT * FROM task_list tl JOIN tasks t ON tl.id=t.task_id WHERE tl.task_name = '$taskName' AND tl.task_class = '$taskClass' AND t.in_charge = '$taskTo' AND t.submission = '$taskDue'");
         if (mysqli_num_rows($import_checker) > 0) {
           $duplicateDataFound = true;
           $query_checker = mysqli_query($con, "INSERT INTO task_temp (`task_name`, `task_details`, `task_class`, `task_for`, `in_charge`, `submission`, `attachment`, `status`) values ('$taskName', '$taskDetails', '$taskClass', '$taskFor', '$taskTo', '$taskDue', '$taskReq', 'DUPLICATED')");
@@ -81,36 +81,7 @@ if (isset($_POST['taskImport'])) {
     if ($duplicateDataFound) {
       die("There's a problem deploying tasks!<br>Download the error report <span onclick='generateReport()' style='cursor: pointer;'><font color='red'>here</font>.</span>");
     } else {
-      $success = true;
-      $query_fetch = mysqli_query($con, "SELECT * FROM task_temp WHERE status='CLEAR' ORDER BY task_name ASC");
-      while ($row = mysqli_fetch_assoc($query_fetch)) {
-        $task_name    = $row['task_name'];
-        $task_class   = $row['task_class'];
-        $task_details = $row['task_details'];
-        $task_for     = $row['task_for'];
-        $submission   = $row['submission'];
-        $in_charge    = $row['in_charge'];
-        $attachment   = $row['attachment'];
-        $status       = 'NOT YET STARTED';
-        if (mysqli_num_rows(mysqli_query($con, "SELECT * FROM task_list WHERE task_name='$task_name' AND task_for='$task_for'")) == 0) {
-          $register_task = "INSERT INTO task_list (`task_name`, `task_details`, `task_class`, `task_for`, `date_created`, `status`) VALUES ('$task_name', '$task_details', '$task_class', '$task_for', '$today', 1)";
-          if (!mysqli_query($con, $register_task)) {
-            die("Error registering task: " . mysqli_error($con));
-            $success = false;
-          }
-        }
-        if (mysqli_num_rows(mysqli_query($con, "SELECT * FROM tasks WHERE task_name='$task_name' AND in_charge='$in_charge'")) == 0) {
-          $assign_task = "INSERT INTO tasks (`task_name`, `task_class`, `task_details`, `task_for`, `requirement_status`, `in_charge`, `submission`) VALUES ('$task_name', '$task_class', '$task_details', '$task_for', '$attachment', '$in_charge', '$submission')";
-          if (!mysqli_query($con, $assign_task)) {
-            die("Error assigning task: " . mysqli_error($con));
-            $success = false;
-          }
-        }
-      }
-      if ($success) {
-        log_action("Bulk tasks imported successfully.");
-        die("Success");
-      }
+      die('Valid');
     }
   } else {
     die("Unsupported file extension. Please select .xlsx files only.");
