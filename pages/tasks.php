@@ -4,70 +4,78 @@ include('../include/header.php');
 
 <div class="container-fluid">
   <?php if ($access == 1) : ?>
-    <div class="row">
-      <div class="form-group col-md-2">
-        <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTable(this)">
-      </div>
-      <div class="form-group col-md-2">
-        <label>From</label>
-        <input type="date" name="date_from" id="date_from" class="form-control" onchange="filterTable(this)">
-      </div>
-      <div class="form-group col-md-2">
-        <label>Department</label>
-        <select id="department" name="department" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" data-live-search="true" onchange="selectSection(this); filterTable(this);">
-          <option value="" data-subtext="Default" selected>All</option>
-          <?php
-          $con->next_result();
-          $sql = mysqli_query($con, "SELECT * FROM department WHERE status='1' ORDER BY dept_name");
-          if (mysqli_num_rows($sql) > 0) {
-            while ($row = mysqli_fetch_assoc($sql)) { ?>
-              <option value='<?php echo $row['dept_id'] ?>' data-subtext='Department ID <?php echo $row['dept_id'] ?>' class="text-capitalize"><?php echo strtolower($row['dept_name']) ?></option>
-          <?php }
-          } ?>
-        </select>
-      </div>
-      <div class="form-group col-md-2">
-        <label>Section</label>
-        <select id="section" name="section[]" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable(this)">
-          <option value="" data-subtext="Default" selected>All</option>
-        </select>
-      </div>
-      <div class="form-group col-md-2">
-        <label>Progress</label>
-        <select id="progress" name="progress" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable(this)">
-          <option value="" data-subtext="Default" selected>All</option>
-          <option value="NOT YET STARTED">Not Yet Started</option>
-          <option value="IN PROGRESS">In-Progress</option>
-          <option value="REVIEW">Review</option>
-          <option value="FINISHED">Finished</option>
-          <option value="RESCHEDULE">Reschedule</option>
-        </select>
-      </div>
-      <div class="form-group col-sm-auto">
-        <label>Status</label>
-        <select id="taskStatus" name="taskStatus" class="form-control selectpicker" data-style="bg-primary text-white text-capitalize" onchange="filterTable(this)">
-          <option value="1" data-subtext="Default" selected>Active</option>
-          <option value="0">In-Active</option>
-        </select>
-      </div>
-    </div>
     <div class="card">
-      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-        <h6 class="m-0 font-weight-bold text-white">Deployed Tasks</h6>
-      </div>
       <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <!-- From Date -->
+          <div class="form-group col-2 mr-2">
+            <label for="fromDate">From</label>
+            <input type="date" id="fromDate" class="form-control">
+          </div>
+          <!-- To Date -->
+          <div class="form-group col-2 mr-3">
+            <label for="toDate">To</label>
+            <input type="date" id="toDate" class="form-control">
+          </div>
+
+          <!-- Sorting & Filtering Dropdown Button -->
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="sortFilterDropdown" data-toggle="dropdown">
+              <i class="fas fa-filter fa-fw"></i> Filter
+            </button>
+            <div class="dropdown-menu p-3" aria-labelledby="sortFilterDropdown" style="min-width: 250px;">
+              <h6>Filter by Department</h6>
+              <div class="form-group">
+                <select id="filterByDepartment" class="form-control filterByDepartment">
+                  <option value="ALL">All</option>
+                  <?php $getDepList = mysqli_query($con, "SELECT * FROM department WHERE status=1 ORDER BY dept_name ASC");
+                  while ($row = mysqli_fetch_assoc($getDepList)): ?>
+                    <option value="<?php echo $row['dept_id']; ?>"><?php echo ucwords(strtolower($row['dept_name'])); ?></option>
+                  <?php endwhile; ?>
+                </select>
+              </div>
+              <div class="form-group form-hide d-none">
+                <h6>Filter by Section</h6>
+                <select id="filterBySection" class="form-control filterBySection"></select>
+              </div>
+              <h6 class="mt-2">Filter by Progress</h6>
+              <div class="form-group">
+                <select class="form-control" id="priorityFilter">
+                  <option value="All" selected>All</option>
+                  <option value="NotYetStarted">Not Yet Started</option>
+                  <option value="InProgress">In Progress</option>
+                  <option value="InReview">In Review</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Reschedule">Reschedule</option>
+                </select>
+              </div>
+              <h6 class="mt-2">Filter by Status</h6>
+              <div>
+                <input type="radio" name="statusFilter" id="allStatus" value="All" checked>
+                <label for="allStatus">All</label>
+              </div>
+              <div>
+                <input type="radio" name="statusFilter" id="activeStatus" value="Active">
+                <label for="activeStatus">Active</label>
+              </div>
+              <div>
+                <input type="radio" name="statusFilter" id="inactiveStatus" value="Inactive">
+                <label for="inactiveStatus">Inactive</label>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="table-responsive">
-          <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
-            <thead class='table table-success'>
+          <table class="table table-hover" id="taskDeployedTable">
+            <thead>
               <tr>
-                <th>Action</th>
                 <th>Code</th>
                 <th>Title</th>
                 <th>Classification</th>
                 <th>Due Date</th>
                 <th>Assignee</th>
                 <th>Progress</th>
+                <th></th>
               </tr>
             </thead>
             <tbody id='dataTableBody'>
@@ -77,15 +85,15 @@ include('../include/header.php');
                 while ($row = $result->fetch_assoc()) {
                   $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a"); ?>
                   <tr>
-                    <td><button type="button" class="btn btn-info btn-block" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button> <button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
-                    <td>
+                    <td class="text-truncate">
                       <center /><?php echo $row['task_code'] ?>
                     </td>
                     <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                     <td><?php echo getTaskClass($row['task_class']); ?></td>
-                    <td><?php echo $due_date ?></td>
-                    <td><?php echo getUser($row['in_charge']); ?></td>
+                    <td class="text-truncate"><?php echo $due_date ?></td>
+                    <td class="text-truncate"><?php echo getUser($row['in_charge']); ?></td>
                     <td><?php echo getProgressBadge($row['status']); ?></td>
+                    <td class="text-truncate"><button type="button" class="btn btn-info btn-block" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button> <button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
                   </tr>
               <?php }
               } ?>
@@ -963,24 +971,6 @@ include('../include/header.php');
     window.location.href = '../config/tasks.php?downloadFile=true&id=' + id;
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var activeTab = localStorage.getItem('activeTab');
-    if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
-      document.querySelector(`a[href="${activeTab}"]`).classList.add('active');
-      document.querySelector(activeTab).classList.add('show', 'active');
-    } else {
-      document.querySelector('.nav-link').classList.add('active');
-      document.querySelector('.tab-pane').classList.add('show', 'active');
-    }
-
-    $('#myTabs a').on('shown.bs.tab', function(e) {
-      var href = $(e.target).attr('href');
-      localStorage.setItem('activeTab', href);
-
-      var tableId = $(href).find('table').attr('id');
-    });
-  });
-
   function checkDateInputs() {
     var dateFrom = document.getElementById('date_from').value;
     var dateTo = document.getElementById('date_to');
@@ -1016,4 +1006,10 @@ include('../include/header.php');
       }
     });
   }
+</script>
+
+<script>
+  $('.dropdown-menu').on('click', function(event) {
+    event.stopPropagation();
+  });
 </script>

@@ -14,7 +14,7 @@ if (isset($_POST['sectionUpdate'])) {
   }
   if (!$error) {
     $query_update = mysqli_query($con, "UPDATE section SET sec_id='$sec_code', sec_name='$sec_name' WHERE id='$sec_id'");
-    if($query_result) {
+    if ($query_result) {
       die('Success');
     } else {
       die('Error');
@@ -51,4 +51,12 @@ if (isset($_POST['changeStatus'])) {
   } else {
     die('Error');
   }
+}
+
+// Use for Department Load Section JS
+if (isset($_POST['loadSections'])) {
+  $getSectionList = mysqli_query($con, "SELECT * FROM section WHERE dept_id='{$_POST['deptID']}' AND status=1");
+  while ($row = mysqli_fetch_assoc($getSectionList)):
+    echo '<option value="' . $row['sec_id'] . '">' . ucwords(strtolower($row['sec_name'])) . '</option>';
+  endwhile;
 }
