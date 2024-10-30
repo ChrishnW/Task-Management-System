@@ -146,85 +146,18 @@ if (isset($_POST['filterTableTask'])) {
     endif;
   }
 }
-if (isset($_POST['editTask'])) {
-  $id = $_POST['taskID'];
-  $query_result = mysqli_query($con, "SELECT DISTINCT tasks_details.*, tasks.task_details FROM tasks_details JOIN tasks ON tasks_details.task_name=tasks.task_name WHERE tasks_details.id='$id'");
-  while ($row = mysqli_fetch_assoc($query_result)) {
-    $task_classes       = [1 => "DAILY ROUTINE", 2 => "WEEKLY ROUTINE", 3 => "MONTHLY ROUTINE", 4 => "ADDITIONAL TASK", 5 => "PROJECT", 6 => "MONTHLY REPORT"];
-    $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
-    $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
-    $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
-    <div class="row">
-      <div class="form-group col-md-4">
-        <label>Assignee:</label>
-        <input type="hidden" value="<?php echo $row['id'] ?>" name="taskDetailsID" id="taskDetailsID" readonly>
-        <input type="text" value="<?php echo $row['in_charge'] ?>" class="form-control" disabled>
-      </div>
-      <div class="form-group col-md-5">
-        <label>Code:</label>
-        <input type="text" value="<?php echo $row['task_code'] ?>" class="form-control" disabled>
-      </div>
-      <div class="form-group col-md-3">
-        <label>Achievement:</label>
-        <input type="number" value="<?php echo $row['achievement'] ?? "0" ?>" class="form-control" name="update_score" id="update_score">
-      </div>
-      <div class="form-group col-md-12">
-        <label>Title:</label>
-        <input type="text" value="<?php echo $row['task_name'] ?>" class="form-control" disabled>
-      </div>
-      <div class="form-group col-md-5">
-        <label>Classification:</label>
-        <input type="text" value="<?php echo $task_class ?>" class="form-control" disabled>
-      </div>
-      <div class="form-group col-md-4">
-        <label>Current Progress:</label>
-        <select name="update_progress" id="update_progress" class="form-control" <?php if ($row['status'] == 'FINISHED' || $row['status'] == 'REVIEW') echo "disabled"; ?>>
-          <?php if ($row['status'] == 'NOT YET STARTED') { ?>
-            <option value="NOT YET STARTED" selected>Not Yet Started</option>
-            <option value="IN PROGRESS">In-Progress</option>
-          <?php } elseif ($row['status'] == 'IN PROGRESS') { ?>
-            <option value="NOT YET STARTED">Not Yet Started</option>
-            <option value="IN PROGRESS" selected>In-Progress</option>
-          <?php } else { ?>
-            <option value="<?php echo $row['status'] ?>" selected><?php echo ucwords(strtolower($row['status'])) ?></option>
-          <?php } ?>
-        </select>
-      </div>
-      <div class="form-group col-md-3">
-        <label>Status:</label>
-        <select name="update_status" id="update_status" class="form-control">
-          <?php if ($row['task_status'] == 1) { ?>
-            <option value="1" selected>Active</option>
-            <option value="0">In-Active</option>
-          <?php } else { ?>
-            <option value="1">Active</option>
-            <option value="0" selected>In-Active</option>
-          <?php } ?>
-        </select>
-      </div>
-      <div class="form-group col-md-6">
-        <label>Set Due Date:</label>
-        <input name="update_datetime" id="update_datetime" type="datetime-local" value="<?php echo $row['due_date'] ?>" class="form-control">
-      </div>
-      <div class="form-group col-md-6">
-        <label>Accomplished Date:</label>
-        <input type="datetime-local" value="<?php echo $row['date_accomplished'] ?>" class="form-control" disabled>
-      </div>
-    </div>
-  <?php }
-}
-if (isset($_POST['updateTask'])) {
+if (isset($_POST['modifyTask'])) {
   $error    = false;
   $id       = $_POST['taskID'];
-  $progress = $_POST['progress'];
-  $status   = $_POST['status'];
+  $progress = $_POST['update_progress'];
+  $status   = $_POST['update_status'];
 
-  if ($_POST['datetime'] === '') {
+  if ($_POST['update_datetime'] === '') {
     $error = true;
     echo "Date and Time cannot be empty. Please fill in all required fields.";
   }
   if (!$error) {
-    $datetime = str_replace("T", " ", $_POST['datetime']) . ":00";
+    $datetime = str_replace("T", " ", $_POST['update_datetime']) . ":00";
     $query_result = mysqli_query($con, "UPDATE tasks_details SET status='$progress', due_date='$datetime', task_status='$status' WHERE id='$id'");
     if ($query_result) {
       echo "Success";
@@ -885,8 +818,55 @@ if (isset($_POST['viewTask'])) {
         <?php } ?>
       </div>
     </form>
-<?php
+  <?php
   }
+}
+if (isset($_POST['editTask'])) {
+  $query_result = mysqli_query($con, "SELECT * FROM task_list tl JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.id='{$_POST['taskID']}'");
+  while ($row = mysqli_fetch_assoc($query_result)) { ?>
+    <form id="modifyForm">
+      <div class="row">
+        <div class="form-group col-md-7">
+          <label>Code</label>
+          <input type="text" value="<?php echo $row['task_code'] ?>" class="form-control" disabled>
+        </div>
+        <div class="form-group col-md-5">
+          <label>Status</label>
+          <select name="update_status" id="update_status" class="form-control">
+            <?php if ($row['task_status'] == 1) { ?>
+              <option value="1" selected>Active</option>
+              <option value="0">In-Active</option>
+            <?php } else { ?>
+              <option value="1">Active</option>
+              <option value="0" selected>In-Active</option>
+            <?php } ?>
+          </select>
+        </div>
+        <div class="form-group col-md-12">
+          <label>Task</label>
+          <input type="text" value="<?php echo $row['task_name'] ?>" class="form-control" disabled>
+        </div>
+        <div class="form-group col-md-6">
+          <label>Due Date</label>
+          <input name="update_datetime" id="update_datetime" type="datetime-local" value="<?php echo $row['due_date'] ?>" class="form-control">
+        </div>
+        <div class="form-group col-md-6">
+          <label>Current Progress</label>
+          <select name="update_progress" id="update_progress" class="form-control" <?php if ($row['status'] == 'FINISHED' || $row['status'] == 'REVIEW') echo "disabled"; ?>>
+            <?php if ($row['status'] == 'NOT YET STARTED') { ?>
+              <option value="NOT YET STARTED" selected>Not Yet Started</option>
+              <option value="IN PROGRESS">In-Progress</option>
+            <?php } elseif ($row['status'] == 'IN PROGRESS') { ?>
+              <option value="NOT YET STARTED">Not Yet Started</option>
+              <option value="IN PROGRESS" selected>In-Progress</option>
+            <?php } else { ?>
+              <option value="<?php echo $row['status'] ?>" selected><?php echo ucwords(strtolower($row['status'])) ?></option>
+            <?php } ?>
+          </select>
+        </div>
+      </div>
+    </form>
+<?php }
 }
 if (isset($_POST['rescheduleTask'])) {
   $id     = $_POST['id'];

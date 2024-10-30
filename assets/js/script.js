@@ -1,9 +1,4 @@
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-  $('.select2').select2()
-});
-
-$(function () {
   const currentPath = window.location.pathname.split("/").pop();
 
   const navItems = $('.nav-item');

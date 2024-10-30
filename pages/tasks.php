@@ -52,11 +52,11 @@ include('../include/header.php');
                 </div>
                 <h6 class="mt-2">Filter by Status</h6>
                 <div>
-                  <input type="radio" name="statusFilter" id="allStatus" value="All" onchange="filterTable()" checked>
+                  <input type="radio" name="statusFilter" id="allStatus" value="All" onchange="filterTable()">
                   <label for="allStatus">All</label>
                 </div>
                 <div>
-                  <input type="radio" name="statusFilter" id="activeStatus" value="Active" onchange="filterTable()">
+                  <input type="radio" name="statusFilter" id="activeStatus" value="Active" onchange="filterTable()" checked>
                   <label for="activeStatus">Active</label>
                 </div>
                 <div>
@@ -72,7 +72,7 @@ include('../include/header.php');
             <thead>
               <tr>
                 <th>Code</th>
-                <th>Title</th>
+                <th>Task</th>
                 <th>Classification</th>
                 <th>Due Date</th>
                 <th>Assignee</th>
@@ -85,7 +85,7 @@ include('../include/header.php');
               $result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
-                  $due_date = date_format(date_create($row['due_date']), "Y-m-d h:i a"); ?>
+                  $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
                   <tr>
                     <td class="text-truncate">
                       <center /><?php echo $row['task_code'] ?>
@@ -95,7 +95,12 @@ include('../include/header.php');
                     <td class="text-truncate"><?php echo $due_date ?></td>
                     <td class="text-truncate"><?php echo getUser($row['in_charge']); ?></td>
                     <td><?php echo getProgressBadge($row['status']); ?></td>
-                    <td class="text-truncate"><button type="button" class="btn btn-info btn-block" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button> <button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
+                    <td class="text-truncate">
+                      <button type="button" class="btn btn-secondary btn-block" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-edit fa-fw"></i> Modify</button>
+                      <?php if (in_array($row['status'], ['REVIEW', 'FINISHED'])): ?>
+                        <button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-info fa-fw"></i> Details</button>
+                      <?php endif; ?>
+                    </td>
                   </tr>
               <?php }
               } ?>
@@ -453,13 +458,33 @@ include('../include/header.php');
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content border-primary">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">View Task</h5>
+        <h5 class="modal-title">Task Details</h5>
       </div>
       <div class="modal-body" id="taskDetails">
       </div>
       <div class="modal-footer">
         <button type="button" onclick="updateTask(this)" class="btn btn-success" id="updateButton" style="display: none;">Update</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="edit" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modify Task Details</h5>
+      </div>
+      <div class="modal-body" id="modifyDetails">
+      </div>
+      <div class="modal-footer justify-content-between">
+        <div>
+          <button class="btn btn-danger" id="delete">Delete</button>
+        </div>
+        <div>
+          <button class="btn btn-success" id="saveEdit">Save</button>
+          <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
@@ -703,24 +728,6 @@ include('../include/header.php');
         document.getElementById('updateButton').style.display = 'none';
         $('#taskDetails').html(response);
         openSpecificModal('view', 'modal-xl');
-      }
-    });
-  }
-
-  function editTask(element) {
-    var editaskID = element.value;
-    $.ajax({
-      method: "POST",
-      url: "../config/tasks.php",
-      data: {
-        "editTask": true,
-        "taskID": editaskID,
-      },
-      success: function(response) {
-        document.getElementById('updateButton').value = editaskID;
-        document.getElementById('updateButton').style.display = 'block';
-        $('#taskDetails').html(response);
-        openSpecificModal('view', 'modal-md');
       }
     });
   }
@@ -1013,6 +1020,40 @@ include('../include/header.php');
 </script>
 
 <script>
+  $.fn.dataTable.ext.type.order['date-custom-pre'] = function(d) {
+    var months = {
+      "January": 1,
+      "February": 2,
+      "March": 3,
+      "April": 4,
+      "May": 5,
+      "June": 6,
+      "July": 7,
+      "August": 8,
+      "September": 9,
+      "October": 10,
+      "November": 11,
+      "December": 12
+    };
+    var dateParts = d.split(' ');
+    return new Date(dateParts[2], months[dateParts[0]] - 1, dateParts[1].replace(',', ''));
+  };
+
+  $('#taskDeployedTable').DataTable({
+    "columnDefs": [{
+      "orderable": false,
+      "searchable": false,
+      "targets": 6,
+    }, {
+      "type": "date-custom",
+      "targets": 3
+    }],
+    "order": [
+      [3, "desc"],
+      [1, "asc"]
+    ]
+  }, $('[data-toggle="tooltip"]').tooltip());
+
   $('.dropdown-menu').on('click', function(event) {
     event.stopPropagation();
   });
@@ -1022,7 +1063,47 @@ include('../include/header.php');
     const section = document.getElementById('filterBySection').value;
     const progress = document.getElementById('priorityFilter').value;
     const status = document.querySelector('input[name="statusFilter"]:checked')?.value;
-    const filteredStatus = (status === "ALL" && (document.getElementById('statusActive').checked || document.getElementById('statusInactive').checked)) ? null : status;
-    console.log(department + '\n' + section + '\n' + progress + '\n' + filteredStatus);
+    const filteredStatus = (status === "ACTIVE" && (document.getElementById('statusActive').checked || document.getElementById('statusInactive').checked)) ? null : status;
+    // console.log(department + '\n' + section + '\n' + progress + '\n' + filteredStatus);
+  }
+</script>
+
+<!-- Admin -->
+<script>
+  function editTask(element) {
+    const taskID = element.value;
+    $.ajax({
+      method: "POST",
+      url: "../config/tasks.php",
+      data: {
+        "editTask": true,
+        "taskID": taskID,
+      },
+      success: function(response) {
+        $('#modifyDetails').html(response);
+        openSpecificModal('edit', 'modal-md');
+        document.getElementById('saveEdit').onclick = function() {
+          const formData = new FormData(document.getElementById('modifyForm'));
+          formData.append('taskID', taskID);
+          formData.append('modifyTask', true);
+          $.ajax({
+            method: "POST",
+            url: "../config/tasks.php",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+              if (response === 'Success') {
+                document.getElementById('success_log').innerHTML = 'Task modified successfully.';
+                $('#success').modal('show');
+              } else {
+                document.getElementById('error_found').innerHTML = response;
+                $('#error').modal('show');
+              }
+            }
+          })
+        }
+      }
+    });
   }
 </script>
