@@ -71,6 +71,7 @@ include('../include/header.php');
           <table class="table table-hover" id="taskDeployedTable">
             <thead>
               <tr>
+                <th></th>
                 <th>Code</th>
                 <th>Task</th>
                 <th>Classification</th>
@@ -87,7 +88,8 @@ include('../include/header.php');
                 while ($row = $result->fetch_assoc()) {
                   $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
                   <tr>
-                    <td class="text-truncate">
+                    <td><input type="checkbox" id="thisTask" class="form-control" value="<?php echo $row['id']; ?>"></td>
+                    <td>
                       <center /><?php echo $row['task_code'] ?>
                     </td>
                     <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
@@ -980,14 +982,14 @@ include('../include/header.php');
     "columnDefs": [{
       "orderable": false,
       "searchable": false,
-      "targets": 6,
+      "targets": [0, 7]
     }, {
       "type": "date-custom",
-      "targets": 3
+      "targets": 4
     }],
     "order": [
-      [3, "desc"],
-      [1, "asc"]
+      [4, "desc"],
+      [2, "asc"]
     ]
   }, $('[data-toggle="tooltip"]').tooltip());
 
@@ -1088,14 +1090,14 @@ include('../include/header.php');
           "columnDefs": [{
             "orderable": false,
             "searchable": false,
-            "targets": 6,
+            "targets": [0, 7]
           }, {
             "type": "date-custom",
-            "targets": 3
+            "targets": 4
           }],
           "order": [
-            [3, "desc"],
-            [1, "asc"]
+            [4, "desc"],
+            [2, "asc"]
           ]
         }, $('[data-toggle="tooltip"]').tooltip());
       }

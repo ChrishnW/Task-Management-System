@@ -39,8 +39,9 @@ if (isset($_POST['filterTable'])) {
   $getTable = mysqli_query($con, $loadTable);
   while ($row = mysqli_fetch_assoc($getTable)):
     $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
-    <tr>
-      <td class="text-truncate">
+    <tr <?php if ($row['task_status'] === '0') echo "class='table-danger'"; ?>>
+      <td><input type="checkbox" id="thisTask" class="form-control" value="<?php echo $row['id']; ?>"></td>
+      <td>
         <center /><?php echo $row['task_code'] ?>
       </td>
       <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
