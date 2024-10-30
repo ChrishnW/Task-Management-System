@@ -56,6 +56,7 @@ if (isset($_POST['changeStatus'])) {
 // Use for Department Load Section JS
 if (isset($_POST['loadSections'])) {
   $getSectionList = mysqli_query($con, "SELECT * FROM section WHERE dept_id='{$_POST['deptID']}' AND status=1");
+  echo '<option value="All"> All </option>';
   while ($row = mysqli_fetch_assoc($getSectionList)):
     echo '<option value="' . $row['sec_id'] . '">' . ucwords(strtolower($row['sec_name'])) . '</option>';
   endwhile;

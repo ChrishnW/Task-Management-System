@@ -24,44 +24,46 @@ include('../include/header.php');
               <i class="fas fa-filter fa-fw"></i> Filter
             </button>
             <div class="dropdown-menu p-3" aria-labelledby="sortFilterDropdown" style="min-width: 250px;">
-              <h6>Filter by Department</h6>
-              <div class="form-group">
-                <select id="filterByDepartment" class="form-control filterByDepartment">
-                  <option value="ALL">All</option>
-                  <?php $getDepList = mysqli_query($con, "SELECT * FROM department WHERE status=1 ORDER BY dept_name ASC");
-                  while ($row = mysqli_fetch_assoc($getDepList)): ?>
-                    <option value="<?php echo $row['dept_id']; ?>"><?php echo ucwords(strtolower($row['dept_name'])); ?></option>
-                  <?php endwhile; ?>
-                </select>
-              </div>
-              <div class="form-group form-hide d-none">
-                <h6>Filter by Section</h6>
-                <select id="filterBySection" class="form-control filterBySection"></select>
-              </div>
-              <h6 class="mt-2">Filter by Progress</h6>
-              <div class="form-group">
-                <select class="form-control" id="priorityFilter">
-                  <option value="All" selected>All</option>
-                  <option value="NotYetStarted">Not Yet Started</option>
-                  <option value="InProgress">In Progress</option>
-                  <option value="InReview">In Review</option>
-                  <option value="Completed">Completed</option>
-                  <option value="Reschedule">Reschedule</option>
-                </select>
-              </div>
-              <h6 class="mt-2">Filter by Status</h6>
-              <div>
-                <input type="radio" name="statusFilter" id="allStatus" value="All" checked>
-                <label for="allStatus">All</label>
-              </div>
-              <div>
-                <input type="radio" name="statusFilter" id="activeStatus" value="Active">
-                <label for="activeStatus">Active</label>
-              </div>
-              <div>
-                <input type="radio" name="statusFilter" id="inactiveStatus" value="Inactive">
-                <label for="inactiveStatus">Inactive</label>
-              </div>
+              <form id="filterTable">
+                <h6>Filter by Department</h6>
+                <div class="form-group">
+                  <select name="filterByDepartment" id="filterByDepartment" class="form-control filterByDepartment" onchange="filterTable()">
+                    <option value="All">All</option>
+                    <?php $getDepList = mysqli_query($con, "SELECT * FROM department WHERE status=1 ORDER BY dept_name ASC");
+                    while ($row = mysqli_fetch_assoc($getDepList)): ?>
+                      <option value="<?php echo $row['dept_id']; ?>"><?php echo ucwords(strtolower($row['dept_name'])); ?></option>
+                    <?php endwhile; ?>
+                  </select>
+                </div>
+                <div class="form-group form-hide d-none">
+                  <h6>Filter by Section</h6>
+                  <select name="filterBySection" id="filterBySection" class="form-control filterBySection" onchange="filterTable()"></select>
+                </div>
+                <h6 class="mt-2">Filter by Progress</h6>
+                <div class="form-group">
+                  <select class="form-control" id="priorityFilter" onchange="filterTable()">
+                    <option value="All" selected>All</option>
+                    <option value="NotYetStarted">Not Yet Started</option>
+                    <option value="InProgress">In Progress</option>
+                    <option value="InReview">In Review</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Reschedule">Reschedule</option>
+                  </select>
+                </div>
+                <h6 class="mt-2">Filter by Status</h6>
+                <div>
+                  <input type="radio" name="statusFilter" id="allStatus" value="All" onchange="filterTable()" checked>
+                  <label for="allStatus">All</label>
+                </div>
+                <div>
+                  <input type="radio" name="statusFilter" id="activeStatus" value="Active" onchange="filterTable()">
+                  <label for="activeStatus">Active</label>
+                </div>
+                <div>
+                  <input type="radio" name="statusFilter" id="inactiveStatus" value="Inactive" onchange="filterTable()">
+                  <label for="inactiveStatus">Inactive</label>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -514,6 +516,8 @@ include('../include/header.php');
 
 <script src="../assets/js/drag-drop.js"></script>
 <script src="../assets/js/member-datatable-settings.js"></script>
+<script src="../assets/js/department-load-section.js" w></script>
+<script src="../assets/js/datepicker-min.js"></script>
 
 <script>
   function startSelectButton() {
@@ -1012,4 +1016,13 @@ include('../include/header.php');
   $('.dropdown-menu').on('click', function(event) {
     event.stopPropagation();
   });
+
+  function filterTable() {
+    const department = document.getElementById('filterByDepartment').value;
+    const section = document.getElementById('filterBySection').value;
+    const progress = document.getElementById('priorityFilter').value;
+    const status = document.querySelector('input[name="statusFilter"]:checked')?.value;
+    const filteredStatus = (status === "ALL" && (document.getElementById('statusActive').checked || document.getElementById('statusInactive').checked)) ? null : status;
+    console.log(department + '\n' + section + '\n' + progress + '\n' + filteredStatus);
+  }
 </script>

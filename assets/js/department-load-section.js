@@ -1,6 +1,6 @@
 function loadSections() {
   const deptID = $('.filterByDepartment').val();
-  if (deptID !== 'ALL') {
+  if (deptID !== 'All') {
     $.ajax({
       type: "POST",
       url: "../config/sections.php",

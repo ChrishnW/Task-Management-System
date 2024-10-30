@@ -383,9 +383,6 @@
 <script src="../vendor/chart.js/Chart.min.js"></script>
 <script src="../vendor/select2-4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script src="../assets/js/datepicker-min.js"></script>
-<script src="../assets/js/department-load-section.js"w></script>
-
 <!-- Custom Scripts Global -->
 <script>
   function addTask(element) {
