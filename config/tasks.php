@@ -928,4 +928,12 @@ if (isset($_POST['addTask'])) {
     echo '<hr class="sidebar-divider d-none d-md-block">';
   }
 }
+if (isset($_POST['deleteTask'])) {
+  $queryDelete = mysqli_query($con, "DELETE FROM tasks_details WHERE id='{$_POST['taskID']}'");
+  if ($queryDelete) {
+    die('Success');
+  } else {
+    die("Error: Could not delete task. " . mysqli_error($con));
+  }
+}
 ?>

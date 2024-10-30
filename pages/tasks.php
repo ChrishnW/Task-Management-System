@@ -479,7 +479,7 @@ include('../include/header.php');
       </div>
       <div class="modal-footer justify-content-between">
         <div>
-          <button class="btn btn-danger" id="delete">Delete</button>
+          <button class="btn btn-danger" id="deleteTask">Delete</button>
         </div>
         <div>
           <button class="btn btn-success" id="saveEdit">Save</button>
@@ -543,6 +543,27 @@ include('../include/header.php');
 <script src="../assets/js/member-datatable-settings.js"></script>
 <script src="../assets/js/department-load-section.js" w></script>
 <script src="../assets/js/datepicker-min.js"></script>
+
+<script>
+  $.fn.dataTable.ext.type.order['date-custom-pre'] = function(d) {
+    var months = {
+      "January": 1,
+      "February": 2,
+      "March": 3,
+      "April": 4,
+      "May": 5,
+      "June": 6,
+      "July": 7,
+      "August": 8,
+      "September": 9,
+      "October": 10,
+      "November": 11,
+      "December": 12
+    };
+    var dateParts = d.split(' ');
+    return new Date(dateParts[2], months[dateParts[0]] - 1, dateParts[1].replace(',', ''));
+  };
+</script>
 
 <script>
   function startSelectButton() {
@@ -948,25 +969,13 @@ include('../include/header.php');
 </script>
 
 <script>
-  $.fn.dataTable.ext.type.order['date-custom-pre'] = function(d) {
-    var months = {
-      "January": 1,
-      "February": 2,
-      "March": 3,
-      "April": 4,
-      "May": 5,
-      "June": 6,
-      "July": 7,
-      "August": 8,
-      "September": 9,
-      "October": 10,
-      "November": 11,
-      "December": 12
-    };
-    var dateParts = d.split(' ');
-    return new Date(dateParts[2], months[dateParts[0]] - 1, dateParts[1].replace(',', ''));
-  };
+  $('.dropdown-menu').on('click', function(event) {
+    event.stopPropagation();
+  });
+</script>
 
+<!-- Admin -->
+<script>
   $('#taskDeployedTable').DataTable({
     "columnDefs": [{
       "orderable": false,
@@ -982,13 +991,6 @@ include('../include/header.php');
     ]
   }, $('[data-toggle="tooltip"]').tooltip());
 
-  $('.dropdown-menu').on('click', function(event) {
-    event.stopPropagation();
-  });
-</script>
-
-<!-- Admin -->
-<script>
   function editTask(element) {
     const taskID = element.value;
     $.ajax({
@@ -1021,6 +1023,30 @@ include('../include/header.php');
               }
             }
           })
+        }
+        document.getElementById('deleteTask').onclick = function() {
+          openSpecificModal('delete', 'modal-sm');
+          document.getElementById('confirmBtn').onclick = function() {
+            $.ajax({
+              method: "POST",
+              url: "../config/tasks.php",
+              data: {
+                "deleteTask": true,
+                "taskID": taskID
+              },
+              success: function(response) {
+                if (response === 'Success') {
+                  document.getElementById('success_log').innerHTML = 'Task deleted successfully.';
+                  $('#delete').modal('hide');
+                  $('#success').modal('show');
+                } else {
+                  document.getElementById('error_found').innerHTML = response;
+                  $('#delete').modal('hide');
+                  $('#error').modal('show');
+                }
+              }
+            });
+          }
         }
       }
     });
@@ -1075,4 +1101,27 @@ include('../include/header.php');
       }
     })
   }
+</script>
+
+<!-- Member -->
+<script>
+  <?php if ($access === '2'): ?>
+    document.addEventListener('DOMContentLoaded', function() {
+      var activeTab = localStorage.getItem('activeTab');
+      if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
+        document.querySelector(`a[href="${activeTab}"]`).classList.add('active');
+        document.querySelector(activeTab).classList.add('show', 'active');
+      } else {
+        document.querySelector('.nav-link').classList.add('active');
+        document.querySelector('.tab-pane').classList.add('show', 'active');
+      }
+
+      $('#myTabs a').on('shown.bs.tab', function(e) {
+        var href = $(e.target).attr('href');
+        localStorage.setItem('activeTab', href);
+
+        var tableId = $(href).find('table').attr('id');
+      });
+    });
+  <?php endif; ?>
 </script>
