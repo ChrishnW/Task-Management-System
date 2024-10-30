@@ -15,7 +15,7 @@ include('../include/header.php');
           <!-- To Date -->
           <div class="form-group col-2 mr-3">
             <label for="toDate">To</label>
-            <input type="date" id="toDate" class="form-control">
+            <input type="date" id="toDate" class="form-control" onchange="filterTable()" disabled>
           </div>
 
           <!-- Sorting & Filtering Dropdown Button -->
@@ -43,11 +43,11 @@ include('../include/header.php');
                 <div class="form-group">
                   <select class="form-control" id="priorityFilter" onchange="filterTable()">
                     <option value="All" selected>All</option>
-                    <option value="NotYetStarted">Not Yet Started</option>
-                    <option value="InProgress">In Progress</option>
-                    <option value="InReview">In Review</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Reschedule">Reschedule</option>
+                    <option value="NOT YET STARTED">Not Yet Started</option>
+                    <option value="IN PROGRESS">In Progress</option>
+                    <option value="REVIEW">In Review</option>
+                    <option value="FINISHED">Completed</option>
+                    <option value="RESCHEDULE">Reschedule</option>
                   </select>
                 </div>
                 <h6 class="mt-2">Filter by Status</h6>
@@ -56,11 +56,11 @@ include('../include/header.php');
                   <label for="allStatus">All</label>
                 </div>
                 <div>
-                  <input type="radio" name="statusFilter" id="activeStatus" value="Active" onchange="filterTable()" checked>
+                  <input type="radio" name="statusFilter" id="activeStatus" value="1" onchange="filterTable()" checked>
                   <label for="activeStatus">Active</label>
                 </div>
                 <div>
-                  <input type="radio" name="statusFilter" id="inactiveStatus" value="Inactive" onchange="filterTable()">
+                  <input type="radio" name="statusFilter" id="inactiveStatus" value="0" onchange="filterTable()">
                   <label for="inactiveStatus">Inactive</label>
                 </div>
               </form>
@@ -80,7 +80,7 @@ include('../include/header.php');
                 <th></th>
               </tr>
             </thead>
-            <tbody id='dataTableBody'>
+            <tbody id='taskDeployedBody'>
               <?php $con->next_result();
               $result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1");
               if (mysqli_num_rows($result) > 0) {
@@ -628,78 +628,6 @@ include('../include/header.php');
     });
   });
 
-  function filterTable() {
-    <?php if ($access == 1) { ?>
-      var date_to = document.getElementById('date_to').value;
-      var date_from = document.getElementById('date_from').value;
-      var department = document.getElementById('department').value;
-      var section = document.getElementById('section').value;
-      var progress = document.getElementById('progress').value;
-      var status = document.getElementById('taskStatus').value;
-      $('#dataTable').DataTable().destroy();
-      $('#dataTableBody').empty();
-      $.ajax({
-        method: "POST",
-        url: "../config/tasks.php",
-        data: {
-          "filterTable": true,
-          "date_to": date_to,
-          "date_from": date_from,
-          "department": department,
-          "section": section,
-          "progress": progress,
-          "status": status
-        },
-        success: function(response) {
-          $('#dataTableBody').append(response);
-          $('#dataTable').DataTable({
-            "order": [
-              [6, "desc"],
-              [4, "desc"],
-              [2, "asc"]
-            ],
-            "drawCallback": function(settings) {
-              $('[data-toggle="tooltip"]').tooltip();
-            }
-          });
-        }
-      });
-    <?php } else { ?>
-      var date_to = document.getElementById('date_to').value;
-      var date_from = document.getElementById('date_from').value;
-      var section = document.getElementById('section').value;
-      var progress = document.getElementById('progress').value;
-      var taskClass = document.getElementById('taskClass').value;
-      $('#dataTable').DataTable().destroy();
-      $('#dataTableBody').empty();
-      $.ajax({
-        method: "POST",
-        url: "../config/tasks.php",
-        data: {
-          "filterTable": true,
-          "date_to": date_to,
-          "date_from": date_from,
-          "section": section,
-          "progress": progress,
-          "class": taskClass
-        },
-        success: function(response) {
-          $('#dataTableBody').append(response);
-          $('#dataTable').DataTable({
-            "order": [
-              [6, "desc"],
-              [4, "desc"],
-              [2, "asc"]
-            ],
-            "drawCallback": function(settings) {
-              $('[data-toggle="tooltip"]').tooltip();
-            }
-          });
-        }
-      });
-    <?php } ?>
-  }
-
   function selectSection(element) {
     var departmentSelect = element.value;
     $.ajax({
@@ -1057,15 +985,6 @@ include('../include/header.php');
   $('.dropdown-menu').on('click', function(event) {
     event.stopPropagation();
   });
-
-  function filterTable() {
-    const department = document.getElementById('filterByDepartment').value;
-    const section = document.getElementById('filterBySection').value;
-    const progress = document.getElementById('priorityFilter').value;
-    const status = document.querySelector('input[name="statusFilter"]:checked')?.value;
-    const filteredStatus = (status === "ACTIVE" && (document.getElementById('statusActive').checked || document.getElementById('statusInactive').checked)) ? null : status;
-    // console.log(department + '\n' + section + '\n' + progress + '\n' + filteredStatus);
-  }
 </script>
 
 <!-- Admin -->
@@ -1105,5 +1024,55 @@ include('../include/header.php');
         }
       }
     });
+  }
+
+  function filterTable() {
+    $('#taskDeployedTable').DataTable().destroy();
+    $('#taskDeployedBody').empty();
+    const department = document.getElementById('filterByDepartment').value;
+    const section = document.getElementById('filterBySection').value;
+    const progress = document.getElementById('priorityFilter').value;
+    const status = document.querySelector('input[name="statusFilter"]:checked')?.value;
+    const filteredStatus = (status === "ACTIVE" && (document.getElementById('statusActive').checked || document.getElementById('statusInactive').checked)) ? null : status;
+    const fromDate = document.getElementById('fromDate').value;
+    const toDate = document.getElementById('toDate').value;
+
+    let data = {
+      "filterTable": true
+    };
+
+    if (department !== "All") data.department = department;
+    if (section !== "" && section !== "All") data.section = section;
+    data.progress = progress;
+    if (status !== "All") data.status = filteredStatus;
+
+    if (fromDate !== "") data.fromDate = fromDate;
+    if (toDate !== "") data.toDate = toDate;
+
+    console.log(data);
+
+    $.ajax({
+      method: "POST",
+      url: "../config/tasks.php",
+      data: data,
+      success: function(response) {
+        console.log(response);
+        $('#taskDeployedBody').append(response);
+        $('#taskDeployedTable').DataTable({
+          "columnDefs": [{
+            "orderable": false,
+            "searchable": false,
+            "targets": 6,
+          }, {
+            "type": "date-custom",
+            "targets": 3
+          }],
+          "order": [
+            [3, "desc"],
+            [1, "asc"]
+          ]
+        }, $('[data-toggle="tooltip"]').tooltip());
+      }
+    })
   }
 </script>

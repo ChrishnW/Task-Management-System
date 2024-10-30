@@ -12,56 +12,50 @@ if (isset($_POST['sectionSelect'])) {
   }
 }
 if (isset($_POST['filterTable'])) {
-  $date_from  = $_POST['date_from'];
-  $date_to    = $_POST['date_to'];
-  $department = isset($_POST['department']) ? $_POST['department'] : '';
-  $section    = $_POST['section'];
-  $progress   = $_POST['progress'];
-  $class      = isset($_POST['class']) ? $_POST['class'] : '';
-  $status     = isset($_POST['status']) ? $_POST['status'] : 1;
-  $query = "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE task_status = '$status'";
-  if ($date_from != NULL && $date_to != NULL) {
-    $query .= " AND DATE(td.due_date) >= '$date_from' AND DATE(td.due_date) <= '$date_to'";
-  } else {
-    $query .= " AND MONTH(td.due_date) = MONTH(CURRENT_DATE) AND YEAR(td.due_date) = YEAR(CURRENT_DATE)";
-  }
-  if ($department != NULL && $section != NULL) {
-    $query .= " AND s.dept_id = '$department' AND tl.task_for = '$section'";
-  }
-  if ($department != NULL) {
-    $query .= " AND s.dept_id = '$department'";
-  }
-  if ($section != NULL) {
-    $query .= " AND tl.task_for = '$section'";
-  }
-  if ($progress != NULL) {
-    $query .= " AND td.status = '$progress'";
-  }
-  if ($class != NULL) {
-    $query .= " AND tl.task_class = '$class'";
-  }
-  $result = mysqli_query($con, $query);
-  if (mysqli_num_rows($result) > 0) {
-    while ($row = $result->fetch_assoc()) {
-      $due_date   = date_format(date_create($row['due_date']), "Y-m-d h:i a"); ?>
-      <tr>
-        <td>
-          <?php if ($access == 1) { ?>
-            <button type="button" class="btn btn-info btn-block" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-pen fa-fw"></i> Edit</button>
-          <?php } ?>
-          <button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button>
-        </td>
-        <td>
-          <center /><?php echo $row['task_code'] ?>
-        </td>
-        <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-        <td><?php echo getTaskClass($row['task_class']); ?></td>
-        <td><?php echo $due_date ?></td>
-        <td><?php echo getUser($row['in_charge']); ?></td>
-        <td><?php echo getProgressBadge($row['status']); ?></td>
-      </tr>
-      <?php }
-  }
+  $loadTable = "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_code != ''";
+
+  if (isset($_POST['fromDate']) && isset($_POST['toDate'])):
+    $loadTable .= " AND DATE(td.due_date) >= '{$_POST['fromDate']}' AND DATE(td.due_date) <= '{$_POST['toDate']}'";
+  endif;
+
+  if (isset($_POST['progress']) && $_POST['progress'] !== 'All'):
+    $loadTable .= " AND td.status = '{$_POST['progress']}'";
+  endif;
+  if (isset($_POST['status'])):
+    $loadTable .= " AND td.task_status = '{$_POST['status']}'";
+  endif;
+  if (isset($_POST['department']) && !isset($_POST['section'])):
+    $depRow = mysqli_fetch_assoc(mysqli_query($con, "SELECT GROUP_CONCAT(CASE WHEN s.status = 1 THEN CONCAT('\"', s.sec_id, '\"') END SEPARATOR ', ') AS sectionList FROM section s WHERE s.dept_id='{$_POST['department']}'"));
+    echo $depRow['sectionList'];
+    if ($depRow['sectionList'] !== NULL):
+      $loadTable .= " AND tl.task_for IN ({$depRow['sectionList']})";
+    else:
+      $loadTable .= " AND tl.task_for = ''";
+    endif;
+  elseif (isset($_POST['section'])):
+    $loadTable .= " AND tl.task_for = '{$_POST['section']}'";
+  endif;
+
+  $getTable = mysqli_query($con, $loadTable);
+  while ($row = mysqli_fetch_assoc($getTable)):
+    $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
+    <tr>
+      <td class="text-truncate">
+        <center /><?php echo $row['task_code'] ?>
+      </td>
+      <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+      <td><?php echo getTaskClass($row['task_class']); ?></td>
+      <td class="text-truncate"><?php echo $due_date ?></td>
+      <td class="text-truncate"><?php echo getUser($row['in_charge']); ?></td>
+      <td><?php echo getProgressBadge($row['status']); ?></td>
+      <td class="text-truncate">
+        <button type="button" class="btn btn-secondary btn-block" onclick="editTask(this)" value="<?php echo $row['id'] ?>"><i class="fas fa-edit fa-fw"></i> Modify</button>
+        <?php if (in_array($row['status'], ['REVIEW', 'FINISHED'])): ?>
+          <button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-info fa-fw"></i> Details</button>
+        <?php endif; ?>
+      </td>
+    </tr>
+    <?php endwhile;
 }
 if (isset($_POST['filterTableTask'])) {
   $from   = $_POST['dateFrom'];
@@ -821,53 +815,51 @@ if (isset($_POST['viewTask'])) {
   <?php
   }
 }
-if (isset($_POST['editTask'])) {
-  $query_result = mysqli_query($con, "SELECT * FROM task_list tl JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.id='{$_POST['taskID']}'");
-  while ($row = mysqli_fetch_assoc($query_result)) { ?>
-    <form id="modifyForm">
-      <div class="row">
-        <div class="form-group col-md-7">
-          <label>Code</label>
-          <input type="text" value="<?php echo $row['task_code'] ?>" class="form-control" disabled>
-        </div>
-        <div class="form-group col-md-5">
-          <label>Status</label>
-          <select name="update_status" id="update_status" class="form-control">
-            <?php if ($row['task_status'] == 1) { ?>
-              <option value="1" selected>Active</option>
-              <option value="0">In-Active</option>
-            <?php } else { ?>
-              <option value="1">Active</option>
-              <option value="0" selected>In-Active</option>
-            <?php } ?>
-          </select>
-        </div>
-        <div class="form-group col-md-12">
-          <label>Task</label>
-          <input type="text" value="<?php echo $row['task_name'] ?>" class="form-control" disabled>
-        </div>
-        <div class="form-group col-md-6">
-          <label>Due Date</label>
-          <input name="update_datetime" id="update_datetime" type="datetime-local" value="<?php echo $row['due_date'] ?>" class="form-control">
-        </div>
-        <div class="form-group col-md-6">
-          <label>Current Progress</label>
-          <select name="update_progress" id="update_progress" class="form-control" <?php if ($row['status'] == 'FINISHED' || $row['status'] == 'REVIEW') echo "disabled"; ?>>
-            <?php if ($row['status'] == 'NOT YET STARTED') { ?>
-              <option value="NOT YET STARTED" selected>Not Yet Started</option>
-              <option value="IN PROGRESS">In-Progress</option>
-            <?php } elseif ($row['status'] == 'IN PROGRESS') { ?>
-              <option value="NOT YET STARTED">Not Yet Started</option>
-              <option value="IN PROGRESS" selected>In-Progress</option>
-            <?php } else { ?>
-              <option value="<?php echo $row['status'] ?>" selected><?php echo ucwords(strtolower($row['status'])) ?></option>
-            <?php } ?>
-          </select>
-        </div>
+if (isset($_POST['editTask'])) :
+  $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM task_list tl JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.id='{$_POST['taskID']}'")); ?>
+  <form id="modifyForm">
+    <div class="row">
+      <div class="form-group col-md-7">
+        <label>Code</label>
+        <input type="text" value="<?php echo $row['task_code'] ?>" class="form-control" disabled>
       </div>
-    </form>
-<?php }
-}
+      <div class="form-group col-md-5">
+        <label>Status</label>
+        <select name="update_status" id="update_status" class="form-control">
+          <?php if ($row['task_status'] == 1) { ?>
+            <option value="1" selected>Active</option>
+            <option value="0">In-Active</option>
+          <?php } else { ?>
+            <option value="1">Active</option>
+            <option value="0" selected>In-Active</option>
+          <?php } ?>
+        </select>
+      </div>
+      <div class="form-group col-md-12">
+        <label>Task</label>
+        <input type="text" value="<?php echo $row['task_name'] ?>" class="form-control" disabled>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Due Date</label>
+        <input name="update_datetime" id="update_datetime" type="datetime-local" value="<?php echo $row['due_date'] ?>" class="form-control">
+      </div>
+      <div class="form-group col-md-6">
+        <label>Current Progress</label>
+        <select name="update_progress" id="update_progress" class="form-control" <?php if ($row['status'] == 'FINISHED' || $row['status'] == 'REVIEW') echo "disabled"; ?>>
+          <?php if ($row['status'] == 'NOT YET STARTED') { ?>
+            <option value="NOT YET STARTED" selected>Not Yet Started</option>
+            <option value="IN PROGRESS">In-Progress</option>
+          <?php } elseif ($row['status'] == 'IN PROGRESS') { ?>
+            <option value="NOT YET STARTED">Not Yet Started</option>
+            <option value="IN PROGRESS" selected>In-Progress</option>
+          <?php } else { ?>
+            <option value="<?php echo $row['status'] ?>" selected><?php echo ucwords(strtolower($row['status'])) ?></option>
+          <?php } ?>
+        </select>
+      </div>
+    </div>
+  </form>
+<?php endif;
 if (isset($_POST['rescheduleTask'])) {
   $id     = $_POST['id'];
   if ($_POST['reschedDate'] == '' || $_POST['reschedReason'] == '') {
