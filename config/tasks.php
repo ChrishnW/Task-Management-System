@@ -762,6 +762,17 @@ if (isset($_POST['viewTask'])) {
               </div>
             </div>
           </div>
+          <div class="col-md-5">
+            <div class="form-group">
+              <label>Date Approved</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="far fa-calendar-check"></i></div>
+                </div>
+                <input type="datetime-local" class="form-control" name="" id="" value="<?php echo $row['date_accomplished'] ?>" readonly>
+              </div>
+            </div>
+          </div>
           <div class="col-md-12 <?php if ($row['head_note'] == '' || $row['head_note'] == NULL) echo "d-none"; ?>" id="headComment">
             <div class="form-group">
               <label>Comment</label>
@@ -804,7 +815,12 @@ if (isset($_POST['viewTask'])) {
                         <td><?php echo $row['file_name'] ?></td>
                         <td><?php echo $size ?></td>
                         <td><?php echo $date ?></td>
-                        <td><?php echo $action ?></td>
+                        <td>
+                          <?php if (in_array(strtolower($row['file_type']), ['pdf', 'jpg', 'png', 'jpeg', 'xlsx'])): ?>
+                            <button type="button" class="btn btn-info btn-sm" value="<?php echo $row['id']; ?>" onclick="viewFile(this)"><i class="fas fa-eye fa-fw"></i> View</button>
+                          <?php endif; ?>
+                          <button type="button" class="btn btn-success btn-sm" value="<?php echo $row['id']; ?>" onclick="downloadFile(this)"><i class="fas fa-file-download fa-fw"></i> Download</button>
+                        </td>
                       </tr>
                     <?php } ?>
                   </tbody>
