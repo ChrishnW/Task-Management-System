@@ -123,20 +123,6 @@ include('../include/header.php');
     </div>
   </div>
 </div>
-<div class="modal fade" id="docModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content border-info">
-      <div class="modal-header bg-info text-white">
-        <h5 class="modal-title">View Document</h5>
-      </div>
-      <div class="modal-body" id="modalBodyContent">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="modal fade" id="danger" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -269,35 +255,6 @@ include('../include/header.php');
   function downloadFile(element) {
     var id = element.value;
     window.location.href = '../config/tasks.php?downloadFile=true&id=' + id;
-  }
-
-  function viewFile(element) {
-    var id = element.value;
-    var modalBody = document.getElementById('modalBodyContent');
-    modalBody.innerHTML = 'Loading...';
-    fetch('../config/for_review.php?getFile=true&id=' + id)
-      .then(response => response.json())
-      .then(data => {
-        var filePath = data.filePath;
-        var fileType = data.fileType;
-        var allowedExtensions = [
-          'pdf', 'jpg', 'jpeg', 'png', 'gif', 'bmp',
-          'tiff', 'tif', 'webp', 'svg', 'heif', 'heic',
-          'PDF', 'JPG', 'JPEG', 'PNG', 'GIF', 'BMP',
-          'TIFF', 'TIF', 'WEBP', 'SVG', 'HEIF', 'HEIC'
-        ];
-
-        if (allowedExtensions.includes(fileType)) {
-          modalBody.innerHTML = '<iframe src="' + filePath + '" style="width:100%; height:500px;" frameborder="0"></iframe>';
-        } else {
-          fetch('../config/for_review.php?loadFile=true&file=' + filePath)
-            .then(response => response.text())
-            .then(data => {
-              modalBody.innerHTML = data;
-            });
-        }
-      });
-    $('#docModal').modal('show');
   }
 
   function approveIDs(element) {

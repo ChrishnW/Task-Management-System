@@ -314,6 +314,20 @@
 </div>
 
 <!-- Global Modal -->
+<div class="modal fade" id="docModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content border-info">
+      <div class="modal-header">
+        <h5 class="modal-title">View Document</h5>
+      </div>
+      <div class="modal-body" id="modalBodyContent">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="error" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content">
@@ -384,6 +398,8 @@
 <script src="../vendor/select2-4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <!-- Custom Scripts Global -->
+<script src="../assets/js/file-viewing.js"></script>
+
 <script>
   function addTask(element) {
     if (document.getElementById('taskName').value !== '' && document.getElementById('dueDate').value !== '' && document.getElementById('taskAssignee').value !== '' && document.getElementById('addDetails').value !== '') {

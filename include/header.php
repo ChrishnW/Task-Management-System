@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="../vendor/select2-4.1.0-rc.0/dist/css/select2.min.css">
   <link rel="stylesheet" href="../assets/css/toggle-switchy.css">
   <link rel="stylesheet" href="../assets/css/style.css">
+
 </head>
 
 <body id="page-top">

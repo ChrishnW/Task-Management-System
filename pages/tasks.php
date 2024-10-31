@@ -23,7 +23,7 @@ include('../include/header.php');
             <button class="btn btn-primary dropdown-toggle" type="button" id="sortFilterDropdown" data-toggle="dropdown">
               <i class="fas fa-filter fa-fw"></i> Filter
             </button>
-            <div class="dropdown-menu p-3" aria-labelledby="sortFilterDropdown" style="min-width: 250px;">
+            <div class="dropdown-menu p-3" id="filterOptions" aria-labelledby="sortFilterDropdown" style="min-width: 250px;">
               <form id="filterTable">
                 <h6>Filter by Department</h6>
                 <div class="form-group">
@@ -71,7 +71,6 @@ include('../include/header.php');
           <table class="table table-hover" id="taskDeployedTable">
             <thead>
               <tr>
-                <th></th>
                 <th>Code</th>
                 <th>Task</th>
                 <th>Classification</th>
@@ -88,10 +87,7 @@ include('../include/header.php');
                 while ($row = $result->fetch_assoc()) {
                   $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
                   <tr>
-                    <td><input type="checkbox" id="thisTask" class="form-control" value="<?php echo $row['id']; ?>"></td>
-                    <td>
-                      <center /><?php echo $row['task_code'] ?>
-                    </td>
+                    <td><?php echo $row['task_code'] ?></td>
                     <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                     <td><?php echo getTaskClass($row['task_class']); ?></td>
                     <td class="text-truncate"><?php echo $due_date ?></td>
@@ -280,7 +276,7 @@ include('../include/header.php');
                         <td class="text-center">
                           <span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span>
                         </td>
-                        <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="checkTask(this)">Details</button></td>
+                        <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="viewTask(this)">Details</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -459,14 +455,15 @@ include('../include/header.php');
 <div class="modal fade" id="view" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content border-primary">
-      <div class="modal-header bg-primary text-white">
+      <div class="modal-header">
         <h5 class="modal-title">Task Details</h5>
       </div>
       <div class="modal-body" id="taskDetails">
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="updateTask(this)" class="btn btn-success" id="updateButton" style="display: none;">Update</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button class="btn btn-primary" id="editbtn">Edit</button>
+        <button class="btn btn-success d-none" id="savebtn">Save</button>
+        <button class="btn btn-secondary" data-dismiss="modal" id="closebtn">Close</button>
       </div>
     </div>
   </div>
@@ -492,7 +489,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="re-view" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content border-warning">
       <div class="modal-header bg-warning text-white">
         <h5 class="modal-title">Review Task</h5>
@@ -667,7 +664,8 @@ include('../include/header.php');
   }
 
   function viewTask(element) {
-    var taskID = element.value;
+    const taskID = element.value;
+    const access = <?php echo $access ?>;
     $.ajax({
       method: "POST",
       url: "../config/tasks.php",
@@ -676,39 +674,25 @@ include('../include/header.php');
         "taskID": taskID,
       },
       success: function(response) {
-        document.getElementById('updateButton').style.display = 'none';
         $('#taskDetails').html(response);
-        openSpecificModal('view', 'modal-xl');
-      }
-    });
-  }
-
-  function updateTask(element) {
-    element.disabled = true;
-    var taskID = document.getElementById('taskDetailsID').value;
-    var progress = document.getElementById('update_progress').value;
-    var datetime = document.getElementById('update_datetime').value;
-    var status = document.getElementById('update_status').value;
-    $.ajax({
-      method: "POST",
-      url: "../config/tasks.php",
-      data: {
-        "updateTask": true,
-        "taskID": taskID,
-        "progress": progress,
-        "datetime": datetime,
-        "status": status,
-      },
-      success: function(response) {
-        console.log(response);
-        if (response === 'Success') {
-          document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
-          $('#view').modal('hide');
-          $('#success').modal('show');
-        } else {
-          document.getElementById('error_found').innerHTML = response;
-          $('#error').modal('show');
-          element.disabled = false;
+        openSpecificModal('view', 'modal-lg');
+        if ($('#editProgress').val() === 'REVIEW' || access === 2) {
+          $('#editbtn').addClass('d-none');
+        }
+        document.getElementById('editbtn').onclick = function() {
+          $('#editbtn').addClass('d-none');
+          $('#savebtn').removeClass('d-none');
+          if (access === 1) {
+            $('#headComment').removeClass('d-none');
+            $('#editComment').removeAttr('readonly');
+            $('#editScore').removeAttr('readonly');
+          }
+        }
+        document.getElementById('closebtn').onclick = function() {
+          $('#savebtn').addClass('d-none');
+          $('#editbtn').removeClass('d-none');
+          $('#editScore, #editComment').attr('readonly', 'readonly');
+          $('#headComment').addClass('d-none');
         }
       }
     });
@@ -830,7 +814,7 @@ include('../include/header.php');
       success: function(response) {
         console.log(response);
         $('#taskDetails').html(response);
-        openSpecificModal('view', 'modal-xl');
+        openSpecificModal('view', 'modal-lg');
         $('#taskView_table').DataTable({
           order: [
             [0, 'asc']
@@ -856,17 +840,7 @@ include('../include/header.php');
       },
       success: function(response) {
         $('#reviewDetails').html(response);
-        $('#re-view').modal('show');
-        $('#taskReview_table').DataTable({
-          order: [
-            [0, 'asc']
-          ],
-          pageLength: 3,
-          lengthMenu: [3, 10, 25, 50, 100],
-          "drawCallback": function(settings) {
-            $('[data-toggle="tooltip"]').tooltip();
-          }
-        });
+        openSpecificModal('re-view', 'modal-lg');
       }
     });
   }
@@ -971,7 +945,7 @@ include('../include/header.php');
 </script>
 
 <script>
-  $('.dropdown-menu').on('click', function(event) {
+  $('#filterOptions').on('click', function(event) {
     event.stopPropagation();
   });
 </script>
@@ -982,14 +956,14 @@ include('../include/header.php');
     "columnDefs": [{
       "orderable": false,
       "searchable": false,
-      "targets": [0, 7]
+      "targets": [0, 6]
     }, {
       "type": "date-custom",
-      "targets": 4
+      "targets": 3
     }],
     "order": [
-      [4, "desc"],
-      [2, "asc"]
+      [3, "desc"],
+      [1, "asc"]
     ]
   }, $('[data-toggle="tooltip"]').tooltip());
 
@@ -1090,14 +1064,14 @@ include('../include/header.php');
           "columnDefs": [{
             "orderable": false,
             "searchable": false,
-            "targets": [0, 7]
+            "targets": [0, 6]
           }, {
             "type": "date-custom",
-            "targets": 4
+            "targets": 3
           }],
           "order": [
-            [4, "desc"],
-            [2, "asc"]
+            [3, "desc"],
+            [1, "asc"]
           ]
         }, $('[data-toggle="tooltip"]').tooltip());
       }
