@@ -88,7 +88,13 @@ include('../include/header.php');
                   $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
                   <tr>
                     <td><?php echo $row['task_code'] ?></td>
-                    <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
+                    <td>
+                      <?php echo $row['task_name'] ?>
+                      <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i>
+                      <?php if ($row['requirement_status'] === '1') : ?>
+                        <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i>
+                      <?php endif; ?>
+                    </td>
                     <td><?php echo getTaskClass($row['task_class']); ?></td>
                     <td class="text-truncate"><?php echo $due_date ?></td>
                     <td class="text-truncate"><?php echo getUser($row['in_charge']); ?></td>
@@ -678,6 +684,8 @@ include('../include/header.php');
         openSpecificModal('view', 'modal-lg');
         if ($('#editProgress').val() === 'REVIEW' || access === 2) {
           $('#editbtn').addClass('d-none');
+        } else if (access === 1) {
+          $('#editbtn').addClass('d-none');
         }
         document.getElementById('editbtn').onclick = function() {
           $('#editbtn').addClass('d-none');
@@ -969,6 +977,7 @@ include('../include/header.php');
 
   function editTask(element) {
     const taskID = element.value;
+    const access = <?php echo $access ?>;
     $.ajax({
       method: "POST",
       url: "../config/tasks.php",
@@ -979,6 +988,10 @@ include('../include/header.php');
       success: function(response) {
         $('#modifyDetails').html(response);
         openSpecificModal('edit', 'modal-md');
+        if (access === 3) {
+          $('#deleteTask').addClass('d-none');
+          $('#adminShow1, #adminShow2').addClass('d-none');
+        }
         document.getElementById('saveEdit').onclick = function() {
           const formData = new FormData(document.getElementById('modifyForm'));
           formData.append('taskID', taskID);

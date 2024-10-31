@@ -139,23 +139,20 @@ if (isset($_POST['filterTableTask'])) {
   }
 }
 if (isset($_POST['modifyTask'])) {
-  $error    = false;
   $id       = $_POST['taskID'];
   $progress = $_POST['update_progress'];
   $status   = $_POST['update_status'];
 
   if ($_POST['update_datetime'] === '') {
-    $error = true;
-    echo "Date and Time cannot be empty. Please fill in all required fields.";
+    die("Date and Time cannot be empty. Please fill in all required fields.");
+    exit;
   }
-  if (!$error) {
-    $datetime = str_replace("T", " ", $_POST['update_datetime']) . ":00";
-    $query_result = mysqli_query($con, "UPDATE tasks_details SET status='$progress', due_date='$datetime', task_status='$status' WHERE id='$id'");
-    if ($query_result) {
-      echo "Success";
-    } else {
-      echo "Unable to complete the operation. Please try again later.";
-    }
+  $datetime = str_replace("T", " ", $_POST['update_datetime']) . ":00";
+  $query_result = mysqli_query($con, "UPDATE tasks_details SET status='$progress', due_date='$datetime', task_status='$status' WHERE id='$id'");
+  if ($query_result) {
+    echo "Success";
+  } else {
+    echo "Unable to complete the operation. Please try again later.";
   }
 }
 if (isset($_POST['startTask'])) {
@@ -858,13 +855,13 @@ if (isset($_POST['editTask'])) :
         <label>Task</label>
         <input type="text" value="<?php echo $row['task_name'] ?>" class="form-control" disabled>
       </div>
-      <div class="form-group col-md-6">
+      <div class="form-group col-md-6" id="adminShow1">
         <label>Due Date</label>
         <input name="update_datetime" id="update_datetime" type="datetime-local" value="<?php echo $row['due_date'] ?>" class="form-control">
       </div>
-      <div class="form-group col-md-6">
+      <div class="form-group col-md-6" id="adminShow2">
         <label>Current Progress</label>
-        <select name="update_progress" id="update_progress" class="form-control" <?php if ($row['status'] == 'FINISHED' || $row['status'] == 'REVIEW') echo "disabled"; ?>>
+        <select name="update_progress" id="update_progress" class="form-control">
           <?php if ($row['status'] == 'NOT YET STARTED') { ?>
             <option value="NOT YET STARTED" selected>Not Yet Started</option>
             <option value="IN PROGRESS">In-Progress</option>
