@@ -3,7 +3,7 @@ include('../include/header.php');
 ?>
 
 <div class="container-fluid">
-  <?php if ($access == 1) : ?>
+  <?php if ($access == 1 || $access == 3) : ?>
     <div class="card">
       <div class="card-body">
         <div class="d-flex align-items-center mb-3">
@@ -29,8 +29,14 @@ include('../include/header.php');
                 <div class="form-group">
                   <select name="filterByDepartment" id="filterByDepartment" class="form-control filterByDepartment" onchange="filterTable()">
                     <option value="All">All</option>
-                    <?php $getDepList = mysqli_query($con, "SELECT * FROM department WHERE status=1 ORDER BY dept_name ASC");
-                    while ($row = mysqli_fetch_assoc($getDepList)): ?>
+                    <?php
+                    $getDepList = "SELECT * FROM department";
+                    if ($access == 3) {
+                      $getDepList .= " WHERE dept_id='$dept_id'";
+                    }
+                    $getDepList .= " ORDER BY dept_name ASC";
+                    $getDepResult = mysqli_query($con, $getDepList);
+                    while ($row = mysqli_fetch_assoc($getDepResult)): ?>
                       <option value="<?php echo $row['dept_id']; ?>"><?php echo ucwords(strtolower($row['dept_name'])); ?></option>
                     <?php endwhile; ?>
                   </select>
@@ -293,7 +299,7 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php elseif ($access == 3) : ?>
+  <?php elseif ($access == 0) : ?>
     <div class="row">
       <div class="form-group col-md-2">
         <label>From</label>
