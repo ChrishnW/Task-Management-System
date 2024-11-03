@@ -65,13 +65,13 @@ if (isset($_POST['filterTableTask'])) {
       while ($row = $query_result->fetch_assoc()) {
         $current_date = date('Y-m-d');
         $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
-        $due_date = date_format(date_create($row['due_date']), "F d"); ?>
-        <tr>
+        $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
+        <tr class="<?php if ((new DateTime($today))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0) && $row['status'] === 'NOT YET STARTED') echo "tick-pulse"; ?>">
           <td>
             <?php if ($row['status'] === 'NOT YET STARTED') {
-              echo '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
+              echo '<input type="checkbox" name="selected_ids[]" class="form-control bodyCheckbox" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
             } else {
-              echo '<input type="checkbox" name="selected_ids[]" class="form-control" disabled>';
+              echo '<input type="checkbox" name="selected_ids[]" class="form-control bodyCheckbox" disabled>';
             } ?>
           </td>
           <td><?php echo $row['task_code'] ?></td>
@@ -80,27 +80,26 @@ if (isset($_POST['filterTableTask'])) {
             <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i>
             <?php if ($row['requirement_status'] === '1') : ?>
               <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i>
-            <?php elseif ($row['requirement_status'] === '1') : ?>
             <?php endif; ?>
           </td>
           <td><?php echo getTaskClass($row['task_class']); ?></td>
-          <td><?php echo $due_date ?></td>
+          <td class="text-truncate"><?php echo $due_date ?></td>
           <td><?php echo getProgressBadge($row['status']); ?></td>
-          <td>
+          <td class="text-truncate">
             <?php if ($row['status'] === 'NOT YET STARTED') {
               if (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) {
-                echo '<button class="btn btn-secondary btn-block" disabled>On Hold</button>';
+                echo '<button class="btn btn-secondary btn-block" disabled><i class="far fa-clock fa-fw"></i> On Hold</button>';
               } else {
-                echo '<button class="btn btn-success btn-block" value="' . $row['id'] . '" onclick="startTask(this)">Start</button>';
+                echo '<button class="singleStart btn btn-success btn-block" value="' . $row['id'] . '" onclick="startTask(this)"><i class="far fa-play-circle fa-fw"></i> Start</button>';
               }
             } elseif ($row['status'] === 'IN PROGRESS') {
-              echo '<button class="btn btn-danger btn-block" value="' . $row['id'] . '" onclick="endTask(this)">Submit</button>';
+              echo '<button class="btn btn-danger btn-block" value="' . $row['id'] . '" onclick="endTask(this)"><i class="far fa-stop-circle fa-fw"></i> Finish</button>';
             } else {
-              echo '<button class="btn btn-dark btn-block"><i class="fas fa-ban fa-fw"></i> Cancel</button>';
+              echo '<button class="btn btn-dark btn-block" disabled><i class="far fa-clock fa-fw"></i> On Hold</button>';
             }
 
             if ($row['old_date'] === NULL) {
-              echo '<button class="btn btn-secondary btn-block" value="' . $row['id'] . '" onclick="rescheduleTask(this)">Reschedule</button>';
+              echo '<button class="btn btn-secondary btn-block" value="' . $row['id'] . '" onclick="rescheduleTask(this)"><i class="fas fa-redo fa-fw"></i> Reschedule</button>';
             } ?>
           </td>
         </tr>

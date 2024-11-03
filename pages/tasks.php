@@ -157,12 +157,12 @@ include('../include/header.php');
                       <th class="col-1 text-center">
                         <input type='checkbox' id='selectAll' class='tasksCheckboxes form-control'>
                       </th>
-                      <th class="col-1">Code</th>
-                      <th class="col-5">Task</th>
-                      <th class="col-1">Classification</th>
-                      <th class="col-2">Due Date</th>
-                      <th class="col-1">Status</th>
-                      <th class="col-1"><button class="btn btn-success btn-block d-none" id="startSelect"></button></th>
+                      <th>Code</th>
+                      <th>Task</th>
+                      <th>Classification</th>
+                      <th>Due Date</th>
+                      <th>Status</th>
+                      <th><button class="btn btn-success btn-block d-none" id="startSelect"></button></th>
                     </tr>
                   </thead>
                   <tbody id="myTasksTodo">
@@ -171,8 +171,8 @@ include('../include/header.php');
                     while ($row = $query_result->fetch_assoc()) {
                       $current_date = date('Y-m-d');
                       $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
-                      $due_date = date_format(date_create($row['due_date']), "F d"); ?>
-                      <tr>
+                      $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
+                      <tr class="<?php if ((new DateTime($today))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0) && $row['status'] === 'NOT YET STARTED') echo "tick-pulse"; ?>">
                         <td>
                           <?php if ($row['status'] === 'NOT YET STARTED') {
                             echo '<input type="checkbox" name="selected_ids[]" class="form-control bodyCheckbox" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
@@ -189,23 +189,23 @@ include('../include/header.php');
                           <?php endif; ?>
                         </td>
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
-                        <td><?php echo $due_date ?></td>
+                        <td class="text-truncate"><?php echo $due_date ?></td>
                         <td><?php echo getProgressBadge($row['status']); ?></td>
-                        <td>
+                        <td class="text-truncate">
                           <?php if ($row['status'] === 'NOT YET STARTED') {
                             if (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) {
-                              echo '<button class="btn btn-secondary btn-block" disabled>On Hold</button>';
+                              echo '<button class="btn btn-secondary btn-block" disabled><i class="far fa-clock fa-fw"></i> On Hold</button>';
                             } else {
-                              echo '<button class="singleStart btn btn-success btn-block" value="' . $row['id'] . '" onclick="startTask(this)">Start</button>';
+                              echo '<button class="singleStart btn btn-success btn-block" value="' . $row['id'] . '" onclick="startTask(this)"><i class="far fa-play-circle fa-fw"></i> Start</button>';
                             }
                           } elseif ($row['status'] === 'IN PROGRESS') {
-                            echo '<button class="btn btn-danger btn-block" value="' . $row['id'] . '" onclick="endTask(this)">Finish</button>';
+                            echo '<button class="btn btn-danger btn-block" value="' . $row['id'] . '" onclick="endTask(this)" data-task="' . $row['task_name'] . '"><i class="far fa-stop-circle fa-fw"></i> Finish</button>';
                           } else {
-                            echo '<button class="btn btn-dark btn-block" disabled>On Hold</button>';
+                            echo '<button class="btn btn-dark btn-block" disabled><i class="far fa-clock fa-fw"></i> On Hold</button>';
                           }
 
                           if ($row['old_date'] === NULL) {
-                            echo '<button class="btn btn-secondary btn-block" value="' . $row['id'] . '" onclick="rescheduleTask(this)">Reschedule</button>';
+                            echo '<button class="btn btn-secondary btn-block" value="' . $row['id'] . '" onclick="rescheduleTask(this)"><i class="fas fa-redo fa-fw"></i> Reschedule</button>';
                           } ?>
                         </td>
                       </tr>
@@ -452,7 +452,7 @@ include('../include/header.php');
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content border-danger">
       <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle"><i class="fas fa-pen-square fa-fw"></i> Finish Task</h5>
+        <h5 class="modal-title text-truncate" id="taskTitle"></h5>
       </div>
       <div class="modal-body" id="finishDetails">
       </div>
@@ -775,7 +775,8 @@ include('../include/header.php');
 
   function endTask(element) {
     element.disabled = true;
-    var id = element.value;
+    const id = element.value;
+    const name = element.getAttribute('data-task');
     $.ajax({
       method: "POST",
       url: "../config/tasks.php",
@@ -784,6 +785,7 @@ include('../include/header.php');
         "taskID": id,
       },
       success: function(response) {
+        $('#taskTitle').html('<i class="fas fa-pen-square fa-fw"></i> ' + name);
         $('#finishDetails').html(response);
         $('#finish').modal('show');
         element.disabled = false;

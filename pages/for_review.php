@@ -28,8 +28,8 @@ include('../include/header.php');
       </div>
     </div>
     <div class="card">
-      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-danger">
-        <h6 class="m-0 font-weight-bold text-white">For Review Tasks</h6>
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold">For Review Tasks</h6>
         <div class="dropdown no-arrow">
           <button type="button" class="btn btn-success btn-sm" id="approveButton" onclick="approveIDs(this)" style="display: none;">
             <i class="fas fa-check-double fa-fw"></i> Approve
@@ -38,17 +38,17 @@ include('../include/header.php');
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
-            <thead class='table table-danger'>
+          <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+            <thead>
               <tr>
-                <th class="col-auto"><input type="checkbox" id='selectAll' class="form-control"></th>
-                <th class="col-auto">Action</th>
-                <th class="col-auto">Code</th>
-                <th class="col-auto">Title</th>
-                <th class="col-auto">Classification</th>
-                <th class="col-auto">Due Date</th>
-                <th class="col-auto">Accomplished</th>
-                <th class="col-auto">Asignee</th>
+                <th><input type="checkbox" id='selectAll' class="form-control"></th>
+                <th>Code</th>
+                <th>Title</th>
+                <th>Classification</th>
+                <th>Due Date</th>
+                <th>Accomplished</th>
+                <th>Asignee</th>
+                <th></th>
               </tr>
             </thead>
             <tbody id='dataTableBody'>
@@ -56,28 +56,29 @@ include('../include/header.php');
               $result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND td.status='REVIEW' AND s.dept_id = '$dept_id'");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
-                  $due_date           = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-                  $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-                  $icon = "<i class='fas fa-info-circle' data-toggle='tooltip' data-placement='right' title='{$row['task_details']}'></i>";
-                  if ((new DateTime($row['date_accomplished']))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0)) {
-                    $icon .= " <i class='fas fa-hourglass-end text-danger' data-toggle='tooltip' data-placement='right' title='Late Submission'></i>";
-                  }
-                  if ($row['requirement_status'] == 1) {
-                    $icon .= " <i class='fas fa-paperclip text-success' data-toggle='tooltip' data-placement='right' title='Attachment'></i>";
-                  }
-                  if ($row['old_date'] !== NULL) {
-                    $icon .= " <i class='fas fa-sync text-warning' data-toggle='tooltip' data-placement='right' title='Rescheduled'></i>";
-                  }
+                  $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
+                  $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a");
               ?>
                   <tr>
                     <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
-                    <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
                     <td><?php echo $row['task_code'] ?></td>
-                    <td><?php echo $row['task_name'] . ' ' . $icon ?></td>
+                    <td>
+                      <?php echo $row['task_name']; ?>
+                      <i class='fas fa-info-circle' data-toggle='tooltip' data-placement='right' title='<?php echo $row['task_details']; ?>'></i>
+                      <?php if ((new DateTime($row['date_accomplished']))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0)): ?>
+                        <i class='fas fa-hourglass-end text-danger' data-toggle='tooltip' data-placement='right' title='Late Submission'></i>
+                      <?php endif; ?>
+                      <?php if ($row['requirement_status'] == 1): ?>
+                        <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i> <?php endif; ?>
+                      <?php if ($row['old_date'] !== NULL): ?>
+                        <i class='fas fa-sync text-warning' data-toggle='tooltip' data-placement='right' title='Rescheduled'></i>
+                      <?php endif; ?>
+                    </td>
                     <td><?php echo getTaskClass($row['task_class']); ?></td>
-                    <td><?php echo $due_date ?></td>
-                    <td><?php echo $date_accomplished ?></td>
+                    <td class="text-truncate"><?php echo $due_date ?></td>
+                    <td class="text-truncate"><?php echo $date_accomplished ?></td>
                     <td><?php echo getUser($row['in_charge']); ?></td>
+                    <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-warning btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-star fa-fw"></i> Review</button></td>
                   </tr>
               <?php }
               } ?>
@@ -145,7 +146,7 @@ include('../include/header.php');
 <?php include('../include/footer.php'); ?>
 
 <script>
-  $('#dataTable').DataTable({
+  var table = $('#dataTable').DataTable({
     "columnDefs": [{
       "orderable": false,
       "searchable": false,

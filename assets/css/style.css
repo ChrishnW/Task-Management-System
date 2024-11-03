@@ -698,3 +698,28 @@
 .drop-zone.dragover {
     background-color: #e6f7ff;
 }
+
+/* Define the tick-pulse background color animation */
+@keyframes tickPulseBg {
+
+    0%,
+    100% {
+        background-color: transparent;
+        /* Default background */
+    }
+
+    50% {
+        background-color: rgba(255, 0, 0, 0.7);
+        color           : #fff;
+        /* Red tick color */
+    }
+}
+
+/* Create tick-pulse class */
+.tick-pulse {
+    animation    : tickPulseBg 1s infinite;
+    padding      : 5px;
+    /* Add padding for better visibility */
+    border-radius: 5px;
+    /* Optional  : rounded corners */
+}
