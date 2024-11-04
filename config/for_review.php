@@ -240,27 +240,29 @@ if (isset($_POST['filterTable'])) {
   $result = mysqli_query($con, $query);
   if (mysqli_num_rows($result) > 0) {
     while ($row = $result->fetch_assoc()) {
-      $due_date   = date_format(date_create($row['due_date']), "Y-m-d h:i a");
-      $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
-      $icon = "<i class='fas fa-info-circle' data-toggle='tooltip' data-placement='right' title='{$row['task_details']}'></i>";
-      if ((new DateTime($row['date_accomplished']))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0)) {
-        $icon .= " <i class='fas fa-hourglass-end text-danger' data-toggle='tooltip' data-placement='right' title='Late Submission'></i>";
-      }
-      if ($row['requirement_status'] == 1) {
-        $icon .= " <i class='fas fa-paperclip text-success' data-toggle='tooltip' data-placement='right' title='Attachment'></i>";
-      }
-      if ($row['old_date'] !== NULL) {
-        $icon .= " <i class='fas fa-sync text-warning' data-toggle='tooltip' data-placement='right' title='Rescheduled'></i>";
-      } ?>
+      $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
+      $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a");
+    ?>
       <tr>
         <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
-        <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
         <td><?php echo $row['task_code'] ?></td>
-        <td><?php echo $row['task_name'] . ' ' . $icon ?></td>
+        <td>
+          <?php echo $row['task_name']; ?>
+          <i class='fas fa-info-circle' data-toggle='tooltip' data-placement='right' title='<?php echo $row['task_details']; ?>'></i>
+          <?php if ((new DateTime($row['date_accomplished']))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0)): ?>
+            <i class='fas fa-hourglass-end text-danger' data-toggle='tooltip' data-placement='right' title='Late Submission'></i>
+          <?php endif; ?>
+          <?php if ($row['requirement_status'] == 1): ?>
+            <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i> <?php endif; ?>
+          <?php if ($row['old_date'] !== NULL): ?>
+            <i class='fas fa-sync text-warning' data-toggle='tooltip' data-placement='right' title='Rescheduled'></i>
+          <?php endif; ?>
+        </td>
         <td><?php echo getTaskClass($row['task_class']); ?></td>
-        <td><?php echo $due_date ?></td>
-        <td><?php echo $date_accomplished ?></td>
+        <td class="text-truncate"><?php echo $due_date ?></td>
+        <td class="text-truncate"><?php echo $date_accomplished ?></td>
         <td><?php echo getUser($row['in_charge']); ?></td>
+        <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-warning btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-star fa-fw"></i> Review</button></td>
       </tr>
 <?php }
   }

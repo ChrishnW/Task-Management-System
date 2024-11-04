@@ -102,16 +102,16 @@ if (isset($_POST['filterTable'])) {
   $result = mysqli_query($con, $query);
   if (mysqli_num_rows($result) > 0) {
     while ($row = $result->fetch_assoc()) {
-      $due_date = date_format(date_create($row['due_date']), "Y-m-d");
-      $old_date = date_format(date_create($row['old_date']), "Y-m-d"); ?>
+      $due_date = date_format(date_create($row['due_date']), "F d, Y");
+      $old_date = date_format(date_create($row['old_date']), "F d, Y"); ?>
       <tr>
-        <td><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
         <td><?php echo $row['task_code'] ?></td>
         <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
         <td><?php echo getTaskClass($row['task_class']); ?></td>
-        <td><?php echo $due_date ?></td>
-        <td><?php echo $old_date ?></td>
-        <td><?php echo getUser($row['in_charge']); ?></td>
+        <td class="text-truncate"><?php echo $due_date ?></td>
+        <td class="text-truncate"><?php echo $old_date ?></td>
+        <td class="text-truncate"><?php echo getUser($row['in_charge']); ?></td>
+        <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
       </tr>
 <?php }
   }

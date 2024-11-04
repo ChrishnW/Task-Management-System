@@ -24,8 +24,8 @@ include('../include/header.php');
     </div>
   </div>
   <div class="card">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-      <h6 class="m-0 font-weight-bold text-white">Rescheduling Tasks</h6>
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+      <h6 class="m-0 font-weight-bold">Rescheduling Tasks</h6>
       <div class="dropdown no-arrow">
         <button type="button" class="btn btn-success btn-sm" id="approveButton" onclick="approveIDs(this)" style="display: none;">
           <i class="fas fa-check-double fa-fw"></i> Approve
@@ -35,15 +35,15 @@ include('../include/header.php');
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
-          <thead class='table table-primary'>
+          <thead>
             <tr>
-              <th class="col-auto">Action</th>
-              <th class="col-auto">Code</th>
-              <th class="col-auto">Title</th>
-              <th class="col-auto">Classification</th>
-              <th class="col-auto">Original Due Date</th>
-              <th class="col-auto">Requested Due Date</th>
-              <th class="col-auto">Asignee</th>
+              <th>Code</th>
+              <th>Title</th>
+              <th>Classification</th>
+              <th>Original Due Date</th>
+              <th>Requested Due Date</th>
+              <th>Asignee</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id='dataTableBody'>
@@ -51,16 +51,16 @@ include('../include/header.php');
             $result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND td.status='RESCHEDULE' AND s.dept_id = '$dept_id'");
             if (mysqli_num_rows($result) > 0) {
               while ($row = $result->fetch_assoc()) {
-                $due_date = date_format(date_create($row['due_date']), "Y-m-d");
-                $old_date = date_format(date_create($row['old_date']), "Y-m-d"); ?>
+                $due_date = date_format(date_create($row['due_date']), "F d, Y");
+                $old_date = date_format(date_create($row['old_date']), "F d, Y"); ?>
                 <tr>
-                  <td><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
                   <td><?php echo $row['task_code'] ?></td>
                   <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
                   <td><?php echo getTaskClass($row['task_class']); ?></td>
-                  <td><?php echo $due_date ?></td>
-                  <td><?php echo $old_date ?></td>
-                  <td><?php echo getUser($row['in_charge']); ?></td>
+                  <td class="text-truncate"><?php echo $due_date ?></td>
+                  <td class="text-truncate"><?php echo $old_date ?></td>
+                  <td class="text-truncate"><?php echo getUser($row['in_charge']); ?></td>
+                  <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
                 </tr>
             <?php }
             } ?>
@@ -113,6 +113,11 @@ include('../include/header.php');
 
 <script>
   $('#dataTable').DataTable({
+    "columnDefs": [{
+      "orderable": false,
+      "searchable": false,
+      "targets": 6
+    }],
     "order": [
       [5, "desc"],
       [2, "asc"]

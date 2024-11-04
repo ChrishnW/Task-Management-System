@@ -155,9 +155,9 @@
         <div class="sidebar-heading"> Components </div>
 
         <li class="nav-item">
-          <a class="nav-link" href="accounts.php">
+          <a class="nav-link" href="registered_tasks.php">
             <i class="fas fa-fw fa-tag"></i>
-            <span>Assigned Task</span></a>
+            <span>Task List</span></a>
         </li>
 
         <li class="nav-item">
