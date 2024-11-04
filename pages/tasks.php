@@ -123,13 +123,14 @@ include('../include/header.php');
     <div class="card">
       <div class="card-body">
         <div class="row">
-          <div class="form-group col-md-2">
-            <label>From</label>
-            <input type="date" name="date_from" id="date_from" class="form-control" onchange="checkDateInputs(this)">
+          <div class="form-group col-2 mr-2">
+            <label for="fromDate">From</label>
+            <input type="date" id="fromDate" class="form-control">
           </div>
-          <div class="form-group col-md-2">
-            <label>To</label>
-            <input type="date" name="date_to" id="date_to" class="form-control" onchange="checkDateInputs(this)" disabled>
+          <!-- To Date -->
+          <div class="form-group col-2 mr-3">
+            <label for="toDate">To</label>
+            <input type="date" id="toDate" class="form-control" onchange="checkDateInputs()" disabled>
           </div>
         </div>
         <?php
@@ -203,7 +204,6 @@ include('../include/header.php');
                           } else {
                             echo '<button class="btn btn-dark btn-block" disabled><i class="far fa-clock fa-fw"></i> On Hold</button>';
                           }
-
                           if ($row['old_date'] === NULL) {
                             echo '<button class="btn btn-secondary btn-block" value="' . $row['id'] . '" onclick="rescheduleTask(this)"><i class="fas fa-redo fa-fw"></i> Reschedule</button>';
                           } ?>
@@ -924,17 +924,10 @@ include('../include/header.php');
   }
 
   function checkDateInputs() {
-    var dateFrom = document.getElementById('date_from').value;
-    var dateTo = document.getElementById('date_to');
+    var dateFrom = document.getElementById('fromDate').value;
+    var dateTo = document.getElementById('toDate').value;
     var status = localStorage.getItem('activeTab').replace('#', '').toUpperCase();
     var setTab = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-    if (dateFrom) {
-      dateTo.setAttribute('min', dateFrom);
-      dateTo.disabled = false;
-    } else {
-      dateTo.removeAttribute('min');
-      dateTo.disabled = true;
-    }
     $('#myTasksTable' + setTab).DataTable().destroy();
     $('#myTasks' + setTab).empty();
     $.ajax({
@@ -943,10 +936,11 @@ include('../include/header.php');
       data: {
         "filterTableTask": true,
         "dateFrom": dateFrom,
-        "dateTo": dateTo.value,
+        "dateTo": dateTo,
         "status": status
       },
       success: function(response) {
+        console.log(response);
         $('#myTasks' + setTab).append(response);
         if (setTab === 'Todo') {
           $('#myTasksTableTodo').DataTable(todoSettings);
