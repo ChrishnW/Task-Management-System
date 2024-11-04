@@ -715,11 +715,15 @@
     }
 }
 
-/* Create tick-pulse class */
 .tick-pulse {
     animation    : tickPulseBg 1s infinite;
     padding      : 5px;
-    /* Add padding for better visibility */
     border-radius: 5px;
-    /* Optional  : rounded corners */
+}
+
+.center-screen {
+    min-height     : 100vh;
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
 }
