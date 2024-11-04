@@ -221,20 +221,20 @@ include('../include/header.php');
                 <table id="myTasksTableReview" class="table table-hover">
                   <thead>
                     <tr>
-                      <th class="col-1">Code</th>
-                      <th class="col-5">Title</th>
-                      <th class="col-1">Classification</th>
-                      <th class="col-2">Due Date</th>
-                      <th class="col-2">Finished Date</th>
-                      <th class="col-1"></th>
+                      <th>Code</th>
+                      <th>Title</th>
+                      <th>Classification</th>
+                      <th>Start Date</th>
+                      <th>Finished Date</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody id="myTasksReview">
                     <?php
                     $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status='REVIEW'");
                     while ($row = $query_result->fetch_assoc()) {
-                      $due_date = date_format(date_create($row['due_date']), "F d");
-                      $date_accomplished = date_format(date_create($row['date_accomplished']), "F d"); ?>
+                      $start_date = is_null($row['date_start']) ? "N/A" : date_format(date_create($row['date_start']), "F d, Y h:i a");
+                      $date_accomplished = date_format(date_create($row['date_accomplished']), "F d, Y h:i a"); ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
                         <td>
@@ -245,9 +245,9 @@ include('../include/header.php');
                           <?php endif; ?>
                         </td>
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
-                        <td><?php echo $due_date ?></td>
-                        <td><?php echo $date_accomplished ?></td>
-                        <td><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)">View</button></td>
+                        <td class="text-truncate"><?php echo $start_date ?></td>
+                        <td class="text-truncate"><?php echo $date_accomplished ?></td>
+                        <td class="text-truncate"><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="far fa-eye fa-fw"></i> View</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -261,19 +261,19 @@ include('../include/header.php');
                 <table id="myTasksTableFinished" class="table table-hover">
                   <thead>
                     <tr>
-                      <th class="col-1">Code</th>
-                      <th class="col-5">Title</th>
-                      <th class="col-1">Classification</th>
-                      <th class="col-2">Due Date</th>
-                      <th class="col-1">Rating</th>
-                      <th class="col-1"></th>
+                      <th>Code</th>
+                      <th>Title</th>
+                      <th>Classification</th>
+                      <th>Due Date</th>
+                      <th>Rating</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody id="myTasksFinished">
                     <?php
                     $query_result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND t.in_charge='$username' AND td.status='FINISHED'");
                     while ($row = $query_result->fetch_assoc()) {
-                      $due_date = date_format(date_create($row['due_date']), "F d, Y"); ?>
+                      $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
                       <tr>
                         <td><?php echo $row['task_code'] ?></td>
                         <td>
@@ -284,11 +284,11 @@ include('../include/header.php');
                           <?php endif; ?>
                         </td>
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
-                        <td><?php echo $due_date ?></td>
+                        <td class="text-truncate"><?php echo $due_date ?></td>
                         <td class="text-center">
                           <span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span>
                         </td>
-                        <td><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="viewTask(this)">Details</button></td>
+                        <td class="text-truncate"><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="viewTask(this)"><i class="fas fa-tasks fa-fw"></i> Details</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
