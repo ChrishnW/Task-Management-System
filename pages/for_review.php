@@ -111,8 +111,8 @@ include('../include/header.php');
 </div>
 <div class="modal fade" id="review" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
-    <div class="modal-content border-success">
-      <div class="modal-header bg-success text-white">
+    <div class="modal-content border-warning">
+      <div class="modal-header">
         <h5 class="modal-title">Review Task</h5>
       </div>
       <div class="modal-body" id="taskDetails">
@@ -146,11 +146,11 @@ include('../include/header.php');
 <?php include('../include/footer.php'); ?>
 
 <script>
-  var table = $('#dataTable').DataTable({
+  $('#dataTable').DataTable({
     "columnDefs": [{
       "orderable": false,
       "searchable": false,
-      "targets": 0
+      "targets": [0, 7]
     }],
     "order": [
       [6, "desc"],
