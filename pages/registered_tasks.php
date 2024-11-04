@@ -4,48 +4,91 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
 ?>
 
 <div class="container-fluid">
-  <div class="card">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-      <h6 class="m-0 font-weight-bold">Task List</h6>
-      <div>
-        <button class="btn btn-secondary" data-toggle="modal" data-target="#importModal"><i class="fas fa-file-import fa-fw"></i> Import</button>
-        <button class="btn btn-secondary" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
+  <?php if ($access === '1') : ?>
+    <div class="card">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold">Task List</h6>
+        <div>
+          <button class="btn btn-secondary" data-toggle="modal" data-target="#importModal"><i class="fas fa-file-import fa-fw"></i> Import</button>
+          <button class="btn btn-secondary" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
+        </div>
+        <div>
+          <button class="btn btn-secondary" onclick="showCreate(this)"><i class="fas fa-plus fa-fw"></i> Add</button>
+        </div>
       </div>
-      <div>
-        <button class="btn btn-secondary" onclick="showCreate(this)"><i class="fas fa-plus fa-fw"></i> Add</button>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table" id="regTaskTable" width="100%" cellspacing="0">
-          <thead>
-            <tr>
-              <th class="col-1"></th>
-              <th class="col-4">Section</th>
-              <th class="col-4">Department</th>
-              <th class="col-2">Tasks Count</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php $getTaskList = mysqli_query($con, "SELECT * FROM department d JOIN section s ON d.dept_id=s.dept_id WHERE s.status=1");
-            while ($row = mysqli_fetch_assoc($getTaskList)) {
-              $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}'")); ?>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table" id="regTaskTable" width="100%" cellspacing="0">
+            <thead>
               <tr>
-                <td><input type="checkbox" class="form-control export-sec-list" value="<?php echo $row['sec_id']; ?>"></td>
-                <td><button class="btn btn-circle btn-sm btn-primary" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)">+</button> <?php echo $row['sec_name']; ?></td>
-                <td><?php echo $row['dept_name']; ?></td>
-                <td class="text-center">
-                  <span class="badge badge-pill badge-success">
-                    <?php echo $taskCount['count']; ?>
-                  </span>
-                </td>
+                <th class="col-1"></th>
+                <th class="col-4">Section</th>
+                <th class="col-4">Department</th>
+                <th class="col-2">Tasks Count</th>
               </tr>
-            <?php } ?>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <?php $getTaskList = mysqli_query($con, "SELECT * FROM department d JOIN section s ON d.dept_id=s.dept_id WHERE s.status=1");
+              while ($row = mysqli_fetch_assoc($getTaskList)) {
+                $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}'")); ?>
+                <tr>
+                  <td><input type="checkbox" class="form-control export-sec-list" value="<?php echo $row['sec_id']; ?>"></td>
+                  <td><button class="btn btn-circle btn-sm btn-primary" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)">+</button> <?php echo $row['sec_name']; ?></td>
+                  <td><?php echo $row['dept_name']; ?></td>
+                  <td class="text-center">
+                    <span class="badge badge-pill badge-success">
+                      <?php echo $taskCount['count']; ?>
+                    </span>
+                  </td>
+                </tr>
+              <?php } ?>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
+  <?php elseif ($access === '3') : ?>
+    <div class="card">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold">Task List</h6>
+        <div>
+          <button class="btn btn-secondary" data-toggle="modal" data-target="#importModal"><i class="fas fa-file-import fa-fw"></i> Import</button>
+          <button class="btn btn-secondary" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
+        </div>
+        <div></div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table" id="regTaskTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th class="col-1"></th>
+                <th class="col-4">Section</th>
+                <th class="col-4">Department</th>
+                <th class="col-2">Tasks Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php $getTaskList = mysqli_query($con, "SELECT * FROM department d JOIN section s ON d.dept_id=s.dept_id WHERE s.status=1 AND d.dept_id='$dept_id'");
+              while ($row = mysqli_fetch_assoc($getTaskList)) {
+                $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}'")); ?>
+                <tr>
+                  <td><input type="checkbox" class="form-control export-sec-list" value="<?php echo $row['sec_id']; ?>"></td>
+                  <td><button class="btn btn-circle btn-sm btn-primary" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)">+</button> <?php echo $row['sec_name']; ?></td>
+                  <td><?php echo $row['dept_name']; ?></td>
+                  <td class="text-center">
+                    <span class="badge badge-pill badge-success">
+                      <?php echo $taskCount['count']; ?>
+                    </span>
+                  </td>
+                </tr>
+              <?php } ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <?php endif; ?>
 </div>
 
 <div class="modal fade" id="importModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
