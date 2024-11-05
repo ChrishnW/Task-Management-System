@@ -132,11 +132,19 @@
             <span>My Tasks</span></a>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link disabled" href="project.php">
-            <i class="fas fa-fw fa-folder-open"></i>
-            <span>Projects</span></a>
-        </li>
+        <?php if ($dept_id == 115) : ?>
+          <li class="nav-item">
+            <a class="nav-link" href="http://192.168.5.246/projectmgt" target="_blank">
+              <i class="fas fa-fw fa-folder-open"></i>
+              <span>Projects</span></a>
+          </li>
+        <?php else : ?>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="project.php">
+              <i class="fas fa-fw fa-folder-open"></i>
+              <span>Projects</span></a>
+          </li>
+        <?php endif; ?>
 
         <li class="nav-item">
           <a class="nav-link disabled" href="accounts.php">
@@ -191,6 +199,23 @@
             <i class="fas fa-award"></i>
             <span>Member Perfromance</span></a>
         </li>
+
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading"> Others </div>
+
+        <?php if ($dept_id == 115) : ?>
+          <li class="nav-item">
+            <a class="nav-link" href="http://192.168.5.246/projectmgt" target="_blank">
+              <i class="fas fa-fw fa-folder-open"></i>
+              <span>Projects</span></a>
+          </li>
+        <?php else : ?>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="project.php">
+              <i class="fas fa-fw fa-folder-open"></i>
+              <span>Projects</span></a>
+          </li>
+        <?php endif; ?>
 
       <?php } ?>
 
