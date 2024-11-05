@@ -21,6 +21,9 @@ if (isset($_POST['filterTable'])) {
   if (isset($_POST['progress']) && $_POST['progress'] !== 'All'):
     $loadTable .= " AND td.status = '{$_POST['progress']}'";
   endif;
+  if (isset($_POST['tclass']) && $_POST['tclass'] !== 'All'):
+    $loadTable .= " AND tc.task_class = '{$_POST['tclass']}'";
+  endif;
   if (isset($_POST['status'])):
     $loadTable .= " AND td.task_status = '{$_POST['status']}'";
   endif;

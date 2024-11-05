@@ -45,7 +45,7 @@ include('../include/header.php');
                   <h6>Filter by Section</h6>
                   <select name="filterBySection" id="filterBySection" class="form-control filterBySection" onchange="filterTable()"></select>
                 </div>
-                <h6 class="mt-2">Filter by Progress</h6>
+                <h6 class="mt-2">Filter by Task Progress</h6>
                 <div class="form-group">
                   <select class="form-control" id="priorityFilter" onchange="filterTable()">
                     <option value="All" selected>All</option>
@@ -54,6 +54,17 @@ include('../include/header.php');
                     <option value="REVIEW">In Review</option>
                     <option value="FINISHED">Completed</option>
                     <option value="RESCHEDULE">Reschedule</option>
+                  </select>
+                </div>
+                <h6 class="mt-2">Filter by Task Class</h6>
+                <div class="form-group">
+                  <select class="form-control" id="classFilter" onchange="filterTable()">
+                    <option value="All" selected>All</option>
+                    <option value="DAILY ROUTINE">Daily Routine</option>
+                    <option value="WEEKLY ROUTINE">Weekly Routine</option>
+                    <option value="MONTHLY ROUTINE">Monthly Routine</option>
+                    <option value="MONTHLY REPORT">Monthly Report</option>
+                    <option value="ADDITIONAL TASK">Additional Routine</option>
                   </select>
                 </div>
                 <h6 class="mt-2">Filter by Status</h6>
@@ -1049,6 +1060,7 @@ include('../include/header.php');
     const department = document.getElementById('filterByDepartment').value;
     const section = document.getElementById('filterBySection').value;
     const progress = document.getElementById('priorityFilter').value;
+    const tclass = document.getElementById('classFilter').value;
     const status = document.querySelector('input[name="statusFilter"]:checked')?.value;
     const filteredStatus = (status === "ACTIVE" && (document.getElementById('statusActive').checked || document.getElementById('statusInactive').checked)) ? null : status;
     const fromDate = document.getElementById('fromDate').value;
@@ -1061,6 +1073,7 @@ include('../include/header.php');
     if (department !== "All") data.department = department;
     if (section !== "" && section !== "All") data.section = section;
     data.progress = progress;
+    if (tclass !== "" && tclass !== "All") data.tclass = tclass;
     if (status !== "All") data.status = filteredStatus;
 
     if (fromDate !== "") data.fromDate = fromDate;
