@@ -45,20 +45,33 @@ if (isset($_POST['viewTask'])) {
     $task_class         = $task_classes[$row['task_class']] ?? "UNKNOWN";
     $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
     $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a");
+    $old_date           = date_format(date_create($row['old_date']), "F d, Y h:i a");
     $dueDated           = new DateTime($row['due_date']);
     $finDated           = new DateTime($row['date_accomplished']);
+    $oldDated           = new DateTime($row['old_date']);
+
+    $interval = $dueDated->diff($finDated);
+    $total_duration = $interval->format('%h hours %i minutes');
+    if ($dueDated > $oldDated) {
+      $restats = 'Approved';
+    } else {
+      $restats = 'Rejected';
+    }
     $findings           = '';
+    $latesubtask        = '<h6>The task has been submitted late by approximately ' . $total_duration . '.</h6>';
+    $reschedtask        = 'Original Due Date: <h6>' . $old_date . '</h6>Reason for Rescheduling: <h6>' . $row['reason'] . '</h6>Reschedule Remarks: <h6>' . $restats . '</h6>';
+
     if ($finDated->setTime(0, 0, 0) > $dueDated->setTime(0, 0, 0)) {
-      $findings .= '<span class="badge badge-danger">Late Submission</span>';
+      $findings .= '<span class="badge badge-danger" data-toggle="popover" data-trigger="hover" data-html="true" title="Task Submission Delay" data-placement="left" data-content="' . $latesubtask . '">Late Submission</span>';
     }
     if ($row['old_date'] !== NULL) {
-      $findings .= '<span class="badge badge-warning">Rescheduled</span>';
+      $findings .= '<span class="badge badge-warning" data-toggle="popover" data-trigger="hover" data-html="true" title="Rescheduled Activity" data-placement="left" data-content="' . $reschedtask . '">Rescheduled</span>';
     } ?>
     <form id="checkDetails" enctype="multipart/form-data">
       <div class="row justify-content-between">
         <div class="col-md-5">
           <div class="form-group">
-            <label>Assignee:</label>
+            <label>Assignee</label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-user"></i></div>
@@ -71,7 +84,7 @@ if (isset($_POST['viewTask'])) {
         <?php if ($findings !== '') { ?>
           <div class="col-md-2">
             <div class="form-group">
-              <label>Findings:</label>
+              <label>Findings</label>
               <?php echo $findings; ?>
             </div>
           </div>
@@ -82,7 +95,7 @@ if (isset($_POST['viewTask'])) {
         <input type="hidden" name="approveHead" id="approveHead" value="<?php echo $full_name ?>">
         <div class="col-md-3">
           <div class="form-group">
-            <label>Code:</label>
+            <label>Code</label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-qrcode"></i></div>
@@ -93,10 +106,10 @@ if (isset($_POST['viewTask'])) {
         </div>
         <div class="col-md-7">
           <div class="form-group">
-            <label>Title:</label>
+            <label>Task</label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-tag"></i></div>
+                <div class="input-group-text"><i class="fas fa-tasks"></i></div>
               </div>
               <input type="text" class="form-control" name="approveTitle" id="approveTitle" value="<?php echo $row['task_name'] ?>" readonly>
             </div>
@@ -104,7 +117,7 @@ if (isset($_POST['viewTask'])) {
         </div>
         <div class="col-md-2">
           <div class="form-group">
-            <label>Achievement: <i class="fas fa-question-circle text-info" data-toggle="popover" data-trigger="hover" data-html="true" title="Rating Criteria" data-placement="left" data-content="Rating 5: 105% Achievement<br>Rating 4: 100% Achievement<br>Rating 3: 90% Achievement<br>Rating 2: 80% Achievement<br>Rating 1: 70% Achievement"></i></label>
+            <label>Achievement <i class="fas fa-question-circle text-info" data-toggle="popover" data-trigger="hover" data-html="true" title="Rating Criteria" data-placement="left" data-content="Rating 5: 105% Achievement<br>Rating 4: 100% Achievement<br>Rating 3: 90% Achievement<br>Rating 2: 80% Achievement<br>Rating 1: 70% Achievement"></i></label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-trophy"></i></div>
@@ -115,7 +128,7 @@ if (isset($_POST['viewTask'])) {
         </div>
         <div class="col-md-12">
           <div class="form-group">
-            <label>Requirements:</label>
+            <label>Requirements</label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-info"></i></div>
@@ -124,9 +137,9 @@ if (isset($_POST['viewTask'])) {
             </div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="form-group">
-            <label>Due Date:</label>
+            <label>Due Date</label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-calendar-day"></i></div>
@@ -135,12 +148,23 @@ if (isset($_POST['viewTask'])) {
             </div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="form-group">
-            <label>Date Accomplished:</label>
+            <label>Date Started</label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-calendar-check"></i></div>
+                <div class="input-group-text"><i class="fas fa-hourglass-start"></i></div>
+              </div>
+              <input type="datetime-local" class="form-control" name="approveFinish" id="approveFinish" value="<?php echo $row['date_start'] ?>" readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Date Accomplished</label>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fas fa-hourglass-end"></i></div>
               </div>
               <input type="datetime-local" class="form-control" name="approveFinish" id="approveFinish" value="<?php echo $row['date_accomplished'] ?>" readonly>
             </div>
@@ -148,44 +172,31 @@ if (isset($_POST['viewTask'])) {
         </div>
         <div class="col-md-12">
           <div class="form-group">
-            <label>Action:</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
-              </div>
-              <textarea class="form-control" name="approveRemarks" id="approveRemarks" rows="5" readonly><?php echo $row['remarks'] ?></textarea>
-            </div>
+            <label>Remarks</label>
+            <textarea class="form-control" name="approveRemarks" id="approveRemarks" rows="5" readonly><?php echo $row['remarks'] ?></textarea>
           </div>
         </div>
         <?php if ($row['requirement_status'] == 1) { ?>
           <div class="col-md-12">
             <div class="form-group">
-              <label>Attachments:</label>
+              <label>Attachments</label>
               <div class="table-responsive">
-                <table id="taskView_table" class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>File</th>
-                      <th>Size</th>
-                      <th>Uploaded Date</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
+                <table class="table table-borderless">
                   <tbody id="taskReview_files">
                     <?php
                     $task_code  = $row['task_code'];
                     $query_result = mysqli_query($con, "SELECT * FROM task_files WHERE task_code='$task_code'");
                     while ($row = mysqli_fetch_assoc($query_result)) {
                       $size   = formatSize($row['file_size']);
-                      $action = '<button type="button" class="btn btn-circle btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download"></i></button>';
-                      $action .= (in_array(strtolower($row['file_type']), ['pdf', 'jpg', 'png', 'jpeg', 'xlsx'])) ? ' <button type="button" class="btn btn-circle btn-info" value="' . $row['id'] . '" onclick="viewFile(this)"><i class="fas fa-eye"></i></button>' : '';
+                      $action = '<button type="button" class="btn btn-block btn-success" value="' . $row['id'] . '" onclick="downloadFile(this)"><i class="fas fa-file-download fa-fw"></i> Download</button>';
+                      $action .= (in_array(strtolower($row['file_type']), ['pdf', 'jpg', 'png', 'jpeg', 'xlsx'])) ? ' <button type="button" class="btn btn-block btn-info" value="' . $row['id'] . '" onclick="viewFile(this)"><i class="fas fa-eye fa-fw"></i> View</button>' : '';
                       $date   = date_format(date_create($row['file_dated']), "Y-m-d h:i a");
                     ?>
                       <tr>
                         <td><?php echo $row['file_name'] ?></td>
                         <td><?php echo $size ?></td>
                         <td><?php echo $date ?></td>
-                        <td><?php echo $action ?></td>
+                        <td class="col-1 text-truncate"><?php echo $action ?></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -196,12 +207,9 @@ if (isset($_POST['viewTask'])) {
         <?php } ?>
         <div class="col-md-12">
           <div class="form-group">
-            <label>Comment:</label>
+            <label>Comment</label>
             <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-comments"></i></div>
-              </div>
-              <textarea class="form-control" name="approveComment" id="approveComment" placeholder="Write your comments here if needed..."></textarea>
+              <textarea class="form-control" name="approveComment" id="approveComment" rows="4" placeholder="Write your comments here if needed..."></textarea>
             </div>
           </div>
         </div>
@@ -240,29 +248,27 @@ if (isset($_POST['filterTable'])) {
   $result = mysqli_query($con, $query);
   if (mysqli_num_rows($result) > 0) {
     while ($row = $result->fetch_assoc()) {
-      $due_date           = date_format(date_create($row['due_date']), "F d, Y h:i a");
-      $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a");
-    ?>
+      $due_date   = date_format(date_create($row['due_date']), "Y-m-d h:i a");
+      $date_accomplished  = date_format(date_create($row['date_accomplished']), "Y-m-d h:i a");
+      $icon = "<i class='fas fa-info-circle' data-toggle='tooltip' data-placement='right' title='{$row['task_details']}'></i>";
+      if ((new DateTime($row['date_accomplished']))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0)) {
+        $icon .= " <i class='fas fa-hourglass-end text-danger' data-toggle='tooltip' data-placement='right' title='Late Submission'></i>";
+      }
+      if ($row['requirement_status'] == 1) {
+        $icon .= " <i class='fas fa-paperclip text-success' data-toggle='tooltip' data-placement='right' title='Attachment'></i>";
+      }
+      if ($row['old_date'] !== NULL) {
+        $icon .= " <i class='fas fa-sync text-warning' data-toggle='tooltip' data-placement='right' title='Rescheduled'></i>";
+      } ?>
       <tr>
         <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
+        <td><button type="button" onclick="checkTask(this)" class="btn btn-success btn-sm btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-bars"></i> Review</button></td>
         <td><?php echo $row['task_code'] ?></td>
-        <td>
-          <?php echo $row['task_name']; ?>
-          <i class='fas fa-info-circle' data-toggle='tooltip' data-placement='right' title='<?php echo $row['task_details']; ?>'></i>
-          <?php if ((new DateTime($row['date_accomplished']))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0)): ?>
-            <i class='fas fa-hourglass-end text-danger' data-toggle='tooltip' data-placement='right' title='Late Submission'></i>
-          <?php endif; ?>
-          <?php if ($row['requirement_status'] == 1): ?>
-            <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i> <?php endif; ?>
-          <?php if ($row['old_date'] !== NULL): ?>
-            <i class='fas fa-sync text-warning' data-toggle='tooltip' data-placement='right' title='Rescheduled'></i>
-          <?php endif; ?>
-        </td>
+        <td><?php echo $row['task_name'] . ' ' . $icon ?></td>
         <td><?php echo getTaskClass($row['task_class']); ?></td>
-        <td class="text-truncate"><?php echo $due_date ?></td>
-        <td class="text-truncate"><?php echo $date_accomplished ?></td>
+        <td><?php echo $due_date ?></td>
+        <td><?php echo $date_accomplished ?></td>
         <td><?php echo getUser($row['in_charge']); ?></td>
-        <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-warning btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-star fa-fw"></i> Review</button></td>
       </tr>
 <?php }
   }

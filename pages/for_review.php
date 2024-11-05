@@ -31,9 +31,7 @@ include('../include/header.php');
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold">For Review Tasks</h6>
         <div class="dropdown no-arrow">
-          <button type="button" class="btn btn-success btn-sm" id="approveButton" onclick="approveIDs(this)" style="display: none;">
-            <i class="fas fa-check-double fa-fw"></i> Approve
-          </button>
+
         </div>
       </div>
       <div class="card-body">
@@ -41,14 +39,18 @@ include('../include/header.php');
           <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th><input type="checkbox" id='selectAll' class="form-control"></th>
+                <th class="col-1 text-center"><input type="checkbox" id='selectAll' class="form-control"></th>
                 <th>Code</th>
                 <th>Title</th>
                 <th>Classification</th>
                 <th>Due Date</th>
                 <th>Accomplished</th>
                 <th>Asignee</th>
-                <th></th>
+                <th class="text-truncate">
+                  <button type="button" class="btn btn-success" id="approveButton" onclick="approveIDs(this)" style="display: none;">
+                    <i class="fas fa-check-double fa-fw"></i> Approve
+                  </button>
+                </th>
               </tr>
             </thead>
             <tbody id='dataTableBody'>
@@ -77,7 +79,7 @@ include('../include/header.php');
                     <td><?php echo getTaskClass($row['task_class']); ?></td>
                     <td class="text-truncate"><?php echo $due_date ?></td>
                     <td class="text-truncate"><?php echo $date_accomplished ?></td>
-                    <td><?php echo getUser($row['in_charge']); ?></td>
+                    <td class="text-truncate"><?php echo getUser($row['in_charge']); ?></td>
                     <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-warning btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-star fa-fw"></i> Review</button></td>
                   </tr>
               <?php }
@@ -153,7 +155,7 @@ include('../include/header.php');
       "targets": [0, 7]
     }],
     "order": [
-      [6, "desc"],
+      [5, "desc"],
       [3, "asc"]
     ],
     "drawCallback": function(settings) {
