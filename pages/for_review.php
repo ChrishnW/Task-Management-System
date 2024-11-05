@@ -41,10 +41,10 @@ include('../include/header.php');
               <tr>
                 <th class="col-1 text-center"><input type="checkbox" id='selectAll' class="form-control"></th>
                 <th>Code</th>
-                <th>Title</th>
+                <th>Task</th>
                 <th>Classification</th>
                 <th>Due Date</th>
-                <th>Accomplished</th>
+                <th>Date Accomplished</th>
                 <th>Asignee</th>
                 <th class="text-truncate">
                   <button type="button" class="btn btn-success" id="approveButton" onclick="approveIDs(this)" style="display: none;">
@@ -155,8 +155,7 @@ include('../include/header.php');
       "targets": [0, 7]
     }],
     "order": [
-      [5, "desc"],
-      [3, "asc"]
+      [5, "desc"]
     ],
     "drawCallback": function(settings) {
       $('[data-toggle="tooltip"]').tooltip();
@@ -190,9 +189,13 @@ include('../include/header.php');
       success: function(response) {
         $('#dataTableBody').append(response);
         $('#dataTable').DataTable({
+          "columnDefs": [{
+            "orderable": false,
+            "searchable": false,
+            "targets": [0, 7]
+          }],
           "order": [
-            [6, "desc"],
-            [3, "asc"]
+            [5, "desc"]
           ],
           "drawCallback": function(settings) {
             $('[data-toggle="tooltip"]').tooltip();
