@@ -17,9 +17,8 @@ include('../include/header.php');
             <label for="toDate">To</label>
             <input type="date" id="toDate" class="form-control" onchange="filterTable()" disabled>
           </div>
-
           <!-- Sorting & Filtering Dropdown Button -->
-          <div class="dropdown">
+          <div class="dropdown mr-3">
             <button class="btn btn-primary dropdown-toggle" type="button" id="sortFilterDropdown" data-toggle="dropdown">
               <i class="fas fa-filter fa-fw"></i> Filter
             </button>
