@@ -452,7 +452,7 @@ if (isset($_POST['reviewTask'])) {
       <div class="row">
         <input type="hidden" name="taskReview_id" id="taskReview_id" value="<?php echo $row['id'] ?>">
         <input type="hidden" name="taskReview_owner" id="taskReview_owner" value="<?php echo $row['in_charge'] ?>">
-        <div class="col-md-3">
+        <div class="col-md-5">
           <div class="form-group">
             <label>Code</label>
             <div class="input-group mb-2">
@@ -465,12 +465,58 @@ if (isset($_POST['reviewTask'])) {
         </div>
         <div class="col-md-7">
           <div class="form-group">
+            <label>Assignee</label>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fas fa-user"></i></div>
+              </div>
+              <input type="text" class="form-control" value="<?php echo getName($row['in_charge']); ?>" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-7">
+          <div class="form-group">
             <label>Title</label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-tag"></i></div>
+                <div class="input-group-text"><i class="fas fa-tasks"></i></div>
               </div>
               <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['task_name'] ?>" readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="form-group">
+            <label>Due Date</label>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fas fa-calendar-day"></i></div>
+              </div>
+              <input type="datetime-local" class="form-control" name="" id="" value="<?php echo $row['due_date'] ?>" readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="form-group">
+            <label>Date Started</label>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fas fa-hourglass-start"></i></div>
+              </div>
+              <input type="datetime-local" class="form-control" name="" id="" value="<?php echo $row['date_start'] ?>" readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="form-group">
+            <label>Date Completed</label>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fas fa-hourglass-end"></i></div>
+              </div>
+              <input type="datetime-local" class="form-control" name="" id="" value="<?php echo $row['date_accomplished'] ?>" readonly>
             </div>
           </div>
         </div>
@@ -481,31 +527,14 @@ if (isset($_POST['reviewTask'])) {
               <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-trophy"></i></div>
               </div>
-              <input type="text" class="form-control" name="taskReview_title" id="taskReview_title" value="<?php echo $row['achievement'] ?>" readonly>
+              <input type="number" class="form-control" name="editScore" id="editScore" value="<?php echo $row['achievement'] ?>" min="1" max="5" readonly>
             </div>
           </div>
-        </div>
-        <div class="form-group col-md-4">
-          <label>Classification</label>
-          <input type="text" value="<?php echo $task_class ?>" class="form-control" disabled>
-        </div>
-        <div class="form-group col-md-4">
-          <label>Due Date</label>
-          <input type="text" value="<?php echo $due_date ?>" class="form-control" disabled>
-        </div>
-        <div class="form-group col-md-4">
-          <label>Date Accomplished</label>
-          <input type="text" value="<?php echo $date_accomplished ?>" class="form-control" disabled>
         </div>
         <div class="col-md-12">
           <div class="form-group">
             <label>Remarks</label>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fas fa-sticky-note"></i></div>
-              </div>
-              <textarea class="form-control" rows="4" cols="50" name="taskReview_remarks" id="taskReview_remarks"><?php echo $row['remarks'] ?></textarea>
-            </div>
+            <textarea class="form-control" rows="4" cols="50" name="taskReview_remarks" id="taskReview_remarks"><?php echo $row['remarks'] ?></textarea>
           </div>
         </div>
         <?php if ($row['requirement_status'] == 1) { ?>
