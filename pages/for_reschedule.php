@@ -38,7 +38,7 @@ include('../include/header.php');
           <thead>
             <tr>
               <th>Code</th>
-              <th>Title</th>
+              <th>Task</th>
               <th>Classification</th>
               <th>Original Due Date</th>
               <th>Requested Due Date</th>
@@ -60,7 +60,7 @@ include('../include/header.php');
                   <td class="text-truncate"><?php echo $due_date ?></td>
                   <td class="text-truncate"><?php echo $old_date ?></td>
                   <td class="text-truncate"><?php echo getUser($row['in_charge']); ?></td>
-                  <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
+                  <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-envelope-open-text fa-fw"></i> Open</button></td>
                 </tr>
             <?php }
             } ?>
@@ -119,8 +119,7 @@ include('../include/header.php');
       "targets": 6
     }],
     "order": [
-      [5, "desc"],
-      [2, "asc"]
+      [4, "desc"]
     ],
     "pageLength": 10,
     "lengthMenu": [10, 25, 50, 100],

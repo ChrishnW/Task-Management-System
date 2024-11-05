@@ -73,17 +73,12 @@ if (isset($_POST['viewTask'])) {
     } ?>
     <div class="input-group mb-2">
       <div class="input-group-prepend">
-        <div class="input-group-text"><i class="fas fa-calendar-check"></i></div>
+        <div class="input-group-text"><i class="fas fa-calendar-day"></i></div>
       </div>
       <input type="date" id="resched_date" name="resched_date" class="form-control" value="<?php echo date('Y-m-d', strtotime($row['old_date'])); ?>">
     </div>
     <label for="">Reason:</label>
-    <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text"><i class="fas fa-comment"></i></div>
-      </div>
-      <textarea name="resched_reason" id="resched_reason" class="form-control" placeholder="Please write your reason for rescheduling here." readonly><?php echo $row['reason']; ?></textarea>
-    </div>
+    <textarea name="resched_reason" id="resched_reason" class="form-control" placeholder="Please write your reason for rescheduling here." readonly><?php echo $row['reason']; ?></textarea>
   </form>
   <?php
 }
@@ -111,7 +106,7 @@ if (isset($_POST['filterTable'])) {
         <td class="text-truncate"><?php echo $due_date ?></td>
         <td class="text-truncate"><?php echo $old_date ?></td>
         <td class="text-truncate"><?php echo getUser($row['in_charge']); ?></td>
-        <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
+        <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-envelope-open-text fa-fw"></i> Open</button></td>
       </tr>
 <?php }
   }
