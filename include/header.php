@@ -49,7 +49,7 @@
           <!-- <i class="fas fa-business-time"></i> -->
           <img src="../assets/img/Logo.png" class="system-logo">
         </div>
-        <div class="sidebar-brand-text mx-3"><small>Task Management System</small></div>
+        <div class="sidebar-brand-text">Task Management</div>
       </a>
 
       <!-- Divider -->
