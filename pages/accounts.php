@@ -76,20 +76,14 @@ include('../include/header.php');
   <?php } elseif ($access == 2) { ?>
   <?php } elseif ($access == 3) { ?>
     <div class="card">
-      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-        <h6 class="m-0 font-weight-bold text-white">Deparment Members</h6>
-        <div class="dropdown no-arrow">
-          <button type="button" onclick="showCreate(this)" class="btn btn-primary" disabled>
-            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Register New Member
-          </button>
-        </div>
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold">Deparment Members</h6>
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
-            <thead class='table table-success'>
+          <table class="table table-striped" id="memberList" width="100%" cellspacing="0">
+            <thead>
               <tr>
-                <th>Action</th>
                 <th>Username</th>
                 <th>Name</th>
                 <th>Section & Department</th>
@@ -97,16 +91,6 @@ include('../include/header.php');
                 <th>Status</th>
               </tr>
             </thead>
-            <tfoot class='table table-success'>
-              <tr>
-                <th>Action</th>
-                <th>Username</th>
-                <th>Name</th>
-                <th>Section & Department</th>
-                <th>Total Tasks</th>
-                <th>Status</th>
-              </tr>
-            </tfoot>
             <tbody>
               <?php $con->next_result();
               $result = mysqli_query($con, "SELECT accounts.fname, accounts.lname, accounts.file_name , accounts.username, accounts.email, section.sec_name, access.access, accounts.status, accounts.id, department.dept_name, section.sec_id FROM accounts LEFT JOIN section ON accounts.sec_id=section.sec_id LEFT JOIN access on accounts.access=access.id LEFT JOIN department ON department.dept_id=section.dept_id WHERE department.dept_id='$dept_id' AND accounts.access=2");
@@ -128,10 +112,6 @@ include('../include/header.php');
                     $btn = 'danger';
                   } ?>
                   <tr>
-                    <td>
-                      <center /><button type="button" class="btn btn-info btn-block" value="<?php echo $row['username']; ?>" onclick="checkTasks(this)"><i class="fas fa-eye fa-fw"></i> View</button>
-                      <button type="button" class="btn btn-success btn-block" value="<?php echo $row['username']; ?>" data-for="<?php echo $row['sec_id']; ?>" onclick="addTasks(this)"><i class="fas fa-plus fa-fw"></i> Add Task</button>
-                    </td>
                     <td><?php echo $row['username']; ?></td>
                     <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
                     <td><?php echo $row['sec_name']; ?> <p class="form-text text-danger"><?php echo $row['dept_name']; ?></p>
@@ -445,6 +425,12 @@ include('../include/header.php');
       "searchable": false,
       "targets": 5,
     }],
+    "order": [
+      [0, "asc"]
+    ]
+  });
+
+  $('#memberList').DataTable({
     "order": [
       [0, "asc"]
     ]
