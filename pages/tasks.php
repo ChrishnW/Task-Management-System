@@ -224,7 +224,7 @@ include('../include/header.php');
                       <th>Code</th>
                       <th>Title</th>
                       <th>Classification</th>
-                      <th>Start Date</th>
+                      <th>Started Date</th>
                       <th>Finished Date</th>
                       <th></th>
                     </tr>

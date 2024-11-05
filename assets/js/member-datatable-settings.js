@@ -2,7 +2,7 @@ var todoSettings = {
   "autoWidth": false,
   "order": [
     [4, "asc"],
-    [2, "asc"]
+    [5, "asc"]
   ],
   "columnDefs": [{
     "orderable": false,
@@ -15,7 +15,7 @@ var reviewSettings = {
   "autoWidth": false,
   "order": [
     [4, "asc"],
-    [2, "asc"]
+    [3, "asc"]
   ],
   "columnDefs": [{
     "orderable": false,
@@ -28,7 +28,7 @@ var finishedSettings = {
   "autoWidth": false,
   "order": [
     [4, "asc"],
-    [2, "asc"]
+    [3, "desc"]
   ],
   "columnDefs": [{
     "orderable": false,
