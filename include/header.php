@@ -164,13 +164,13 @@
 
         <li class="nav-item">
           <a class="nav-link" href="registered_tasks.php">
-            <i class="fas fa-fw fa-tag"></i>
+            <i class="fas fa-fw fa-list"></i>
             <span>Task List</span></a>
         </li>
 
         <li class="nav-item">
           <a class="nav-link" href="tasks.php">
-            <i class="fas fa-fw fa-list"></i>
+            <i class="fas fa-fw fa-tasks"></i>
             <span>Deployed Task</span></a>
         </li>
 
