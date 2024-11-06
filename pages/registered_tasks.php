@@ -12,9 +12,6 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           <button class="btn btn-secondary" data-toggle="modal" data-target="#importModal"><i class="fas fa-file-import fa-fw"></i> Import</button>
           <button class="btn btn-secondary" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
         </div>
-        <div>
-          <button class="btn btn-secondary" onclick="showCreate(this)"><i class="fas fa-plus fa-fw"></i> Add</button>
-        </div>
       </div>
       <div class="card-body">
         <div class="table-responsive">
@@ -51,18 +48,15 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold">Task List</h6>
-        <div>
-          <button class="btn btn-secondary" data-toggle="modal" data-target="#importModal"><i class="fas fa-file-import fa-fw"></i> Import</button>
-          <button class="btn btn-secondary" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
-        </div>
-        <div></div>
       </div>
       <div class="card-body">
         <div class="table-responsive">
           <table class="table" id="regTaskTable" width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th class="col-1"></th>
+                <th class="col-1 text-center">
+                  <button class="btn btn-secondary" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
+                </th>
                 <th class="col-4">Section</th>
                 <th class="col-4">Department</th>
                 <th class="col-2">Tasks Count</th>
@@ -144,6 +138,8 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
 
 <script>
   $('#regTaskTable').DataTable({
+    searching: false, // Disable the search bar
+    lengthChange: false,
     "columnDefs": [{
       "autoWidth": false,
       "orderable": false,
@@ -199,10 +195,20 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
   function format(data) {
     // `data` is the response from the AJAX call
     var details = JSON.parse(data);
-    var html = '<table class="table table-striped table-hover">';
+    var html = '<table class="table table-striped table-hover" id="detailsTable">';
+    // Add thead and header row
+    html += '<thead><tr>' +
+      '<th></th>' +
+      '<th>Task Name</th>' +
+      '<th>Task Details</th>' +
+      '<th>Task Class</th>' +
+      '<th>Submission</th>' +
+      '<th>Assignee</th>' +
+      '<th></th>' +
+      '</tr></thead>';
     details.forEach(function(detail) {
       html += '<tr>' +
-        '<td>' + detail.status + '</td>' +
+        '<td class="text-center">' + detail.status + '</td>' +
         '<td>' + detail.task_name + '</td>' +
         '<td>' + detail.task_details + '</td>' +
         '<td>' + detail.task_class + '</td>' +
@@ -212,6 +218,22 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         '</tr>';
     });
     html += '</table>';
+
+    // Initialize DataTable
+    setTimeout(function() {
+      $('#detailsTable').DataTable({
+        "columnDefs": [{
+          "autoWidth": false,
+          "orderable": false,
+          "searchable": false,
+          "targets": [0, 6],
+        }],
+        "order": [
+          [1, "asc"]
+        ]
+      });
+    }, 0); // Delay to ensure the table is fully rendered
+
     return html;
   }
 
