@@ -456,4 +456,8 @@ if (isset($_POST['getBody'])) { ?>
   </div>
 <?php
 }
+
+if (isset($_POST['editAccount'])) {
+  $queryUpdate = mysqli_query($con, "UPDATE accounts SET `fname`='{$_POST['inputFirstName']}', `lname`='{$_POST['inputLastName']}', `email`='{$_POST['inputEmailAddress']}', `card`='{$_POST['inputCard']}' WHERE username='$username'");
+}
 ?>

@@ -158,9 +158,6 @@ include('../include/header.php');
         <div class="tab-content" id="myTabContent">
           <div class="tab-pane fade" id="todo">
             <div class="card">
-              <div class="card-header d-none" id="actionButton">
-                <button id="multiStart" class="btn btn-success pull-right"><i class="fas fa-play"></i> Start All</button>
-              </div>
               <div class="card-body table-responsive">
                 <table id="myTasksTableTodo" class="table table-hover">
                   <thead>
@@ -201,8 +198,10 @@ include('../include/header.php');
                         </td>
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td class="text-truncate"><?php echo $due_date ?></td>
-                        <td><?php echo getProgressBadge($row['status']); ?></td>
-                        <td class="text-truncate">
+                        <td>
+                          <?php echo getProgressBadge($row['status']); ?>
+                        </td>
+                        <td class="col-1 text-truncate">
                           <?php if ($row['status'] === 'NOT YET STARTED') {
                             if (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) {
                               echo '<button class="btn btn-secondary btn-block" disabled><i class="far fa-clock fa-fw"></i> On Hold</button>';
@@ -257,7 +256,7 @@ include('../include/header.php');
                         <td><?php echo getTaskClass($row['task_class']); ?></td>
                         <td class="text-truncate"><?php echo $start_date ?></td>
                         <td class="text-truncate"><?php echo $date_accomplished ?></td>
-                        <td class="text-truncate"><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="far fa-eye fa-fw"></i> View</button></td>
+                        <td class="col-1 text-truncate"><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="far fa-eye fa-fw"></i> View</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -298,7 +297,7 @@ include('../include/header.php');
                         <td class="text-center">
                           <span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span>
                         </td>
-                        <td class="text-truncate"><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="viewTask(this)"><i class="fas fa-tasks fa-fw"></i> Details</button></td>
+                        <td class="col-1 text-truncate"><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="viewTask(this)"><i class="fas fa-tasks fa-fw"></i> Details</button></td>
                       </tr>
                     <?php } ?>
                   </tbody>
@@ -459,7 +458,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="finish" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
     <div class="modal-content border-danger">
       <div class="modal-header bg-danger text-white">
         <h5 class="modal-title text-truncate" id="taskTitle"></h5>
@@ -470,7 +469,6 @@ include('../include/header.php');
         <button type="button" class="btn btn-success" data-dismiss="modal" id="submitTask">Submit</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
-
     </div>
   </div>
 </div>
@@ -976,14 +974,14 @@ include('../include/header.php');
     "columnDefs": [{
       "orderable": false,
       "searchable": false,
-      "targets": [0, 6]
+      "targets": 6
     }, {
       "type": "date-custom",
       "targets": 3
     }],
     "order": [
       [3, "desc"],
-      [1, "asc"]
+      [0, "desc"]
     ]
   }, $('[data-toggle="tooltip"]').tooltip());
 

@@ -95,7 +95,7 @@ if (isset($_POST['filterTableTask'])) {
         <td><?php echo getTaskClass($row['task_class']); ?></td>
         <td class="text-truncate"><?php echo $due_date ?></td>
         <td><?php echo getProgressBadge($row['status']); ?></td>
-        <td class="text-truncate">
+        <td class="col-1 text-truncate">
           <?php if ($row['status'] === 'NOT YET STARTED') {
             if (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date)) {
               echo '<button class="btn btn-secondary btn-block" disabled><i class="far fa-clock fa-fw"></i> On Hold</button>';
@@ -127,7 +127,7 @@ if (isset($_POST['filterTableTask'])) {
         <td><?php echo getTaskClass($row['task_class']); ?></td>
         <td class="text-truncate"><?php echo $start_date ?></td>
         <td class="text-truncate"><?php echo $date_accomplished ?></td>
-        <td class="text-truncate"><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="far fa-eye fa-fw"></i> View</button></td>
+        <td class="col-1 text-truncate"><button type="button" class="btn btn-block btn-warning" value='<?php echo $row['id']; ?>' onclick="reviewTask(this)"><i class="far fa-eye fa-fw"></i> View</button></td>
       </tr>
     <?php elseif ($_POST['status'] === 'FINISHED') :
       $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
@@ -145,7 +145,7 @@ if (isset($_POST['filterTableTask'])) {
         <td class="text-center">
           <span class="h5 text-success font-weight-bold"><?php echo $row['achievement'] ?></span>
         </td>
-        <td class="text-truncate"><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="viewTask(this)"><i class="fas fa-tasks fa-fw"></i> Details</button></td>
+        <td class="col-1 text-truncate"><button type="button" class="btn btn-block btn-primary" value='<?php echo $row['id']; ?>' onclick="viewTask(this)"><i class="fas fa-tasks fa-fw"></i> Details</button></td>
       </tr>
     <?php endif;
   endwhile;
@@ -807,7 +807,7 @@ if (isset($_POST['viewTask'])) {
                 <div class="input-group-prepend">
                   <div class="input-group-text"><i class="far fa-calendar-check"></i></div>
                 </div>
-                <input type="datetime-local" class="form-control" name="" id="" value="<?php echo $row['date_accomplished'] ?>" readonly>
+                <input type="datetime-local" class="form-control" name="" id="" value="<?php echo $row['date_approved'] ?>" readonly>
               </div>
             </div>
           </div>

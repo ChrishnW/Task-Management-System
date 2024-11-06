@@ -237,7 +237,7 @@
                     </div>
                     <div class="row gx-3 mb-3">
                       <div class="col-md-6">
-                        <label class="small mb-1" for="inputCard">ID Number (RFID)</label>
+                        <label class="small mb-1" for="inputCard">ID Number (Employee ID)</label>
                         <input class="form-control" id="inputCard" name="inputCard" type="text" placeholder="Enter your card number" value="<?php echo $card ?? 'N/A' ?>">
                       </div>
                       <div class="col-md-6">
@@ -663,7 +663,6 @@
 
       // Check for empty inputs and validate specific fields
       var isValid = true;
-      var nonStringField = $('#inputCard').val(); // replace with the actual ID of the non-string field
       var errorMessage = '';
 
       $('#accountDetails').find('input').each(function() {
@@ -673,11 +672,6 @@
           return false; // Exit each loop if an empty input is found
         }
       });
-
-      if (isNaN(nonStringField)) {
-        isValid = false;
-        errorMessage = 'Invalid ID Number (RFID).';
-      }
 
       if (!isValid) {
         $button.prop('disabled', false);
