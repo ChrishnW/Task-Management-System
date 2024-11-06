@@ -253,7 +253,7 @@ if (isset($_POST['filterTable'])) {
     ?>
       <tr>
         <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
-        <td><?php echo $row['task_code'] ?></td>
+        <td class="text-truncate"><?php echo $row['task_code'] ?></td>
         <td>
           <?php echo $row['task_name']; ?>
           <i class='fas fa-info-circle' data-toggle='tooltip' data-placement='right' title='<?php echo $row['task_details']; ?>'></i>
