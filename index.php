@@ -23,7 +23,7 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
 
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-  <link href="assets/css/font.css" rel="stylesheet">
+  <link href="assets/fonts/Nunito.css" rel="stylesheet">
 
   <!-- Custom styles for this template-->
   <link href="assets/css/sb-admin-2.min.css" rel="stylesheet">
@@ -32,38 +32,53 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
 </head>
 
 <body class="bg-image">
-  <div class="element"></div>
-  <div class="container d-flex login-height justify-content-center align-items-center">
-    <div class="row justify-content-center w-100">
-      <div class="alert v-hidden" id="errorAlert" style="position: absolute;">
-      </div>
-      <div class="col-xl-10 col-lg-12 col-md-9">
-        <div class="row my-5">
-          <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-          <div class="col-lg-6">
-            <div class="p-5">
-              <div class="text-center">
-                <h1 class="h4 text-white font-weight-bold mb-4">Task Management System</h1>
+  <section class="vh-100">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-xl-10">
+          <div class="card shadow" style="border-radius: 1rem;">
+            <div class="row g-0">
+              <div class="col-xl-6 col-lg-5 d-none d-md-block">
+                <img src="assets/img/illustrations/pexels-polina-zimmerman-3778619.jpg"
+                  alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
               </div>
-              <form class="user" id="userDetails" enctype="multipart/form-data">
-                <div class="form-group">
-                  <input type="text" class="form-control form-control-user" id="username" name="username" placeholder="Please enter your username." autocomplete="off">
+              <div class="col-xl-6 col-lg-7 d-flex align-items-center">
+                <div class="card-body p-4 p-lg-5 text-black">
+
+                  <form id="userDetails">
+
+                    <div class="d-flex align-items-center mb-3 pb-1">
+                      <img src="assets/img/Logo.png" style="width: 30px;" class="mr-1">
+                      <span class="h4 font-weight-bold mb-0">Task Management System</span>
+                    </div>
+
+                    <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
+
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input type="text" id="username" name="username" class="form-control form-control-lg" autofocus />
+                      <label class="form-label" for="username">Username</label> <i class="small text-danger d-none">- Login or password is invalid.</i>
+                    </div>
+
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input type="password" id="password" name="password" class="form-control form-control-lg" />
+                      <label class="form-label" for="password">Password</label> <i class="small text-danger d-none">- Login or password is invalid.</i>
+                    </div>
+
+                  </form>
+
+                  <div class="pt-1 mb-4">
+                    <button class="btn btn-dark btn-lg btn-block" id="login" onclick="Login()">Login</button>
+                  </div>
+
+                  <small>System Version 1.00</small>
                 </div>
-                <div class="form-group">
-                  <input type="password" class="form-control form-control-user" id="password" name="password" placeholder="Please enter your password." autocomplete="off">
-                </div>
-              </form>
-              <p class="form-text text-center text-warning v-hidden" id="password-caps-warning"><i class="fas fa-lock fa-fw"></i> Caps Lock On</p>
-              <button class="btn btn-block btn-gradient-cyan mb-4" id="login" onclick="Login(this)"><i class="fas fa-arrow-alt-circle-right fa-fw"></i> Login</button>
-              <div class="text-center">
-                <small class="text-white-50">System Version 1.0</small>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>
@@ -81,19 +96,9 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
         $('#login').click();
       }
     });
-    (function() {
-      const passwordField = document.getElementById("password");
-      const errorField = document.getElementById("password-caps-warning");
-      passwordField.onkeydown = function(e) {
-        if (e.getModifierState("CapsLock")) {
-          errorField.classList.remove("v-hidden");
-        } else {
-          errorField.classList.add("v-hidden");
-        }
-      }
-    }());
 
     function Login(element) {
+      const warning = document.querySelectorAll('.text-danger');
       document.getElementById('username').classList.remove('border-danger');
       document.getElementById('password').classList.remove('border-danger');
       var accountDetials = new FormData(document.getElementById('userDetails'));
@@ -107,23 +112,11 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
           success: function(response) {
             if (response === 'Success') {
               window.location.href = "include/home.php";
-            } else if (response === 'Incorrect') {
-              document.getElementById('password').focus();
-              $('#errorAlert').html('<i class="fas fa-exclamation-triangle fa-fw"></i> Entered password is incorrect.');
-              $('#errorAlert').addClass('alert-warning');
-              $('#errorAlert').removeClass('v-hidden');
-              setTimeout(function() {
-                $('#errorAlert').addClass('alert-warning v-hidden');
-                $('#errorAlert').removeClass('alert-warning');
-              }, 5000);
             } else {
-              $('#errorAlert').html('<i class="fas fa-user-alt-slash"></i> Error accessing your account. Please contact the system administrator immediately!');
-              $('#errorAlert').addClass('alert-danger');
-              $('#errorAlert').removeClass('v-hidden');
-              setTimeout(function() {
-                $('#errorAlert').addClass('alert-danger v-hidden');
-                $('#errorAlert').removeClass('alert-danger');
-              }, 5000);
+              document.getElementById('password').focus();
+              warning.forEach(warn => {
+                warn.classList.remove('d-none');
+              });
             }
           }
         });
