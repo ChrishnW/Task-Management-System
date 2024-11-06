@@ -70,7 +70,9 @@ if (isset($_SESSION['SESS_MEMBER_ID'])) {
                     <button class="btn btn-dark btn-lg btn-block" id="login" onclick="Login()">Login</button>
                   </div>
 
-                  <small>System Version 1.00</small>
+                  <div class="text-center">
+                    <small>System Version 1.00</small>
+                  </div>
                 </div>
               </div>
             </div>

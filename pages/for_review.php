@@ -36,7 +36,7 @@ include('../include/header.php');
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+          <table class="table table-hover" id="reviewTable" width="100%" cellspacing="0">
             <thead>
               <tr>
                 <th class="col-1 text-center"><input type="checkbox" id='selectAll' class="form-control"></th>
@@ -47,13 +47,13 @@ include('../include/header.php');
                 <th>Date Accomplished</th>
                 <th>Asignee</th>
                 <th class="text-truncate">
-                  <button type="button" class="btn btn-success" id="approveButton" onclick="approveIDs(this)" style="display: none;">
+                  <button type="button" class="btn btn-success d-none" id="approveButton" onclick="approveIDs()">
                     <i class="fas fa-check-double fa-fw"></i> Approve
                   </button>
                 </th>
               </tr>
             </thead>
-            <tbody id='dataTableBody'>
+            <tbody id='reviewTableBody'>
               <?php $con->next_result();
               $result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND td.status='REVIEW' AND s.dept_id = '$dept_id'");
               if (mysqli_num_rows($result) > 0) {
@@ -62,7 +62,7 @@ include('../include/header.php');
                   $date_accomplished  = date_format(date_create($row['date_accomplished']), "F d, Y h:i a");
               ?>
                   <tr>
-                    <td><input type="checkbox" name="selected_ids[]" class="form-control" value="<?php echo $row['id']; ?>"></td>
+                    <td><input type="checkbox" name="selected_ids[]" class="form-control bodyCheckbox" value="<?php echo $row['id']; ?>"></td>
                     <td><?php echo $row['task_code'] ?></td>
                     <td>
                       <?php echo $row['task_name']; ?>
@@ -80,7 +80,7 @@ include('../include/header.php');
                     <td class="text-truncate"><?php echo $due_date ?></td>
                     <td class="text-truncate"><?php echo $date_accomplished ?></td>
                     <td class="text-truncate"><?php echo getUser($row['in_charge']); ?></td>
-                    <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-warning btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-star fa-fw"></i> Review</button></td>
+                    <td class="text-truncate"><button type="button" onclick="checkTask(this)" class="btn btn-warning btn-block singleApprove" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-star fa-fw"></i> Review</button></td>
                   </tr>
               <?php }
               } ?>
@@ -93,10 +93,10 @@ include('../include/header.php');
 </div>
 
 <div class="modal fade" id="approve" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content border-success">
       <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="exampleModalLongTitle">Approve Task</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Multi-Approve Task</h5>
       </div>
       <div class="modal-body text-center">
         <input type="hidden" id="taskID">
@@ -148,7 +148,7 @@ include('../include/header.php');
 <?php include('../include/footer.php'); ?>
 
 <script>
-  $('#dataTable').DataTable({
+  var table = $('#reviewTable').DataTable({
     "columnDefs": [{
       "orderable": false,
       "searchable": false,
@@ -297,25 +297,57 @@ include('../include/header.php');
     });
   }
 
-  $(document).ready(function() {
-    $('#selectAll').click(function() {
-      var isChecked = this.checked;
-      $('input[name="selected_ids[]"]').prop('checked', isChecked);
-      toggleApproveButton();
-    });
-
-    $('input[name="selected_ids[]"]').click(function() {
-      var allChecked = $('input[name="selected_ids[]"]:checked').length == $('input[name="selected_ids[]"]').length;
-      $('#selectAll').prop('checked', allChecked);
-      toggleApproveButton();
-    });
-
-    function toggleApproveButton() {
-      if ($('input[name="selected_ids[]"]:checked').length > 0) {
-        $('#approveButton').show();
-      } else {
-        $('#approveButton').hide();
-      }
+  function startSelectButton() {
+    var selectCount = table.$('.bodyCheckbox:checked').length;
+    if (selectCount > 0) {
+      $('#approveButton').removeClass('d-none').text('Approve (' + selectCount + ')');
+      table.$('.singleApprove').prop('disabled', true);
+    } else {
+      $('#approveButton').addClass('d-none');
+      table.$('.singleApprove').prop('disabled', false);
     }
+  }
+
+  $(document).ready(function() {
+    $('#selectAll').on('click', function() {
+      var isChecked = this.checked;
+      table.rows().every(function() {
+        var row = this.node();
+        $(row).find('.bodyCheckbox').each(function() {
+          if (!this.disabled) {
+            this.checked = isChecked;
+          }
+        });
+      });
+      startSelectButton();
+    });
+
+    $('#reviewTable tbody').on('change', '.bodyCheckbox', function() {
+      if (!this.checked) {
+        $('#selectAll').prop('checked', false);
+      } else {
+        var allChecked = true;
+        $('.bodyCheckbox').each(function() {
+          if (!this.checked && !this.disabled) {
+            allChecked = false;
+          }
+        });
+        $('#selectAll').prop('checked', allChecked);
+      }
+      startSelectButton();
+    });
+
+    // Ensure all checkboxes are checked/unchecked across all pages
+    $('#selectAll').on('click', function() {
+      var isChecked = this.checked;
+      table.rows().every(function() {
+        var row = this.node();
+        $(row).find('.bodyCheckbox').each(function() {
+          if (!this.disabled) {
+            this.checked = isChecked;
+          }
+        });
+      });
+    });
   });
 </script>
