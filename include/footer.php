@@ -279,7 +279,7 @@
 </div>
 
 <!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+<!-- <div class="modal fade" id="logoutModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header bg-info text-white">
@@ -289,6 +289,32 @@
       <div class="modal-footer">
         <a class="btn btn-danger" href="../include/logout.php">Logout</a>
         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Sign Out Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <!-- Warning Icon -->
+        <div class="mb-2">
+          <span class="btn btn-circle btn-warning"><i class="fas fa-exclamation-triangle"></i></span>
+        </div>
+
+        <!-- Modal Title -->
+        <h5 class="modal-title font-weight-bolder mb-3" id="signOutModalLabel">Sign out</h5>
+
+        <!-- Modal Text -->
+        <p class="small">Are you sure you would like to sign out of your account?</p>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-center">
+          <a class="btn btn-outline-secondary mr-3" href="../include/logout.php">Sign out</a>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+        </div>
       </div>
     </div>
   </div>
