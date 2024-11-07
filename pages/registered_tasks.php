@@ -30,7 +30,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
                 $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}'")); ?>
                 <tr>
                   <td><input type="checkbox" class="form-control export-sec-list" value="<?php echo $row['sec_id']; ?>"></td>
-                  <td><button class="btn btn-circle btn-sm btn-primary" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)">+</button> <?php echo $row['sec_name']; ?></td>
+                  <td><button class="btn btn-circle btn-sm btn-primary toggle-details" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)">+</button> <?php echo $row['sec_name']; ?></td>
                   <td><?php echo $row['dept_name']; ?></td>
                   <td class="text-center">
                     <span class="badge badge-pill badge-success">
@@ -68,7 +68,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
                 $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}'")); ?>
                 <tr>
                   <td><input type="checkbox" class="form-control export-sec-list" value="<?php echo $row['sec_id']; ?>"></td>
-                  <td><button class="btn btn-circle btn-sm btn-primary" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)">+</button> <?php echo $row['sec_name']; ?></td>
+                  <td><button class="btn btn-circle btn-sm btn-primary toggle-details" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)">+</button> <?php echo $row['sec_name']; ?></td>
                   <td><?php echo $row['dept_name']; ?></td>
                   <td class="text-center">
                     <span class="badge badge-pill badge-success">
@@ -167,10 +167,12 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
     var id = button.value;
     var tr = $(button).closest('tr');
     var row = $('#regTaskTable').DataTable().row(tr);
+    var tableId = 'detailsTable_' + id; // Unique key for each row
 
     if (row.child.isShown()) {
       row.child.hide();
       $(button).text('+');
+      localStorage.removeItem(tableId); // Remove state when closed
     } else {
       $.ajax({
         url: '../config/registered_tasks.php', // Replace with your PHP file
@@ -182,6 +184,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         success: function(data) {
           row.child(format(data)).show();
           $(button).text('-');
+          localStorage.setItem(tableId, 'open'); // Save state when opened
           $('[data-toggle="tooltip"]').tooltip();
         },
         error: function() {
@@ -236,6 +239,24 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
 
     return html;
   }
+
+  // Function to check and restore state on page load
+  function restoreTableState() {
+    $('#regTaskTable tbody tr').each(function() {
+      var button = $(this).find('button.toggle-details'); // Adjust selector as needed
+      var id = button.val();
+      var tableId = 'detailsTable_' + id;
+
+      if (localStorage.getItem(tableId) === 'open') {
+        toggleDetails(button[0]); // Open the row if it was previously opened
+      }
+    });
+  }
+
+  // Call restoreTableState on page load
+  $(document).ready(function() {
+    restoreTableState();
+  });
 
   function editTask(element) {
     var id = element.value;
