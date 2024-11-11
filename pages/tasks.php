@@ -98,7 +98,11 @@ include('../include/header.php');
             </thead>
             <tbody id='taskDeployedBody'>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1");
+              $getList = "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN department d ON d.dept_id=s.dept_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1";
+              if ($access == 3) {
+                $getList .= " AND d.dept_id='{$dept_id}'";
+              }
+              $result = mysqli_query($con, $getList);
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
                   $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>

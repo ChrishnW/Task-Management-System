@@ -4,7 +4,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
 ?>
 
 <div class="container-fluid">
-  <?php if ($access === '1') : ?>
+  <?php if ($access == 1) : ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold">Task List</h6>
@@ -44,7 +44,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         </div>
       </div>
     </div>
-  <?php elseif ($access === '3') : ?>
+  <?php elseif ($access == 3) : ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold">Task List</h6>
@@ -54,7 +54,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           <table class="table" id="regTaskTable" width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th class="col-1 text-center">
+                <th class="col-1 text-center text-truncate">
                   <button class="btn btn-secondary" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
                 </th>
                 <th class="col-4">Section</th>
