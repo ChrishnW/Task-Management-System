@@ -89,7 +89,12 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="importModalLabel">Import Task</h5>
+        <h5 class="modal-title" id="importModalLabel">
+          <i class="fas fa-upload"></i> Import Task
+        </h5>
+        <button type="button" class="btn btn-primary" onclick="downloadTemplate()">
+          <i class="fas fa-download"></i> Download Template
+        </button>
       </div>
       <div class="modal-body">
         <div class="text-center">
@@ -392,5 +397,9 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         alert("An error occurred during the import process.");
       }
     });
+  }
+
+  function downloadTemplate() {
+    window.open('../files/for_import_tasks_excel_template.xlsx', '_blank');
   }
 </script>
