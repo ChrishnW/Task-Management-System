@@ -18,10 +18,11 @@ if (mysqli_num_rows($query_tasks) > 0) {
       $fetchDate = sprintf("%04d-%02d-%02d", $currentYear, $currentMonth, $day);
       $dueDate   = $fetchDate . ' 16:00:00';
 
-      $deployTask = mysqli_query($con, "INSERT INTO tasks_details (`task_id`, `due_date`) VALUES ('$task_id', '$dueDate')");
-      if ($deployTask) {
+      $checkDeployed = mysqli_num_rows(mysqli_query($con, "SELECT * FROM tasks_details WHERE task_id='$task_id' AND due_date='$dueDate'"));
+      if ($checkDeployed === 0) :
+        $deployTask = mysqli_query($con, "INSERT INTO tasks_details (`task_id`, `due_date`) VALUES ('$task_id', '$dueDate')");
         $taskCount += 1;
-      }
+      endif;
     }
   }
   if ($taskCount > 0) {

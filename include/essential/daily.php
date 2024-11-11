@@ -17,8 +17,11 @@ if (date('N') >= 1 && date('N') <= 5) {
         $task_id  = $row['id'];
         $due_date = date('Y-m-d 16:00:00');
 
-        $deployTask = mysqli_query($con, "INSERT INTO tasks_details (`task_id`, `due_date`) VALUES ('$task_id', '$due_date')");
-        $taskCount += 1;
+        $checkDeployed = mysqli_num_rows(mysqli_query($con, "SELECT * FROM tasks_details WHERE task_id='$task_id' AND due_date='$due_date'"));
+        if ($checkDeployed === 0) :
+          $deployTask = mysqli_query($con, "INSERT INTO tasks_details (`task_id`, `due_date`) VALUES ('$task_id', '$due_date')");
+          $taskCount += 1;
+        endif;
       }
       if ($loadDailyTasks) {
         $systemAction = "$taskCount daily routine tasks have been successfully generated.";
