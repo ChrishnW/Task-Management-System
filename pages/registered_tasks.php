@@ -379,7 +379,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
       processData: false,
       success: function(response) {
         togglePreloader(false);
-        if (result == 'Success') {
+        if (response == 'Success') {
           document.getElementById('success_log').innerHTML = 'Task information updated successfully.';
           $('#success').modal('show');
         } else {

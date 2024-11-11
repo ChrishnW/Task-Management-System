@@ -94,9 +94,12 @@ if (isset($_POST['taskImport'])) {
   $getTemplist = mysqli_query($con, "SELECT *, GROUP_CONCAT(in_charge SEPARATOR ', ') AS in_charge_list FROM task_temp GROUP BY task_name ASC");
   while ($row = mysqli_fetch_assoc($getTemplist)) {
     $inchargeList = array_map('trim', explode(',', $row['in_charge_list']));
-    $registerTaskList = "INSERT INTO `task_list` (`task_name`, `task_details`, `task_class`, `task_for`) VALUES ('{$row['task_name']}', '{$row['task_details']}', '{$row['task_class']}', '{$row['task_for']}')";
+    $taskName = str_replace("'", "&apos;", $row['task_name']);
+    $taskDetails = str_replace("'", "&apos;", $row['task_details']);
+    $registerTaskList = "INSERT INTO `task_list` (`task_name`, `task_details`, `task_class`, `task_for`) VALUES ('{$taskName}', '{$taskDetails}', '{$row['task_class']}', '{$row['task_for']}')";
     if (!mysqli_query($con, $registerTaskList)) {
       $success = false;
+      $error_message = mysqli_error($con);
       break;
     }
     $id = mysqli_insert_id($con);
@@ -104,6 +107,7 @@ if (isset($_POST['taskImport'])) {
       $registerTask = "INSERT INTO `tasks` (`task_id`, `requirement_status`, `in_charge`, `submission`) VALUES ('{$id}', '{$row['attachment']}', '{$in_charge}', '{$row['submission']}')";
       if (!mysqli_query($con, $registerTask)) {
         $success = false;
+        $error_message = mysqli_error($con);
         break;
       }
     }
@@ -113,7 +117,7 @@ if (isset($_POST['taskImport'])) {
     die("Success");
   } else {
     mysqli_rollback($con);
-    die("An error occurred. Changes were not applied.");
+    die("An error occurred.<br>" . $error_message);
   }
 }
 
