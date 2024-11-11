@@ -1107,23 +1107,21 @@ include('../include/header.php');
 
 <!-- Member -->
 <script>
-  <?php if ($access === '2'): ?>
-    document.addEventListener('DOMContentLoaded', function() {
-      var activeTab = localStorage.getItem('activeTab');
-      if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
-        document.querySelector(`a[href="${activeTab}"]`).classList.add('active');
-        document.querySelector(activeTab).classList.add('show', 'active');
-      } else {
-        document.querySelector('.nav-link').classList.add('active');
-        document.querySelector('.tab-pane').classList.add('show', 'active');
-      }
+  document.addEventListener('DOMContentLoaded', function() {
+    var activeTab = localStorage.getItem('activeTab');
+    if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
+      document.querySelector(`a[href="${activeTab}"]`).classList.add('active');
+      document.querySelector(activeTab).classList.add('show', 'active');
+    } else {
+      document.querySelector('.nav-link').classList.add('active');
+      document.querySelector('.tab-pane').classList.add('show', 'active');
+    }
 
-      $('#myTabs a').on('shown.bs.tab', function(e) {
-        var href = $(e.target).attr('href');
-        localStorage.setItem('activeTab', href);
+    $('#myTabs a').on('shown.bs.tab', function(e) {
+      var href = $(e.target).attr('href');
+      localStorage.setItem('activeTab', href);
 
-        var tableId = $(href).find('table').attr('id');
-      });
+      var tableId = $(href).find('table').attr('id');
     });
-  <?php endif; ?>
+  });
 </script>
