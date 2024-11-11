@@ -45,6 +45,6 @@ var finishedSettings = {
   }],
 };
 
-var ToDoTable = $('#myTasksTableTodo').DataTable(todoSettings);
-var ReviewTable = $('#myTasksTableReview').DataTable(reviewSettings);
-var FinishedTable = $('#myTasksTableFinished').DataTable(finishedSettings);
+var ToDoTable = $('#myTasksTableTodo').DataTable(todoSettings, $('[data-toggle="tooltip"]').tooltip());
+var ReviewTable = $('#myTasksTableReview').DataTable(reviewSettings, $('[data-toggle="tooltip"]').tooltip());
+var FinishedTable = $('#myTasksTableFinished').DataTable(finishedSettings, $('[data-toggle="tooltip"]').tooltip());
