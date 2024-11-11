@@ -15,7 +15,7 @@ function getUser($username)
 {
   global $con;
   $user = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM accounts WHERE username='$username'"));
-  $name = ucwords(strtolower($user['fname'] . ' ' . $user['lname']));
+  $name = empty($user['fname']) && empty($user['lname']) ? $user['username'] : ucwords(strtolower($user['fname'] . ' ' . $user['lname']));
   $image = empty($user["file_name"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $user["file_name"];
   $userDetails = "<img src='$image' class='img-table'>$name";
 

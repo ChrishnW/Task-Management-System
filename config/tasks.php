@@ -43,7 +43,7 @@ if (isset($_POST['filterTable'])) {
   while ($row = mysqli_fetch_assoc($getTable)):
     $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
     <tr <?php if ($row['task_status'] === '0') echo "class='table-danger'"; ?>>
-      <td><?php echo $row['task_code'] ?></td>
+      <td class="text-truncate"><?php echo $row['task_code'] ?></td>
       <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
       <td><?php echo getTaskClass($row['task_class']); ?></td>
       <td class="text-truncate"><?php echo $due_date ?></td>
