@@ -33,7 +33,6 @@ var reviewSettings = {
 var finishedSettings = {
   "autoWidth": false,
   "order": [
-    [4, "asc"],
     [3, "desc"]
   ],
   "columnDefs": [{
