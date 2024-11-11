@@ -559,7 +559,6 @@ include('../include/header.php');
 <?php include('../include/footer.php'); ?>
 
 <script src="../assets/js/drag-drop.js"></script>
-<script src="../assets/js/member-datatable-settings.js"></script>
 <script src="../assets/js/department-load-section.js" w></script>
 <script src="../assets/js/datepicker-min.js"></script>
 
@@ -583,6 +582,8 @@ include('../include/header.php');
     return new Date(dateParts[2], months[dateParts[0]] - 1, dateParts[1].replace(',', ''));
   };
 </script>
+
+<script src="../assets/js/member-datatable-settings.js"></script>
 
 <script>
   function startSelectButton() {

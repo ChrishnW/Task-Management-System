@@ -8,6 +8,9 @@ var todoSettings = {
     "orderable": false,
     "searchable": false,
     "targets": [0, 6],
+  }, {
+    "type": "date-custom",
+    "targets": 4
   }],
 };
 
@@ -21,6 +24,9 @@ var reviewSettings = {
     "orderable": false,
     "searchable": false,
     "targets": 5,
+  }, {
+    "type": "date-custom",
+    "targets": 3
   }],
 };
 
@@ -34,6 +40,9 @@ var finishedSettings = {
     "orderable": false,
     "searchable": false,
     "targets": 5,
+  }, {
+    "type": "date-custom",
+    "targets": 3
   }],
 };
 
