@@ -727,3 +727,44 @@
     justify-content: center;
     align-items    : center;
 }
+
+.img-thumbnail-circle {
+    padding         : .25rem;
+    background-color: #fff;
+    border          : 1px solid #dddfeb;
+    border-radius   : 50%;
+    max-width       : 100%;
+    height          : auto;
+}
+
+.default-image {
+    cursor: pointer;
+}
+
+.selected {
+    border: 3px solid #007bff;
+}
+
+/* Centering the image preview inside the container */
+#selectedProfileContainer {
+    display        : flex;
+    justify-content: center;
+    /* Horizontally center */
+    align-items    : center;
+    /* Vertically center */
+    height         : 200px;
+    /* Set a fixed height for the preview container */
+    border         : 1px solid #ddd;
+    /* Optional, adds a border around the preview */
+    margin-top     : 10px;
+    /* Add space above the preview */
+}
+
+#selectedProfileImage {
+    max-width : 100%;
+    /* Make sure the image doesn't exceed container's width */
+    max-height: 100%;
+    /* Make sure the image doesn't exceed container's height */
+    object-fit: contain;
+    /* Ensure the aspect ratio is preserved */
+}
