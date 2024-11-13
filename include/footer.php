@@ -388,13 +388,13 @@
       <div class="modal-header bg-danger text-white">
         <h5 class="modal-title" id="exampleModalLongTitle"><i class="fas fa-shield-alt fa-fw"></i> Security Check</h5>
       </div>
-      <div class="modal-body text-center">
-        <i class="fas fa-hand-paper fa-5x"></i>
-        <br><br>
+      <div class="modal-body text-center font-weight-bolder">
+        <i class="fas fa-dumpster-fire fa-5x text-danger mb-3"></i>
+        <br>
         Are you sure you want to proceed?
       </div>
       <div class="modal-footer">
-        <button class="btn btn-success" id="confirmBtn">Confirm</button>
+        <button class="btn btn-outline-danger" id="confirmBtn">Confirm</button>
         <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
       </div>
     </div>

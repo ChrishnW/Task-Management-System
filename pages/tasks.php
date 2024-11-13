@@ -29,7 +29,7 @@ include('../include/header.php');
                   <select name="filterByDepartment" id="filterByDepartment" class="form-control filterByDepartment" onchange="filterTable()">
                     <option value="All">All</option>
                     <?php
-                    $getDepList = "SELECT * FROM department";
+                    $getDepList = "SELECT * FROM department WHERE status=1";
                     if ($access == 3) {
                       $getDepList .= " WHERE dept_id='$dept_id'";
                     }
@@ -87,13 +87,14 @@ include('../include/header.php');
           <table class="table table-hover" id="taskDeployedTable">
             <thead>
               <tr>
-                <th>Code</th>
+                <th class="col-1"><input type="checkbox" id="selectAllCheckbox" class="form-control"></th>
+                <th class="col-1">Code</th>
                 <th>Task</th>
                 <th>Classification</th>
                 <th>Due Date</th>
                 <th>Assignee</th>
                 <th>Progress</th>
-                <th></th>
+                <th class="col-1"><button id="actionButton" class="btn btn-danger btn-block d-none"><i class="fas fa-trash fa-fw"></i> Delete</button></th>
               </tr>
             </thead>
             <tbody id='taskDeployedBody'>
@@ -107,6 +108,7 @@ include('../include/header.php');
                 while ($row = $result->fetch_assoc()) {
                   $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
                   <tr>
+                    <td><input type="checkbox" class="form-control rowCheckbox" value="<?php echo $row['id']; ?>"></td>
                     <td class="text-truncate"><?php echo $row['task_code'] ?></td>
                     <td>
                       <?php echo $row['task_name'] ?>
@@ -312,103 +314,6 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php elseif ($access == 0) : ?>
-    <div class="row">
-      <div class="form-group col-md-2">
-        <label>From</label>
-        <input type="date" name="date_from" id="date_from" class="form-control" onchange="filterTable()">
-      </div>
-      <div class="form-group col-md-2">
-        <label>To</label>
-        <input type="date" name="date_to" id="date_to" class="form-control" onchange="filterTable()">
-      </div>
-      <div class="form-group col-md-2">
-        <label>Section</label>
-        <select id="section" name="section[]" class="form-control selectpicker show-tick" data-style="bg-primary text-white text-capitalize" data-size="5" data-live-search="true" onchange="filterTable()">
-          <option value='' data-subtext='Default' selected>All</option>
-          <?php
-          $con->next_result();
-          $sql = mysqli_query($con, "SELECT * FROM section WHERE status='1' AND dept_id='$dept_id'");
-          if (mysqli_num_rows($sql) > 0) {
-            while ($row = mysqli_fetch_assoc($sql)) { ?>
-              <option value='<?php echo $row['sec_id'] ?>' data-subtext='<?php echo $row['sec_id'] ?>' class="text-capitalize"><?php echo strtolower($row['sec_name']) ?></option>
-          <?php }
-          } ?>
-        </select>
-      </div>
-      <div class="form-group col-md-2">
-        <label>Progress</label>
-        <select id="progress" name="progress" class="form-control selectpicker show-tick" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable()">
-          <option value="" data-subtext="Default" selected>All</option>
-          <option value="NOT YET STARTED">Not Yet Started</option>
-          <option value="IN PROGRESS">In-Progress</option>
-          <option value="REVIEW">Review</option>
-          <option value="FINISHED">Finished</option>
-          <option value="RESCHEDULE">Reschedule</option>
-        </select>
-      </div>
-      <div class="form-group col-md-2">
-        <label>Classification</label>
-        <select id="taskClass" name="taskClass" class="form-control selectpicker show-tick" data-style="bg-primary text-white text-capitalize" data-size="5" onchange="filterTable()">
-          <option value="" data-subtext="Default" selected>All</option>
-          <?php
-          $con->next_result();
-          $sql = mysqli_query($con, "SELECT * FROM task_class WHERE id!=5");
-          if (mysqli_num_rows($sql) > 0) {
-            while ($row = mysqli_fetch_assoc($sql)) { ?>
-              <option value='<?php echo $row['id'] ?>' class="text-capitalize"><?php echo strtolower($row['task_class']) ?></option>
-          <?php }
-          } ?>
-        </select>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-primary">
-        <h6 class="m-0 font-weight-bold text-white">Deployed Tasks</h6>
-        <div class="dropdown no-arrow">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskRegistrationModal">
-            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Additional Task
-          </button>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
-            <thead class='table table-success'>
-              <tr>
-                <th class="col col-md-1">Action</th>
-                <th>Code</th>
-                <th>Title</th>
-                <th>Classification</th>
-                <th class="col col-md-1">Due Date</th>
-                <th>Assignee</th>
-                <th>Progress</th>
-              </tr>
-            </thead>
-            <tbody id='dataTableBody'>
-              <?php
-              $result = mysqli_query($con, "SELECT * FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status=1 AND td.status='REVIEW' AND s.dept_id = '$dept_id'");
-              if (mysqli_num_rows($result) > 0) {
-                while ($row = $result->fetch_assoc()) {
-                  $due_date   = date_format(date_create($row['due_date']), "Y-m-d h:i a"); ?>
-                  <tr>
-                    <td><button type="button" onclick="viewTask(this)" class="btn btn-primary btn-block" value="<?php echo $row['id'] ?>" data-name="<?php echo $row['task_name'] ?>"><i class="fas fa-eye fa-fw"></i> View</button></td>
-                    <td>
-                      <center /><?php echo $row['task_code'] ?>
-                    </td>
-                    <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
-                    <td><?php echo getTaskClass($row['task_class']); ?></td>
-                    <td><?php echo $due_date ?></td>
-                    <td><?php echo getUser($row['in_charge']); ?></td>
-                    <td><?php echo getProgressBadge($row['status']); ?></td>
-                  </tr>
-              <?php }
-              } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
   <?php endif; ?>
 </div>
 
@@ -566,6 +471,7 @@ include('../include/header.php');
 <script src="../assets/js/department-load-section.js" w></script>
 <script src="../assets/js/datepicker-min.js"></script>
 
+<!-- Date Order in Table -->
 <script>
   $.fn.dataTable.ext.type.order['date-custom-pre'] = function(d) {
     var months = {
@@ -967,6 +873,7 @@ include('../include/header.php');
   }
 </script>
 
+<!-- Dropbox -->
 <script>
   $('#filterOptions').on('click', function(event) {
     event.stopPropagation();
@@ -975,21 +882,6 @@ include('../include/header.php');
 
 <!-- Admin -->
 <script>
-  $('#taskDeployedTable').DataTable({
-    "columnDefs": [{
-      "orderable": false,
-      "searchable": false,
-      "targets": 6
-    }, {
-      "type": "date-custom",
-      "targets": 3
-    }],
-    "order": [
-      [3, "desc"],
-      [0, "desc"]
-    ]
-  }, $('[data-toggle="tooltip"]').tooltip());
-
   function editTask(element) {
     const taskID = element.value;
     const access = <?php echo $access ?>;
@@ -1055,6 +947,28 @@ include('../include/header.php');
       }
     });
   }
+</script>
+
+<script>
+  $(document).ready(function() {
+    // Initialize DataTable
+    $('#taskDeployedTable').DataTable({
+      "columnDefs": [{
+        "orderable": false,
+        "searchable": false,
+        "targets": [0, 7]
+      }, {
+        "type": "date-custom",
+        "targets": 4
+      }],
+      "order": [
+        [4, "desc"]
+      ]
+    }, $('[data-toggle="tooltip"]').tooltip());
+
+    // Rebind Checkbox Event Handlers Initially
+    rebindCheckboxHandlers();
+  });
 
   function filterTable() {
     $('#taskDeployedTable').DataTable().destroy();
@@ -1081,51 +995,137 @@ include('../include/header.php');
     if (fromDate !== "") data.fromDate = fromDate;
     if (toDate !== "") data.toDate = toDate;
 
-    console.log(data);
-
     $.ajax({
       method: "POST",
       url: "../config/tasks.php",
       data: data,
       success: function(response) {
-        console.log(response);
+        // Append filtered rows
         $('#taskDeployedBody').append(response);
+
+        // Reinitialize DataTable
         $('#taskDeployedTable').DataTable({
           "columnDefs": [{
             "orderable": false,
             "searchable": false,
-            "targets": [0, 6]
+            "targets": [0, 7]
           }, {
             "type": "date-custom",
-            "targets": 3
+            "targets": 4
           }],
           "order": [
-            [3, "desc"],
-            [1, "asc"]
+            [4, "desc"]
           ]
         }, $('[data-toggle="tooltip"]').tooltip());
+
+        // Rebind Checkbox Event Handlers After Reinitialization
+        rebindCheckboxHandlers();
       }
     })
+  }
+
+  function rebindCheckboxHandlers() {
+    const table = $('#taskDeployedTable').DataTable();
+
+    // 'Select All' checkbox handler
+    $('#selectAllCheckbox').off('change').on('change', function() {
+      const isChecked = $(this).is(':checked');
+      table.rows().every(function() {
+        const row = this.node();
+        $(row).find('td input.rowCheckbox').prop('checked', isChecked);
+      });
+      toggleActionButton();
+    });
+
+    // Individual row checkbox handler
+    $('#taskDeployedTable').off('change', 'td input.rowCheckbox').on('change', 'td input.rowCheckbox', function() {
+      const totalCheckboxes = table.rows().nodes().to$().find('td input.rowCheckbox').length;
+      const checkedCheckboxes = table.rows().nodes().to$().find('td input.rowCheckbox:checked').length;
+
+      const allChecked = totalCheckboxes === checkedCheckboxes;
+      $('#selectAllCheckbox').prop('checked', allChecked);
+      toggleActionButton();
+    });
+
+    // Toggle Action Button Visibility
+    function toggleActionButton() {
+      const anyChecked = table.rows().nodes().to$().find('td input.rowCheckbox:checked').length > 0;
+      $('#actionButton').toggleClass('d-none', !anyChecked);
+    }
+
+    // Action Button Click Event
+    $('#actionButton').off('click').on('click', function() {
+      // Show the confirmation modal
+      $('#delete').modal('show');
+
+      // Confirm button in the modal
+      $('#confirmBtn').off('click').on('click', function() {
+        // Get selected checkbox values
+        const selectedValues = table
+          .rows()
+          .nodes()
+          .to$()
+          .find('td input.rowCheckbox:checked')
+          .map(function() {
+            return $(this).val();
+          })
+          .get();
+
+        // Ensure values are selected
+        if (selectedValues.length === 0) {
+          alert('No rows selected for deletion!');
+          return;
+        }
+
+        // AJAX request to delete the selected tasks
+        $.ajax({
+          type: 'POST',
+          url: '../config/tasks.php',
+          data: {
+            "deleteTask": true,
+            "selectedValues": selectedValues
+          },
+          success: function(response) {
+            // Optionally close the modal after successful deletion
+            $('#delete').modal('hide');
+            if (response === 'Success') {
+              document.getElementById('success_log').innerHTML = 'Operation completed successfully.';
+              $('#success').modal('show');
+            } else {
+              document.getElementById('error_found').innerHTML = response;
+              $('#error').modal('show');
+              $button.prop('disabled', false);
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error('Error occurred:', error);
+            alert('Failed to delete tasks. Please try again.');
+          }
+        });
+      });
+    });
   }
 </script>
 
 <!-- Member -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var activeTab = localStorage.getItem('activeTab');
-    if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
-      document.querySelector(`a[href="${activeTab}"]`).classList.add('active');
-      document.querySelector(activeTab).classList.add('show', 'active');
-    } else {
-      document.querySelector('.nav-link').classList.add('active');
-      document.querySelector('.tab-pane').classList.add('show', 'active');
-    }
+<?php if ($access == 2) : ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var activeTab = localStorage.getItem('activeTab');
+      if (activeTab && document.querySelector(`a[href="${activeTab}"]`)) {
+        document.querySelector(`a[href="${activeTab}"]`).classList.add('active');
+        document.querySelector(activeTab).classList.add('show', 'active');
+      } else {
+        document.querySelector('.nav-link').classList.add('active');
+        document.querySelector('.tab-pane').classList.add('show', 'active');
+      }
 
-    $('#myTabs a').on('shown.bs.tab', function(e) {
-      var href = $(e.target).attr('href');
-      localStorage.setItem('activeTab', href);
+      $('#myTabs a').on('shown.bs.tab', function(e) {
+        var href = $(e.target).attr('href');
+        localStorage.setItem('activeTab', href);
 
-      var tableId = $(href).find('table').attr('id');
+        var tableId = $(href).find('table').attr('id');
+      });
     });
-  });
-</script>
+  </script>
+<?php endif; ?>

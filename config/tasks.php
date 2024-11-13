@@ -43,6 +43,7 @@ if (isset($_POST['filterTable'])) {
   while ($row = mysqli_fetch_assoc($getTable)):
     $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
     <tr <?php if ($row['task_status'] === '0') echo "class='table-danger'"; ?>>
+      <td><input type="checkbox" class="form-control rowCheckbox" value="<?php echo $row['id']; ?>"></td>
       <td class="text-truncate"><?php echo $row['task_code'] ?></td>
       <td><?php echo $row['task_name'] ?> <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo $row['task_details'] ?>"></i></td>
       <td><?php echo getTaskClass($row['task_class']); ?></td>
@@ -986,11 +987,27 @@ if (isset($_POST['addTask'])) {
   }
 }
 if (isset($_POST['deleteTask'])) {
-  $queryDelete = mysqli_query($con, "DELETE FROM tasks_details WHERE id='{$_POST['taskID']}'");
-  if ($queryDelete) {
-    die('Success');
-  } else {
-    die("Error: Could not delete task. " . mysqli_error($con));
-  }
+  if ($access == 1) :
+    $error = false;
+    foreach ($_POST['selectedValues'] as $taskID) :
+      $queryDelete = mysqli_query($con, "DELETE FROM tasks_details WHERE id='{$taskID}'");
+      if ($queryDelete) :
+        $error = false;
+      else:
+        $error = true;
+        die("Error: Could not delete task. " . mysqli_error($con));
+      endif;
+    endforeach;
+    if (!$error) :
+      die('Success');
+    endif;
+  else:
+    $queryDelete = mysqli_query($con, "DELETE FROM tasks_details WHERE id='{$_POST['taskID']}'");
+    if ($queryDelete) {
+      die('Success');
+    } else {
+      die("Error: Could not delete task. " . mysqli_error($con));
+    }
+  endif;
 }
 ?>
