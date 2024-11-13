@@ -29,7 +29,7 @@ if (isset($_POST['filterTable'])) {
   endif;
   if (isset($_POST['department']) && !isset($_POST['section'])):
     $depRow = mysqli_fetch_assoc(mysqli_query($con, "SELECT GROUP_CONCAT(CASE WHEN s.status = 1 THEN CONCAT('\"', s.sec_id, '\"') END SEPARATOR ', ') AS sectionList FROM section s WHERE s.dept_id='{$_POST['department']}'"));
-    echo $depRow['sectionList'];
+    // echo $depRow['sectionList'];
     if ($depRow['sectionList'] !== NULL):
       $loadTable .= " AND tl.task_for IN ({$depRow['sectionList']})";
     else:

@@ -94,7 +94,7 @@ include('../include/header.php');
                 <th>Due Date</th>
                 <th>Assignee</th>
                 <th>Progress</th>
-                <th class="col-1"><button id="actionButton" class="btn btn-danger btn-block d-none"><i class="fas fa-trash fa-fw"></i> Delete</button></th>
+                <th class="col-1 text-truncate"><button id="actionButton" class="btn btn-danger btn-block d-none"><i class="fas fa-trash fa-fw"></i> Delete</button></th>
               </tr>
             </thead>
             <tbody id='taskDeployedBody'>
@@ -1027,6 +1027,24 @@ include('../include/header.php');
   function rebindCheckboxHandlers() {
     const table = $('#taskDeployedTable').DataTable();
 
+    // Function to update the delete button text with the count of selected checkboxes
+    function updateDeleteButtonText() {
+      // Get the number of checked checkboxes in the table (filtered or pre-filtered rows)
+      const selectedCheckboxes = table
+        .rows()
+        .nodes()
+        .to$()
+        .find('td input.rowCheckbox:checked')
+        .length;
+
+      // Update the button text with the selected count in the format "Delete (x)"
+      const buttonText = `Delete (${selectedCheckboxes})`;
+      $('#actionButton').html(`<i class="fas fa-trash fa-fw"></i> ${buttonText}`);
+
+      // Show or hide the action button based on the number of selected checkboxes
+      $('#actionButton').toggleClass('d-none', selectedCheckboxes === 0);
+    }
+
     // 'Select All' checkbox handler
     $('#selectAllCheckbox').off('change').on('change', function() {
       const isChecked = $(this).is(':checked');
@@ -1034,7 +1052,7 @@ include('../include/header.php');
         const row = this.node();
         $(row).find('td input.rowCheckbox').prop('checked', isChecked);
       });
-      toggleActionButton();
+      updateDeleteButtonText();
     });
 
     // Individual row checkbox handler
@@ -1044,14 +1062,14 @@ include('../include/header.php');
 
       const allChecked = totalCheckboxes === checkedCheckboxes;
       $('#selectAllCheckbox').prop('checked', allChecked);
-      toggleActionButton();
+      updateDeleteButtonText();
     });
 
     // Toggle Action Button Visibility
-    function toggleActionButton() {
-      const anyChecked = table.rows().nodes().to$().find('td input.rowCheckbox:checked').length > 0;
-      $('#actionButton').toggleClass('d-none', !anyChecked);
-    }
+    // function updateDeleteButtonText() {
+    //   const anyChecked = table.rows().nodes().to$().find('td input.rowCheckbox:checked').length > 0;
+    //   $('#actionButton').toggleClass('d-none', !anyChecked);
+    // }
 
     // Action Button Click Event
     $('#actionButton').off('click').on('click', function() {
