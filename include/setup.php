@@ -28,6 +28,7 @@
 </head>
 
 <body class="bg-gradient-light">
+  <div id="preloader"><img src="../assets/img/illustrations/loading.gif" alt="Loading..."></div>
   <div class="container center-screen">
     <div class="col-md-6">
       <div class="card shadow">
@@ -140,20 +141,17 @@
 <script src="../assets/js/sb-admin-2.min.js"></script>
 
 <script>
-  // function submitDetails() {
-  //   const formData = new FormData(document.getElementById('userDetails'));
-  //   formData.append('submitDetails', true);
-  //   $.ajax({
-  //     method: "POST",
-  //     url: "../config/setup.php",
-  //     data: formData,
-  //     contentType: false,
-  //     processData: false,
-  //     success: function(data) {
-  //       window.location.href = "../pages/index.php";
-  //     }
-  //   });
-  // }
+  window.onload = function() {
+    document.getElementById('preloader').style.display = 'none';
+  };
+
+  function togglePreloader(show) {
+    if (show) {
+      $('#preloader').show();
+    } else {
+      $('#preloader').hide();
+    }
+  }
 </script>
 
 <script>
@@ -264,6 +262,7 @@
 
 <script>
   document.getElementById('completeButton').addEventListener('click', function() {
+    togglePreloader(true);
     const form = document.getElementById('userDetails');
     const formData = new FormData(form);
 
