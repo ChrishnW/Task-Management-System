@@ -6,11 +6,6 @@ include('../include/header.php');
   <div class="card">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
       <h6 class="m-0 font-weight-bold">Department Management</h6>
-      <div class="dropdown no-arrow">
-        <button type="button" onclick="showCreate(this)" class="btn btn-primary">
-          <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create
-        </button>
-      </div>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -20,7 +15,11 @@ include('../include/header.php');
               <th>Department</th>
               <th>Total Secion(s)</th>
               <th>Status</th>
-              <th></th>
+              <th class="col-1">
+                <button type="button" onclick="showCreate(this)" class="btn btn-primary btn-block">
+                  <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create
+                </button>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -42,7 +41,7 @@ include('../include/header.php');
                   <td><?php echo $row['dept_name'] ?></td>
                   <td><span class="badge badge-primary"><?php echo $total_section ?> Registered</span></td>
                   <td><?php echo $status ?></td>
-                  <td>
+                  <td class="text-truncate">
                     <button type="button" class="btn btn-info btn-block btn-sm" onclick="editDepartment(this)" value="<?php echo $row['id'] ?>" data-id="<?php echo $row['dept_id'] ?>" data-name="<?php echo $row['dept_name'] ?>" data-status="<?php echo $row['status'] ?>">Edit</button>
                     <?php if ($row['status'] === '1'): ?>
                       <button class="btn btn-danger btn-block btn-sm" value="<?php echo $row['id']; ?>" data-status="0" onclick="changeStatus(this)">Deactive</button>

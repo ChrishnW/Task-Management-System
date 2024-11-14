@@ -17,7 +17,7 @@ function getUser($username)
   $user = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM accounts WHERE username='$username'"));
   $name = empty($user['fname']) && empty($user['lname']) ? $user['username'] : ucwords(strtolower($user['fname'] . ' ' . $user['lname']));
   $image = empty($user["file_name"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $user["file_name"];
-  $userDetails = "<img src='$image' class='img-table' data-toggle='tooltip' data-placement='top' title='{$user['username']}'>$name";
+  $userDetails = "<img src='$image' class='img-table'>$name";
 
   return $userDetails;
 }
@@ -70,9 +70,26 @@ $db_size_query = mysqli_query($con, "SELECT SUM(data_length + index_length) AS s
 $row    = $db_size_query->fetch_assoc();
 $size   = $row['size'] ? $row['size'] : 0;
 $units  = ['B', 'KB', 'MB', 'GB', 'TB'];
-$db_size = formatDBSize($size, $units);
+$db_size = formatSize($size);
 
 // Project Size Statistics
+function getDirectorySize($dir)
+{
+  $size = 0;
+  foreach (glob(rtrim($dir, '/') . '/*', GLOB_NOSORT) as $each) {
+    $size += is_file($each) ? filesize($each) : getDirectorySize($each);
+  }
+  return $size;
+}
+
+function formatSize($bytes)
+{
+  $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  for ($i = 0; $bytes >= 1024 && $i < count($units) - 1; $i++) {
+    $bytes /= 1024;
+  }
+  return round($bytes, 2) . ' ' . $units[$i];
+}
 $rootDir = __DIR__;
 while (!file_exists($rootDir . '/composer.json') && dirname($rootDir) != $rootDir) {
   $rootDir = dirname($rootDir);
@@ -140,42 +157,6 @@ if ($access == 3) {
   $utasks            = $row['utasks'];
   $members           = $row['members'];
 }
-
-// Server Statistics
-$con->next_result();
-$db_size_query = mysqli_query($con, "SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema='gtms'");
-$row    = $db_size_query->fetch_assoc();
-$size   = $row['size'] ? $row['size'] : 0;
-$units  = ['B', 'KB', 'MB', 'GB', 'TB'];
-function formatDBSize($size, $units)
-{
-  for ($i = 0; $size >= 1024 && $i < count($units) - 1; $i++) {
-    $size /= 1024;
-  }
-  return round($size, 2) . ' ' . $units[$i];
-}
-
-$con->next_result();
-function getDirectorySize($dir)
-{
-  $size = 0;
-  foreach (glob(rtrim($dir, '/') . '/*', GLOB_NOSORT) as $each) {
-    $size += is_file($each) ? filesize($each) : getDirectorySize($each);
-  }
-  return $size;
-}
-
-function formatSize($bytes)
-{
-  $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  for ($i = 0; $bytes >= 1024 && $i < count($units) - 1; $i++) {
-    $bytes /= 1024;
-  }
-  return round($bytes, 2) . ' ' . $units[$i];
-}
-
-$projectDir   = 'C:\xampp\htdocs\GTMS';
-$projectSize  = formatSize(getDirectorySize($projectDir));
 
 // Notification Counter
 $con->next_result();

@@ -15,7 +15,7 @@ include('../include/header.php');
           <table class="table table-hover" id="accountTable" width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th><input type="checkbox" class="form-control"></th>
+                <th><input type="checkbox" class="form-control" disabled></th>
                 <th>Employee ID</th>
                 <th>Name</th>
                 <th>Section & Department</th>
@@ -41,7 +41,7 @@ include('../include/header.php');
                     $btn = 'danger';
                   } ?>
                   <tr>
-                    <td><input type="checkbox" class="form-control"></td>
+                    <td><input type="checkbox" class="form-control" disabled></td>
                     <td class="text-truncate"><?php echo empty($row['card']) ? 'No Data' : $row['card'] ?></td>
                     <td><?php echo getUser($row['username']); ?></td>
                     <td>

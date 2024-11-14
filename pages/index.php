@@ -11,68 +11,92 @@ include('../include/header.php');
     $total_tasks      = $row['total_tasks'];
     $all_accounts     = $row['all_accounts']; ?>
     <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
-    <div class="row">
-      <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">System Usage</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><i class="fas fa-database fa-fw"></i> <?php echo $db_size ?></div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><i class="fas fa-hdd fa-fw"></i> <?php echo $projectSize ?></div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-server fa-3x text-gray-500"></i>
-              </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col"><a href="#" data-toggle="modal" data-target="#systemInfo" class="btn btn-success btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Deployed Tasks</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $total_tasks ?></div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-calendar-day fa-3x text-gray-500"></i>
-              </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col"><a href="tasks.php" class="btn btn-primary btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Registered Accounts</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $all_accounts ?></div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-users fa-3x text-gray-500"></i>
-              </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col"><a href="accounts.php" class="btn btn-info btn-sm">More Info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div class="row">
+      <!-- Cards Section -->
+      <div class="col-xl-8">
+        <div class="row">
+          <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+              <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold">System Usage</h6>
+                <i class="fas fa-server fa-lg"></i>
+              </div>
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-6 border-end">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Database Size</div>
+                    <div class="h4 mb-0 font-weight-bold text-gray-800">
+                      <i class="fas fa-database fa-fw"></i> <?php echo $db_size ?>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Project Size</div>
+                    <div class="h4 mb-0 font-weight-bold text-gray-800">
+                      <i class="fas fa-hdd fa-fw"></i> <?php echo $projectSize ?>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer text-center">
+                <a href="#" class="btn btn-sm btn-success text-white" data-toggle="modal" data-target="#systemInfo">
+                  More Info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+              <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold">Tasks Overview</h6>
+                <i class="fas fa-tasks fa-lg"></i>
+              </div>
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-12">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Tasks</div>
+                    <div class="h4 mb-0 font-weight-bold text-gray-800">
+                      <i class="fas fa-list fa-fw"></i> <?php echo $total_tasks ?>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer text-center">
+                <a href="tasks.php" class="btn btn-sm btn-primary text-white">
+                  View Tasks <i class="fas fa-arrow-circle-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+              <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold">Accounts Overview</h6>
+                <i class="fas fa-users fa-lg"></i>
+              </div>
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-12">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Accounts</div>
+                    <div class="h4 mb-0 font-weight-bold text-gray-800">
+                      <i class="fas fa-user-friends fa-fw"></i> <?php echo $all_accounts ?>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer text-center">
+                <a href="accounts.php" class="btn btn-sm btn-info text-white">
+                  Manage Accounts <i class="fas fa-arrow-circle-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendar Section -->
       <div class="col-xl-4">
         <div class="card border-left-primary shadow mb-4">
           <div class="card-header py-3">
@@ -154,6 +178,7 @@ include('../include/header.php');
         </div>
       </div>
     </div>
+
   <?php } elseif ($access == 2) { ?>
     <div class="row">
       <div class="col-xl-3 col-md-6 mb-4">

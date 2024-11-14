@@ -768,3 +768,32 @@
     object-fit: contain;
     /* Ensure the aspect ratio is preserved */
 }
+
+.card {
+    border-radius: 8px;
+    overflow     : hidden;
+}
+
+.card-header {
+    font-size: 1rem;
+    padding  : 0.75rem 1rem;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.card-body .text-xs {
+    font-size     : 0.85rem;
+    letter-spacing: 0.05rem;
+}
+
+.card-footer {
+    background-color: #f8f9fc;
+    padding         : 0.5rem 1rem;
+}
+
+.card-footer a {
+    font-size     : 0.85rem;
+    text-transform: uppercase;
+}
