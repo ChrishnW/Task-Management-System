@@ -87,16 +87,16 @@
               <div id="defaultImages" class="mt-3 d-none">
                 <div class="row">
                   <div class="col-3">
-                    <img src="../assets/img/user-profiles/Default/woman_1.png" alt="Image 1" class="img-thumbnail-circle default-image" data-image="https://via.placeholder.com/100?text=Image+1">
+                    <img src="../assets/img/user-profiles/Default/woman_1.png" alt="Image 1" class="img-thumbnail-circle default-image" data-image="woman_1.png">
                   </div>
                   <div class="col-3">
-                    <img src="../assets/img/user-profiles/Default/man_1.png" alt="Image 2" class="img-thumbnail-circle default-image" data-image="https://via.placeholder.com/100?text=Image+2">
+                    <img src="../assets/img/user-profiles/Default/man_1.png" alt="Image 2" class="img-thumbnail-circle default-image" data-image="man_1.png">
                   </div>
                   <div class="col-3">
-                    <img src="../assets/img/user-profiles/Default/woman_2.png" alt="Image 3" class="img-thumbnail-circle default-image" data-image="https://via.placeholder.com/100?text=Image+3">
+                    <img src="../assets/img/user-profiles/Default/woman_2.png" alt="Image 3" class="img-thumbnail-circle default-image" data-image="woman_2.png">
                   </div>
                   <div class="col-3">
-                    <img src="../assets/img/user-profiles/Default/man_2.png" alt="Image 4" class="img-thumbnail-circle default-image" data-image="https://via.placeholder.com/100?text=Image+4">
+                    <img src="../assets/img/user-profiles/Default/man_2.png" alt="Image 4" class="img-thumbnail-circle default-image" data-image="man_2.png">
                   </div>
                 </div>
               </div>
@@ -114,7 +114,7 @@
             </div>
           </form>
           <div class="d-grid">
-            <button id="completeButton" class="btn btn-block btn-primary" onclick="submitDetails()" disabled><i class="fas fa-save fa-fw"></i> Complete</button>
+            <button id="completeButton" class="btn btn-block btn-primary" disabled><i class="fas fa-save fa-fw"></i> Complete</button>
           </div>
         </div>
       </div>
@@ -249,8 +249,64 @@
     button.disabled = !(allFilled && imageSelected);
   }
 
+
+
   // Initialize form validity when the page loads
   document.addEventListener('DOMContentLoaded', checkFormValidity);
+</script>
+
+<script>
+  document.getElementById('completeButton').addEventListener('click', function() {
+    const form = document.getElementById('userDetails');
+    const formData = new FormData(form);
+
+    // Isset Submit
+    formData.append('submitDetails', true);
+
+    // Check which profile image option is selected
+    const selectedProfileOption = formData.get('profileImage'); // Get selected radio button value
+
+    if (selectedProfileOption === 'default') {
+      // Get the `data-image` value from the selected default image
+      const selectedDefaultImage = document.querySelector('.default-image.selected');
+      if (selectedDefaultImage) {
+        const fileName = selectedDefaultImage.getAttribute('data-image');
+        formData.append('profileImageFileName', fileName);
+      }
+    } else if (selectedProfileOption === 'custom') {
+      // Get the file from the custom image input
+      const customImageInput = document.getElementById('customImageInput');
+      if (customImageInput.files.length > 0) {
+        formData.append('profileImageFile', customImageInput.files[0]);
+      }
+    }
+
+    // Log the FormData contents (for debugging)
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: '../config/setup.php',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(data) {
+        window.location.href = "../pages/index.php";
+      },
+      error: function(xhr, status, error) {
+        console.error(xhr, status, error);
+      }
+    });
+
+    // You can now send the FormData to a server via fetch or another API
+    // Example:
+    // fetch('/submit-form', { method: 'POST', body: formData })
+    //     .then(response => response.json())
+    //     .then(data => console.log(data))
+    //     .catch(error => console.error('Error:', error));
+  });
 </script>
 
 </html>
