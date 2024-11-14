@@ -102,7 +102,7 @@
         <div class="sidebar-heading"> Project Management </div>
 
         <li class="nav-item">
-          <a class="nav-link" href="404.php">
+          <a class="nav-link" href="http://192.168.5.246/projectmgt" target="_blank">
             <i class="fas fa-chart-bar"></i>
             <span>Project Management</span></a>
         </li>
