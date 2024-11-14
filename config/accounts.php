@@ -201,16 +201,18 @@ if (isset($_POST['uploadImage'])) {
 }
 
 if (isset($_POST['accountCreate'])) {
-  if ($_POST['newUsername'] !== '' && $_POST['newFname'] !== '' && $_POST['newLname'] !== '' && $_POST['newEmployeeId'] !== '' && $_POST['newDepartment'] !== '' && $_POST['newSection'] !== '' && $_POST['newEmail'] !== '') {
-    $password = password_hash('12345', PASSWORD_DEFAULT);
-    $query_insert = mysqli_query($con, "INSERT INTO accounts (`card`, `username`, `password`, `fname`, `lname`, `email`, `access`, `sec_id`) VALUES ('{$_POST['newEmployeeId']}', '{$_POST['newUsername']}', '{$password}', '{$_POST['newFname']}', '{$_POST['newLname']}', '{$_POST['newEmail']}', '{$_POST['newSystemAccess']}', '{$_POST['newSection']}')");
-    if ($query_insert) {
-      die('Success');
-    } else {
-      die('Unable to complete the operation. Please try again later.');
-    }
-  } else {
+  if (empty($_POST['newUsername']) || empty($_POST['newSystemAccess']) || empty($_POST['newSection'])) {
     die('Missing Data!');
+  } else {
+    $newUsername  = strtoupper($_POST['newUsername']);
+    $newAccess    = intval($_POST['newSystemAccess']);
+    $newSection   = strtoupper($_POST['newSection']);
+    $queryCreate = mysqli_query($con, "INSERT INTO accounts (`username`, `access`, `sec_id`) VALUES ('$newUsername', '$newAccess', '$newSection')");
+    if ($queryCreate) {
+      echo "Success";
+    } else {
+      echo "The account failed to create. Contact the system administrator now.";
+    }
   }
 }
 

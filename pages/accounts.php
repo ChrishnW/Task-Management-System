@@ -8,9 +8,6 @@ include('../include/header.php');
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold">Registered Accounts</h6>
         <div class="dropdown no-arrow">
-          <button type="button" onclick="showCreate(this)" class="btn btn-primary">
-            <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create
-          </button>
         </div>
       </div>
       <div class="card-body">
@@ -18,12 +15,17 @@ include('../include/header.php');
           <table class="table table-hover" id="accountTable" width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th>Username</th>
+                <th><input type="checkbox" class="form-control"></th>
+                <th>Employee ID</th>
                 <th>Name</th>
                 <th>Section & Department</th>
                 <th>Access</th>
                 <th>Status</th>
-                <th></th>
+                <th class="text-truncate">
+                  <button type="button" onclick="showCreate(this)" class="btn btn-primary btn-block">
+                    <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create
+                  </button>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -39,7 +41,8 @@ include('../include/header.php');
                     $btn = 'danger';
                   } ?>
                   <tr>
-                    <td><?php echo $row['username']; ?></td>
+                    <td><input type="checkbox" class="form-control"></td>
+                    <td class="text-truncate"><?php echo empty($row['card']) ? 'No Data' : $row['card'] ?></td>
                     <td><?php echo getUser($row['username']); ?></td>
                     <td>
                       <?php if ($row['access'] != 'head') {
@@ -257,7 +260,7 @@ include('../include/header.php');
   </div>
 </div>
 <div class="modal fade" id="createAccount" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Create Account</h5>
@@ -265,7 +268,7 @@ include('../include/header.php');
       <div class="modal-body">
         <form id="createAccountDetails" enctype="multipart/form-data">
           <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-6">
               <label for="newUsername">Username</label>
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -275,55 +278,21 @@ include('../include/header.php');
                   placeholder="Enter username">
               </div>
             </div>
-            <div class="form-group col-md-6">
-              <label for="newFname">First Name</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
-                </div>
-                <input type="text" class="form-control" id="newFname" name="newFname"
-                  placeholder="Enter first name">
-              </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="newLname">Last Name</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
-                </div>
-                <input type="text" class="form-control" id="newLname" name="newLname"
-                  placeholder="Enter last name">
-              </div>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="newEmployeeId">Employee ID</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                </div>
-                <input type="text" class="form-control" id="newEmployeeId" name="newEmployeeId"
-                  placeholder="Enter employee ID">
-              </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-6">
               <label for="newSystemAccess">System Access</label>
               <div class="input-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="fas fa-key"></i></span>
                 </div>
-                <select class="form-control" id="newSystemAccess" name="newSystemAccess" onchange="accessLevel(this)">
-                  <?php $getAccess = mysqli_query($con, "SELECT * FROM access");
+                <select class="form-control selectpicker show-tick" data-style="border-secondary" title="Select Access" id="newSystemAccess" name="newSystemAccess" onchange="accessLevel(this)">
+                  <?php $getAccess = mysqli_query($con, "SELECT * FROM access WHERE id != 1");
                   while ($getAccessRow = mysqli_fetch_assoc($getAccess)) : ?>
                     <option value=" <?php echo $getAccessRow['id']; ?>"><?php echo ucwords($getAccessRow['access']); ?></option>
                   <?php endwhile; ?>
                 </select>
               </div>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-12">
               <label for="newDepartment">Department</label>
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -350,9 +319,7 @@ include('../include/header.php');
                 </select>
               </div>
             </div>
-          </div>
-          <div class="form-row" id="accessHide">
-            <div class="form-group col-md-6">
+            <div class="form-group col-12 d-none" id="accessHide">
               <label for="newSection">Section</label>
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -360,16 +327,6 @@ include('../include/header.php');
                 </div>
                 <select name="newSection" id="newSection" class="form-control selectpicker show-tick" data-style="border-secondary" data-size="5" title="Select Section" data-live-search="true" data-dropup-auto="false">
                 </select>
-              </div>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="newEmail">Email</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                </div>
-                <input type="email" class="form-control" id="newEmail" name="newEmail"
-                  placeholder="Enter email">
               </div>
             </div>
           </div>
@@ -423,12 +380,12 @@ include('../include/header.php');
     "columnDefs": [{
       "orderable": false,
       "searchable": false,
-      "targets": 5,
+      "targets": [0, 6],
     }],
     "order": [
-      [0, "asc"]
+      [2, "asc"]
     ]
-  });
+  }, $('[data-toggle="tooltip"]').tooltip());
 
   $('#memberList').DataTable({
     "order": [
@@ -550,7 +507,7 @@ include('../include/header.php');
         var $sectionSelect = $("select[name='newSection']");
         $sectionSelect.html(response).selectpicker('refresh');
 
-        if (accessSelect == 3) {
+        if (accessSelect == 3 || accessLevel == 1) {
           var nextOption = $sectionSelect.find("option").eq(1); // The second option (index 1)
           var notAvailableValue = nextOption.length ? nextOption.val() : "";
 
@@ -564,7 +521,7 @@ include('../include/header.php');
 
   function accessLevel(element) {
     var access = element.value;
-    if (access != 3) {
+    if (access == 2) {
       document.getElementById('accessHide').classList.remove('d-none');
     } else {
       document.getElementById('accessHide').classList.add('d-none');

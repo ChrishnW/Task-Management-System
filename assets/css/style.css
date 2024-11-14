@@ -741,7 +741,7 @@
     cursor: pointer;
 }
 
-.selected {
+.default-image .selected {
     border: 3px solid #007bff;
 }
 
