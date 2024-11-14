@@ -33,7 +33,8 @@
       <div class="card shadow">
         <div class="card-header text-center">
           <h3 class="mt-4 font-weight-bolder">Account Setup</h3>
-          <p class="text-muted">Please fill in your details to proceed</p>
+          <p class="text-muted mb-0">Welcome to Task Mangement System!</p>
+          <p class="text-muted">Please fill in your details to proceed.</p>
         </div>
         <div class="card-body">
           <form id="userDetails" class="mb-5">
@@ -97,6 +98,12 @@
                   </div>
                   <div class="col-3">
                     <img src="../assets/img/user-profiles/Default/man_2.png" alt="Image 4" class="img-thumbnail-circle default-image" data-image="man_2.png">
+                  </div>
+                  <div class="col-3">
+                    <img src="../assets/img/user-profiles/Default/woman_3.png" alt="Image 1" class="img-thumbnail-circle default-image" data-image="woman_3.png">
+                  </div>
+                  <div class="col-3">
+                    <img src="../assets/img/user-profiles/Default/man_3.png" alt="Image 1" class="img-thumbnail-circle default-image" data-image="man_3.png">
                   </div>
                 </div>
               </div>
