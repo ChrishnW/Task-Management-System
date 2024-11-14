@@ -20,7 +20,9 @@ function assignee($user)
       $image = '../assets/img/user-profiles/nologo.png';
     }
 
-    $images[] = "<img src='$image' alt='$username' class='user-table' data-toggle='tooltip' data-placement='top' title='{$row['fullName']}'>";
+    $mname = empty($row['fullName']) ? $row['username'] : $row['fullName'];
+    
+    $images[] = "<img src='$image' alt='$username' class='user-table' data-toggle='tooltip' data-placement='top' title='{$mname}'>";
   }
 
   return $images;
