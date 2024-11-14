@@ -222,7 +222,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         '<td>' + detail.task_class + '</td>' +
         '<td>' + detail.submission + '</td>' +
         '<td><div class="d-flex justify-content-center">' + detail.in_charge_list + '</td></td>' +
-        '<td><button class="btn btn-secondary btn-sm" value="' + detail.id + '" onclick="editTask(this)"> Edit </button></td>' +
+        '<td class="text-truncate"><button class="btn btn-secondary btn-sm" value="' + detail.id + '" onclick="editTask(this)"><i class="fas fa-edit fa-fw"></i> Edit </button></td>' +
         '</tr>';
     });
     html += '</table>';

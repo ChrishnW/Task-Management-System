@@ -21,7 +21,7 @@ function assignee($user)
     }
 
     $mname = empty($row['fullName']) ? $row['username'] : $row['fullName'];
-    
+
     $images[] = "<img src='$image' alt='$username' class='user-table' data-toggle='tooltip' data-placement='top' title='{$mname}'>";
   }
 
@@ -100,25 +100,16 @@ if (isset($_POST['updateTask'])) {
 
       if (!empty($inserted)) {
         foreach ($inserted as $newIncharge) {
-          $checkIncharge = mysqli_query($con, "SELECT * FROM tasks WHERE task_id = '$taskID' AND in_charge = '$newIncharge'");
-          if (mysqli_num_rows($checkIncharge) > 0) {
-            $reupQuery = "UPDATE tasks SET status = 1 WHERE task_id = '$taskID' AND in_charge = '$newIncharge'";
-            if (!mysqli_query($con, $reupQuery)) {
-              $success = false;
-              break;
-            }
-          } else {
-            $insertQuery = "INSERT INTO tasks (task_id, requirement_status, in_charge, submission) VALUES ('$taskID', '$requirement', '$newIncharge', '$submission')";
-            if (!mysqli_query($con, $insertQuery)) {
-              $success = false;
-              break;
-            }
+          $insertQuery = "INSERT INTO tasks (task_id, requirement_status, in_charge, submission) VALUES ('$taskID', '$requirement', '$newIncharge', '$submission')";
+          if (!mysqli_query($con, $insertQuery)) {
+            $success = false;
+            break;
           }
         }
       }
       if (!empty($removed)) {
         foreach ($removed as $removeIncharge) {
-          $updateQuery = "UPDATE tasks SET status = 0 WHERE task_id = '$taskID' AND in_charge = '$removeIncharge'";
+          $updateQuery = "DELETE FROM tasks WHERE task_id = '$taskID' AND in_charge = '$removeIncharge'";
           if (!mysqli_query($con, $updateQuery)) {
             $success = false;
             break;

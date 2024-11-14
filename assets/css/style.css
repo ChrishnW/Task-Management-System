@@ -737,14 +737,6 @@
     height          : auto;
 }
 
-.default-image {
-    cursor: pointer;
-}
-
-.selected {
-    border: 3px solid #007bff;
-}
-
 /* Centering the image preview inside the container */
 #selectedProfileContainer {
     display        : flex;

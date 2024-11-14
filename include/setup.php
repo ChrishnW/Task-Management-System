@@ -25,6 +25,16 @@
   <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
   <link href="../assets/css/style.css" rel="stylesheet">
 
+  <style>
+    .default-image {
+      cursor: pointer;
+    }
+
+    .selected {
+      border: 3px solid #007bff;
+    }
+  </style>
+
 </head>
 
 <body class="bg-gradient-light">
