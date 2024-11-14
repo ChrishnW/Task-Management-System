@@ -319,10 +319,10 @@ include('../include/header.php');
       <!-- Reports -->
       <div class="col-xl-5">
         <div class="card shadow mb-4 h-75">
-          <div class="card-header m-0 font-weight-bolder text-primary">Upcoming Report</div>
+          <div class="card-header m-0 font-weight-bolder text-primary">Upcoming Monthly Routine & Report</div>
           <?php
           $con->next_result();
-          $query_result = mysqli_query($con, "SELECT * FROM task_list tl JOIN task_class tc ON tl.task_class=tc.id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE in_charge='$username' AND tc.task_class=6");
+          $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON td.task_id=t.id JOIN task_list tl ON t.task_id=tl.id WHERE tl.task_class IN (3, 6) AND t.in_charge='$username' AND td.status IN ('NOT YET STARTED', 'RESCHEDULE')");
           if (mysqli_num_rows($query_result) > 0) { ?>
             <div class="card-body scrollable-card-body-md">
               <?php while ($row = $query_result->fetch_assoc()) {
