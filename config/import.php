@@ -91,7 +91,7 @@ if (isset($_POST['validateFile'])) {
 if (isset($_POST['taskImport'])) {
   mysqli_begin_transaction($con);
   $success = true;
-  $getTemplist = mysqli_query($con, "SELECT *, GROUP_CONCAT(in_charge SEPARATOR ', ') AS in_charge_list FROM task_temp GROUP BY task_name ASC");
+  $getTemplist = mysqli_query($con, "SELECT *, GROUP_CONCAT(in_charge SEPARATOR ', ') AS in_charge_list FROM task_temp GROUP BY task_name, task_for ASC");
   while ($row = mysqli_fetch_assoc($getTemplist)) {
     $inchargeList = array_map('trim', explode(',', $row['in_charge_list']));
     $taskName = str_replace("'", "&apos;", $row['task_name']);
