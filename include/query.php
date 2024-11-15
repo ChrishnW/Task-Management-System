@@ -138,24 +138,24 @@ $currentMonth = date('m');
 $currentYear = date('Y');
 $query_result = mysqli_query($con, "SELECT COUNT(*) AS total_tasks, SUM(CASE WHEN td.status = 'FINISHED' THEN 1 ELSE 0 END) AS completed_tasks, SUM(CASE WHEN td.status != 'FINISHED' THEN 1 ELSE 0 END) AS incomplete_tasks, SUM(CASE WHEN td.status = 'REVIEW' THEN 1 ELSE 0 END) AS review_tasks, SUM(CASE WHEN td.status NOT IN ('REVIEW', 'FINISHED') THEN 1 ELSE 0 END) AS today_tasks FROM tasks t  JOIN tasks_details td ON t.id = td.task_id WHERE td.task_status = 1  AND t.in_charge = '$username'");
 $row = mysqli_fetch_assoc($query_result);
-$total_tasks      = $row['total_tasks'];
-$completed_tasks  = $row['completed_tasks'];
-$incomplete_tasks = $row['incomplete_tasks'];
-$review_tasks     = $row['review_tasks'];
-$today_tasks      = $row['today_tasks'];
+$total_tasks      = empty($row['total_tasks']) ? 0 : $row['total_tasks'];
+$completed_tasks  = empty($row['completed_tasks']) ? 0 : $row['completed_tasks'];
+$incomplete_tasks = empty($row['incomplete_tasks']) ? 0 : $row['incomplete_tasks'];
+$review_tasks     = empty($row['review_tasks']) ? 0 : $row['review_tasks'];
+$today_tasks      = empty($row['today_tasks']) ? 0 : $row['today_tasks'];
 
 if ($access == 3) {
   $con->next_result();
   $today = date('Y-m-d 16:00:00');
   $query_result = mysqli_query($con, "SELECT COUNT(*) AS total_tasks, SUM(CASE WHEN td.status = 'REVIEW' THEN 1 ELSE 0 END) AS for_review_tasks, SUM(CASE WHEN td.status = 'RESCHEDULE' THEN 1 ELSE 0 END) AS for_resched_tasks, SUM(CASE WHEN td.status IN ('FINISHED', 'REVIEW') AND DATE(td.due_date)=CURRENT_DATE() THEN 1 ELSE 0 END) AS ftasks, SUM(CASE WHEN td.status NOT IN ('FINISHED', 'REVIEW') AND DATE(td.due_date)=CURRENT_DATE() THEN 1 ELSE 0 END) AS utasks, COUNT(DISTINCT t.in_charge) AS members FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id = t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE td.task_status = 1 AND s.dept_id='$dept_id'");
   $row = mysqli_fetch_assoc($query_result);
-  $total_tasks       = $row['total_tasks'];
+  $total_tasks       = empty($row['total_tasks']) ? 0 : $row['total_tasks'];
   $project_tasks     = 0;
-  $for_review_tasks  = $row['for_review_tasks'];
-  $for_resched_tasks = $row['for_resched_tasks'];
-  $ftasks            = $row['ftasks'];
-  $utasks            = $row['utasks'];
-  $members           = $row['members'];
+  $for_review_tasks  = empty($row['for_review_tasks']) ? 0 : $row['for_review_tasks'];
+  $for_resched_tasks = empty($row['for_resched_tasks']) ? 0 : $row['for_resched_tasks'];
+  $ftasks            = empty($row['ftasks']) ? 0 : $row['ftasks'];
+  $utasks            = empty($row['utasks']) ? 0 : $row['utasks'];
+  $members           = empty($row['members']) ? 0 : $row['members'];
 }
 
 // Notification Counter

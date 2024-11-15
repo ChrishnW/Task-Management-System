@@ -57,7 +57,7 @@ include('../include/header.php');
                     <div class="card border-left-primary shadow-sm h-100">
                       <div class="card-body d-flex flex-column">
                         <h5 class="card-title text-primary">Total Routine Tasks</h5>
-                        <p class="card-text display-6"><?php echo $row['routineTotal']; ?></p>
+                        <p class="card-text display-6"><?php echo empty($row['routineTotal']) ? 0 : $row['routineTotal']; ?></p>
                       </div>
                     </div>
                   </div>
@@ -87,7 +87,7 @@ include('../include/header.php');
                     <div class="card border-left-warning shadow-sm h-100">
                       <div class="card-body d-flex flex-column">
                         <h5 class="card-title text-warning">Total Report Tasks</h5>
-                        <p class="card-text display-6"><?php echo $row['reportTotal']; ?></p>
+                        <p class="card-text display-6"><?php echo empty($row['reportTotal']) ? 0 : $row['reportTotal']; ?></p>
                       </div>
                     </div>
                   </div>
