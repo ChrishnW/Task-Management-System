@@ -7,10 +7,15 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
   <?php if ($access == 1) : ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold">Task List</h6>
         <div>
-          <button class="btn btn-secondary" data-toggle="modal" data-target="#importModal"><i class="fas fa-file-import fa-fw"></i> Import</button>
-          <button class="btn btn-secondary" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
+          <h4 class="m-0 font-weight-bold">Task List</h4>
+        </div>
+        <div>
+          <button class="btn btn-orange" data-toggle="modal" data-target="#importModal"><i class="fas fa-file-import fa-fw"></i> Import</button>
+          <button class="btn btn-orange" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
+        </div>
+        <div>
+          <button class="btn btn-success" onclick="createTask();"><i class="fas fa-plus fa-fw"></i> Create</button>
         </div>
       </div>
       <div class="card-body">
@@ -30,7 +35,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
                 $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}'")); ?>
                 <tr>
                   <td><input type="checkbox" class="form-control export-sec-list" value="<?php echo $row['sec_id']; ?>"></td>
-                  <td><button class="btn btn-circle btn-sm btn-primary toggle-details" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)">+</button> <?php echo $row['sec_name']; ?></td>
+                  <td><button class="btn btn-circle btn-primary toggle-details" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)"><i class="far fa-eye"></i></button> <?php echo $row['sec_name']; ?></td>
                   <td><?php echo $row['dept_name']; ?></td>
                   <td class="text-center">
                     <span class="badge badge-pill badge-success">
@@ -103,8 +108,8 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           <i id="errorIcon" class="fas fa-times-circle fa-7x text-danger d-none"></i>
         </div>
         <div id="dropZone" class="drop-zone">
-          Drag and drop an Excel file here, or <br>
-          <button type="button" class="btn btn-link" onclick="document.getElementById('fileInput').click()">click to select a file</button>
+          Drag and drop an Excel file here, Or <br>
+          <button type="button" class="btn btn-link text-decoration-none" onclick="document.getElementById('fileInput').click()">Click here to select a file.</button>
         </div>
         <!-- Hidden file input -->
         <input type="file" id="fileInput" accept=".xlsx, .xls" style="display: none;" />
@@ -130,7 +135,75 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
       <div class="modal-body" id="taskInfo">
       </div>
       <div class="modal-footer">
-        <button onclick="updateTask(this)" class="btn btn-success" id="updateButton">Update</button>
+        <button onclick="updateTask(this)" class="btn btn-success d-none" id="updateButton">Save Changes</button>
+        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="create" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content border-success">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">Create Task</h5>
+      </div>
+      <div class="modal-body" id="newtaskInfo">
+        <div class="row">
+          <!-- Task Name -->
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="newTaskName" class="font-weight-bold">Task Name</label>
+              <input type="text" class="form-control" id="newTaskName" placeholder="Enter task name">
+            </div>
+          </div>
+
+          <!-- Task Class -->
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="newClass" class="font-weight-bold">Task Class</label>
+              <select name="newClass" id="newClass" class="form-control selectpicker show-tick" data-style="border-secondary">
+                <?php
+                $getClass = mysqli_query($con, "SELECT * FROM task_class");
+                while ($row = mysqli_fetch_assoc($getClass)) : ?>
+                  <option value="<?php echo $row['id'] ?>">
+                    <?php echo ucwords(strtolower($row['task_class'])); ?>
+                  </option>
+                <?php endwhile; ?>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Task Details -->
+          <div class="col-12">
+            <div class="form-group">
+              <label for="newTaskDetails" class="font-weight-bold">Task Details</label>
+              <textarea class="form-control" id="newTaskDetails" rows="4" placeholder="Enter task details"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Task For -->
+          <div class="col-12">
+            <div class="form-group">
+              <label for="newEmplist" class="font-weight-bold">Task For</label>
+              <select class="form-control selectpicker" data-live-search="true" data-style="border-secondary" name="newtaskForList[]" id="newtaskForList" multiple>
+                <?php
+                $getSec = mysqli_query($con, "SELECT * FROM section WHERE status=1");
+                while ($row = mysqli_fetch_assoc($getSec)) { ?>
+                  <option value="<?php echo $row['sec_id']; ?>">
+                    <?php echo ucwords(strtolower($row['sec_name'])); ?>
+                  </option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" id="saveTask">Create</button>
         <button class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -156,6 +229,42 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
     ]
   });
 
+  function createTask() {
+    $('#create').modal('show');
+    var saveButton = document.getElementById('saveTask');
+    document.getElementById('saveTask').onclick = function() {
+      saveButton.disabled = true;
+      let data = {
+        "createTask": true
+      };
+      data.taskName = document.getElementById('newTaskName').value;
+      data.taskClass = document.getElementById('newClass').value;
+      const taskforList = [];
+      for (let option of document.getElementById('newtaskForList').options) {
+        if (option.selected) {
+          taskforList.push(option.value);
+        }
+      }
+      data.taskFor = taskforList;
+      data.taskDetails = document.getElementById('newTaskDetails').value;
+      $.ajax({
+        type: "POST",
+        url: "../config/registered_tasks.php",
+        data: data,
+        success: function(response) {
+          if (response == 'Success') {
+            document.getElementById('success_log').innerHTML = 'Task created successfully.';
+            $('#success').modal('show');
+          } else {
+            document.getElementById('error_found').innerHTML = response;
+            $('#error').modal('show');
+            saveButton.disabled = false;
+          }
+        }
+      });
+    }
+  }
+
   function exportThis() {
     const selectedValues = [];
     $('.export-sec-list:checked').each(function() {
@@ -176,7 +285,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
 
     if (row.child.isShown()) {
       row.child.hide();
-      $(button).text('+');
+      $(button).html('<i class="far fa-eye"></i>');
       localStorage.removeItem(tableId); // Remove state when closed
     } else {
       $.ajax({
@@ -188,7 +297,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         }, // Pass any necessary data
         success: function(data) {
           row.child(format(data)).show();
-          $(button).text('-');
+          $(button).html('<i class="far fa-eye-slash"></i>');
           localStorage.setItem(tableId, 'open'); // Save state when opened
           $('[data-toggle="tooltip"]').tooltip();
         },
@@ -276,6 +385,33 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         $('#taskInfo').html(response);
         $('#edit').modal('show');
         $('select').selectpicker();
+
+        const saveButton = document.getElementById('updateButton');
+        const inputs = document.querySelectorAll("#editTaskName, #editSubmission, #editTaskDetails");
+        const selects = document.querySelectorAll("#editClass, #editAttachment, #editEmplist");
+
+        // Reset the save button to be hidden
+        if (!saveButton.classList.contains("d-none")) {
+          saveButton.classList.add("d-none");
+        }
+
+        // Function to remove the d-none class from the save button
+        function removeHiddenClass() {
+          if (saveButton.classList.contains("d-none")) {
+            saveButton.classList.remove("d-none");
+          }
+        }
+
+        // Add event listeners to inputs
+        inputs.forEach(input => {
+          input.addEventListener("input", removeHiddenClass);
+        });
+
+        // Add event listeners to selects
+        selects.forEach(select => {
+          select.addEventListener("change", removeHiddenClass);
+        });
+
         document.getElementById('updateButton').onclick = function() {
           const taskName = document.getElementById('editTaskName').value;
           const taskDetails = document.getElementById('editTaskDetails').value;
@@ -402,4 +538,26 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
   function downloadTemplate() {
     window.open('../files/for_import_tasks_excel_template.xlsx', '_blank');
   }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const saveButton = document.getElementById("updateButton");
+    const inputs = document.querySelectorAll("#editTaskName, #editSubmission, #editTaskDetails");
+    const selects = document.querySelectorAll("#editClass, #editAttachment, #editEmplist");
+
+    function removeHiddenClass() {
+      if (saveButton.classList.contains("d-none")) {
+        saveButton.classList.remove("d-none");
+      }
+    }
+
+    // Add event listeners to inputs
+    inputs.forEach(input => {
+      input.addEventListener("input", removeHiddenClass);
+    });
+
+    // Add event listeners to selects
+    selects.forEach(select => {
+      select.addEventListener("change", removeHiddenClass);
+    });
+  });
 </script>

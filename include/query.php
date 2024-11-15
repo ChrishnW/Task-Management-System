@@ -7,7 +7,7 @@ mysqli_query($con, "SET @current_user = '$username'");
 // Functions
 function getTaskClass($taskClassNumber)
 {
-  $taskClasses = [1 => ['DAILY ROUTINE', 'light'], 2 => ['WEEKLY ROUTINE', 'light'], 3 => ['MONTHLY ROUTINE', 'danger'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'light'], 6 => ['MONTHLY REPORT', 'danger']];
+  $taskClasses = [1 => ['DAILY ROUTINE', 'light'], 2 => ['WEEKLY ROUTINE', 'light'], 3 => ['MONTHLY ROUTINE', 'primary'], 4 => ['ADDITIONAL TASK', 'info'], 5 => ['PROJECT', 'light'], 6 => ['MONTHLY REPORT', 'danger']];
   return '<span class="badge badge-pill badge-' . ($taskClasses[$taskClassNumber][1] ?? 'secondary') . '">' . ($taskClasses[$taskClassNumber][0] ?? 'Unknown') . '</span>';
 }
 

@@ -6,11 +6,6 @@ include('../include/header.php');
   <div class="card">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
       <h6 class="m-0 font-weight-bold">Section Management</h6>
-      <div class="dropdown no-arrow">
-        <button type="button" onclick="showCreate(this)" class="btn btn-primary">
-          <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create
-        </button>
-      </div>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -21,7 +16,11 @@ include('../include/header.php');
               <th>Section</th>
               <th>Department</th>
               <th>Status</th>
-              <th></th>
+              <th class="text-truncate col-1">
+                <button type="button" onclick="showCreate(this)" class="btn btn-primary btn-block">
+                  <i class="fas fa-plus fa-sm fa-fw text-gray-400"></i> Create
+                </button>
+              </th>
             </tr>
           </thead>
           <tbody>
