@@ -60,7 +60,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
             <thead>
               <tr>
                 <th class="col-1 text-center text-truncate">
-                  <button class="btn btn-secondary" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
+                  <button class="btn btn-orange" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
                 </th>
                 <th class="col-4">Section</th>
                 <th class="col-4">Department</th>
@@ -73,7 +73,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
                 $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}'")); ?>
                 <tr>
                   <td><input type="checkbox" class="form-control export-sec-list" value="<?php echo $row['sec_id']; ?>"></td>
-                  <td><button class="btn btn-circle btn-sm btn-primary toggle-details" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)">+</button> <?php echo $row['sec_name']; ?></td>
+                  <td><button class="btn btn-circle btn-primary toggle-details" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)"><i class="far fa-eye"></i></button> <?php echo $row['sec_name']; ?></td>
                   <td><?php echo $row['dept_name']; ?></td>
                   <td class="text-center">
                     <span class="badge badge-pill badge-success">
@@ -415,6 +415,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         document.getElementById('updateButton').onclick = function() {
           const taskName = document.getElementById('editTaskName').value;
           const taskDetails = document.getElementById('editTaskDetails').value;
+          const taskClass = document.getElementById('editClass').value;
           const submission = document.getElementById('editSubmission').value;
           const dueDate = document.getElementById('editAttachment').value;
           const assignList = [];
@@ -431,6 +432,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
               "id": id,
               "taskName": taskName,
               "taskDetails": taskDetails,
+              "taskClass": taskClass,
               "submission": submission,
               "editAttachment": dueDate,
               "assignList": assignList,

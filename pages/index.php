@@ -180,7 +180,6 @@ include('../include/header.php');
             </table>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -267,31 +266,34 @@ include('../include/header.php');
     <div class="row">
       <!-- Calendar -->
       <div class="col-xl-4">
-        <div class="card shadow mb-4 h-75">
-          <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Calendar of <?php echo date('F Y') ?></h6>
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold">Calendar of <?php echo date('F Y'); ?></h6>
+            <i class="fas fa-calendar-alt fa-lg"></i>
           </div>
-          <div class="card-body table-responsive p-0">
-            <table class="calendar table table-borderless">
-              <thead>
+          <div class="card-body table-responsive">
+            <table class="calendar table table-bordered text-center">
+              <thead class="bg-light">
                 <tr>
-                  <th>Sun</th>
+                  <th class="text-danger">Sun</th>
                   <th>Mon</th>
                   <th>Tue</th>
                   <th>Wed</th>
                   <th>Thu</th>
                   <th>Fri</th>
-                  <th>Sat</th>
+                  <th class="text-primary">Sat</th>
                 </tr>
               </thead>
               <tbody>
                 <?php
                 $query_result = mysqli_query($con, "SELECT * FROM day_off WHERE status=1");
                 $specialDates = [];
+                $remarks = [];
+
                 if ($query_result->num_rows > 0) {
                   while ($row = $query_result->fetch_assoc()) {
                     $specialDates[] = $row['date_off'];
-                    $remarks        = $row['remarks'];
+                    $remarks[$row['date_off']] = $row['remarks'];
                   }
                 }
 
@@ -300,36 +302,37 @@ include('../include/header.php');
                 $currentDay = date("d");
                 $firstDayOfMonth = mktime(0, 0, 0, $currentMonth, 1, $currentYear);
                 $daysInMonth = date("t", $firstDayOfMonth);
-                $dateComponents = getdate($firstDayOfMonth);
-                $monthName = $dateComponents['month'];
-                $dayOfWeek = $dateComponents['wday'];
+                $dayOfWeek = date("w", $firstDayOfMonth);
 
                 $calendar = "<tr>";
-
                 for ($i = 0; $i < $dayOfWeek; $i++) {
                   $calendar .= "<td></td>";
                 }
 
-                $currentDayCount = 1;
-                while ($currentDayCount <= $daysInMonth) {
+                for ($currentDayCount = 1; $currentDayCount <= $daysInMonth; $currentDayCount++) {
                   if ($dayOfWeek == 7) {
                     $dayOfWeek = 0;
                     $calendar .= "</tr><tr>";
                   }
 
                   $currentDate = "$currentYear-$currentMonth-" . str_pad($currentDayCount, 2, "0", STR_PAD_LEFT);
-
-                  $class = ($dayOfWeek == 0) ? 'sunday' : ''; // Apply 'sunday' class if it's Sunday
+                  $class = "";
 
                   if ($currentDayCount == $currentDay) {
-                    $calendar .= "<td class='today $class' data-toggle='tooltip' data-placement='top' title='Today'>$currentDayCount</td>";
+                    $class = "today bg-primary text-white font-weight-bold";
+                    $tooltip = "Today";
                   } elseif (in_array($currentDate, $specialDates)) {
-                    $calendar .= "<td class='special $class' data-toggle='tooltip' data-placement='top' title='$remarks'>$currentDayCount</td>";
+                    $class = "special bg-warning";
+                    $tooltip = $remarks[$currentDate];
+                  } elseif ($dayOfWeek == 0) {
+                    $class = "text-danger"; // Sunday styling
+                  } elseif ($dayOfWeek == 6) {
+                    $class = "text-primary"; // Saturday styling
                   } else {
-                    $calendar .= "<td class='$class'>$currentDayCount</td>";
+                    $tooltip = "";
                   }
 
-                  $currentDayCount++;
+                  $calendar .= "<td class='$class' data-toggle='tooltip' title='$tooltip' data-placement='top'>$currentDayCount</td>";
                   $dayOfWeek++;
                 }
 
@@ -582,31 +585,34 @@ include('../include/header.php');
     <div class="row">
       <!-- Calendar -->
       <div class="col-xl-4">
-        <div class="card shadow mb-4 h-75">
-          <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Calendar of <?php echo date('F Y') ?></h6>
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold">Calendar of <?php echo date('F Y'); ?></h6>
+            <i class="fas fa-calendar-alt fa-lg"></i>
           </div>
-          <div class="card-body table-responsive p-0">
-            <table class="calendar table table-borderless">
-              <thead>
+          <div class="card-body table-responsive">
+            <table class="calendar table table-bordered text-center">
+              <thead class="bg-light">
                 <tr>
-                  <th>Sun</th>
+                  <th class="text-danger">Sun</th>
                   <th>Mon</th>
                   <th>Tue</th>
                   <th>Wed</th>
                   <th>Thu</th>
                   <th>Fri</th>
-                  <th>Sat</th>
+                  <th class="text-primary">Sat</th>
                 </tr>
               </thead>
               <tbody>
                 <?php
                 $query_result = mysqli_query($con, "SELECT * FROM day_off WHERE status=1");
                 $specialDates = [];
+                $remarks = [];
+
                 if ($query_result->num_rows > 0) {
                   while ($row = $query_result->fetch_assoc()) {
                     $specialDates[] = $row['date_off'];
-                    $remarks        = $row['remarks'];
+                    $remarks[$row['date_off']] = $row['remarks'];
                   }
                 }
 
@@ -615,36 +621,37 @@ include('../include/header.php');
                 $currentDay = date("d");
                 $firstDayOfMonth = mktime(0, 0, 0, $currentMonth, 1, $currentYear);
                 $daysInMonth = date("t", $firstDayOfMonth);
-                $dateComponents = getdate($firstDayOfMonth);
-                $monthName = $dateComponents['month'];
-                $dayOfWeek = $dateComponents['wday'];
+                $dayOfWeek = date("w", $firstDayOfMonth);
 
                 $calendar = "<tr>";
-
                 for ($i = 0; $i < $dayOfWeek; $i++) {
                   $calendar .= "<td></td>";
                 }
 
-                $currentDayCount = 1;
-                while ($currentDayCount <= $daysInMonth) {
+                for ($currentDayCount = 1; $currentDayCount <= $daysInMonth; $currentDayCount++) {
                   if ($dayOfWeek == 7) {
                     $dayOfWeek = 0;
                     $calendar .= "</tr><tr>";
                   }
 
                   $currentDate = "$currentYear-$currentMonth-" . str_pad($currentDayCount, 2, "0", STR_PAD_LEFT);
-
-                  $class = ($dayOfWeek == 0) ? 'sunday' : ''; // Apply 'sunday' class if it's Sunday
+                  $class = "";
 
                   if ($currentDayCount == $currentDay) {
-                    $calendar .= "<td class='today $class' data-toggle='tooltip' data-placement='top' title='Today'>$currentDayCount</td>";
+                    $class = "today bg-primary text-white font-weight-bold";
+                    $tooltip = "Today";
                   } elseif (in_array($currentDate, $specialDates)) {
-                    $calendar .= "<td class='special $class' data-toggle='tooltip' data-placement='top' title='$remarks'>$currentDayCount</td>";
+                    $class = "special bg-warning";
+                    $tooltip = $remarks[$currentDate];
+                  } elseif ($dayOfWeek == 0) {
+                    $class = "text-danger"; // Sunday styling
+                  } elseif ($dayOfWeek == 6) {
+                    $class = "text-primary"; // Saturday styling
                   } else {
-                    $calendar .= "<td class='$class'>$currentDayCount</td>";
+                    $tooltip = "";
                   }
 
-                  $currentDayCount++;
+                  $calendar .= "<td class='$class' data-toggle='tooltip' title='$tooltip' data-placement='top'>$currentDayCount</td>";
                   $dayOfWeek++;
                 }
 
@@ -664,11 +671,10 @@ include('../include/header.php');
       <!-- Reports -->
       <div class="col-xl-5">
         <div class="card shadow mb-4 h-75">
-          <div class="card-header m-0 font-weight-bolder text-primary">Upcoming Report</div>
+          <div class="card-header m-0 font-weight-bolder text-primary">Upcoming Monthly Routine & Report</div>
           <?php
           $con->next_result();
-          $today = date('Y-m-d 16:00:00');
-          $query_result = mysqli_query($con, "SELECT * FROM task_list tl JOIN task_class tc ON tl.task_class=tc.id JOIN section s ON tl.task_for=s.sec_id JOIN tasks t ON tl.id=t.task_id JOIN tasks_details td ON t.id=td.task_id WHERE tc.task_class=6 AND s.dept_id='$dept_id'");
+          $query_result = mysqli_query($con, "SELECT * FROM tasks_details td JOIN tasks t ON td.task_id=t.id JOIN task_list tl ON t.task_id=tl.id JOIN section s ON tl.task_for=s.sec_id WHERE tl.task_class IN (3, 6) AND s.dept_id='$dept_id' AND td.status IN ('NOT YET STARTED', 'RESCHEDULE') GROUP BY tl.task_name");
           if (mysqli_num_rows($query_result) > 0) { ?>
             <div class="card-body scrollable-card-body-md">
               <?php while ($row = $query_result->fetch_assoc()) {
@@ -698,7 +704,6 @@ include('../include/header.php');
                   </div>
                   <div class="card-body">
                     <p class="card-text"><strong>Description:</strong> <?php echo $row['task_details']; ?></p>
-                    <p class="card-text"><strong>Section:</strong> <?php echo ucwords(strtolower($row['sec_name'])) ?></p>
                     <p class="card-text"><strong>Due Date:</strong> <?php echo $due_date ?></p>
                     <p class="card-text" id="daysRemaining"><strong>Days Remaining:</strong> <?php echo $remainingTime; ?></p>
                   </div>

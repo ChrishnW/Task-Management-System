@@ -130,9 +130,10 @@ if (isset($_POST['updateTask'])) {
   $taskID       = $_POST['id'];
   $taskName     = $_POST['taskName'];
   $taskDetails  = $_POST['taskDetails'];
+  $taskClass    = $_POST['taskClass'];
   $submission   = $_POST['submission'];
   $requirement  = $_POST['editAttachment'];
-  if ($taskName !== '' && $taskDetails !== '' && $submission !== '' && !empty($_POST['assignList'])) {
+  if ($taskName !== '' && $taskDetails !== '' && $taskClass !== '' && $submission !== '' && !empty($_POST['assignList'])) {
     $queryCheck = mysqli_query($con, "SELECT * FROM `tasks` WHERE `task_id`='$taskID' AND `status`=1 ORDER BY in_charge ASC");
     $assignList = [];
     while ($row = mysqli_fetch_assoc($queryCheck)) {
@@ -171,7 +172,7 @@ if (isset($_POST['updateTask'])) {
         die("An error occurred. Changes were not applied.");
       }
     }
-    $detailsUpdate = mysqli_multi_query($con, "UPDATE `task_list` SET `task_name`='$taskName', `task_details`='$taskDetails' WHERE `id`='$taskID'; UPDATE `tasks` SET `submission`='$submission', `requirement_status`='$requirement' WHERE `task_id`='$taskID'");
+    $detailsUpdate = mysqli_multi_query($con, "UPDATE `task_list` SET `task_name`='$taskName', `task_details`='$taskDetails', `task_class`='$taskClass' WHERE `id`='$taskID'; UPDATE `tasks` SET `submission`='$submission', `requirement_status`='$requirement' WHERE `task_id`='$taskID'");
     die('Success');
   } else {
     die('Please fill in all the fields.');
