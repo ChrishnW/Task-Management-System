@@ -17,7 +17,7 @@ if (mysqli_num_rows($result) > 0) {
 	$hpass		= $row['password'];
 
 	if (password_verify($password, $spass)) {
-		$query_insert = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$username has been logged in using the administrator password.', '$today', 'ADMIN')");
+		mysqli_query($con, "INSERT INTO system_log (action, user) VALUES ('Administrator logged into the account $username.', 'ADMIN')");
 		session_regenerate_id();
 		$_SESSION['SESS_MEMBER_ID']				= $emp_id;
 		$_SESSION['SESS_MEMBER_USERNAME'] = $username;
@@ -28,7 +28,7 @@ if (mysqli_num_rows($result) > 0) {
 	} elseif (!password_verify($password, $hpass)) {
 		die('Incorrect');
 	} else {
-		$query_insert = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('Account Login.', '$today', '$username')");
+		mysqli_query($con, "INSERT INTO system_log (action, user) VALUES ('User logged into the system successfully.', '$username')");
 		session_regenerate_id();
 		$_SESSION['SESS_MEMBER_ID'] = $emp_id;
 		$_SESSION['SESS_MEMBER_USERNAME'] = $username;

@@ -296,7 +296,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           "id": id
         }, // Pass any necessary data
         success: function(data) {
-          row.child(format(data)).show();
+          row.child(format(data, id)).show();
           $(button).html('<i class="far fa-eye-slash"></i>');
           localStorage.setItem(tableId, 'open'); // Save state when opened
           $('[data-toggle="tooltip"]').tooltip();
@@ -309,10 +309,10 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
     }
   }
 
-  function format(data) {
+  function format(data, id) {
     // `data` is the response from the AJAX call
     var details = JSON.parse(data);
-    var html = '<table class="table table-striped table-hover" id="detailsTable">';
+    var html = '<table class="table table-striped table-hover" id="detailsTable_' + id + '">';
     // Add thead and header row
     html += '<thead><tr>' +
       '<th></th>' +
@@ -338,7 +338,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
 
     // Initialize DataTable
     setTimeout(function() {
-      $('#detailsTable').DataTable({
+      $('#detailsTable_' + id + '').DataTable({
         "columnDefs": [{
           "autoWidth": false,
           "orderable": false,

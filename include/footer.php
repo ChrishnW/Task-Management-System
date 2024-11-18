@@ -115,16 +115,17 @@
         <table class="table table-hover table-sm table-dark table-borderless" id="activityTable" width="100%" cellspacing="0">
           <thead>
             <tr>
+              <th>#</th>
               <th>Date & Time</th>
               <th>Activity</th>
             </tr>
           </thead>
           <tbody id='dataTableBody'>
-            <?php
-            $query_activity = mysqli_query($con, "SELECT * FROM system_log WHERE user='$username'");
+            <?php $query_activity = mysqli_query($con, "SELECT * FROM system_log WHERE user='$username' ORDER BY id DESC LIMIT 20");
             while ($row = $query_activity->fetch_assoc()) { ?>
               <tr>
-                <td><?php echo date_format(date_create($row['date_created']), "Y-m-d H:i:s"); ?></td>
+                <td><?php echo $row['id']; ?></td>
+                <td><?php echo date_format(date_create($row['timestamp']), "F d, Y h:i a"); ?></td>
                 <td><?php echo $row['action']; ?></td>
               </tr>
             <?php }
@@ -278,22 +279,6 @@
   </div>
 </div>
 
-<!-- Logout Modal-->
-<!-- <div class="modal fade" id="logoutModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-info text-white">
-        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-      </div>
-      <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-      <div class="modal-footer">
-        <a class="btn btn-danger" href="../include/logout.php">Logout</a>
-        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div> -->
-
 <!-- Sign Out Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -340,6 +325,31 @@
 </div>
 
 <!-- Global Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="helpModalLabel">Troubleshooting Guide</h5>
+      </div>
+      <div class="modal-body">
+        <h6>Basic Troubleshooting Steps:</h6>
+        <ul>
+          <li>If there is an issue with the UI, press <strong>Shift + F5</strong> to clear the cache.</li>
+          <li>Ensure your internet connection is stable.</li>
+          <li>Try using the system in an incognito or private browsing mode.</li>
+          <li>Disable browser extensions temporarily to see if they are causing conflicts.</li>
+          <li>Restart your browser and try again.</li>
+          <li>Check if your browser is up-to-date and update it if needed.</li>
+          <li>If the issue persists, restart your computer.</li>
+        </ul>
+        <p>If the problem still persists, please email your system administrator at <strong>cj.lopez@glory.com.ph</strong> or call Local <strong>212</strong>.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="docModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content border-info">
@@ -400,6 +410,29 @@
     </div>
   </div>
 </div>
+
+<!-- Session Timeout Modal -->
+<div class="modal fade" id="timeoutModal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header justify-content-center bg-gradient-light">
+        <i class="far fa-clock fa-5x"></i>
+      </div>
+      <div class="modal-body justify-content-between">
+        <h2 class="modal-title" id="timeoutModalLabel">Still with us?</h2>
+        <p class="small">Privacy is essential, and you’ve been gone a while. We will sign you out in <span class="font-weight-bolder" id="timeoutCountdown">0m 00s</span> unless you confirm you’re still with us.</p>
+        <div>
+          <button type="button" id="continueBtn" class="btn btn-primary btn-block">Stay signed in</button>
+          <button type="button" id="logoutBtn" class="btn btn-outline-secondary btn-block">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Session Reload -->
+<!-- <script src="../assets/js/session-reload.js"></script> -->
+<script src="../assets/js/session-timeout.js"></script>
 
 <!-- Bootstrap core JavaScript-->
 <script src="../vendor/jquery/jquery.min.js"></script>
@@ -478,26 +511,6 @@
       // $('#wrapper').css('visibility', 'visible');
     }
   }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    var inactivityTime = 3600000;
-    var timeout;
-
-    // Function to reset the timeout
-    function resetTimeout() {
-      clearTimeout(timeout);
-      timeout = setTimeout(function() {
-        location.reload();
-      }, inactivityTime);
-    }
-
-    // Reset timeout when there is activity (using addEventListener for multiple event listeners)
-    // window.addEventListener('mousemove', resetTimeout);
-    window.addEventListener('keypress', resetTimeout);
-    window.addEventListener('touchstart', resetTimeout);
-
-    resetTimeout();
-  });
 
   function openSpecificModal(modalId, size) {
     var modalDialog = document.querySelector(`#${modalId} .modal-dialog`);

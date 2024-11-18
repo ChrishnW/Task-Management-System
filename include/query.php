@@ -174,9 +174,15 @@ $file_counter = $row['file_counter'];
 function log_action($action)
 {
   global $con;
-  $datetime = date("Y-m-d H:i:s");
   $username = $_SESSION['SESS_MEMBER_USERNAME'];
-  $query_insert = mysqli_query($con, "INSERT INTO system_log (action, date_created, user) VALUES ('$action', '$datetime', '$username')");
+  mysqli_query($con, "INSERT INTO system_log (action, user) VALUES ('$action', '$username')");
+}
+
+function getCode($id)
+{
+  global $con;
+  $task = mysqli_query($con, "SELECT * FROM tasks_details WHERE id='$id'");
+  return $task['task_code'];
 }
 
 // Used for Input Type Date Min

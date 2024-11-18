@@ -226,6 +226,11 @@
       <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
       </div>
+
+      <!-- Help Section -->
+      <div class="text-center d-none d-md-inline mt-auto mb-5">
+        <button class="btn btn-circle text-light" data-toggle="modal" data-target="#helpModal"><i class="far fa-question-circle fa-2x"></i></button>
+      </div>
     </ul>
     <!-- End of Sidebar -->
 

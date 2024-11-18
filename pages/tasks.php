@@ -186,7 +186,7 @@ include('../include/header.php');
                       $current_date = date('Y-m-d');
                       $checkbox = '<input type="checkbox" name="selected_ids[]" class="form-control" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';
                       $due_date = date_format(date_create($row['due_date']), "F d, Y h:i a"); ?>
-                      <tr class="<?php if ((new DateTime($today))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0) && $row['status'] === 'NOT YET STARTED') echo "tick-pulse"; ?>">
+                      <tr class="<?php if ((new DateTime($today))->setTime(0, 0, 0) > (new DateTime($row['due_date']))->setTime(0, 0, 0) && $row['status'] === 'NOT YET STARTED') echo "table-danger"; ?>">
                         <td>
                           <?php if ($row['status'] === 'NOT YET STARTED') {
                             echo '<input type="checkbox" name="selected_ids[]" class="form-control bodyCheckbox" value="' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? '' : $row['id']) . '" ' . (date_create(date('Y-m-d', strtotime($row['due_date']))) > date_create($current_date) ? 'disabled' : '') . '>';

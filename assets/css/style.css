@@ -677,7 +677,7 @@
     /* Adjust size as needed */
     height       : 40px;
     border-radius: 50%;
-    object-fit   : cover;
+    object-fit   : scale-down;
     margin-left  : -20px;
     transition   : transform 0.3s ease;
 }

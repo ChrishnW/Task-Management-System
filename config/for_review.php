@@ -29,7 +29,7 @@ if (isset($_POST['approveTask'])) {
     }
     $query_result = mysqli_query($con, "UPDATE tasks_details SET status='FINISHED', achievement='$score', head_name='$head_name', head_note='$head_comment' WHERE id='$id'");
     if ($query_result) {
-      log_action("You reviewed and approved task {$taskCode} for user {$inCharge} successfully.");
+      log_action("Task {$task_code} approved for review.");
       echo "Success";
     } else {
       echo "Unable to complete the operation. Please try again later.";
@@ -223,8 +223,12 @@ if (isset($_POST['approveMultiple'])) {
   $taskIDmultiple = $_POST['checkedIds'];
   $head_name      = $_POST['head_name'];
   foreach ($taskIDmultiple as $taskID) {
+    $task_code = getCode($taskID);
     $query_result = mysqli_query($con, "UPDATE tasks_details SET status='FINISHED', head_name='$head_name' WHERE id='$taskID'");
-    $count += 1;
+    if ($query_result) {
+      log_action("Task {$task_code} approved for review using bulk approval operation.");
+      $count += 1;
+    }
   }
   if ($count != 0) {
     echo "Success";

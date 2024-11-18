@@ -14,10 +14,9 @@ include('../include/header.php');
             <thead class='table table-primary'>
               <tr>
                 <th>#</th>
-                <th>Action</th>
                 <th class="col-4">Name</th>
-                <th>Section & Department</th>
-                <th>Date Record</th>
+                <th>Action</th>
+                <th>Timestamp</th>
               </tr>
             </thead>
             <tbody>
@@ -26,21 +25,12 @@ include('../include/header.php');
               if (mysqli_num_rows($result) > 0) {
                 $count = 0;
                 while ($row = $result->fetch_assoc()) {
-                  $count += 1;
-                  if (empty($row['file_name'])) {
-                    $imageURL = '../assets/img/user-profiles/nologo.png';
-                  } else {
-                    $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-                  }
-                  $date_time = date_format(date_create($row['date_created']), "F d, Y h:i a");
-              ?>
+                  $timestamp = date_format(date_create($row['timestamp']), "F d, Y h:i a"); ?>
                   <tr>
-                    <td><?php echo $count; ?></td>
-                    <td><?php echo $row['action']; ?></td>
-                    <td><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
-                    <td><?php echo $row['sec_name']; ?> <p class="form-text text-danger"><?php echo $row['dept_name']; ?></p>
-                    </td>
-                    <td><?php echo $date_time; ?></td>
+                    <td><?php echo $row['id']; ?></td>
+                    <td class="text-truncate"><?php echo getUser($row['user']); ?></td>
+                    <td class="text-truncate"><?php echo $row['action']; ?></td>
+                    <td class="text-truncate"><?php echo $timestamp; ?></td>
                   </tr>
               <?php }
               } ?>

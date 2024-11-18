@@ -9,8 +9,8 @@ if ($queryUpdate) {
 }
 
 if (isset($_POST['submitDetails'])) :
-  $fname = ucwords($_POST['firstName']);
-  $lname = ucwords($_POST['lastName']);
+  $fname = ucwords(strtolower($_POST['firstName']));
+  $lname = ucwords(strtolower($_POST['lastName']));
   $email = strtolower($_POST['email']);
   $empId = strtoupper($_POST['empId']);
 
