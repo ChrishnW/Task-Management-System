@@ -33,7 +33,7 @@ function resetInactivityTimer() {
   clearTimeout(inactivityTimeout);
   inactivityTimeout = setTimeout(() => {
     showTimeoutModal();
-  }, 60000); // 5 minutes of inactivity
+  }, 300000); // 5 minutes of inactivity
 }
 
 // Show the modal
