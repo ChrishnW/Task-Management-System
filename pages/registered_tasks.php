@@ -141,6 +141,21 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
     </div>
   </div>
 </div>
+<div class="modal fade" id="assignee" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content border-primary">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalTitle"></h5>
+      </div>
+      <div class="modal-body" id="assigneeInfo">
+      </div>
+      <div class="modal-footer">
+        <button onclick="updateInfo()" class="btn btn-success d-none" id="updateButton">Save Changes</button>
+        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="create" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content border-success">
@@ -319,7 +334,6 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
       '<th>Task Name</th>' +
       '<th>Task Details</th>' +
       '<th>Task Class</th>' +
-      '<th>Submission</th>' +
       '<th>Assignee</th>' +
       '<th></th>' +
       '</tr></thead>';
@@ -329,7 +343,6 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         '<td>' + detail.task_name + '</td>' +
         '<td>' + detail.task_details + '</td>' +
         '<td>' + detail.task_class + '</td>' +
-        '<td>' + detail.submission + '</td>' +
         '<td><div class="d-flex justify-content-center">' + detail.in_charge_list + '</td></td>' +
         '<td class="text-truncate"><button class="btn btn-secondary btn-sm" value="' + detail.id + '" onclick="editTask(this)"><i class="fas fa-edit fa-fw"></i> Edit </button></td>' +
         '</tr>';
@@ -343,7 +356,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           "autoWidth": false,
           "orderable": false,
           "searchable": false,
-          "targets": [0, 6],
+          "targets": [0, 5],
         }],
         "order": [
           [1, "asc"]
@@ -383,8 +396,8 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
       },
       success: function(response) {
         $('#taskInfo').html(response);
-        $('#edit').modal('show');
         $('select').selectpicker();
+        openSpecificModal('edit', 'modal-md');
 
         const saveButton = document.getElementById('updateButton');
         const inputs = document.querySelectorAll("#editTaskName, #editSubmission, #editTaskDetails");
@@ -416,14 +429,6 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           const taskName = document.getElementById('editTaskName').value;
           const taskDetails = document.getElementById('editTaskDetails').value;
           const taskClass = document.getElementById('editClass').value;
-          const submission = document.getElementById('editSubmission').value;
-          const dueDate = document.getElementById('editAttachment').value;
-          const assignList = [];
-          for (let option of document.getElementById('editEmplist').options) {
-            if (option.selected) {
-              assignList.push(option.value);
-            }
-          }
           $.ajax({
             url: '../config/registered_tasks.php',
             method: 'POST',
@@ -433,9 +438,6 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
               "taskName": taskName,
               "taskDetails": taskDetails,
               "taskClass": taskClass,
-              "submission": submission,
-              "editAttachment": dueDate,
-              "assignList": assignList,
             },
             success: function(result) {
               if (result == 'Success') {
@@ -449,6 +451,26 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           })
         }
       },
+    });
+  }
+
+  function assignDetails(user) {
+    const username = user.alt;
+    const taskID = user.getAttribute('data-id');
+    $.ajax({
+      url: '../config/registered_tasks.php',
+      method: 'POST',
+      data: {
+        "assignDetails": true,
+        "username": username,
+        "taskID": taskID
+      },
+      success: function(result) {
+        $('#assigneeInfo').html(result);
+        $('select').selectpicker();
+        document.getElementById('modalTitle').innerHTML = username;
+        openSpecificModal('assignee', 'modal-md');
+      }
     });
   }
 
