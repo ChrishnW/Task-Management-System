@@ -150,7 +150,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
       <div class="modal-body" id="assigneeInfo">
       </div>
       <div class="modal-footer">
-        <button onclick="updateInfo()" class="btn btn-success d-none" id="updateButton">Save Changes</button>
+        <button onclick="updateTaskIn()" class="btn btn-success" id="updateBtn">Save Changes</button>
         <button class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -340,11 +340,11 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
     details.forEach(function(detail) {
       html += '<tr>' +
         '<td class="text-center">' + detail.status + '</td>' +
-        '<td>' + detail.task_name + '</td>' +
+        '<td class="text-truncate">' + detail.task_name + '</td>' +
         '<td>' + detail.task_details + '</td>' +
         '<td>' + detail.task_class + '</td>' +
         '<td><div class="d-flex justify-content-center">' + detail.in_charge_list + '</td></td>' +
-        '<td class="text-truncate"><button class="btn btn-secondary btn-sm" value="' + detail.id + '" onclick="editTask(this)"><i class="fas fa-edit fa-fw"></i> Edit </button></td>' +
+        '<td class="text-truncate"><button class="btn btn-secondary" value="' + detail.id + '" onclick="editTask(this)"><i class="fas fa-edit fa-fw"></i> Edit </button></td>' +
         '</tr>';
     });
     html += '</table>';
@@ -462,20 +462,20 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
   }
 
   function assignDetails(user) {
-    const username = user.alt;
     const taskID = user.getAttribute('data-id');
+    const taskName = user.getAttribute('data-task');
     $.ajax({
       url: '../config/registered_tasks.php',
       method: 'POST',
       data: {
         "assignDetails": true,
-        "username": username,
         "taskID": taskID
       },
       success: function(result) {
         $('#assigneeInfo').html(result);
         $('select').selectpicker();
-        document.getElementById('modalTitle').innerHTML = username;
+        document.getElementById('modalTitle').innerHTML = taskName;
+        document.getElementById('ediIncharge').value = user.alt;
         openSpecificModal('assignee', 'modal-md');
       }
     });
@@ -572,8 +572,8 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
 
   document.addEventListener("DOMContentLoaded", function() {
     const saveButton = document.getElementById("updateButton");
-    const inputs = document.querySelectorAll("#editTaskName, #editSubmission, #editTaskDetails");
-    const selects = document.querySelectorAll("#editClass, #editAttachment, #editEmplist");
+    const inputs = document.querySelectorAll("#editTaskName, #editTaskDetails");
+    const selects = document.querySelectorAll("#editClass");
 
     function removeHiddenClass() {
       if (saveButton.classList.contains("d-none")) {
