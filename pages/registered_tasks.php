@@ -141,6 +141,21 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
     </div>
   </div>
 </div>
+<div class="modal fade" id="add" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-success">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">Add Assignee</h5>
+      </div>
+      <div class="modal-body" id="assigneeAdd">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" id="saveAssignee">Save</button>
+        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="assignee" tabindex="-1" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content border-primary">
@@ -640,5 +655,54 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
 
   function downloadTemplate() {
     window.open('../files/for_import_tasks_excel_template.xlsx', '_blank');
+  }
+
+  function assigneeAdd(users) {
+    const taskFor = users.getAttribute('data-for');
+    $.ajax({
+      type: 'POST',
+      url: '../config/registered_tasks.php',
+      data: {
+        "assigneeAdd": true,
+        "taskFor": taskFor,
+      },
+      success: function(response) {
+        $('#assigneeAdd').html(response);
+        $('select').selectpicker();
+        openSpecificModal('add', 'modal-md');
+
+        document.getElementById('saveAssignee').onclick = function() {
+          const taskid = document.getElementById('addTaskID').value;
+          const submission = document.getElementById('addSubmission').value;
+          const requirement = document.getElementById('addAttachment').value;
+          const assignList = [];
+          for (let option of document.getElementById('addIncharge').options) {
+            if (option.selected) {
+              assignList.push(option.value);
+            }
+          }
+          $.ajax({
+            type: 'POST',
+            url: '../config/registered_tasks.php',
+            data: {
+              "saveAssigneeAdd": true,
+              "taskid": taskid,
+              "submission": submission,
+              "requirement": requirement,
+              "assigneeList": assignList,
+            },
+            success: function(response) {
+              if (response == 'Success') {
+                document.getElementById('success_log').innerHTML = 'Assignees added successfully.';
+                $('#success').modal('show');
+              } else {
+                document.getElementById('error_found').innerHTML = response;
+                $('#error').modal('show');
+              }
+            }
+          })
+        }
+      }
+    });
   }
 </script>

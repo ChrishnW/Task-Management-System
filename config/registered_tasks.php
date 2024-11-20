@@ -11,14 +11,14 @@ function assignee($user, $id)
 
   foreach ($userlist as $username) {
     $username = trim($username);
-    $task = mysqli_fetch_assoc(mysqli_query($con, "SELECT t.*, tl.task_name FROM tasks t JOIN task_list tl ON t.task_id=tl.id WHERE t.task_id='$id' AND t.in_charge='$username'"));
+    $task = mysqli_fetch_assoc(mysqli_query($con, "SELECT t.*, tl.id AS mid, tl.task_name FROM tasks t JOIN task_list tl ON t.task_id=tl.id WHERE t.task_id='$id' AND t.in_charge='$username'"));
     $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT *, CONCAT(accounts.fname,' ',accounts.lname) AS fullName FROM accounts WHERE username='$username'"));
     $image = empty($row["file_name"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row["file_name"];
     $mname = empty(trim($row['fullName'])) ? $row['username'] : $row['fullName'];
 
     $images[] = "<img src='$image' alt='{$mname}' class='user-table' data-toggle='tooltip' data-placement='top' title='{$mname}' data-id='{$task['id']}' data-task='{$task['task_name']}' onclick='assignDetails(this)'>";
   }
-  $images[] = "<img src='../assets/img/icons/plus.png' class='user-table'>";
+  $images[] = "<img src='../assets/img/icons/plus.png' class='user-table' data-for='{$task['mid']}' onclick='assigneeAdd(this)'>";
   return $images;
 }
 
@@ -31,7 +31,7 @@ if (isset($_POST['toggleDetails'])) {
     } else {
       $row['status'] = '<i class="fas fa-dot-circle text-danger" data-toggle="tooltip" data-placement="right" title="Inactive"></i>';
     }
-    $row['in_charge_list'] = empty($row['in_charge_list']) ? '<img src="../assets/img/icons/plus.png" class="user-table">' : assignee($row['in_charge_list'], $row['id']);
+    $row['in_charge_list'] = empty($row['in_charge_list']) ? '<img src="../assets/img/icons/plus.png" class="user-table" data-for="' . $row['id'] . '" onclick="assigneeAdd(this)">' : assignee($row['in_charge_list'], $row['id']);
     $row['task_class'] = getTaskClass($row['task_class']);
     $row['task_name'] = ($row['requirement_status'] == 1) ? $row['task_name'] . ' <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i>' : $row['task_name'];
     $data[] = $row;
@@ -161,5 +161,63 @@ if (isset($_POST['removeIncharge'])) {
     die('Success');
   } else {
     die('Error:' . mysqli_error($con));
+  }
+}
+
+if (isset($_POST['assigneeAdd'])) {
+  $id = $_POST['taskFor'];
+  $task = mysqli_fetch_assoc(mysqli_query($con, "SELECT tl.*, IFNULL(GROUP_CONCAT(CASE WHEN t.status = 1 THEN CONCAT('\"', t.in_charge, '\"') END SEPARATOR ', '), NULL) AS in_charge_list FROM tasks t RIGHT JOIN task_list tl ON t.task_id=tl.id WHERE tl.id='$id' GROUP BY tl.task_name"));
+  $incharge_list = $task['in_charge_list'];
+  $sec_id = $task['task_for'];
+  $task_id = $task['id'];
+
+  $condition = !empty($incharge_list) ? "AND username NOT IN ($incharge_list)" : "";
+  $accList = mysqli_query($con, "SELECT *, IF(fname IS NOT NULL AND fname != '' OR lname IS NOT NULL AND lname != '', CONCAT_WS(' ', fname, lname), username) AS mname FROM accounts WHERE status=1 AND sec_id='$sec_id' $condition ORDER BY username ASC"); ?>
+  <div class="row">
+    <input type="hidden" id="addTaskID" value="<?php echo $task_id; ?>">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="addIncharge" class="font-weight-bold">In Charge</label>
+        <select id="addIncharge" class="form-control show-tick" data-live-search="true" data-style="border-secondary" multiple>
+          <?php while ($row = mysqli_fetch_assoc($accList)) { ?>
+            <option value="<?php echo $row['username']; ?>"><?php echo $row['mname']; ?></option>
+          <?php } ?>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="addSubmission" class="font-weight-bold">Submission</label>
+        <input type="text" class="form-control" id="addSubmission" value="<?php echo $row['submission']; ?>" placeholder="Select due date">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="addAttachment" class="font-weight-bold">Require Attachment</label>
+        <select class="form-control show-tick" id="addAttachment" data-style="border-secondary">
+          <option value="" selected disabled>Nothing selected</option>
+          <option value="1">Required</option>
+          <option value="0">Not Required</option>
+        </select>
+      </div>
+    </div>
+  </div>
+<?php }
+
+if (isset($_POST['saveAssigneeAdd'])) {
+  if (!empty($_POST['assigneeList']) && !empty($_POST['submission']) && !empty($_POST['requirement'])) {
+    $task_id = $_POST['taskid'];
+    $submission = $_POST['submission'];
+    $requirement = $_POST['requirement'];
+    foreach ($_POST['assigneeList'] as $in_charge) {
+      $insertTask = mysqli_query($con, "INSERT INTO tasks (`task_id`, `requirement_status`, `in_charge`, `submission`) VALUES ('$task_id', '$requirement', '$in_charge', '$submission')");
+      if (!$insertTask) {
+        die('Error:' . mysqli_error($con));
+        break;
+      }
+    }
+    die('Success');
+  } else {
+    die('Missing Data field!');
   }
 }
