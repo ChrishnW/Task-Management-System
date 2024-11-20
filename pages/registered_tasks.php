@@ -135,7 +135,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
       <div class="modal-body" id="taskInfo">
       </div>
       <div class="modal-footer">
-        <button onclick="updateTask(this)" class="btn btn-success d-none" id="updateButton">Save Changes</button>
+        <button class="btn btn-success d-none" id="updateButton">Save Changes</button>
         <button class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -149,9 +149,12 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
       </div>
       <div class="modal-body" id="assigneeInfo">
       </div>
-      <div class="modal-footer">
-        <button onclick="updateTaskIn()" class="btn btn-success" id="updateBtn">Save Changes</button>
-        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+      <div class="modal-footer justify-content-between">
+        <button class="btn btn-danger" id="removeThis">Remove</button>
+        <div>
+          <button class="btn btn-success d-none" id="updateBtn">Save Changes</button>
+          <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
@@ -400,8 +403,8 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         openSpecificModal('edit', 'modal-md');
 
         const saveButton = document.getElementById('updateButton');
-        const inputs = document.querySelectorAll("#editTaskName, #editSubmission, #editTaskDetails");
-        const selects = document.querySelectorAll("#editClass, #editAttachment, #editEmplist");
+        const inputs = document.querySelectorAll("#editTaskName, #editTaskDetails");
+        const selects = document.querySelectorAll("#editClass");
 
         // Reset the save button to be hidden
         if (!saveButton.classList.contains("d-none")) {
@@ -429,12 +432,6 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           const taskName = document.getElementById('editTaskName').value;
           const taskDetails = document.getElementById('editTaskDetails').value;
           const taskClass = document.getElementById('editClass').value;
-          const assignList = [];
-          for (let option of document.getElementById('editEmplist').options) {
-            if (option.selected) {
-              assignList.push(option.value);
-            }
-          }
           $.ajax({
             url: '../config/registered_tasks.php',
             method: 'POST',
@@ -444,7 +441,6 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
               "taskName": taskName,
               "taskDetails": taskDetails,
               "taskClass": taskClass,
-              "assignList": assignList,
             },
             success: function(result) {
               if (result == 'Success') {
@@ -477,6 +473,82 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         document.getElementById('modalTitle').innerHTML = taskName;
         document.getElementById('ediIncharge').value = user.alt;
         openSpecificModal('assignee', 'modal-md');
+
+        const saveButton = document.getElementById('updateBtn');
+        const inputs = document.querySelectorAll("#editSubmission");
+        const selects = document.querySelectorAll("#editAttachment");
+
+        // Reset the save button to be hidden
+        if (!saveButton.classList.contains("d-none")) {
+          saveButton.classList.add("d-none");
+        }
+
+        // Function to remove the d-none class from the save button
+        function removeHiddenClass() {
+          if (saveButton.classList.contains("d-none")) {
+            saveButton.classList.remove("d-none");
+          }
+        }
+
+        // Add event listeners to inputs
+        inputs.forEach(input => {
+          input.addEventListener("input", removeHiddenClass);
+        });
+
+        // Add event listeners to selects
+        selects.forEach(select => {
+          select.addEventListener("change", removeHiddenClass);
+        });
+
+        document.getElementById('updateBtn').onclick = function() {
+          const id = document.getElementById('editTaskID').value;
+          const submission = document.getElementById('editSubmission').value;
+          const attachment = document.getElementById('editAttachment').value;
+          $.ajax({
+            url: '../config/registered_tasks.php',
+            method: 'POST',
+            data: {
+              "updateAssignee": true,
+              "id": id,
+              "submission": submission,
+              "attachment": attachment,
+            },
+            success: function(response) {
+              if (response == 'Success') {
+                document.getElementById('success_log').innerHTML = 'Task information updated successfully.';
+                $('#success').modal('show');
+              } else {
+                document.getElementById('error_found').innerHTML = response;
+                $('#error').modal('show');
+              }
+            }
+          })
+        }
+
+        document.getElementById('removeThis').onclick = function() {
+          $('#delete').modal('show');
+          document.getElementById('confirmBtn').onclick = function() {
+            $('#delete').modal('hide');
+            const id = document.getElementById('editTaskID').value;
+            $.ajax({
+              url: '../config/registered_tasks.php',
+              method: 'POST',
+              data: {
+                "removeIncharge": true,
+                "id": id,
+              },
+              success: function(response) {
+                if (response == 'Success') {
+                  document.getElementById('success_log').innerHTML = 'Task assignee has been removed successfully.';
+                  $('#success').modal('show');
+                } else {
+                  document.getElementById('error_found').innerHTML = response;
+                  $('#error').modal('show');
+                }
+              }
+            });
+          }
+        }
       }
     });
   }
@@ -569,26 +641,4 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
   function downloadTemplate() {
     window.open('../files/for_import_tasks_excel_template.xlsx', '_blank');
   }
-
-  document.addEventListener("DOMContentLoaded", function() {
-    const saveButton = document.getElementById("updateButton");
-    const inputs = document.querySelectorAll("#editTaskName, #editTaskDetails");
-    const selects = document.querySelectorAll("#editClass");
-
-    function removeHiddenClass() {
-      if (saveButton.classList.contains("d-none")) {
-        saveButton.classList.remove("d-none");
-      }
-    }
-
-    // Add event listeners to inputs
-    inputs.forEach(input => {
-      input.addEventListener("input", removeHiddenClass);
-    });
-
-    // Add event listeners to selects
-    selects.forEach(select => {
-      select.addEventListener("change", removeHiddenClass);
-    });
-  });
 </script>

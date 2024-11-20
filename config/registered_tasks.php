@@ -115,7 +115,7 @@ if (isset($_POST['assignDetails'])) {
   $id = $_POST['taskID'];
   $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM tasks WHERE id='$id'")); ?>
   <div class="row">
-    <input type="hidden" name="editTaskID" value="<?php echo $row['id']; ?>">
+    <input type="hidden" id="editTaskID" value="<?php echo $row['id']; ?>">
     <div class="col-md-12">
       <div class="form-group">
         <label for="ediIncharge" class="font-weight-bold">In Charge</label>
@@ -139,3 +139,27 @@ if (isset($_POST['assignDetails'])) {
     </div>
   </div>
 <?php }
+
+if (isset($_POST['updateAssignee'])) {
+  if (empty($_POST['submission'])) {
+    die('Missing Submission Data!');
+  } else {
+    $submission = trim($_POST['submission']);
+    $attachment = $_POST['attachment'];
+    $updateQuery = mysqli_query($con, "UPDATE tasks SET submission='$submission', requirement_status='$attachment' WHERE id='{$_POST['id']}'");
+    if ($updateQuery) {
+      die('Success');
+    } else {
+      die('Error:' . mysqli_error($con));
+    }
+  }
+}
+
+if (isset($_POST['removeIncharge'])) {
+  $deleteQuery = mysqli_query($con, "DELETE FROM tasks WHERE id='{$_POST['id']}'");
+  if ($deleteQuery) {
+    die('Success');
+  } else {
+    die('Error:' . mysqli_error($con));
+  }
+}
