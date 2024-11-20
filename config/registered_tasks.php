@@ -1,7 +1,7 @@
 <?php
 include('../include/auth.php');
 
-function assignee($user, $taskID)
+function assignee($user, $id)
 {
   global $con;
 
@@ -11,18 +11,12 @@ function assignee($user, $taskID)
 
   foreach ($userlist as $username) {
     $username = trim($username);
-
-    $result = mysqli_query($con, "SELECT *, CONCAT(accounts.fname,' ',accounts.lname) AS fullName FROM accounts WHERE username='$username'");
-
-    if ($row = mysqli_fetch_assoc($result)) {
-      $image = empty($row["file_name"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row["file_name"];
-    } else {
-      $image = '../assets/img/user-profiles/nologo.png';
-    }
-
+    $task = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM tasks WHERE task_id='$id' AND in_charge='$username'"));
+    $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT *, CONCAT(accounts.fname,' ',accounts.lname) AS fullName FROM accounts WHERE username='$username'"));
+    $image = empty($row["file_name"]) ? '../assets/img/user-profiles/nologo.png' : '../assets/img/user-profiles/' . $row["file_name"];
     $mname = empty(trim($row['fullName'])) ? $row['username'] : $row['fullName'];
 
-    $images[] = "<img src='$image' alt='$username' data-id='$taskID' class='user-table' data-toggle='tooltip' data-placement='top' title='{$mname}' onclick='assignDetails(this)'>";
+    $images[] = "<img src='$image' alt='$username' class='user-table' data-toggle='tooltip' data-placement='top' title='{$mname}' data-id='{$task['id']}' onclick='assignDetails(this)'>";
   }
   $images[] = "<img src='../assets/img/icons/plus.png' class='user-table'>";
   return $images;
@@ -37,9 +31,8 @@ if (isset($_POST['toggleDetails'])) {
     } else {
       $row['status'] = '<i class="fas fa-dot-circle text-danger" data-toggle="tooltip" data-placement="right" title="Inactive"></i>';
     }
-    $row['in_charge_list'] = empty($row['in_charge_list']) ? '<span class="badge badge-pill badge-danger"> No Assignee </span>' : assignee($row['in_charge_list'], $row['tasks_id']);
+    $row['in_charge_list'] = empty($row['in_charge_list']) ? '<img src="../assets/img/icons/plus.png" class="user-table">' : assignee($row['in_charge_list'], $row['id']);
     $row['task_class'] = getTaskClass($row['task_class']);
-    $row['submission'] = empty($row['submission']) ? '<span class="badge badge-pill badge-danger"> No Due Date </span>' : $row['submission'];
     $row['task_name'] = ($row['requirement_status'] == 1) ? $row['task_name'] . ' <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i>' : $row['task_name'];
     $data[] = $row;
   }
@@ -120,8 +113,8 @@ if (isset($_POST['createTask'])) {
 
 if (isset($_POST['assignDetails'])) {
   $in_charge = $_POST['username'];
-  $taskID = $_POST['taskID'];
-  $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM tasks WHERE id='$taskID'")); ?>
+  $id = $_POST['taskID'];
+  $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM tasks WHERE id='$id'")); ?>
   <div class="row">
     <div class="col-md-6">
       <div class="form-group">

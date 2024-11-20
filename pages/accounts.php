@@ -248,7 +248,7 @@ include('../include/header.php');
       </div>
       <div class="modal-footer justify-content-between">
         <div>
-          <button id="resetUserPass" class="btn btn-danger" onclick='resetPassword(this)'>Reset Password</button>
+          <button id="resetUserPass" class="btn btn-danger" onclick='resetPassword()'>Reset Password</button>
         </div>
         <div>
           <button onclick="accountUpdate(this)" class="btn btn-success" name="account_update">Update</button>
@@ -428,20 +428,24 @@ include('../include/header.php');
     })
   }
 
-  function resetPassword(element) {
-    var resetID = document.getElementById('account_id').value;
-    // console.log(resetID);
+  function resetPassword() {
+    const resetID = document.getElementById('account_id').value;
+    // alert(resetID);
     $.ajax({
       method: "POST",
       url: "../config/accounts.php",
       data: {
-        'accountReset': true,
-        'resetID': resetID,
+        'resetPassword': true,
+        'id': resetID
       },
-      success: function(respone) {
-        document.getElementById('success_log').innerHTML = 'Password has been reset to default 12345.';
-        $('#accountEdit').modal('hide');
-        $('#success').modal('show');
+      success: function(response) {
+        if (response === 'Success') {
+          document.getElementById('success_log').innerHTML = 'Account password reset successfully.';
+          $('#success').modal('show');
+        } else {
+          document.getElementById('error_log').innerHTML = response;
+          $('#error').modal('show');
+        }
       }
     })
   }

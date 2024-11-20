@@ -429,6 +429,12 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           const taskName = document.getElementById('editTaskName').value;
           const taskDetails = document.getElementById('editTaskDetails').value;
           const taskClass = document.getElementById('editClass').value;
+          const assignList = [];
+          for (let option of document.getElementById('editEmplist').options) {
+            if (option.selected) {
+              assignList.push(option.value);
+            }
+          }
           $.ajax({
             url: '../config/registered_tasks.php',
             method: 'POST',
@@ -438,6 +444,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
               "taskName": taskName,
               "taskDetails": taskDetails,
               "taskClass": taskClass,
+              "assignList": assignList,
             },
             success: function(result) {
               if (result == 'Success') {

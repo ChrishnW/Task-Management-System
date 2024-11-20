@@ -14,7 +14,7 @@ if (isset($_POST['changeStatus'])) {
 if (isset($_POST['accountEdit'])) {
   $getDetail = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM department d JOIN section s ON d.dept_id=s.dept_id JOIN accounts a ON s.sec_id=a.sec_id WHERE a.id='{$_POST['id']}'")); ?>
   <form id="accountDetails" enctype="multipart/form-data">
-    <input type="hidden" name="id" value="<?php echo $getDetail['id'] ?>">
+    <input type="hidden" name="id" id="account_id" value="<?php echo $getDetail['id'] ?>">
     <div class="form-row">
       <div class="form-group col-md-6">
         <label for="username">Username</label>
@@ -94,14 +94,16 @@ if (isset($_POST['checkPassword'])) {
   }
 }
 
-if (isset($_POST['accountReset'])) {
-  $id             = $_POST['resetID'];
-  $password_temp  = '12345';
-  $password       = password_hash($password_temp, PASSWORD_DEFAULT);
-  $update_query = mysqli_query($con, "UPDATE accounts SET password='$password' WHERE id='$id'");
-  $query_user   = mysqli_query($con, "SELECT * FROM accounts WHERE id='$id'");
-  $row = mysqli_fetch_assoc($query_user);
-  log_action("Password for user {$row['username']} has been reset to default .");
+if (isset($_POST['resetPassword'])) {
+  $password = password_hash(12345, PASSWORD_DEFAULT);
+  $updatepass = mysqli_query($con, "UPDATE accounts SET password='$password' WHERE id='{$_POST['id']}'");
+  if ($updatepass) :
+    $user = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM accounts WHERE id='{$_POST['id']}'"));
+    log_action("Password for user {$user['username']} has been reset to default .");
+    die('Success');
+  else:
+    die('Error:' . mysqli_error($con));
+  endif;
 }
 
 if (isset($_POST['statusUpdate'])) {
