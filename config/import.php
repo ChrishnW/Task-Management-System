@@ -79,7 +79,7 @@ if (isset($_POST['validateFile'])) {
     }
 
     if ($duplicateDataFound) {
-      die("There's a problem deploying tasks!<br>Download the error report <span onclick='generateReport()' style='cursor: pointer;'><font color='red'>here</font>.</span>");
+      die("<div class='text-center'>There's a problem deploying tasks!<br>Download the error report <span onclick='generateReport()' style='cursor: pointer;'><font color='red'>here</font>.</span></div>");
     } else {
       die('Valid');
     }

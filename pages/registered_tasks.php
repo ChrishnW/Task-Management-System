@@ -615,7 +615,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
   function handleError(message) {
     loadingIcon.classList.add('d-none'); // Hide loading icon
     errorIcon.classList.remove('d-none'); // Show error icon
-    fileNameDisplay.textContent = "Error: " + message;
+    fileNameDisplay.innerHTML = message;
     updateProgressBar(progressBar.style.width.replace('%', ''), "bg-danger");
   }
 
@@ -726,5 +726,9 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         }
       });
     }
+  }
+
+  function generateReport() {
+    window.open('../config/import.php?importReport=true');
   }
 </script>
