@@ -360,7 +360,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         '<td>' + detail.task_details + '</td>' +
         '<td>' + detail.task_class + '</td>' +
         '<td><div class="d-flex justify-content-center">' + detail.in_charge_list + '</td></td>' +
-        '<td class="text-truncate"><button class="btn btn-secondary btn-block" value="' + detail.id + '" onclick="editTask(this)"><i class="fas fa-edit fa-fw"></i> Edit </button> <button class="btn btn-danger btn-block"><i class="fas fa-trash fa-fw"></i> Delete</button> </td>' +
+        '<td class="text-truncate"><button class="btn btn-secondary btn-block" value="' + detail.id + '" onclick="editTask(this)"><i class="fas fa-edit fa-fw"></i> Edit </button> <button class="btn btn-danger btn-block" value="' + detail.id + '" onclick="deleteTask(this)"><i class="fas fa-trash fa-fw"></i> Delete</button> </td>' +
         '</tr>';
     });
     html += '</table>';
@@ -702,5 +702,29 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
         }
       }
     });
+  }
+
+  function deleteTask(id) {
+    openSpecificModal('delete', 'modal-sm');
+    document.getElementById('confirmBtn').onclick = function() {
+      $('#delete').modal('hide');
+      $.ajax({
+        type: 'POST',
+        url: '../config/registered_tasks.php',
+        data: {
+          "deleteTask": true,
+          "id": id.value
+        },
+        success: function(response) {
+          if (response == 'Success') {
+            document.getElementById('success_log').innerHTML = 'Task deleted successfully.';
+            $('#success').modal('show');
+          } else {
+            document.getElementById('error_found').innerHTML = response;
+            $('#error').modal('show');
+          }
+        }
+      });
+    }
   }
 </script>

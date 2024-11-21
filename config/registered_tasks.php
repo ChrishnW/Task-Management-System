@@ -23,7 +23,7 @@ function assignee($user, $id)
 }
 
 if (isset($_POST['toggleDetails'])) {
-  $query_result = mysqli_query($con, "SELECT tl.*, IFNULL(GROUP_CONCAT(CASE WHEN t.status = 1 THEN t.in_charge END SEPARATOR ', '), NULL) AS in_charge_list, t.id AS tasks_id, t.submission, t.requirement_status FROM tasks t RIGHT JOIN task_list tl ON t.task_id=tl.id WHERE tl.task_for='{$_POST['id']}' GROUP BY tl.task_name");
+  $query_result = mysqli_query($con, "SELECT tl.*, IFNULL(GROUP_CONCAT(CASE WHEN t.status = 1 THEN t.in_charge END SEPARATOR ', '), NULL) AS in_charge_list, t.id AS tasks_id, t.submission, t.requirement_status FROM tasks t RIGHT JOIN task_list tl ON t.task_id=tl.id WHERE tl.task_for='{$_POST['id']}' AND tl.status = 1 GROUP BY tl.task_name");
   $data = array();
   while ($row = mysqli_fetch_assoc($query_result)) {
     if ($row['status'] === '1') {
@@ -233,5 +233,15 @@ if (isset($_POST['saveAssigneeAdd'])) {
     die('Success');
   } else {
     die('Missing Data field!');
+  }
+}
+
+if (isset($_POST['deleteTask'])) {
+  $id = $_POST['id'];
+  $updateQuery = mysqli_query($con, "UPDATE task_list SET status=0 WHERE id='{$_POST['id']}'");
+  if ($updateQuery) {
+    echo "Success";
+  } else {
+    echo "Error:" . mysqli_error($con);
   }
 }
