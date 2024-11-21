@@ -348,7 +348,6 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
     var html = '<table class="table table-striped table-hover" id="detailsTable_' + id + '">';
     // Add thead and header row
     html += '<thead><tr>' +
-      '<th></th>' +
       '<th>Task Name</th>' +
       '<th>Task Details</th>' +
       '<th>Task Class</th>' +
@@ -357,12 +356,11 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
       '</tr></thead>';
     details.forEach(function(detail) {
       html += '<tr>' +
-        '<td class="text-center">' + detail.status + '</td>' +
         '<td class="text-truncate">' + detail.task_name + '</td>' +
         '<td>' + detail.task_details + '</td>' +
         '<td>' + detail.task_class + '</td>' +
         '<td><div class="d-flex justify-content-center">' + detail.in_charge_list + '</td></td>' +
-        '<td class="text-truncate"><button class="btn btn-secondary" value="' + detail.id + '" onclick="editTask(this)"><i class="fas fa-edit fa-fw"></i> Edit </button></td>' +
+        '<td class="text-truncate"><button class="btn btn-secondary btn-block" value="' + detail.id + '" onclick="editTask(this)"><i class="fas fa-edit fa-fw"></i> Edit </button> <button class="btn btn-danger btn-block"><i class="fas fa-trash fa-fw"></i> Delete</button> </td>' +
         '</tr>';
     });
     html += '</table>';
@@ -374,7 +372,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           "autoWidth": false,
           "orderable": false,
           "searchable": false,
-          "targets": [0, 5],
+          "targets": [0, 4],
         }],
         "order": [
           [1, "asc"]

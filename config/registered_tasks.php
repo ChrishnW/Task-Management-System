@@ -113,10 +113,24 @@ if (isset($_POST['createTask'])) {
 
 if (isset($_POST['assignDetails'])) {
   $id = $_POST['taskID'];
-  $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM tasks WHERE id='$id'")); ?>
+  $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT t.*, tl.task_details, tl.task_class FROM tasks t JOIN task_list tl ON t.task_id=tl.id WHERE t.id='$id'")); ?>
   <div class="row">
     <input type="hidden" id="editTaskID" value="<?php echo $row['id']; ?>">
-    <div class="col-md-12">
+    <!-- Task Details -->
+    <div class="col-12">
+      <div class="form-group">
+        <label for="editTaskDetails" class="font-weight-bold">Task Details</label>
+        <textarea class="form-control" id="editTaskDetails" rows="4" placeholder="Enter task details" readonly><?php echo $row['task_details']; ?></textarea>
+      </div>
+    </div>
+    <!-- Task Class -->
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="editClass" class="font-weight-bold">Task Class</label>
+        <input type="text" id="editClass" class="form-control" value="<?php echo ($row['task_class'] == 1 ? 'Daily Routine' : ($row['task_class'] == 2 ? 'Weekly Routine' : ($row['task_class'] == 3 ? 'Monthly Routine' : ($row['task_class'] == 4 ? 'Additional Routine' : ($row['task_class'] == 5 ? 'Project' : ($row['task_class'] == 6 ? 'Monthly Report' : 'UNKNOWN TASK CLASS')))))); ?>" readonly>
+      </div>
+    </div>
+    <div class="col-md-6">
       <div class="form-group">
         <label for="ediIncharge" class="font-weight-bold">In Charge</label>
         <input type="text" class="form-control" id="ediIncharge" readonly>
