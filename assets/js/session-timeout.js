@@ -1,7 +1,7 @@
 let inactivityTimeout; // Tracks inactivity timeout (3 minutes)
 let countdownTimer; // Tracks the countdown timer inside the modal (60 minutes)
-let countdownTimeRemaining = 3600; // Countdown starts at 60 minutes (3600 seconds)
-const inactivityThreshold = 10000; // 3 minutes of inactivity in milliseconds
+let countdownTimeRemaining = 2700; // Countdown starts at 60 minutes (3600 seconds)
+const inactivityThreshold = 900000; // 15 minutes of inactivity in milliseconds
 let isCountdownActive = false; // Flag to track if the countdown modal is active
 
 // Function to format time in MM:SS
@@ -50,14 +50,14 @@ function resetInactivityTimer() {
 function showTimeoutModal() {
   isCountdownActive = true; // Countdown starts, ignore user activity
   $('#timeoutModal').modal('show');
-  countdownTimeRemaining = 3600; // Reset countdown to 60 minutes
+  countdownTimeRemaining = 2700; // Reset countdown to 60 minutes
   startCountdown();
 }
 
 // Event listener for "Continue" button
 document.getElementById('continueBtn').addEventListener('click', () => {
   clearInterval(countdownTimer); // Stop the current countdown
-  countdownTimeRemaining = 3600; // Reset countdown to 60 minutes
+  countdownTimeRemaining = 2700; // Reset countdown to 60 minutes
   isCountdownActive = false; // Re-enable user activity detection
   $('#timeoutModal').modal('hide'); // Hide the modal
   resetInactivityTimer(); // Restart the inactivity timer
