@@ -18,7 +18,7 @@ function assignee($user, $id)
 
     $images[] = "<img src='$image' alt='{$mname}' class='user-table' data-toggle='tooltip' data-placement='top' title='{$mname}' data-id='{$task['id']}' data-task='{$task['task_name']}' onclick='assignDetails(this)'>";
   }
-  $images[] = "<img src='../assets/img/icons/plus.png' class='user-table' data-for='{$task['mid']}' onclick='assigneeAdd(this)'>";
+  $images[] = "<img src='../assets/img/icons/plus.png' class='user-table' data-toggle='tooltip' data-placement='top' title='Add New Assignee' data-for='{$task['mid']}' onclick='assigneeAdd(this)'>";
   return $images;
 }
 
@@ -31,7 +31,7 @@ if (isset($_POST['toggleDetails'])) {
     } else {
       $row['status'] = '<i class="fas fa-dot-circle text-danger" data-toggle="tooltip" data-placement="right" title="Inactive"></i>';
     }
-    $row['in_charge_list'] = empty($row['in_charge_list']) ? '<img src="../assets/img/icons/plus.png" class="user-table" data-for="' . $row['id'] . '" onclick="assigneeAdd(this)">' : assignee($row['in_charge_list'], $row['id']);
+    $row['in_charge_list'] = empty($row['in_charge_list']) ? '<img src="../assets/img/icons/plus.png" class="user-table" data-toggle="tooltip" data-placement="top" title="Add New Assignee" data-for="' . $row['id'] . '" onclick="assigneeAdd(this)">' : assignee($row['in_charge_list'], $row['id']);
     $row['task_class'] = getTaskClass($row['task_class']);
     $row['task_name'] = ($row['requirement_status'] == 1) ? $row['task_name'] . ' <i class="fas fa-photo-video text-warning" data-toggle="tooltip" data-placement="right" title="File Attachment Required"></i>' : $row['task_name'];
     $data[] = $row;
@@ -186,7 +186,7 @@ if (isset($_POST['assigneeAdd'])) {
   $task_id = $task['id'];
 
   $condition = !empty($incharge_list) ? "AND username NOT IN ($incharge_list)" : "";
-  $accList = mysqli_query($con, "SELECT *, IF(fname IS NOT NULL AND fname != '' OR lname IS NOT NULL AND lname != '', CONCAT_WS(' ', fname, lname), username) AS mname FROM accounts WHERE status=1 AND sec_id='$sec_id' $condition ORDER BY username ASC"); ?>
+  $accList = mysqli_query($con, "SELECT *, IF(fname IS NOT NULL AND fname != '' OR lname IS NOT NULL AND lname != '', CONCAT_WS(' ', fname, lname), username) AS mname FROM accounts WHERE status=1 AND access=2 AND sec_id='$sec_id' $condition ORDER BY username ASC"); ?>
   <div class="row">
     <input type="hidden" id="addTaskID" value="<?php echo $task_id; ?>">
     <div class="col-md-12">
@@ -202,7 +202,7 @@ if (isset($_POST['assigneeAdd'])) {
     <div class="col-md-6">
       <div class="form-group">
         <label for="addSubmission" class="font-weight-bold">Submission</label>
-        <input type="text" class="form-control" id="addSubmission" value="<?php echo $row['submission']; ?>" placeholder="Select due date">
+        <input type="text" class="form-control" id="addSubmission" placeholder="<?php echo ($task['task_class'] == 2) ? 'Example: Monday, Friday' : (($task['task_class'] == 3 || $task['task_class'] == 6) ? 'Example: 15, 30' : 'Select due date'); ?>" <?php echo ($task['task_class'] == 1) ? 'value="Daily" disabled' : ''; ?>>
       </div>
     </div>
     <div class="col-md-6">

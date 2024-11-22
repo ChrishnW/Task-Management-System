@@ -352,7 +352,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
       '<th>Task Details</th>' +
       '<th>Task Class</th>' +
       '<th>Assignee</th>' +
-      '<th></th>' +
+      '<th class="col-1"></th>' +
       '</tr></thead>';
     details.forEach(function(detail) {
       html += '<tr>' +
