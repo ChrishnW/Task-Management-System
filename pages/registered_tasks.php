@@ -376,10 +376,10 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           "autoWidth": false,
           "orderable": false,
           "searchable": false,
-          "targets": [0, 4],
+          "targets": 4,
         }],
         "order": [
-          [1, "asc"]
+          [0, "asc"]
         ]
       });
     }, 0); // Delay to ensure the table is fully rendered

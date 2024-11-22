@@ -139,7 +139,7 @@ if (isset($_POST['assignDetails'])) {
     <div class="col-md-6">
       <div class="form-group">
         <label for="editSubmission" class="font-weight-bold">Submission</label>
-        <input type="text" class="form-control" id="editSubmission" value="<?php echo $row['submission']; ?>" placeholder="Select due date">
+        <input class="form-control" id="editSubmission" placeholder="<?php echo ($row['task_class'] == 2) ? 'Example: Monday, Friday' : (($row['task_class'] == 3 || $row['task_class'] == 6) ? 'Example: 15, 30' : 'Select due date'); ?>" type="<?php echo ($row['task_class'] == 4) ? 'datetime-local' : 'text'; ?>" value="<?php echo $row['submission']; ?>" <?php echo ($row['task_class'] == 1) ? 'readonly' : ''; ?>>
       </div>
     </div>
     <div class="col-md-6">
@@ -212,7 +212,7 @@ if (isset($_POST['assigneeAdd'])) {
     <div class="col-md-6">
       <div class="form-group">
         <label for="addSubmission" class="font-weight-bold">Submission</label>
-        <input type="text" class="form-control" id="addSubmission" placeholder="<?php echo ($task['task_class'] == 2) ? 'Example: Monday, Friday' : (($task['task_class'] == 3 || $task['task_class'] == 6) ? 'Example: 15, 30' : 'Select due date'); ?>" <?php echo ($task['task_class'] == 1) ? 'value="Daily" readonly' : ''; ?>>
+        <input class="form-control" id="addSubmission" placeholder="<?php echo ($task['task_class'] == 2) ? 'Example: Monday, Friday' : (($task['task_class'] == 3 || $task['task_class'] == 6) ? 'Example: 15, 30' : 'Select due date'); ?>" type="<?php echo ($task['task_class'] == 4) ? 'datetime-local' : 'text'; ?>" <?php echo ($task['task_class'] == 1) ? 'value="Daily" disabled' : ''; ?>>
       </div>
     </div>
     <div class="col-md-6">
@@ -247,11 +247,21 @@ if (isset($_POST['saveAssigneeAdd'])) {
 }
 
 if (isset($_POST['deleteTask'])) {
-  $id = $_POST['id'];
-  $updateQuery = mysqli_query($con, "UPDATE task_list SET status=0 WHERE id='{$_POST['id']}'");
-  if ($updateQuery) {
-    echo "Success";
+  $taskId = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM tasks WHERE task_id='{$_POST['id']}'"));
+  $taskExist = mysqli_num_rows(mysqli_query($con, "SELECT * FROM tasks_details WHERE task_id='{$taskId['id']}'"));
+  if ($taskExist > 0) {
+    $updateQuery = mysqli_query($con, "UPDATE task_list SET status=0 WHERE id='{$_POST['id']}'");
+    if ($updateQuery) {
+      die('Success');
+    } else {
+      die('Error:' . mysqli_error($con));
+    }
   } else {
-    echo "Error:" . mysqli_error($con);
+    $deleteQuery = mysqli_multi_query($con, "DELETE FROM task_list WHERE id='{$_POST['id']}';DELETE FROM tasks WHERE id='{$taskId['id']}'");
+    if ($deleteQuery) {
+      die('Success');
+    } else {
+      die('Error:' . mysqli_error($con));
+    }
   }
 }
