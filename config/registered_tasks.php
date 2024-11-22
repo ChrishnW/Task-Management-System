@@ -170,11 +170,21 @@ if (isset($_POST['updateAssignee'])) {
 }
 
 if (isset($_POST['removeIncharge'])) {
-  $deleteQuery = mysqli_query($con, "DELETE FROM tasks WHERE id='{$_POST['id']}'");
-  if ($deleteQuery) {
-    die('Success');
+  $taskExist = mysqli_num_rows(mysqli_query($con, "SELECT * FROM tasks_details WHERE task_id='{$_POST['id']}'"));
+  if ($taskExist > 0) {
+    $updateQuery = mysqli_query($con, "UPDATE tasks SET status=0 WHERE id='{$_POST['id']}'");
+    if ($updateQuery) {
+      die('Success');
+    } else {
+      die('Error:' . mysqli_error($con));
+    }
   } else {
-    die('Error:' . mysqli_error($con));
+    $deleteQuery = mysqli_query($con, "DELETE FROM tasks WHERE id='{$_POST['id']}'");
+    if ($deleteQuery) {
+      die('Success');
+    } else {
+      die('Error:' . mysqli_error($con));
+    }
   }
 }
 
@@ -202,7 +212,7 @@ if (isset($_POST['assigneeAdd'])) {
     <div class="col-md-6">
       <div class="form-group">
         <label for="addSubmission" class="font-weight-bold">Submission</label>
-        <input type="text" class="form-control" id="addSubmission" placeholder="<?php echo ($task['task_class'] == 2) ? 'Example: Monday, Friday' : (($task['task_class'] == 3 || $task['task_class'] == 6) ? 'Example: 15, 30' : 'Select due date'); ?>" <?php echo ($task['task_class'] == 1) ? 'value="Daily" disabled' : ''; ?>>
+        <input type="text" class="form-control" id="addSubmission" placeholder="<?php echo ($task['task_class'] == 2) ? 'Example: Monday, Friday' : (($task['task_class'] == 3 || $task['task_class'] == 6) ? 'Example: 15, 30' : 'Select due date'); ?>" <?php echo ($task['task_class'] == 1) ? 'value="Daily" readonly' : ''; ?>>
       </div>
     </div>
     <div class="col-md-6">
@@ -219,7 +229,7 @@ if (isset($_POST['assigneeAdd'])) {
 <?php }
 
 if (isset($_POST['saveAssigneeAdd'])) {
-  if (!empty($_POST['assigneeList']) && !empty($_POST['submission']) && !empty($_POST['requirement'])) {
+  if (!empty($_POST['assigneeList']) && !empty($_POST['submission']) && $_POST['requirement'] !== '') {
     $task_id = $_POST['taskid'];
     $submission = $_POST['submission'];
     $requirement = $_POST['requirement'];

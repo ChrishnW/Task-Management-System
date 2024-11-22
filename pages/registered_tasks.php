@@ -53,15 +53,17 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold">Task List</h6>
+        <div>
+          <button class="btn btn-orange" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
+          <button class="btn btn-success" onclick="createTask();"><i class="fas fa-plus fa-fw"></i> Create</button>
+        </div>
       </div>
       <div class="card-body">
         <div class="table-responsive">
           <table class="table" id="regTaskTable" width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th class="col-1 text-center text-truncate">
-                  <button class="btn btn-orange" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
-                </th>
+                <th class="col-1"></th>
                 <th class="col-4">Section</th>
                 <th class="col-4">Department</th>
                 <th class="col-2">Tasks Count</th>
@@ -195,8 +197,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
             <div class="form-group">
               <label for="newClass" class="font-weight-bold">Task Class</label>
               <select name="newClass" id="newClass" class="form-control selectpicker show-tick" data-style="border-secondary">
-                <?php
-                $getClass = mysqli_query($con, "SELECT * FROM task_class");
+                <?php $getClass = mysqli_query($con, "SELECT * FROM task_class");
                 while ($row = mysqli_fetch_assoc($getClass)) : ?>
                   <option value="<?php echo $row['id'] ?>">
                     <?php echo ucwords(strtolower($row['task_class'])); ?>
@@ -224,7 +225,10 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
               <label for="newEmplist" class="font-weight-bold">Task For</label>
               <select class="form-control selectpicker" data-live-search="true" data-style="border-secondary" name="newtaskForList[]" id="newtaskForList" multiple>
                 <?php
-                $getSec = mysqli_query($con, "SELECT * FROM section WHERE status=1");
+                if ($access == 3) {
+                  $condition = " AND dept_id='$dept_id'";
+                }
+                $getSec = mysqli_query($con, "SELECT * FROM section WHERE status=1 $condition");
                 while ($row = mysqli_fetch_assoc($getSec)) { ?>
                   <option value="<?php echo $row['sec_id']; ?>">
                     <?php echo ucwords(strtolower($row['sec_name'])); ?>

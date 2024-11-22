@@ -1,7 +1,7 @@
 <?php
 include('../include/auth.php');
 
-if (isset($_GET['exportTaskList'])) {
+if (isset($_GET['exportTaskList']) && !empty($_GET['section'])) {
   $sec_ids = explode(',', $_GET['section']);
   header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
   header("Content-Disposition: attachment; filename=REGISTERED_TASKS.xls");
@@ -48,7 +48,7 @@ if (isset($_GET['exportTaskList'])) {
               <?php foreach ($userList as $inCharge) { ?>
                 <td>
                   <!-- <center /><input type="checkbox" <?php echo is_array($inChargeArray) && in_array($inCharge, $inChargeArray) ? 'checked' : ''; ?>> -->
-                  <center /><?php echo is_array($inChargeArray) && in_array($inCharge, $inChargeArray) ? 'Selected' : ''; ?>
+                  <center /><?php echo is_array($inChargeArray) && in_array($inCharge, $inChargeArray) ? '=UNICHAR(10003)' : ''; ?>
                 </td>
               <?php } ?>
             </tr>
@@ -57,4 +57,6 @@ if (isset($_GET['exportTaskList'])) {
       </tbody>
     </table>
 <?php }
+} else {
+  echo "<script type='text/javascript'>window.close();</script>";
 }
