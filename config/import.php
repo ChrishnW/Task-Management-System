@@ -57,6 +57,7 @@ if (isset($_POST['validateFile'])) {
         $taskTo       = strtoupper(mysqli_real_escape_string($con, $rowValues[0][4]));
         $taskDue      = mysqli_real_escape_string($con, $rowValues[0][5]);
         $taskReq      = mysqli_real_escape_string($con, $rowValues[0][6]);
+
         $import_checker = mysqli_query($con, "SELECT * FROM task_list tl JOIN tasks t ON tl.id=t.task_id WHERE tl.task_name = '$taskName' AND tl.task_class = '$taskClass' AND t.in_charge = '$taskTo' AND t.submission = '$taskDue'");
         if (mysqli_num_rows($import_checker) > 0) {
           $duplicateDataFound = true;
