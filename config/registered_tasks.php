@@ -265,3 +265,9 @@ if (isset($_POST['deleteTask'])) {
     }
   }
 }
+
+if (isset($_POST['delMultiTask'])) {
+  foreach ($_POST['ids'] AS $taskID) {
+    echo $taskID;
+  }
+}

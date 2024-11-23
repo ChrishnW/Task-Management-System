@@ -347,44 +347,145 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
   }
 
   function format(data, id) {
-    // `data` is the response from the AJAX call
+    // Parse the response data
     var details = JSON.parse(data);
+
+    // Create the HTML structure for the table
     var html = '<table class="table table-striped table-hover" id="detailsTable_' + id + '">';
-    // Add thead and header row
     html += '<thead><tr>' +
+      '<th class="col-1"><input type="checkbox" class="allTask form-control"></th>' +
       '<th>Task Name</th>' +
       '<th>Task Details</th>' +
       '<th>Task Class</th>' +
       '<th>Assignee</th>' +
-      '<th class="col-1"></th>' +
+      '<th class="col-1 text-truncate"><button class="btn btn-danger btn-block d-none" id="deleteallTask_' + id + '"></button></th>' +
       '</tr></thead>';
+
+    // Generate table rows from the details
     details.forEach(function(detail) {
       html += '<tr>' +
+        '<td><input type="checkbox" class="thisTask form-control" value="' + detail.id + '"></td>' +
         '<td class="text-truncate">' + detail.task_name + '</td>' +
         '<td>' + detail.task_details + '</td>' +
         '<td>' + detail.task_class + '</td>' +
-        '<td><div class="d-flex justify-content-center">' + detail.in_charge_list + '</td></td>' +
-        '<td class="text-truncate"><button class="btn btn-secondary btn-block" value="' + detail.id + '" onclick="editTask(this)"><i class="fas fa-edit fa-fw"></i> Edit </button> <button class="btn btn-danger btn-block" value="' + detail.id + '" onclick="deleteTask(this)"><i class="fas fa-trash fa-fw"></i> Delete</button> </td>' +
+        '<td><div class="d-flex justify-content-center">' + detail.in_charge_list + '</div></td>' +
+        '<td class="text-truncate">' +
+        '<button class="btn btn-secondary btn-block" value="' + detail.id + '" onclick="editTask(this)"><i class="fas fa-edit fa-fw"></i> Edit</button>' +
+        '<button class="btn btn-danger btn-block" value="' + detail.id + '" onclick="deleteTask(this)"><i class="fas fa-trash fa-fw"></i> Delete</button>' +
+        '</td>' +
         '</tr>';
     });
     html += '</table>';
 
-    // Initialize DataTable
+    // Initialize DataTable with a delay
     setTimeout(function() {
-      $('#detailsTable_' + id + '').DataTable({
+      const table = $('#detailsTable_' + id).DataTable({
         "columnDefs": [{
           "autoWidth": false,
           "orderable": false,
           "searchable": false,
-          "targets": 4,
+          "targets": [0, 5]
         }],
         "order": [
-          [0, "asc"]
+          [1, "asc"]
         ]
       });
-    }, 0); // Delay to ensure the table is fully rendered
+
+      // Add event listeners for checkbox and Delete All button behavior
+      setupCheckboxListeners(id, table);
+    }, 0);
 
     return html;
+  }
+
+  function setupCheckboxListeners(id, table) {
+    const deleteAllBtn = $('#deleteallTask_' + id);
+    const tableContainer = $('#detailsTable_' + id);
+
+    // Handle "Select All" checkbox
+    tableContainer.on('change', '.allTask', function() {
+      const isChecked = $(this).is(':checked');
+
+      // Use DataTables API to select all rows (both visible and invisible)
+      table.rows().nodes().each(function(row) {
+        $(row).find('.thisTask').prop('checked', isChecked);
+      });
+
+      // Manually trigger the change event after all checkboxes are updated
+      updateDeleteAllButtonState(table, deleteAllBtn);
+      updateSelectAllCheckboxState(table, tableContainer);
+    });
+
+    // Handle individual checkbox changes
+    tableContainer.on('change', '.thisTask', function() {
+      updateSelectAllCheckboxState(table, tableContainer);
+      updateDeleteAllButtonState(table, deleteAllBtn);
+    });
+
+    // Handle "Delete All" button click
+    deleteAllBtn.on('click', function() {
+      const selectedValues = table.rows().nodes().to$().find('.thisTask:checked').map(function() {
+        return this.value;
+      }).get();
+
+      if (selectedValues.length > 0) {
+        console.log('Selected IDs for deletion:', selectedValues);
+        $('#delete').modal('show');
+        document.getElementById('confirmBtn').onclick = function() {
+          $('#delete').modal('hide');
+          $.ajax({
+            type: 'POST',
+            url: '../config/registered_tasks.php',
+            data: {
+              'delMultiTask': true,
+              'ids': selectedValues
+            },
+            success: function(result) {
+              if (result == 'Success') {
+                document.getElementById('success_log').innerHTML = 'Task delete successfully.';
+                $('#success').modal('show');
+              } else {
+                document.getElementById('error_found').innerHTML = result;
+                $('#error').modal('show');
+              }
+            }
+          });
+        }
+      }
+    });
+  }
+
+  // Update "Select All" checkbox state based on individual checkboxes
+  function updateSelectAllCheckboxState(table, tableContainer) {
+    const allCheckboxes = table.rows().nodes().to$().find('.thisTask');
+    const selectedCheckboxes = table.rows().nodes().to$().find('.thisTask:checked');
+    const allSelected = selectedCheckboxes.length === allCheckboxes.length;
+
+    // Update the "Select All" checkbox state
+    tableContainer.find('.allTask').prop('checked', allSelected);
+  }
+
+  // Update the state of the "Delete All" button and individual delete buttons
+  function updateDeleteAllButtonState(table, deleteAllBtn) {
+    const selectedCheckboxes = table.rows().nodes().to$().find('.thisTask:checked');
+    const noneSelected = selectedCheckboxes.length === 0;
+
+    // Show or hide the "Delete All" button and update its text
+    if (noneSelected) {
+      deleteAllBtn.addClass('d-none');
+      deleteAllBtn.html('<i class="fas fa-trash fa-fw"></i> Delete'); // Reset text when no items are selected
+    } else {
+      deleteAllBtn.removeClass('d-none');
+      deleteAllBtn.html(`<i class="fas fa-trash fa-fw"></i> Delete (${selectedCheckboxes.length})`); // Update with count
+    }
+
+    // Disable or enable individual delete buttons
+    const individualDeleteButtons = table.rows().nodes().to$().find('button[onclick="deleteTask(this)"]');
+    if (noneSelected) {
+      individualDeleteButtons.prop('disabled', false); // Enable when no checkboxes are selected
+    } else {
+      individualDeleteButtons.prop('disabled', true); // Disable when checkboxes are selected
+    }
   }
 
   // Function to check and restore state on page load
