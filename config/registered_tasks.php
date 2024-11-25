@@ -268,24 +268,19 @@ if (isset($_POST['deleteTask'])) {
 
 if (isset($_POST['delMultiTask'])) {
   foreach ($_POST['ids'] as $taskID) {
-    $AssignInfo = mysqli_query($con, "SELECT * FROM tasks WHERE task_id='$taskID'");
-    if (mysqli_num_rows($AssignInfo) > 0) {
-      $taskId = mysqli_fetch_assoc($AssignInfo);
-      $taskExist = mysqli_num_rows(mysqli_query($con, "SELECT * FROM tasks_details WHERE task_id='{$taskId['id']}'"));
-      if ($taskExist > 0) {
-        $updateQuery = mysqli_query($con, "UPDATE task_list SET status=0 WHERE id='$taskID'");
-        if (!$updateQuery) {
-          die('Error:' . mysqli_error($con));
-        }
-      } else {
-        $deleteQuery = mysqli_multi_query($con, "DELETE FROM task_list WHERE id='$taskID';DELETE FROM tasks WHERE id='{$taskId['id']}'");
-        if (!$deleteQuery) {
-          die('Error:' . mysqli_error($con));
-        }
+    $taskId = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM tasks WHERE task_id='$taskID'"));
+    $taskExist = mysqli_num_rows(mysqli_query($con, "SELECT * FROM tasks_details WHERE task_id='{$taskId['id']}'"));
+    if ($taskExist > 0) {
+      $updateQuery = mysqli_query($con, "UPDATE task_list SET status=0 WHERE id='$taskID'");
+      if (!$updateQuery) {
+        die('Error:' . mysqli_error($con));
       }
     } else {
-      echo "Wala<br>";
+      $deleteQuery = mysqli_query($con, "DELETE FROM task_list WHERE id='$taskID'");
+      if (!$deleteQuery) {
+        die('Error:' . mysqli_error($con));
+      }
     }
   }
-  // die('Success');
+  die('Success');
 }

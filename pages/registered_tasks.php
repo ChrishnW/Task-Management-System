@@ -32,7 +32,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
             <tbody>
               <?php $getTaskList = mysqli_query($con, "SELECT * FROM department d JOIN section s ON d.dept_id=s.dept_id WHERE s.status=1");
               while ($row = mysqli_fetch_assoc($getTaskList)) {
-                $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}'")); ?>
+                $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}' AND status=1")); ?>
                 <tr>
                   <td><input type="checkbox" class="form-control export-sec-list" value="<?php echo $row['sec_id']; ?>"></td>
                   <td><button class="btn btn-circle btn-primary toggle-details" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)"><i class="far fa-eye"></i></button> <?php echo $row['sec_name']; ?></td>
@@ -227,8 +227,10 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
                 <?php
                 if ($access == 3) {
                   $condition = " AND dept_id='$dept_id'";
+                } else {
+                  $condition = "";
                 }
-                $getSec = mysqli_query($con, "SELECT * FROM section WHERE status=1 $condition");
+                $getSec = mysqli_query($con, "SELECT * FROM section WHERE status=1 $condition ORDER BY sec_name ASC");
                 while ($row = mysqli_fetch_assoc($getSec)) { ?>
                   <option value="<?php echo $row['sec_id']; ?>">
                     <?php echo ucwords(strtolower($row['sec_name'])); ?>
