@@ -23,7 +23,7 @@ function assignee($user, $id)
 }
 
 if (isset($_POST['toggleDetails'])) {
-  $query_result = mysqli_query($con, "SELECT tl.*, IFNULL(GROUP_CONCAT(CASE WHEN t.status = 1 THEN t.in_charge END SEPARATOR ', '), NULL) AS in_charge_list, t.id AS tasks_id, t.submission, t.requirement_status FROM tasks t RIGHT JOIN task_list tl ON t.task_id=tl.id WHERE tl.task_for='{$_POST['id']}' AND tl.status = 1 GROUP BY tl.task_name");
+  $query_result = mysqli_query($con, "SELECT tl.*, IFNULL(GROUP_CONCAT(CASE WHEN t.status = 1 THEN t.in_charge END SEPARATOR ', '), NULL) AS in_charge_list, t.id AS tasks_id, t.submission, t.requirement_status FROM tasks t RIGHT JOIN task_list tl ON t.task_id=tl.id WHERE tl.task_for='{$_POST['id']}' AND tl.status = 1 GROUP BY tl.id");
   $data = array();
   while ($row = mysqli_fetch_assoc($query_result)) {
     if ($row['status'] === '1') {
@@ -212,6 +212,7 @@ if (isset($_POST['assigneeAdd'])) {
     <div class="col-md-6">
       <div class="form-group">
         <label for="addSubmission" class="font-weight-bold">Submission</label>
+        <input type="hidden" id="addClass" value="<?php echo $task['task_class']; ?>">
         <input class="form-control" id="addSubmission" placeholder="<?php echo ($task['task_class'] == 2) ? 'Example: Monday, Friday' : (($task['task_class'] == 3 || $task['task_class'] == 6) ? 'Example: 15, 30' : 'Select due date'); ?>" type="<?php echo ($task['task_class'] == 4) ? 'datetime-local' : 'text'; ?>" <?php echo ($task['task_class'] == 1) ? 'value="Daily" disabled' : ''; ?>>
       </div>
     </div>
@@ -235,6 +236,15 @@ if (isset($_POST['saveAssigneeAdd'])) {
     $requirement = $_POST['requirement'];
     foreach ($_POST['assigneeList'] as $in_charge) {
       $insertTask = mysqli_query($con, "INSERT INTO tasks (`task_id`, `requirement_status`, `in_charge`, `submission`) VALUES ('$task_id', '$requirement', '$in_charge', '$submission')");
+      if ($_POST['taskClass'] == 4) {
+        $task_id = mysqli_insert_id($con);
+        $submission = str_replace('T', ' ', $_POST['submission']) . ':00';
+        $deployTask = mysqli_query($con, "INSERT INTO tasks_details (`task_id`, `due_date`) VALUES ('$task_id', '$submission')");
+        if (!$deployTask) {
+          die('Error:' . mysqli_error($con));
+          break;
+        }
+      }
       if (!$insertTask) {
         die('Error:' . mysqli_error($con));
         break;

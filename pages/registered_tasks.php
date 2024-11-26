@@ -780,6 +780,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
           const taskid = document.getElementById('addTaskID').value;
           const submission = document.getElementById('addSubmission').value;
           const requirement = document.getElementById('addAttachment').value;
+          const tclass = document.getElementById('addClass').value;
           const assignList = [];
           for (let option of document.getElementById('addIncharge').options) {
             if (option.selected) {
@@ -795,6 +796,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
               "submission": submission,
               "requirement": requirement,
               "assigneeList": assignList,
+              "taskClass": tclass
             },
             success: function(response) {
               if (response == 'Success') {
