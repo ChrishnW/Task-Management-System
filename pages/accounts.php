@@ -76,7 +76,6 @@ include('../include/header.php');
         </div>
       </div>
     </div>
-  <?php } elseif ($access == 2) { ?>
   <?php } elseif ($access == 3) { ?>
     <div class="card">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -87,42 +86,27 @@ include('../include/header.php');
           <table class="table table-striped" id="memberList" width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th>Username</th>
+                <th>Employee ID</th>
                 <th>Name</th>
-                <th>Section & Department</th>
-                <th>Total Tasks</th>
-                <th>Status</th>
+                <th>Section</th>
+                <th>Role</th>
+                <th class="col-1"></th>
               </tr>
             </thead>
             <tbody>
               <?php $con->next_result();
-              $result = mysqli_query($con, "SELECT accounts.fname, accounts.lname, accounts.file_name , accounts.username, accounts.email, section.sec_name, access.access, accounts.status, accounts.id, department.dept_name, section.sec_id FROM accounts LEFT JOIN section ON accounts.sec_id=section.sec_id LEFT JOIN access on accounts.access=access.id LEFT JOIN department ON department.dept_id=section.dept_id WHERE department.dept_id='$dept_id' AND accounts.access=2");
+              $result = mysqli_query($con, "SELECT * FROM accounts a JOIN section s ON a.sec_id=s.sec_id WHERE s.dept_id='$dept_id' AND a.status=1 AND a.access NOT IN (1, 3)");
               if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
                   $member = $row['username'];
                   $query = mysqli_query($con, "SELECT COUNT(*) AS total_task FROM task_class tc JOIN task_list tl ON tc.id=tl.task_class JOIN tasks t ON tl.id=t.task_id WHERE t.in_charge='$member' AND tl.task_class!=4");
-                  $query_result = mysqli_fetch_assoc($query);
-                  if (empty($row['file_name'])) {
-                    $imageURL = '../assets/img/user-profiles/nologo.png';
-                  } else {
-                    $imageURL = '../assets/img/user-profiles/' . $row['file_name'];
-                  }
-                  if ($row['status'] == 1) {
-                    $status = 'Active';
-                    $btn = 'success';
-                  } else {
-                    $status = 'Inactive';
-                    $btn = 'danger';
-                  } ?>
+                  $query_result = mysqli_fetch_assoc($query); ?>
                   <tr>
-                    <td><?php echo $row['username']; ?></td>
-                    <td id="td-table"><img src="<?php echo $imageURL; ?>" class="img-table"><?php echo $row['fname'] . ' ' . $row['lname']; ?></td>
-                    <td><?php echo $row['sec_name']; ?> <p class="form-text text-danger"><?php echo $row['dept_name']; ?></p>
-                    </td>
-                    <td>
-                      <p class="badge badge-primary"><?php echo $query_result['total_task'] ?> Assigned Tasks</p>
-                    </td>
-                    <td><span class="badge badge-<?php echo $btn ?>"><?php echo $status ?></span></td>
+                    <td><?php echo $row['card']; ?></td>
+                    <td><?php echo getUser($row['username']); ?></td>
+                    <td><?php echo $row['sec_name']; ?></td>
+                    <td> </td>
+                    <td class="text-truncate"><button class="btn btn-success btn-block">Assign</button></td>
                   </tr>
               <?php }
               } ?>
@@ -388,8 +372,16 @@ include('../include/header.php');
   }, $('[data-toggle="tooltip"]').tooltip());
 
   $('#memberList').DataTable({
+    searching: false, // Disable the search bar
+    lengthChange: false,
+    "columnDefs": [{
+      "autoWidth": false,
+      "orderable": false,
+      "searchable": false,
+      "targets": 4,
+    }],
     "order": [
-      [0, "asc"]
+      [1, "asc"]
     ]
   });
 

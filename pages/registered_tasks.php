@@ -50,9 +50,14 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
       </div>
     </div>
   <?php elseif ($access == 3) : ?>
+    <div class="row">
+      <div class="col-md-9 col-auto">
+        <h2 class="mb-2 font-weight-bolder">Task List</h2>
+        <h5 class="mb-3 font-weight-light display-8">Registered tasks in your department right now.</h5>
+      </div>
+    </div>
     <div class="card">
-      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold">Task List</h6>
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-center">
         <div>
           <button class="btn btn-orange" onclick="exportThis();"><i class="fas fa-file-export fa-fw"></i> Export</button>
           <button class="btn btn-success" onclick="createTask();"><i class="fas fa-plus fa-fw"></i> Create</button>
@@ -72,7 +77,7 @@ $result = mysqli_query($con, "TRUNCATE task_temp");
             <tbody>
               <?php $getTaskList = mysqli_query($con, "SELECT * FROM department d JOIN section s ON d.dept_id=s.dept_id WHERE s.status=1 AND d.dept_id='$dept_id'");
               while ($row = mysqli_fetch_assoc($getTaskList)) {
-                $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}'")); ?>
+                $taskCount = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS count FROM task_list WHERE task_for='{$row['sec_id']}' AND status=1")); ?>
                 <tr>
                   <td><input type="checkbox" class="form-control export-sec-list" value="<?php echo $row['sec_id']; ?>"></td>
                   <td><button class="btn btn-circle btn-primary toggle-details" value="<?php echo $row['sec_id']; ?>" onclick="toggleDetails(this)"><i class="far fa-eye"></i></button> <?php echo $row['sec_name']; ?></td>

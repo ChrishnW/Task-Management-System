@@ -7,7 +7,6 @@ if (isset($_POST['approveTask'])) {
   $approveDate  = $_POST['resched_date'];
   $oldDue       = $_POST['resched_dateog'];
   $dateToday    = date('Y-m-d');
-  $task_code    = getCode($id);
   if ($approveDate == '') {
     die('Please fill in the required fields.');
   }
@@ -16,7 +15,7 @@ if (isset($_POST['approveTask'])) {
   }
   $query_update = mysqli_query($con, "UPDATE `tasks_details` SET `status`='NOT YET STARTED', `due_date`='$approveDate 16:00:00', `old_date`='$oldDue 16:00:00' WHERE `id`='$id'");
   if ($query_update) {
-    log_action("Request to reschedule Task {$task_code} approved.");
+    log_action("Request to reschedule Task #{$id} approved.");
     echo "Success";
   }
 }
