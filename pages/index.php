@@ -158,8 +158,10 @@ include('../include/header.php');
                     $tooltip = $remarks[$currentDate];
                   } elseif ($dayOfWeek == 0) {
                     $class = "text-danger"; // Sunday styling
+                    $tooltip = "";
                   } elseif ($dayOfWeek == 6) {
                     $class = "text-primary"; // Saturday styling
+                    $tooltip = "";
                   } else {
                     $tooltip = "";
                   }
@@ -326,8 +328,10 @@ include('../include/header.php');
                     $tooltip = $remarks[$currentDate];
                   } elseif ($dayOfWeek == 0) {
                     $class = "text-danger"; // Sunday styling
+                    $tooltip = "";
                   } elseif ($dayOfWeek == 6) {
                     $class = "text-primary"; // Saturday styling
+                    $tooltip = "";
                   } else {
                     $tooltip = "";
                   }
@@ -645,8 +649,10 @@ include('../include/header.php');
                     $tooltip = $remarks[$currentDate];
                   } elseif ($dayOfWeek == 0) {
                     $class = "text-danger"; // Sunday styling
+                    $tooltip = "";
                   } elseif ($dayOfWeek == 6) {
                     $class = "text-primary"; // Saturday styling
+                    $tooltip = "";
                   } else {
                     $tooltip = "";
                   }
