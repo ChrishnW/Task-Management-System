@@ -1,6 +1,6 @@
 <?php
 $db_host      = 'localhost';
-$db_user      = 'gtms';
+$db_user      = 'root';
 $db_database  = 'tms';
 $db_pass      = 'p@55w0rd$$$';
 
