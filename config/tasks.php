@@ -987,7 +987,7 @@ if (isset($_POST['addTask'])) {
   }
 }
 if (isset($_POST['deleteTask'])) {
-  if ($access == 1) :
+  if (isset($_POST['selectedValues'])) :
     $error = false;
     foreach ($_POST['selectedValues'] as $taskID) :
       $queryDelete = mysqli_query($con, "DELETE FROM tasks_details WHERE id='{$taskID}'");
